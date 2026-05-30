@@ -799,15 +799,18 @@ function canViewModule(module) {
 // ===== 初始化 =====
 
 document.addEventListener("DOMContentLoaded", () => {
-
-  initNav();
-
-  initWpFilter();
-
-  initModal();
-
-  renderModule("dashboard");
-
+  try {
+    initNav();
+    initWpFilter();
+    initModal();
+    renderModule("dashboard");
+    console.log("CS CloudHub initialized successfully");
+  } catch(e) {
+    console.error("CS CloudHub init error:", e);
+    document.getElementById("module-content").innerHTML =
+      '<div style="padding:40px;text-align:center;color:red;">' +
+      '<h3>初始化错误</h3><p>' + e.message + '</p></div>';
+  }
 });
 
 
@@ -857,17 +860,19 @@ function initWpFilter(){
 // ===== 模块分发 =====
 
 function renderModule(module){
-
-  currentModule = module;
-
-  const area = document.getElementById("module-content");
-
-  const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector, permissions:renderPermissions};
-
-  area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
-
-  bindEvents();
-
+  try {
+    currentModule = module;
+    const area = document.getElementById("module-content");
+    if (!area) { console.error("module-content not found"); return; }
+    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector, permissions:renderPermissions};
+    area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
+    bindEvents();
+  } catch(e) {
+    console.error("renderModule error:", e);
+    document.getElementById("module-content").innerHTML =
+      '<div style="padding:40px;text-align:center;color:red;">' +
+      '<h3>模块加载错误</h3><p>' + e.message + '</p></div>';
+  }
 }
 
 
