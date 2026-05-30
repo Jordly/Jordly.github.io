@@ -4432,6 +4432,15 @@ function showSatisfactionPermission(){
 
 
 function renderPermissions(){
+  // 防御性检查
+  if (typeof ROLES === "undefined") {
+    document.getElementById("module-content").innerHTML = '<div style="padding:40px;text-align:center;color:red;">错误：ROLES 未定义</div>';
+    return;
+  }
+  if (typeof rolePermissions === "undefined") {
+    rolePermissions = {};
+  }
+
   const allModules = [
     {key:"dashboard", name:"项目总览驾驶舱"},
     {key:"archive", name:"项目基础档案"},
@@ -4492,9 +4501,11 @@ function renderPermissions(){
                 const p = rolePermissions[role] ? rolePermissions[role][m.key] : "hidden";
                 const color = pColor[p] || "#9ca3af";
                 return `<td style="text-align:center;padding:4px 2px;"
-                          onclick="cyclePermission('${role}','${m.key}',this)"
+                          data-role="${role}" data-key="${m.key}"
+                          onclick="cyclePermission(this)"
                           title="点击切换权限（当前：${p==="write"?"读写":p==="read"?"只读":"隐藏"}）">
-                  <select onchange="updatePermission('${role}','${m.key}',this.value,this)"
+                  <select onchange="updatePermissionFromSelect(this)"
+                          data-role="${role}" data-key="${m.key}"
                           onclick="event.stopPropagation()"
                           style="padding:2px 2px;font-size:11px;border:1px solid ${color};border-radius:4px;background:${p==="write"?"#dcfce7":p==="read"?"#dbeafe":"#f3f4f6"};color:${color};cursor:pointer;width:52px;">
                     <option value="write" ${p==="write"?"selected":""}>读写</option>
@@ -4544,6 +4555,17 @@ function renderPermissions(){
   document.getElementById("module-content").innerHTML = html;
 }
 
+// 点击单元格快速切换权限（读写→只读→隐藏→读写）
+function cyclePermission(tdEl) {
+  const role = tdEl.dataset.role;
+  const key = tdEl.dataset.key;
+  const order = ["write", "read", "hidden"];
+  const current = rolePermissions[role] && rolePermissions[role][key] ? rolePermissions[role][key] : "hidden";
+  const next = order[(order.indexOf(current) + 1) % 3];
+  updatePermission(role, key, next);
+  renderPermissions();
+}
+
 // 更新权限配置
 function updatePermission(role, module, permission) {
   if (!rolePermissions[role]) {
@@ -4553,13 +4575,11 @@ function updatePermission(role, module, permission) {
   savePermissions();
 }
 
-// 点击单元格快速切换权限（读写→只读→隐藏→读写）
-function cyclePermission(role, module, tdEl) {
-  const order = ["write", "read", "hidden"];
-  const current = rolePermissions[role] && rolePermissions[role][module] ? rolePermissions[role][module] : "hidden";
-  const next = order[(order.indexOf(current) + 1) % 3];
-  updatePermission(role, module, next);
-  renderPermissions();
+// 下拉菜单触发
+function updatePermissionFromSelect(sel) {
+  const role = sel.dataset.role;
+  const key = sel.dataset.key;
+  updatePermission(role, key, sel.value);
 }
 
 // 批量设置：为某个角色批量设置所有模块权限
