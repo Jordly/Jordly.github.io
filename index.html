@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>客服项目管理信息中台</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- 角色切换器 -->
+<div id="role-switcher">
+  <span class="role-label">当前角色：</span>
+  <button class="role-btn active" data-role="pm">项目经理</button>
+  <button class="role-btn" data-role="exec">执行团队</button>
+  <button class="role-btn" data-role="leader">上级领导</button>
+  <button class="role-btn" data-role="staff">项目人员</button>
+  <span class="role-hint" id="role-hint">项目经理：全量读写权限</span>
+</div>
+
+<!-- 顶部导航 -->
+<header id="top-header">
+  <div class="header-left">
+    <h1>📊 客服项目管理信息中台</h1>
+    <span class="subtitle">济南 · 淄博 · 杭州</span>
+  </div>
+  <div class="header-right">
+    <div class="workplace-filter">
+      <label>职场筛选：</label>
+      <select id="wp-filter">
+        <option value="all">全部职场</option>
+        <option value="济南">济南职场</option>
+        <option value="淄博">淄博职场</option>
+        <option value="杭州">杭州职场</option>
+      </select>
+    </div>
+    <div class="search-box">
+      <input type="text" id="global-search" placeholder="搜索项目名称...">
+    </div>
+  </div>
+</header>
+
+<!-- 主容器 -->
+<div id="main-container">
+  <!-- 左侧模块菜单 -->
+  <nav id="sidebar">
+    <div class="nav-section">
+      <div class="nav-section-title">核心模块</div>
+      <a href="#" class="nav-item active" data-module="dashboard">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">项目总览驾驶舱</span>
+      </a>
+      <a href="#" class="nav-item" data-module="archive">
+        <span class="nav-icon">📋</span>
+        <span class="nav-text">项目基础档案</span>
+      </a>
+      <a href="#" class="nav-item" data-module="target">
+        <span class="nav-icon">🎯</span>
+        <span class="nav-text">目标与责任边界</span>
+      </a>
+      <a href="#" class="nav-item" data-module="cost">
+        <span class="nav-icon">💰</span>
+        <span class="nav-text">成本与利润管理</span>
+      </a>
+      <a href="#" class="nav-item" data-module="operation">
+        <span class="nav-icon">📈</span>
+        <span class="nav-text">运营执行现状</span>
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">协作与知识</div>
+      <a href="#" class="nav-item" data-module="issue">
+        <span class="nav-icon">🐛</span>
+        <span class="nav-text">课题与问题协作</span>
+      </a>
+      <a href="#" class="nav-item" data-module="knowledge">
+        <span class="nav-icon">📚</span>
+        <span class="nav-text">知识沉淀库</span>
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">管理工具</div>
+      <a href="#" class="nav-item" data-module="handover">
+        <span class="nav-icon">🔄</span>
+        <span class="nav-text">交接管理</span>
+      </a>
+      <a href="#" class="nav-item" data-module="satisfaction">
+        <span class="nav-icon">💯</span>
+        <span class="nav-text">项目满意度评估</span>
+      </a>
+      <a href="#" class="nav-item" data-module="director">
+        <span class="nav-icon">👁️</span>
+        <span class="nav-text">项目总监视图</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- 主内容区 -->
+  <main id="content-area">
+    <!-- 动态内容加载区 -->
+    <div id="module-content"></div>
+  </main>
+</div>
+
+<!-- 弹窗容器 -->
+<div id="modal-overlay" class="modal-overlay hidden">
+  <div id="modal-box" class="modal-box">
+    <div id="modal-header" class="modal-header">
+      <h3 id="modal-title"></h3>
+      <button id="modal-close" class="modal-close">&times;</button>
+    </div>
+    <div id="modal-body" class="modal-body"></div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
