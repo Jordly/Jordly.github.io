@@ -4593,7 +4593,6 @@ function batchSetPermission() {
   if (!val || (val!=="1" && val!=="2" && val!=="3")) { alert("输入不正确"); return; }
   const perm = val==="1" ? "write" : val==="2" ? "read" : "hidden";
   MODULE_KEYS.forEach(m => updatePermission(role, m, perm));
-  allModules.forEach(m => updatePermission(role, m, perm));
   renderPermissions();
   alert("已为「" + role + "」批量设置所有模块为「" + (perm==="write"?"读写":perm==="read"?"只读":"隐藏") + "」");
 }
