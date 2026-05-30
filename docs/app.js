@@ -4431,8 +4431,6 @@ function showSatisfactionPermission(){
 
 
 
-// ===== 系统权限设置 =====
-
 function renderPermissions(){
   const allModules = [
     {key:"dashboard", name:"项目总览驾驶舱"},
@@ -4442,39 +4440,63 @@ function renderPermissions(){
     {key:"operation", name:"运营执行现状"},
     {key:"issue", name:"课题与问题协作"},
     {key:"knowledge", name:"核心知识百宝箱"},
-    {key:"handover", name:"交接管理"},
+    {key:"handover", name:"项目承接大百科"},
     {key:"satisfaction", name:"项目满意度评估"},
     {key:"director", name:"项目总监视图"},
     {key:"permissions", name:"系统权限设置"}
   ];
 
+  // 权限标签颜色
+  const pColor = {write:"#16a34a", read:"#2563eb", hidden:"#9ca3af"};
+
   let html = `
     <div class="module-header">
       <div>
         <div class="module-title">⚙️ 系统权限设置</div>
-        <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">为9个角色配置各功能模块的访问权限（读写/只读/隐藏）</div>
+        <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">为9个角色系统性配置各功能模块的访问权限</div>
       </div>
       <div class="module-actions">
+        <button class="btn btn-sm" onclick="batchSetPermission()" style="background:#f0f9ff;border:1px solid #bae6fd;">批量设置</button>
         <button class="btn btn-primary btn-sm" onclick="resetPermissions()">恢复默认</button>
         <button class="btn btn-sm" onclick="exportPermissions()">导出配置</button>
+        <button class="btn btn-sm" onclick="importPermissions()">导入配置</button>
       </div>
     </div>
-    <div class="card">
-      <table class="data-table permissions-table">
+
+    <!-- 权限图例 -->
+    <div class="card" style="padding:10px 16px;margin-bottom:12px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+      <span style="font-size:12px;color:var(--c-text-3);">权限图例：</span>
+      <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#dcfce7;color:#16a34a;">● 读写</span>
+      <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#dbeafe;color:#2563eb;">● 只读</span>
+      <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#f3f4f6;color:#9ca3af;">● 隐藏</span>
+      <span style="font-size:11px;color:var(--c-text-3);margin-left:auto;">点击单元格可快速切换权限，或使用下拉菜单精确选择</span>
+    </div>
+
+    <div class="card" style="overflow-x:auto;">
+      <table class="data-table permissions-table" style="min-width:900px;">
         <thead>
           <tr>
-            <th style="min-width:100px;">角色 / 模块</th>
-            ${allModules.map(m => `<th style="text-align:center;font-size:12px;">${m.name.replace("项目","").replace("核心知识百宝箱","知识百宝箱")}</th>`).join('')}
+            <th style="min-width:100px;position:sticky;left:0;background:var(--c-card);z-index:1;">角色＼模块</th>
+            ${allModules.map(m => {
+              // 表头显示：去掉"项目"前缀以节省空间，但保留核心词
+              let short = m.name.replace("项目","").replace("核心知识百宝箱","知识百宝箱");
+              return `<th style="text-align:center;font-size:11px;min-width:72px;padding:6px 2px;" title="${m.name}">${short}</th>`;
+            }).join('')}
           </tr>
         </thead>
         <tbody>
           ${ROLES.map(role => `
             <tr>
-              <td style="font-weight:500;background:var(--c-bg);">${role}</td>
+              <td style="font-weight:500;background:var(--c-bg);position:sticky;left:0;z-index:1;padding:8px 10px;">${role}</td>
               ${allModules.map(m => {
                 const p = rolePermissions[role] ? rolePermissions[role][m.key] : "hidden";
-                return `<td style="text-align:center;">
-                  <select onchange="updatePermission('${role}','${m.key}',this.value)" style="padding:2px 4px;font-size:12px;">
+                const color = pColor[p] || "#9ca3af";
+                return `<td style="text-align:center;padding:4px 2px;"
+                          onclick="cyclePermission('${role}','${m.key}',this)"
+                          title="点击切换权限（当前：${p==="write"?"读写":p==="read"?"只读":"隐藏"}）">
+                  <select onchange="updatePermission('${role}','${m.key}',this.value,this)"
+                          onclick="event.stopPropagation()"
+                          style="padding:2px 2px;font-size:11px;border:1px solid ${color};border-radius:4px;background:${p==="write"?"#dcfce7":p==="read"?"#dbeafe":"#f3f4f6"};color:${color};cursor:pointer;width:52px;">
                     <option value="write" ${p==="write"?"selected":""}>读写</option>
                     <option value="read" ${p==="read"?"selected":""}>只读</option>
                     <option value="hidden" ${p==="hidden"?"selected":""}>隐藏</option>
@@ -4486,12 +4508,36 @@ function renderPermissions(){
         </tbody>
       </table>
     </div>
+
+    <!-- 按角色查看权限卡片 -->
+    <div style="margin-top:16px;">
+      <div style="font-size:13px;font-weight:500;color:var(--c-text-2);margin-bottom:8px;">🔍 按角色查看权限摘要</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+        ${ROLES.map(role => {
+          const perms = rolePermissions[role] || {};
+          const writeCount = allModules.filter(m => perms[m.key]==="write").length;
+          const readCount = allModules.filter(m => perms[m.key]==="read").length;
+          const hiddenCount = allModules.filter(m => perms[m.key]==="hidden" || !perms[m.key]).length;
+          return `
+            <div class="card" style="padding:10px 14px;">
+              <div style="font-weight:500;font-size:13px;margin-bottom:6px;">${role}</div>
+              <div style="display:flex;gap:8px;font-size:11px;">
+                <span style="color:#16a34a;">读写${writeCount}</span>
+                <span style="color:#2563eb;">只读${readCount}</span>
+                <span style="color:#9ca3af;">隐藏${hiddenCount}</span>
+              </div>
+            </div>`;
+        }).join('')}
+      </div>
+    </div>
+
     <div class="card" style="margin-top:16px;padding:14px 18px;">
       <div style="font-size:13px;font-weight:500;margin-bottom:8px;">📋 权限说明</div>
       <ul style="font-size:12px;color:var(--c-text-2);line-height:1.8;">
-        <li><b>读写</b>：可以查看和编辑该模块的所有内容</li>
-        <li><b>只读</b>：只能查看该模块的内容，不能编辑</li>
-        <li><b>隐藏</b>：该模块对该角色不可见</li>
+        <li><b style="color:#16a34a;">读写</b>：可以查看和编辑该模块的所有内容</li>
+        <li><b style="color:#2563eb;">只读</b>：只能查看该模块的内容，不能编辑</li>
+        <li><b style="color:#9ca3af;">隐藏</b>：该模块对该角色不可见，左侧导航栏不显示</li>
+        <li>权限配置自动保存到浏览器本地存储，清除浏览器数据会重置为默认</li>
       </ul>
     </div>`;
 
@@ -4507,9 +4553,62 @@ function updatePermission(role, module, permission) {
   savePermissions();
 }
 
+// 点击单元格快速切换权限（读写→只读→隐藏→读写）
+function cyclePermission(role, module, tdEl) {
+  const order = ["write", "read", "hidden"];
+  const current = rolePermissions[role] && rolePermissions[role][module] ? rolePermissions[role][module] : "hidden";
+  const next = order[(order.indexOf(current) + 1) % 3];
+  updatePermission(role, module, next);
+  renderPermissions();
+}
+
+// 批量设置：为某个角色批量设置所有模块权限
+function batchSetPermission() {
+  const role = prompt("请输入要批量设置的角色名称：\n（管理候选、客服组长、客服主管、客服经理、客服总监、管理员、项目伙伴、技术伙伴、风控伙伴）");
+  if (!role || ROLES.indexOf(role) < 0) { alert("角色名称不正确"); return; }
+  const val = prompt("请选择要设置的权限（输入数字）：\n1 = 读写\n2 = 只读\n3 = 隐藏");
+  if (!val || (val!=="1" && val!=="2" && val!=="3")) { alert("输入不正确"); return; }
+  const perm = val==="1" ? "write" : val==="2" ? "read" : "hidden";
+  const allModules = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","director","permissions"];
+  allModules.forEach(m => updatePermission(role, m, perm));
+  renderPermissions();
+  alert("已为「" + role + "」批量设置所有模块为「" + (perm==="write"?"读写":perm==="read"?"只读":"隐藏") + "」");
+}
+
+// 导入权限配置
+function importPermissions() {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json";
+  input.onchange = function() {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const data = JSON.parse(e.target.result);
+        // 验证结构
+        let valid = true;
+        ROLES.forEach(r => {
+          if (!data[r]) valid = false;
+        });
+        if (!valid) { alert("配置文件格式不正确，缺少部分角色数据"); return; }
+        rolePermissions = data;
+        savePermissions();
+        renderPermissions();
+        alert("权限配置导入成功！");
+      } catch(ex) {
+        alert("文件解析失败：" + ex.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
 // 恢复默认权限
 function resetPermissions() {
-  if (confirm("确定要恢复默认权限配置吗？")) {
+  if (confirm("确定要恢复默认权限配置吗？当前自定义配置将丢失。")) {
     rolePermissions = {...DEFAULT_PERMISSIONS};
     savePermissions();
     renderPermissions();
