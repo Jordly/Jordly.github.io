@@ -739,7 +739,62 @@ const HEALTH_DATA = [
 
 
 
-const CURRENT_ROLE = {name:"pm", label:"项目经理"};
+// ===== 角色与权限系统 =====
+
+const ROLES = [
+  "管理候选", "客服组长", "客服主管", "客服经理", "客服总监",
+  "管理员", "项目伙伴", "技术伙伴", "风控伙伴"
+];
+
+// 默认权限配置：每个角色对各模块的权限（read=只读, write=读写, hidden=隐藏）
+const DEFAULT_PERMISSIONS = {
+  "管理候选": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"write" },
+  "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"hidden", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"hidden", director:"hidden", permissions:"hidden" },
+  "客服主管": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", director:"hidden", permissions:"hidden" },
+  "客服经理": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"hidden" },
+  "客服总监": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", director:"write", permissions:"hidden" },
+  "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"write", permissions:"write" },
+  "项目伙伴": { dashboard:"read", archive:"read", target:"hidden", cost:"hidden", operation:"read", issue:"read", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden" },
+  "技术伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"hidden", operation:"read", issue:"write", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden" },
+  "风控伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"read", operation:"read", issue:"write", knowledge:"hidden", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden" }
+};
+
+// 当前角色（默认：管理候选）
+let currentRole = "管理候选";
+let currentModule = "dashboard";
+let currentWpFilter = "all";
+
+// 从localStorage加载权限配置（如果有的话）
+let rolePermissions = {};
+try {
+  const saved = localStorage.getItem("chansee_permissions");
+  rolePermissions = saved ? JSON.parse(saved) : {...DEFAULT_PERMISSIONS};
+} catch(e) {
+  rolePermissions = {...DEFAULT_PERMISSIONS};
+}
+
+// 保存权限配置到localStorage
+function savePermissions() {
+  localStorage.setItem("chansee_permissions", JSON.stringify(rolePermissions));
+}
+
+// 获取当前角色对某个模块的权限
+function getPermission(module) {
+  const p = rolePermissions[currentRole];
+  if (!p) return "hidden";
+  return p[module] || "hidden";
+}
+
+// 检查当前角色是否可以编辑某个模块
+function canEditModule(module) {
+  return getPermission(module) === "write";
+}
+
+// 检查当前角色是否可以查看某个模块
+function canViewModule(module) {
+  const p = getPermission(module);
+  return p === "write" || p === "read";
+}
 
 let currentModule = "dashboard";
 
@@ -750,8 +805,6 @@ let currentWpFilter = "all";
 // ===== 初始化 =====
 
 document.addEventListener("DOMContentLoaded", () => {
-
-  initRoleSwitcher();
 
   initNav();
 
@@ -765,29 +818,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-// ===== 角色切换 =====
-
-function initRoleSwitcher(){
-
-  document.querySelectorAll(".role-btn").forEach(btn => {
-
-    btn.addEventListener("click", () => {
-
-      document.querySelectorAll(".role-btn").forEach(b=>b.classList.remove("active"));
-
-      btn.classList.add("active");
-
-      CURRENT_ROLE.name = btn.dataset.role;
-
-      const hints = {pm:"项目经理：全量读写权限", exec:"执行团队：读写负责项目，只读其他同部门项目", leader:"上级领导：只读全部项目健康度驾驶舱", staff:"项目人员：只读所参与项目的服务成果与运作概况"};
-
-      document.getElementById("role-hint").textContent = hints[CURRENT_ROLE.name];
-
-      renderModule(currentModule);
-
-    });
-
-  });
+);
 
 }
 
@@ -857,7 +888,13 @@ function getFilteredProjects(){
 
 }
 
-function canEdit(){ return ["pm","exec"].includes(CURRENT_ROLE.name); }
+function canEdit(){
+  return canEditModule(currentModule);
+}
+
+function canViewAll(){
+  return currentRole === "管理员" || currentRole === "管理候选";
+}
 
 function canViewAll(){ return CURRENT_ROLE.name === "leader"; }
 
@@ -4303,3 +4340,102 @@ function showSatisfactionPermission(){
 
 }
 
+
+
+// ===== 系统权限设置 =====
+
+function renderPermissions(){
+  const allModules = [
+    {key:"dashboard", name:"项目总览驾驶舱"},
+    {key:"archive", name:"项目基础档案"},
+    {key:"target", name:"目标与责任边界"},
+    {key:"cost", name:"成本与利润管理"},
+    {key:"operation", name:"运营执行现状"},
+    {key:"issue", name:"课题与问题协作"},
+    {key:"knowledge", name:"核心知识百宝箱"},
+    {key:"handover", name:"交接管理"},
+    {key:"satisfaction", name:"项目满意度评估"},
+    {key:"director", name:"项目总监视图"},
+    {key:"permissions", name:"系统权限设置"}
+  ];
+
+  let html = `
+    <div class="module-header">
+      <div>
+        <div class="module-title">⚙️ 系统权限设置</div>
+        <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">为9个角色配置各功能模块的访问权限（读写/只读/隐藏）</div>
+      </div>
+      <div class="module-actions">
+        <button class="btn btn-primary btn-sm" onclick="resetPermissions()">恢复默认</button>
+        <button class="btn btn-sm" onclick="exportPermissions()">导出配置</button>
+      </div>
+    </div>
+    <div class="card">
+      <table class="data-table permissions-table">
+        <thead>
+          <tr>
+            <th style="min-width:100px;">角色 / 模块</th>
+            ${allModules.map(m => `<th style="text-align:center;font-size:12px;">${m.name.replace("项目","").replace("核心知识百宝箱","知识百宝箱")}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${ROLES.map(role => `
+            <tr>
+              <td style="font-weight:500;background:var(--c-bg);">${role}</td>
+              ${allModules.map(m => {
+                const p = rolePermissions[role] ? rolePermissions[role][m.key] : "hidden";
+                return `<td style="text-align:center;">
+                  <select onchange="updatePermission('${role}','${m.key}',this.value)" style="padding:2px 4px;font-size:12px;">
+                    <option value="write" ${p==="write"?"selected":""}>读写</option>
+                    <option value="read" ${p==="read"?"selected":""}>只读</option>
+                    <option value="hidden" ${p==="hidden"?"selected":""}>隐藏</option>
+                  </select>
+                </td>`;
+              }).join('')}
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="card" style="margin-top:16px;padding:14px 18px;">
+      <div style="font-size:13px;font-weight:500;margin-bottom:8px;">📋 权限说明</div>
+      <ul style="font-size:12px;color:var(--c-text-2);line-height:1.8;">
+        <li><b>读写</b>：可以查看和编辑该模块的所有内容</li>
+        <li><b>只读</b>：只能查看该模块的内容，不能编辑</li>
+        <li><b>隐藏</b>：该模块对该角色不可见</li>
+      </ul>
+    </div>`;
+
+  document.getElementById("module-content").innerHTML = html;
+}
+
+// 更新权限配置
+function updatePermission(role, module, permission) {
+  if (!rolePermissions[role]) {
+    rolePermissions[role] = {};
+  }
+  rolePermissions[role][module] = permission;
+  savePermissions();
+}
+
+// 恢复默认权限
+function resetPermissions() {
+  if (confirm("确定要恢复默认权限配置吗？")) {
+    rolePermissions = {...DEFAULT_PERMISSIONS};
+    savePermissions();
+    renderPermissions();
+    alert("已恢复默认权限配置");
+  }
+}
+
+// 导出权限配置
+function exportPermissions() {
+  const json = JSON.stringify(rolePermissions, null, 2);
+  const blob = new Blob([json], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "chansee_permissions.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
