@@ -38,6 +38,9 @@ body {
   line-height: 1.5;
   overflow: hidden;
   height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* ===== 角色切换器 ===== */
@@ -990,4 +993,93 @@ div[style*="font-size:32px"] {
   #sidebar { width: 180px; min-width: 180px; }
   .nav-item { padding: 7px 10px; font-size: 12px; }
   .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== 手机横屏适配 ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+  /* 侧边栏收缩为图标模式 */
+  #sidebar { width: 56px; min-width: 56px; padding: 8px 4px; }
+  .sidebar-title { display: none; }
+  .nav-item { padding: 8px 4px; justify-content: center; font-size: 0; }
+  .nav-item .nav-icon { margin-right: 0; font-size: 18px; }
+  .nav-item span { display: none; }
+  .role-badge { font-size: 10px; padding: 1px 4px; }
+  .sidebar-footer { font-size: 9px; text-align: center; }
+
+  /* 顶部导航压缩 */
+  #top-header { padding: 4px 10px; min-height: 36px; }
+  .header-left h1 { font-size: 13px; }
+  .header-left .subtitle { font-size: 10px; }
+  .search-box { display: none; }
+  .workplace-filter { display: none; }
+  #role-switcher { padding: 3px 8px; }
+  .role-btn { font-size: 10px; padding: 2px 6px; }
+
+  /* 内容区 */
+  #content-area { padding: 8px; }
+  .module-title { font-size: 14px; }
+  .module-actions .btn { font-size: 11px; padding: 3px 8px; }
+
+  /* 统计卡片 */
+  .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .stat-card { padding: 6px 8px; }
+  .stat-value { font-size: 16px; }
+  .stat-label { font-size: 10px; }
+
+  /* 指标卡片 */
+  .metric-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .metric-value { font-size: 16px; }
+
+  /* 弹窗不要全屏 */
+  .modal-overlay { padding: 8px; align-items: center; }
+  .modal-box { width: 90vw; max-width: 90vw; max-height: 85vh; border-radius: 8px; }
+  .modal-header { padding: 8px 12px; }
+  .modal-header h3 { font-size: 14px; }
+  .modal-body { padding: 10px; }
+
+  /* 表格 */
+  .data-table { font-size: 11px; }
+  .data-table th, .data-table td { padding: 4px 6px; }
+
+  /* 详情弹窗 */
+  .project-detail-header { flex-direction: row; gap: 8px; }
+  .project-detail-title { font-size: 14px; }
+  .detail-tabs { gap: 0; }
+  .detail-tab { font-size: 11px; padding: 4px 8px; }
+
+  /* 健康度 */
+  .hdp-dims { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .hdp-big-score { font-size: 20px; }
+
+  /* 满意度筛选 */
+  .sat-filter-bar { flex-direction: row; flex-wrap: wrap; gap: 4px; padding: 6px 8px; }
+  .sat-filter-bar select { max-width: 140px !important; font-size: 11px; }
+  .sat-filter-bar .btn { width: auto; font-size: 11px; }
+}
+
+/* ===== 全局触控优化 ===== */
+.btn, .nav-item, .role-btn, .detail-tab, .stat-card, .metric-card,
+table tbody tr, .badge, .form-input, .form-select, .form-textarea {
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* 允许文本输入框内选中文本 */
+.form-input, .form-textarea {
+  -webkit-user-select: text;
+  user-select: text;
+  cursor: text;
+}
+
+/* 弹窗区域允许垂直滚动 */
+.modal-body {
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 内容区域允许垂直滚动 */
+#content-area {
+  -webkit-overflow-scrolling: touch;
 }
