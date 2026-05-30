@@ -870,7 +870,7 @@ function renderModule(module){
 
   const area = document.getElementById("module-content");
 
-  const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector};
+  const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector, permissions:renderPermissions};
 
   area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
 
@@ -880,12 +880,97 @@ function renderModule(module){
 
 
 
+
+// ----- 筛选栏状态 (调整4) -----
+const filterState = {
+  project: "all",
+  director: "all",
+  pm: "all",
+  time: "all"
+};
+
+function setFilter(key, value) {
+  filterState[key] = value;
+  renderModule(currentModule);
+}
+
+function renderFilterBar() {
+  const directors = [...new Set(PROJECTS.map(p => p.director))];
+  const pms = [...new Set(PROJECTS.map(p => p.pm))];
+
+  return `
+    <div class="filter-bar" style="display:flex;flex-wrap:wrap;gap:10px;padding:12px 16px;background:var(--c-bg-2);border-radius:8px;margin-bottom:16px;align-items:end;">
+      <div class="filter-item">
+        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">项目筛选</label>
+        <select class="filter-select" onchange="setFilter('project',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+          <option value="all">全部项目</option>
+          ${PROJECTS.map(p => `<option value="${p.id}" ${filterState.project===p.id?'selected':''}>${p.name}</option>`).join('')}
+        </select>
+      </div>
+      <div class="filter-item">
+        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">管理者姓名</label>
+        <select class="filter-select" onchange="setFilter('director',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+          <option value="all">全部管理者</option>
+          ${directors.map(d => `<option value="${d}" ${filterState.director===d?'selected':''}>${d}</option>`).join('')}
+        </select>
+      </div>
+      <div class="filter-item">
+        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">项目负责人</label>
+        <select class="filter-select" onchange="setFilter('pm',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+          <option value="all">全部负责人</option>
+          ${pms.map(pm => `<option value="${pm}" ${filterState.pm===pm?'selected':''}>${pm}</option>`).join('')}
+        </select>
+      </div>
+      <div class="filter-item">
+        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">时间筛选</label>
+        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+          <option value="all">全部时间</option>
+          <option value="2025" ${filterState.time==='2025'?'selected':''}>2025年</option>
+          <option value="2026" ${filterState.time==='2026'?'selected':''}>2026年</option>
+          <option value="2027" ${filterState.time==='2027'?'selected':''}>2027年</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <button class="btn btn-sm" onclick="resetFilters()" style="padding:4px 10px;font-size:12px;">重置</button>
+      </div>
+    </div>`;
+}
+
+function resetFilters() {
+  filterState.project = "all";
+  filterState.director = "all";
+  filterState.pm = "all";
+  filterState.time = "all";
+  renderModule(currentModule);
+}
+
+
 function getFilteredProjects(){
+  let list;
+  if(currentWpFilter === "all") {
+    list = [...PROJECTS];
+  } else {
+    list = PROJECTS.filter(p => p.workplace === currentWpFilter);
+  }
 
-  if(currentWpFilter === "all") return [...PROJECTS];
+  // 应用筛选栏的筛选条件
+  if (filterState.project !== "all") {
+    list = list.filter(p => p.id === filterState.project);
+  }
+  if (filterState.director !== "all") {
+    list = list.filter(p => p.director === filterState.director);
+  }
+  if (filterState.pm !== "all") {
+    list = list.filter(p => p.pm === filterState.pm);
+  }
+  if (filterState.time !== "all") {
+    list = list.filter(p => {
+      const year = p.startDate ? p.startDate.substring(0,4) : '';
+      return year === filterState.time;
+    });
+  }
 
-  return PROJECTS.filter(p => p.workplace === currentWpFilter);
-
+  return list;
 }
 
 function canEdit(){
@@ -896,7 +981,7 @@ function canViewAll(){
   return currentRole === "管理员" || currentRole === "管理候选";
 }
 
-function canViewAll(){ return CURRENT_ROLE.name === "leader"; }
+
 
 
 
@@ -921,6 +1006,7 @@ function renderDashboard(){
 
 
   return `
+  ${renderFilterBar()}
 
   <div class="module-header">
 
@@ -1146,7 +1232,7 @@ function renderDashboard(){
 
               <button class="btn btn-sm" onclick="showProjectDetail('${p.id}')">查看全景</button>
 
-              ${CURRENT_ROLE.name==='leader'?'<span style="color:var(--c-text-3);font-size:12px">只读</span>':''}
+              ${currentRole==='leader'?'<span style="color:var(--c-text-3);font-size:12px">只读</span>':''}
 
             </td>
 
@@ -1171,6 +1257,7 @@ function renderArchive(){
   const can = canEdit();
 
   return `
+  ${renderFilterBar()}
 
   <div class="module-header">
 
@@ -1186,7 +1273,7 @@ function renderArchive(){
 
       ${can?'<button class="btn btn-primary btn-sm" onclick="showAddProject()">＋ 新增项目</button>':''}
 
-      ${CURRENT_ROLE.name==='leader'?'<span class="badge badge-gray">只读权限</span>':''}
+      ${currentRole==='leader'?'<span class="badge badge-gray">只读权限</span>':''}
 
     </div>
 
@@ -1249,6 +1336,7 @@ function renderTarget(){
   const can = canEdit();
 
   return `
+  ${renderFilterBar()}
 
   <div class="module-header">
 
@@ -1264,7 +1352,7 @@ function renderTarget(){
 
       ${can?'<button class="btn btn-primary btn-sm">＋ 设置目标</button>':''}
 
-      ${CURRENT_ROLE.name==='leader'?'<span class="badge badge-gray">只读权限</span>':''}
+      ${currentRole==='leader'?'<span class="badge badge-gray">只读权限</span>':''}
 
     </div>
 
@@ -1315,6 +1403,7 @@ function renderCost(){
   const all = getFilteredProjects();
 
   return `
+  ${renderFilterBar()}
 
   <div class="module-header">
 
@@ -1413,6 +1502,7 @@ function renderOperation(){
   const projects = getFilteredProjects();
 
   return `
+  ${renderFilterBar()}
 
   <div class="module-header">
 
@@ -1791,6 +1881,7 @@ function renderIssue(){
   const can = canEdit();
 
   return `
+  ${renderFilterBar()}
 
   <div class="module-header">
 
@@ -1872,19 +1963,20 @@ function renderIssue(){
 
 
 
-// ===== 知识沉淀库 =====
+// ===== 核心知识百宝箱 =====
 
 function renderKnowledge(){
 
   return `
+  ${renderFilterBar()}
 
   <div class="module-header">
 
     <div>
 
-      <div class="module-title">📚 知识沉淀库</div>
+      <div class="module-title">📚 核心知识百宝箱</div>
 
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">历史经验与最佳实践，三职场共享查阅</div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">历史经验与最佳实践，多职场共享查阅</div>
 
     </div>
 
@@ -2864,7 +2956,7 @@ function doAddIssue(){
 
     priority: document.getElementById("i-priority").value,
 
-    owner: CURRENT_ROLE.name==="pm"?"张伟":CURRENT_ROLE.name==="exec"?"刘洋":"",
+    owner: currentRole==="pm"?"张伟":currentRole==="exec"?"刘洋":"",
 
     assignee: document.getElementById("i-assignee").value||"未分配",
 
@@ -3076,7 +3168,7 @@ function showIssueDetail(id){
 
     ${i.solution?'<div style="background:var(--c-green-bg);padding:12px;border-radius:var(--radius);margin-bottom:16px;"><div style="font-size:12px;color:var(--c-green);">解决方案</div><div style="margin-top:4px;font-size:13px;">'+i.solution+'</div></div>':''}
 
-    ${CURRENT_ROLE.name!=='leader'&&i.status!=='已关闭'?`
+    ${currentRole!=='leader'&&i.status!=='已关闭'?`
 
     <div class="form-group">
 
@@ -3164,9 +3256,9 @@ function renderSatisfaction(){
 
   const can = canEdit();
 
-  const isLeader = CURRENT_ROLE.name === 'leader';
+  const isLeader = currentRole === 'leader';
 
-  const isStaff = CURRENT_ROLE.name === 'staff';
+  const isStaff = currentRole === 'staff';
 
 
 
@@ -3244,13 +3336,13 @@ function renderSatisfaction(){
 
     <div class="module-actions">
 
-      ${isLeader||CURRENT_ROLE.name==='pm' ? '<button class="btn btn-primary btn-sm" onclick="showAddSatisfaction()">＋ 新增评估</button>' : ''}
+      ${isLeader||currentRole==='pm' ? '<button class="btn btn-primary btn-sm" onclick="showAddSatisfaction()">＋ 新增评估</button>' : ''}
 
       <button class="btn btn-sm" onclick="exportSatisfaction()">📤 导出</button>
 
-      ${isLeader||CURRENT_ROLE.name==='pm' ? '<button class="btn btn-sm" onclick="importSatisfaction()">📥 导入</button>' : ''}
+      ${isLeader||currentRole==='pm' ? '<button class="btn btn-sm" onclick="importSatisfaction()">📥 导入</button>' : ''}
 
-      ${isLeader||CURRENT_ROLE.name==='pm' ? '<button class="btn btn-sm" onclick="showSatisfactionPermission()">🔐 权限设置</button>' : ''}
+      ${isLeader||currentRole==='pm' ? '<button class="btn btn-sm" onclick="showSatisfactionPermission()">🔐 权限设置</button>' : ''}
 
     </div>
 
@@ -3486,7 +3578,7 @@ function showSatisfactionDetail(id){
 
   const p = PROJECTS.find(pp => pp.id === s.projectId);
 
-  const isLeader = CURRENT_ROLE.name === 'leader';
+  const isLeader = currentRole === 'leader';
 
   
 
@@ -3954,7 +4046,7 @@ function doAddSatisfaction(){
 
     leaderComment: "",
 
-    evaluatedBy: CURRENT_ROLE.label,
+    evaluatedBy: currentRole,
 
     evaluatedAt: "",
 
@@ -4184,7 +4276,7 @@ function doImportSatisfaction(){
 
           leaderComment: vals[headers.indexOf('上级评语')] || '',
 
-          evaluatedBy: vals[headers.indexOf('评定人')] || CURRENT_ROLE.label,
+          evaluatedBy: vals[headers.indexOf('评定人')] || currentRole,
 
           evaluatedAt: vals[headers.indexOf('评定日期')] || new Date().toISOString().slice(0,10),
 
