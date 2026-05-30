@@ -3,34 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>客服项目管理信息中台</title>
+<title>Chanseen | CS CloudHub</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <!-- 角色切换器 -->
 <div id="role-switcher">
   <span class="role-label">当前角色：</span>
-  <button class="role-btn active" data-role="pm">项目经理</button>
-  <button class="role-btn" data-role="exec">执行团队</button>
-  <button class="role-btn" data-role="leader">上级领导</button>
-  <button class="role-btn" data-role="staff">项目人员</button>
-  <span class="role-hint" id="role-hint">项目经理：全量读写权限</span>
+  <button class="role-btn active" data-role="管理候选">管理候选</button>
+  <button class="role-btn" data-role="客服组长">客服组长</button>
+  <button class="role-btn" data-role="客服主管">客服主管</button>
+  <button class="role-btn" data-role="客服经理">客服经理</button>
+  <button class="role-btn" data-role="客服总监">客服总监</button>
+  <button class="role-btn" data-role="管理员">管理员</button>
+  <button class="role-btn" data-role="项目伙伴">项目伙伴</button>
+  <button class="role-btn" data-role="技术伙伴">技术伙伴</button>
+  <button class="role-btn" data-role="风控伙伴">风控伙伴</button>
 </div>
 
 <!-- 顶部导航 -->
 <header id="top-header">
   <div class="header-left">
-    <h1>📊 客服项目管理信息中台</h1>
-    <span class="subtitle">济南 · 淄博 · 杭州</span>
+    <h1>📊 Chanseen | CS CloudHub</h1>
+    <span class="subtitle">多职场 · 客服项目统一管理</span>
   </div>
   <div class="header-right">
     <div class="workplace-filter">
       <label>职场筛选：</label>
       <select id="wp-filter">
         <option value="all">全部职场</option>
-        <option value="济南">济南职场</option>
-        <option value="淄博">淄博职场</option>
-        <option value="杭州">杭州职场</option>
+        <option value="济南">职场A</option>
+        <option value="淄博">职场B</option>
+        <option value="杭州">职场C</option>
+        <option value="无锡">职场D</option>
       </select>
     </div>
     <div class="search-box">
@@ -74,7 +79,7 @@
       </a>
       <a href="#" class="nav-item" data-module="knowledge">
         <span class="nav-icon">📚</span>
-        <span class="nav-text">知识沉淀库</span>
+        <span class="nav-text">核心知识百宝箱</span>
       </a>
     </div>
     <div class="nav-section">
