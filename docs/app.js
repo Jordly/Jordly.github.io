@@ -747,6 +747,9 @@ const ROLES = [
 ];
 
 // 默认权限配置：每个角色对各模块的权限（read=只读, write=读写, hidden=隐藏）
+// 全局模块 key 列表（供 batchSetPermission 等函数使用）
+const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","director","permissions"];
+
 const DEFAULT_PERMISSIONS = {
   "管理候选": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"write" },
   "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"hidden", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"hidden", director:"hidden", permissions:"hidden" },
@@ -4589,7 +4592,7 @@ function batchSetPermission() {
   const val = prompt("请选择要设置的权限（输入数字）：\n1 = 读写\n2 = 只读\n3 = 隐藏");
   if (!val || (val!=="1" && val!=="2" && val!=="3")) { alert("输入不正确"); return; }
   const perm = val==="1" ? "write" : val==="2" ? "read" : "hidden";
-  const allModules = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","director","permissions"];
+  MODULE_KEYS.forEach(m => updatePermission(role, m, perm));
   allModules.forEach(m => updatePermission(role, m, perm));
   renderPermissions();
   alert("已为「" + role + "」批量设置所有模块为「" + (perm==="write"?"读写":perm==="read"?"只读":"隐藏") + "」");
