@@ -796,12 +796,6 @@ function canViewModule(module) {
   return p === "write" || p === "read";
 }
 
-let currentModule = "dashboard";
-
-let currentWpFilter = "all";
-
-
-
 // ===== 初始化 =====
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -818,9 +812,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-);
 
-}
 
 
 
