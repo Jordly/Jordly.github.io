@@ -2033,7 +2033,7 @@ function renderKnowledge(){
 
 
 
-// ===== 交接管理 =====
+// ===== 项目承接大百科 =====
 
 function renderHandover(){
 
@@ -2043,7 +2043,7 @@ function renderHandover(){
 
     <div>
 
-      <div class="module-title">🔄 交接管理</div>
+      <div class="module-title">🔄 项目承接大百科</div>
 
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">解决人员变动导致的项目信息断层问题，所有交接留痕可查</div>
 
@@ -2061,7 +2061,7 @@ function renderHandover(){
 
   <div class="card" style="background:var(--c-yellow-bg);border-color:var(--c-yellow);margin-bottom:16px;">
 
-    <div style="font-size:13px;color:var(--c-yellow);font-weight:500;">💡 交接管理说明</div>
+    <div style="font-size:13px;color:var(--c-yellow);font-weight:500;">💡 项目承接大百科说明</div>
 
     <div style="font-size:12px;color:var(--c-yellow);margin-top:4px;">
 
