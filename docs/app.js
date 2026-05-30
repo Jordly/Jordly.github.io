@@ -4555,7 +4555,8 @@ function renderPermissions(){
       </ul>
     </div>`;
 
-  document.getElementById("module-content").innerHTML = html;
+  // 不再直接操作 innerHTML，改为返回 html 字符串（与其他渲染函数一致）
+  return html;
 }
 
 // 点击单元格快速切换权限（读写→只读→隐藏→读写）
