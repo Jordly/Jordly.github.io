@@ -4503,9 +4503,9 @@ function renderPermissions(){
               ${allModules.map(m => {
                 const p = rolePermissions[role] ? rolePermissions[role][m.key] : "hidden";
                 const color = pColor[p] || "#9ca3af";
-                return `<td style="text-align:center;padding:4px 2px;"
+                return `<td style="text-align:center;padding:4px 2px;cursor:pointer;"
                           data-role="${role}" data-key="${m.key}"
-                          onclick="cyclePermission(this)"
+                          onclick="cyclePermission(event.currentTarget)"
                           title="点击切换权限（当前：${p==="write"?"读写":p==="read"?"只读":"隐藏"}）">
                   <select onchange="updatePermissionFromSelect(this)"
                           data-role="${role}" data-key="${m.key}"
