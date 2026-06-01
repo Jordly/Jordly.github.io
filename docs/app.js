@@ -810,6 +810,11 @@ document.addEventListener("DOMContentLoaded", () => {
     initNav();
     initWpFilter();
     initModal();
+    // 默认：只展开第一个分组，其余折叠
+    document.querySelectorAll(".nav-section").forEach((sec,idx) => {
+      if(idx===0) sec.classList.remove("collapsed");
+      else sec.classList.add("collapsed");
+    });
     renderModule("dashboard");
     console.log("CS CloudHub initialized successfully");
   } catch(e) {
@@ -826,6 +831,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+// ===== 导航折叠 =====
+function toggleSection(titleEl){
+  const section = titleEl.closest('.nav-section');
+  section.classList.toggle('collapsed');
+}
+
 // ===== 导航 =====
 
 function initNav(){
@@ -835,6 +846,12 @@ function initNav(){
     item.addEventListener("click", e => {
 
       e.preventDefault();
+
+      // 自动展开所在分组（如果处于折叠状态）
+      const sec = item.closest('.nav-section');
+      if(sec && sec.classList.contains('collapsed')){
+        sec.classList.remove('collapsed');
+      }
 
       document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
 
