@@ -83,7 +83,7 @@ const HANDOVERS = [
 
 
 
-// ===== 项目满意度评估数据 =====
+// ===== 项目运维调研数据 =====
 
 // 对外：项目方只填写感受描述，不显示分值
 
@@ -1331,7 +1331,7 @@ function renderArchive(){
 
 
 
-// ===== 目标与责任边界 =====
+// ===== 目标与权责管理 =====
 
 function renderTarget(){
 
@@ -1346,9 +1346,9 @@ function renderTarget(){
 
     <div>
 
-      <div class="module-title">🎯 目标与责任边界</div>
+      <div class="module-title">🎯 目标与权责管理</div>
 
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">定义项目目标与责任边界，避免推诿</div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">定义项目目标与权责，避免推诿</div>
 
     </div>
 
@@ -1499,7 +1499,7 @@ function renderCost(){
 
 
 
-// ===== 运营执行现状 =====
+// ===== 服务与进度追踪 =====
 
 function renderOperation(){
 
@@ -1512,7 +1512,7 @@ function renderOperation(){
 
     <div>
 
-      <div class="module-title">📈 运营执行现状 · 健康度评估</div>
+      <div class="module-title">📈 服务与进度追踪 · 健康度评估</div>
 
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">基于6大维度综合评估项目健康状况，支持逐层下钻查看详细指标</div>
 
@@ -1878,7 +1878,7 @@ function toggleHealthDetail(projectId){
 
 
 
-// ===== 课题与问题协作 =====
+// ===== 问题与课题协作 =====
 
 function renderIssue(){
 
@@ -1891,7 +1891,7 @@ function renderIssue(){
 
     <div>
 
-      <div class="module-title">🐛 课题与问题协作</div>
+      <div class="module-title">🐛 问题与课题协作</div>
 
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">问题登记、跟踪与闭环管理，支持跨职场协同</div>
 
@@ -1967,7 +1967,7 @@ function renderIssue(){
 
 
 
-// ===== 核心知识百宝箱 =====
+// ===== 核心知识能量池 =====
 
 function renderKnowledge(){
 
@@ -1978,7 +1978,7 @@ function renderKnowledge(){
 
     <div>
 
-      <div class="module-title">📚 核心知识百宝箱</div>
+      <div class="module-title">📚 核心知识能量池</div>
 
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">历史经验与最佳实践，多职场共享查阅</div>
 
@@ -2040,7 +2040,7 @@ function renderKnowledge(){
 
 
 
-// ===== 项目承接大百科 =====
+// ===== 项目承接规范 =====
 
 function renderHandover(){
 
@@ -2050,7 +2050,7 @@ function renderHandover(){
 
     <div>
 
-      <div class="module-title">🔄 项目承接大百科</div>
+      <div class="module-title">🔄 项目承接规范</div>
 
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">解决人员变动导致的项目信息断层问题，所有交接留痕可查</div>
 
@@ -2068,7 +2068,7 @@ function renderHandover(){
 
   <div class="card" style="background:var(--c-yellow-bg);border-color:var(--c-yellow);margin-bottom:16px;">
 
-    <div style="font-size:13px;color:var(--c-yellow);font-weight:500;">💡 项目承接大百科说明</div>
+    <div style="font-size:13px;color:var(--c-yellow);font-weight:500;">💡 项目承接规范说明</div>
 
     <div style="font-size:12px;color:var(--c-yellow);margin-top:4px;">
 
@@ -2164,7 +2164,7 @@ function renderHandover(){
 
 
 
-// ===== 项目总监视图 =====
+// ===== 项目全景解析 =====
 
 function renderDirector(){
 
@@ -2186,7 +2186,7 @@ function renderDirector(){
 
     <div>
 
-      <div class="module-title">👁️ 项目总监视图</div>
+      <div class="module-title">👁️ 项目全景解析</div>
 
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">同一项目总监名下所有项目聚合对比，支持跨职场查看</div>
 
@@ -2378,7 +2378,7 @@ function showProjectDetail(projectId){
 
     <div id="detail-tab-target" class="detail-section" style="display:none;">
 
-      <h4>目标与责任边界</h4>
+      <h4>目标与权责</h4>
 
       <div class="detail-grid">
 
@@ -3000,7 +3000,7 @@ function showNewHandover(){
 
       💡 发起交接后，系统将自动生成以下交接清单，请逐项确认后转交：
 
-      <div style="margin-top:6px;font-size:12px;color:var(--c-yellow);">✅ 项目基础档案 &nbsp; ✅ 目标与责任边界 &nbsp; ✅ 当前运营现状 &nbsp; ✅ 进行中课题 &nbsp; ✅ 未关闭问题</div>
+      <div style="margin-top:6px;font-size:12px;color:var(--c-yellow);">✅ 项目基础档案 &nbsp; ✅ 目标与权责 &nbsp; ✅ 当前运营现状 &nbsp; ✅ 进行中课题 &nbsp; ✅ 未关闭问题</div>
 
     </div>
 
@@ -3248,7 +3248,7 @@ function exportDashboard(){
 
 
 
-// ===== 项目满意度评估 =====
+// ===== 项目运维调研 =====
 
 // 全局筛选状态
 
@@ -3328,7 +3328,7 @@ function renderSatisfaction(){
 
     <div>
 
-      <div class="module-title">💯 项目满意度评估</div>
+      <div class="module-title">💯 项目运维调研</div>
 
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">
 
@@ -4136,7 +4136,7 @@ function exportSatisfaction(){
 
   a.href = url;
 
-  a.download = `项目满意度评估_${new Date().toISOString().slice(0,10)}.csv`;
+  a.download = `项目运维调研_${new Date().toISOString().slice(0,10)}.csv`;
 
   a.click();
 
@@ -4449,17 +4449,17 @@ function renderPermissions(){
   }
 
   const allModules = [
-    {key:"dashboard", name:"项目总览驾驶舱"},
+    {key:"dashboard", name:"项目总览看板"},
     {key:"archive", name:"项目基础档案"},
-    {key:"target", name:"目标与责任边界"},
+    {key:"target", name:"目标与权责管理"},
     {key:"cost", name:"成本与利润管理"},
-    {key:"operation", name:"运营执行现状"},
-    {key:"issue", name:"课题与问题协作"},
-    {key:"knowledge", name:"核心知识百宝箱"},
-    {key:"handover", name:"项目承接大百科"},
-    {key:"satisfaction", name:"项目满意度评估"},
-    {key:"director", name:"项目总监视图"},
-    {key:"permissions", name:"系统权限设置"}
+    {key:"operation", name:"服务与进度追踪"},
+    {key:"issue", name:"问题与课题协作"},
+    {key:"knowledge", name:"核心知识能量池"},
+    {key:"handover", name:"项目承接规范"},
+    {key:"satisfaction", name:"项目运维调研"},
+    {key:"director", name:"项目全景解析"},
+    {key:"permissions", name:"系统权限管理"}
   ];
 
   // 权限标签颜色
@@ -4468,7 +4468,7 @@ function renderPermissions(){
   let html = `
     <div class="module-header">
       <div>
-        <div class="module-title">⚙️ 系统权限设置</div>
+        <div class="module-title">⚙️ 系统权限管理</div>
         <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">为9个角色系统性配置各功能模块的访问权限</div>
       </div>
       <div class="module-actions">
@@ -4495,7 +4495,7 @@ function renderPermissions(){
             <th style="min-width:100px;position:sticky;left:0;background:var(--c-card);z-index:1;">角色＼模块</th>
             ${allModules.map(m => {
               // 表头显示：去掉"项目"前缀以节省空间，但保留核心词
-              let short = m.name.replace("项目","").replace("核心知识百宝箱","知识百宝箱");
+              let short = m.name.replace("项目","").replace("核心知识能量池","知识能量池");
               return `<th style="text-align:center;font-size:11px;min-width:72px;padding:6px 2px;" title="${m.name}">${short}</th>`;
             }).join('')}
           </tr>
@@ -4563,10 +4563,10 @@ function renderPermissions(){
   return html;
 }
 
-// ============ 项目难度评估表 ============
+// ===== 项目难度评估 =====
 function renderAssessment(){
   // 组别基础信息表
-  let html = `<div class="page-header"><h2>📊 项目难度评估表</h2>
+  let html = `<div class="page-header"><h2>📊 项目难度评估</h2>
     <div class="page-actions">
       <button class="btn btn-sm" onclick="exportAssessment()">📥 导出评估报告</button>
     </div>
@@ -4688,7 +4688,7 @@ function exportAssessment(){
   const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = '项目难度评估表_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.href = url; a.download = '项目难度评估_' + new Date().toISOString().slice(0,10) + '.csv';
   a.click(); URL.revokeObjectURL(url);
   showToast('评估报告已导出');
 }
