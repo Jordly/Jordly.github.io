@@ -147,11 +147,7 @@ body {
 }
 .section-arrow {
   font-size: 10px;
-  transition: transform 0.2s;
   color: var(--c-text-3);
-}
-.nav-section.collapsed .section-arrow {
-  transform: rotate(-90deg);
 }
 .nav-section.collapsed .nav-item {
   display: none;
