@@ -812,8 +812,14 @@ document.addEventListener("DOMContentLoaded", () => {
     initModal();
     // 默认：只展开第一个分组，其余折叠
     document.querySelectorAll(".nav-section").forEach((sec,idx) => {
-      if(idx===0) sec.classList.remove("collapsed");
-      else sec.classList.add("collapsed");
+      const arrow = sec.querySelector('.section-arrow');
+      if(idx===0){
+        sec.classList.remove("collapsed");
+        if(arrow) arrow.textContent = '▼';
+      }else{
+        sec.classList.add("collapsed");
+        if(arrow) arrow.textContent = '▶';
+      }
     });
     renderModule("dashboard");
     console.log("CS CloudHub initialized successfully");
@@ -834,7 +840,15 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===== 导航折叠 =====
 function toggleSection(titleEl){
   const section = titleEl.closest('.nav-section');
-  section.classList.toggle('collapsed');
+  const arrow = titleEl.querySelector('.section-arrow');
+  const isCollapsed = section.classList.contains('collapsed');
+  if(isCollapsed){
+    section.classList.remove('collapsed');
+    if(arrow) arrow.textContent = '▼';
+  }else{
+    section.classList.add('collapsed');
+    if(arrow) arrow.textContent = '▶';
+  }
 }
 
 // ===== 导航 =====
@@ -851,6 +865,8 @@ function initNav(){
       const sec = item.closest('.nav-section');
       if(sec && sec.classList.contains('collapsed')){
         sec.classList.remove('collapsed');
+        const arrow = sec.querySelector('.section-arrow');
+        if(arrow) arrow.textContent = '▼';
       }
 
       document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
