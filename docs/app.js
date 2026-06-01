@@ -867,7 +867,7 @@ function renderModule(module){
     currentModule = module;
     const area = document.getElementById("module-content");
     if (!area) { console.error("module-content not found"); return; }
-    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector, permissions:renderPermissions};
+    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector, permissions:renderPermissions, assessment:renderAssessment};
     area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
     bindEvents();
   } catch(e) {
@@ -4557,6 +4557,136 @@ function renderPermissions(){
 
   // 不再直接操作 innerHTML，改为返回 html 字符串（与其他渲染函数一致）
   return html;
+}
+
+// ============ 项目难度评估表 ============
+function renderAssessment(){
+  // 组别基础信息表
+  let html = `<div class="page-header"><h2>📊 项目难度评估表</h2>
+    <div class="page-actions">
+      <button class="btn btn-sm" onclick="exportAssessment()">📥 导出评估报告</button>
+    </div>
+  </div>
+  <div style="margin:12px 0 8px;color:#888;font-size:13px;">数据来源：组别基础信息 + 管理难度评估表（2026年7月）</div>
+  <div class="filter-bar" style="margin-bottom:12px;">
+    <label>筛选部门：<select id="asmt-dept-filter" onchange="renderAssessment()">
+      <option value="">全部</option>
+      <option value="客服1部">客服1部</option>
+      <option value="客服2部">客服2部</option>
+      <option value="客服3部">客服3部</option>
+      <option value="赋能组">赋能组</option>
+    </select></label>
+    <label style="margin-left:12px;">筛选管理人：<select id="asmt-mgr-filter" onchange="renderAssessment()">
+      <option value="">全部</option>
+    </select></label>
+  </div>`;
+
+  // 筛选逻辑
+  const deptFilter = document.getElementById('asmt-dept-filter') ? document.getElementById('asmt-dept-filter').value : '';
+  const mgrFilter = document.getElementById('asmt-mgr-filter') ? document.getElementById('asmt-mgr-filter').value : '';
+  let groups = GROUPS_DATA.filter(g => g.month === '7月' && g.group && !g.group.includes('定量指标'));
+  let assessments = ASSESSMENTS_DATA.filter(a => a.month === '7月' && a.group && !a.month.includes('依据'));
+  if(deptFilter) assessments = assessments.filter(a => a.dept === deptFilter);
+  if(mgrFilter) assessments = assessments.filter(a => a.manager === mgrFilter);
+
+  // 合并数据
+  const asmtMap = {};
+  assessments.forEach(a => { asmtMap[a.group] = a; });
+
+  // 难度评估总览表
+  html += `<div class="card" style="margin-bottom:16px;"><div class="card-header">管理难度评估总览</div><div class="table-wrap"><table class="data-table">
+    <thead><tr>
+      <th>序号</th><th>部门</th><th>组别</th><th>管理人</th><th>管理等级</th>
+      <th>总分</th><th>定量得分</th><th>定性得分</th><th>难度评级</th><th>参考标准</th>
+    </tr></thead><tbody>`;
+  let idx = 0;
+  assessments.forEach(a => {
+    idx++;
+    const score = a.totalScore || 0;
+    let rating = '', std = '';
+    if(score <= 40) { rating = '★ 低难度'; std = '组长1-1/1-2级'; }
+    else if(score <= 50) { rating = '★★ 中低难度'; std = '组长2级'; }
+    else if(score <= 60) { rating = '★★★ 中高难度'; std = '组长3级'; }
+    else if(score <= 80) { rating = '★★★★ 高难度'; std = '主管1/2/3级'; }
+    else { rating = '★★★★★ 超高难度'; std = '经理级'; }
+    const color = score <= 40 ? '#52c41a' : score <= 50 ? '#1890ff' : score <= 60 ? '#faad14' : score <= 80 ? '#fa8c16' : '#f5222d';
+    html += `<tr>
+      <td>${idx}</td><td>${a.dept||''}</td><td><a href="#" onclick="showGroupDetail('${a.group}');return false;">${a.group}</a></td>
+      <td>${a.manager||''}</td><td>${a.level||''}</td>
+      <td style="font-weight:700;color:${color};">${score.toFixed(1)}</td>
+      <td>${a.quantScore?a.quantScore.toFixed(1):'0.0'}</td>
+      <td>${a.qualScore?a.qualScore.toFixed(1):'0.0'}</td>
+      <td style="color:${color};font-weight:600;">${rating}</td>
+      <td>${std}</td>
+    </tr>`;
+  });
+  html += `</tbody></table></div></div>`;
+
+  // 组别基础信息明细表
+  html += `<div class="card" style="margin-bottom:16px;"><div class="card-header">组别基础信息明细</div><div class="table-wrap"><table class="data-table">
+    <thead><tr>
+      <th>组别</th><th>管理人</th><th>管理等级</th><th>客服人数</th><th>管理+质培</th>
+      <th>店铺数</th><th>品类数</th><th>平台数</th><th>新员工(3月内)</th>
+      <th>管理配比</th><th>管理半径</th>
+    </tr></thead><tbody>`;
+  groups.forEach(g => {
+    const mRatio = g.manageRatio ? g.manageRatio.toFixed(2) + ':1' : '-';
+    const sRatio = g.shopRatio ? g.shopRatio.toFixed(1) : '-';
+    html += `<tr>
+      <td>${g.group||''}</td><td>${g.manager||''}</td><td>${g.level||''}</td>
+      <td>${g.totalStaff||0}</td><td>${g.manageTrainSum||0}</td>
+      <td>${g.shopCount||0}</td><td>${g.categoryCount||0}</td><td>${g.platformCount||0}</td>
+      <td>${g.new3m||0}</td><td>${mRatio}</td><td>${sRatio}</td>
+    </tr>`;
+  });
+  html += `</tbody></table></div></div>`;
+
+  // 难度评分说明
+  html += `<div class="card" style="margin-bottom:16px;"><div class="card-header">📋 管理难度评估说明</div><div style="padding:12px;font-size:13px;line-height:2;">
+    <p><b>评估方法：</b>定量指标权重70% + 定性因素权重30%，合计100分。</p>
+    <p><b>定量指标（共70分）：</b>管理半径(${''}客服人数/管理配比)、新员工占比、管理配比、项目对接数量、店铺复盘频次、品牌介入深度、汇报频次</p>
+    <p><b>定性因素（共30分，每项最高3分）：</b>业务复杂度、跨平台管理、品牌授权等级、客服流动性、技能培训需求、系统/工具复杂度、客诉处理难度、突发事件响应</p>
+    <p><b>难度评级参考：</b>
+      ≤40分=组长1级 | 41-50分=组长2级 | 51-60分=组长3级 | 61-80分=主管级 | ＞80分=经理级</p>
+    <p><b>差异奖励：</b>基准分差值5-10分→500元 | 11-15分→1000元 | 16-20分→1500元</p>
+  </div></div>`;
+
+  return html;
+}
+
+// 查看组别详情
+function showGroupDetail(groupName){
+  const g = GROUPS_DATA.find(x => x.group === groupName);
+  const a = ASSESSMENTS_DATA.find(x => x.group === groupName);
+  if(!g && !a) return;
+  let body = `<div style="font-size:13px;line-height:2;">`;
+  if(g){
+    body += `<p><b>组别：</b>${g.group}｜<b>管理人：</b>${g.manager}｜<b>等级：</b>${g.level}</p>`;
+    body += `<p><b>客服人数：</b>${g.totalStaff}｜<b>管理+质培：</b>${g.manageTrainSum}｜<b>管理配比：</b>${g.manageRatio?g.manageRatio.toFixed(2):0}:1</p>`;
+    body += `<p><b>店铺数：</b>${g.shopCount}｜<b>品类：</b>${g.categoryCount}｜<b>平台：</b>${g.platformCount}｜<b>新员工(3月内)：</b>${g.new3m}</p>`;
+  }
+  if(a){
+    body += `<hr><p><b>总分：</b>${a.totalScore?a.totalScore.toFixed(1):0}｜<b>定量：</b>${a.quantScore?a.quantScore.toFixed(1):0}｜<b>定性：</b>${a.qualScore?a.qualScore.toFixed(1):0}</p>`;
+    body += `<p><b>定性分项（每项0-3分）：</b>业务复杂度${a.qual1}｜跨平台${a.qual2}｜品牌授权${a.qual3}｜流动性${a.qual4}｜培训需求${a.qual5}｜系统复杂度${a.qual6}｜客诉难度${a.qual7}｜突发事件${a.qual8}</p>`;
+  }
+  body += `</div>`;
+  showModal(groupName + ' - 难度评估详情', body);
+}
+
+// 导出评估报告
+function exportAssessment(){
+  let csv = '\uFEFF组别,部门,管理人,管理等级,总分,定量得分,定性得分,难度评级\n';
+  ASSESSMENTS_DATA.filter(a => a.month === '7月' && a.group && !a.month.includes('依据')).forEach(a => {
+    const score = a.totalScore || 0;
+    let rating = score <= 40 ? '低难度' : score <= 50 ? '中低难度' : score <= 60 ? '中高难度' : score <= 80 ? '高难度' : '超高难度';
+    csv += `${a.group},${a.dept||''},${a.manager||''},${a.level||''},${score},${a.quantScore||0},${a.qualScore||0},${rating}\n`;
+  });
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = '项目难度评估表_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('评估报告已导出');
 }
 
 // 点击单元格快速切换权限（读写→只读→隐藏→读写）
