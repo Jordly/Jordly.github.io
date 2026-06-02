@@ -960,31 +960,31 @@ function renderFilterBar() {
   const pms = [...new Set(PROJECTS.map(p => p.pm))];
 
   return `
-    <div class="filter-bar" style="display:flex;flex-wrap:wrap;gap:10px;padding:12px 16px;background:var(--c-bg-2);border-radius:8px;margin-bottom:16px;align-items:end;">
+    <div class="filter-bar" style="display:flex;flex-wrap:wrap;gap:12px;padding:14px 18px;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);border:1px solid #e2e8f0;border-left:3px solid #3b82f6;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.02);border-radius:8px;margin-bottom:16px;align-items:end;">
       <div class="filter-item">
-        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">项目筛选</label>
-        <select class="filter-select" onchange="setFilter('project',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目筛选</label>
+        <select class="filter-select" onchange="setFilter('project',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
           <option value="all">全部项目</option>
           ${PROJECTS.map(p => `<option value="${p.id}" ${filterState.project===p.id?'selected':''}>${p.name}</option>`).join('')}
         </select>
       </div>
       <div class="filter-item">
-        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">管理者姓名</label>
-        <select class="filter-select" onchange="setFilter('director',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">管理者姓名</label>
+        <select class="filter-select" onchange="setFilter('director',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
           <option value="all">全部管理者</option>
           ${directors.map(d => `<option value="${d}" ${filterState.director===d?'selected':''}>${d}</option>`).join('')}
         </select>
       </div>
       <div class="filter-item">
-        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">项目负责人</label>
-        <select class="filter-select" onchange="setFilter('pm',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目负责人</label>
+        <select class="filter-select" onchange="setFilter('pm',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
           <option value="all">全部负责人</option>
           ${pms.map(pm => `<option value="${pm}" ${filterState.pm===pm?'selected':''}>${pm}</option>`).join('')}
         </select>
       </div>
       <div class="filter-item">
-        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">项目类型</label>
-        <select class="filter-select" onchange="setFilter('projectType',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目类型</label>
+        <select class="filter-select" onchange="setFilter('projectType',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
           <option value="all">全部类型</option>
           <option value="TP代运营" ${filterState.projectType==='TP代运营'?'selected':''}>TP项目</option>
           <option value="经销模式" ${filterState.projectType==='经销模式'?'selected':''}>经销项目</option>
@@ -992,8 +992,8 @@ function renderFilterBar() {
         </select>
       </div>
       <div class="filter-item">
-        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">健康状态</label>
-        <select class="filter-select" onchange="setFilter('health',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">健康状态</label>
+        <select class="filter-select" onchange="setFilter('health',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
           <option value="all">全部状态</option>
           <option value="🟢" ${filterState.health==='🟢'?'selected':''}>🟢 绿灯</option>
           <option value="🟡" ${filterState.health==='🟡'?'selected':''}>🟡 黄灯</option>
@@ -1001,8 +1001,8 @@ function renderFilterBar() {
         </select>
       </div>
       <div class="filter-item">
-        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">时间筛选</label>
-        <select class="filter-select" onchange="setFilter('timeMode',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">时间筛选</label>
+        <select class="filter-select" onchange="setFilter('timeMode',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
           <option value="all">全部时间</option>
           <option value="year" ${filterState.timeMode==='year'?'selected':''}>按年度</option>
           <option value="month" ${filterState.timeMode==='month'?'selected':''}>按月度</option>
@@ -1012,8 +1012,8 @@ function renderFilterBar() {
       </div>
       ${filterState.timeMode==='year' ? `
       <div class="filter-item">
-        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">选择年份</label>
-        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">选择年份</label>
+        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
           <option value="all">全部年份</option>
           <option value="2025" ${filterState.time==='2025'?'selected':''}>2025年</option>
           <option value="2026" ${filterState.time==='2026'?'selected':''}>2026年</option>
@@ -1022,8 +1022,8 @@ function renderFilterBar() {
       </div>` : ''}
       ${filterState.timeMode==='month' ? `
       <div class="filter-item">
-        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">选择年月</label>
-        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">选择年月</label>
+        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
           <option value="all">全部月份</option>
           <option value="2025-01" ${filterState.time==='2025-01'?'selected':''}>2025年1月</option>
           <option value="2025-02" ${filterState.time==='2025-02'?'selected':''}>2025年2月</option>
@@ -1056,8 +1056,8 @@ function renderFilterBar() {
       </div>` : ''}
       ${filterState.timeMode==='week' ? `
       <div class="filter-item">
-        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">选择周</label>
-        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">选择周</label>
+        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
           <option value="all">全部周</option>
           <option value="2026-W20" ${filterState.time==='2026-W20'?'selected':''}>2026年第20周</option>
           <option value="2026-W21" ${filterState.time==='2026-W21'?'selected':''}>2026年第21周</option>
@@ -1069,15 +1069,15 @@ function renderFilterBar() {
       </div>` : ''}
       ${filterState.timeMode==='custom' ? `
       <div class="filter-item">
-        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">开始日期</label>
-        <input type="date" class="filter-select" onchange="setFilter('timeStart',this.value)" value="${filterState.timeStart}" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">开始日期</label>
+        <input type="date" class="filter-select" onchange="setFilter('timeStart',this.value)" value="${filterState.timeStart}" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
       </div>
       <div class="filter-item">
-        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">结束日期</label>
-        <input type="date" class="filter-select" onchange="setFilter('timeEnd',this.value)" value="${filterState.timeEnd}" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">结束日期</label>
+        <input type="date" class="filter-select" onchange="setFilter('timeEnd',this.value)" value="${filterState.timeEnd}" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
       </div>` : ''}
       <div class="filter-item">
-        <button class="btn btn-sm" onclick="resetFilters()" style="padding:4px 10px;font-size:12px;">重置</button>
+        <button class="btn btn-sm" onclick="resetFilters()" style="padding:5px 12px;font-size:12px;background:#fff;border:1px solid #cbd5e1;color:#64748b;border-radius:6px;cursor:pointer;font-weight:500;">重置</button>
       </div>
     </div>`;
 }
