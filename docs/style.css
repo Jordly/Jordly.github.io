@@ -260,6 +260,27 @@ body {
 .data-table tr:hover td { background: #FAFBFC; }
 .data-table .actions { display: flex; gap: 4px; }
 
+/* 表格内可点击链接 */
+.table-link {
+  color: var(--c-primary);
+  text-decoration: none;
+  cursor: pointer;
+}
+.table-link:hover {
+  text-decoration: underline;
+}
+
+/* 健康状态可点击 */
+.health-clickable {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+.health-clickable:hover {
+  background: var(--c-primary-bg);
+  border-radius: 4px;
+}
+
 /* 状态标签 */
 .badge {
   display: inline-block;
