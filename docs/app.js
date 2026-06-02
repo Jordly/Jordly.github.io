@@ -5118,8 +5118,13 @@ function renderProfile(){
 
   let html = `<div class="page-header"><h2>👤 个人基础设置</h2></div>`;
 
+  html += `<div style="display:flex;gap:20px;flex-wrap:wrap;">`;
+
+  // 左侧区域
+  html += `<div style="flex:1;min-width:360px;max-width:680px;">`;
+
   // 基础信息卡片
-  html += `<div class="card" style="max-width:680px;">
+  html += `<div class="card">
     <div style="font-size:16px;font-weight:600;color:#1e293b;padding-bottom:12px;border-bottom:1px solid #e2e8f0;margin-bottom:8px;">基础信息</div>
 
     <!-- 个人头像 -->
@@ -5137,7 +5142,7 @@ function renderProfile(){
     <!-- 昵称 -->
     <div style="${rowStyle}">
       <div style="${labelStyle}">昵称</div>
-      <div style="${valueStyle}">周东利</div>
+      <div style="${valueStyle}">程序员</div>
       <span style="${linkStyle}" onclick="alert('昵称修改功能开发中')">修改</span>
     </div>
 
@@ -5151,7 +5156,7 @@ function renderProfile(){
     <!-- 职位 -->
     <div style="${rowStyle}">
       <div style="${labelStyle}">职位</div>
-      <div style="${valueStyle}">济南客服部经理</div>
+      <div style="${valueStyle}">客服经理</div>
       <span style="${hintStyle}">职位由管理人员为您设置，如需更改请联系管理员</span>
     </div>
 
@@ -5164,7 +5169,7 @@ function renderProfile(){
     <!-- 手机号 -->
     <div style="${rowStyle}">
       <div style="${labelStyle}">手机号</div>
-      <div style="${valueStyle}">185****4943</div>
+      <div style="${valueStyle}">188****8888</div>
       <span style="${linkStyle}" onclick="alert('手机号修改功能开发中')">修改</span>
     </div>
 
@@ -5191,7 +5196,7 @@ function renderProfile(){
   </div>`;
 
   // 更多操作卡片
-  html += `<div class="card" style="max-width:680px;margin-top:16px;">
+  html += `<div class="card" style="margin-top:16px;">
     <div style="font-size:16px;font-weight:600;color:#1e293b;padding-bottom:12px;border-bottom:1px solid #e2e8f0;margin-bottom:8px;">更多操作</div>
 
     <!-- 保持当前状态 -->
@@ -5216,6 +5221,119 @@ function renderProfile(){
       </div>
     </div>
   </div>`;
+
+  html += `</div>`; // 左侧结束
+
+  // 右侧区域 - 铺满内容
+  html += `<div style="flex:1;min-width:300px;max-width:420px;display:flex;flex-direction:column;gap:16px;">`;
+
+  // 账户安全等级
+  html += `<div class="card">
+    <div style="font-size:16px;font-weight:600;color:#1e293b;padding-bottom:12px;border-bottom:1px solid #e2e8f0;margin-bottom:12px;">🔐 账户安全</div>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
+      <div style="position:relative;width:80px;height:80px;">
+        <svg width="80" height="80" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="36" fill="none" stroke="#e2e8f0" stroke-width="6"/>
+          <circle cx="40" cy="40" r="36" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="180 226" transform="rotate(-90 40 40)"/>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;">
+          <div style="font-size:20px;font-weight:700;color:#22c55e;">80</div>
+          <div style="font-size:11px;color:#94a3b8;">分</div>
+        </div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:15px;font-weight:600;color:#1e293b;">安全等级：良好</div>
+        <div style="font-size:12px;color:#64748b;margin-top:4px;">建议开启双重验证提升安全性</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+        <span style="color:#22c55e;font-size:14px;">✓</span>
+        <span style="color:#334155;flex:1;">登录密码</span>
+        <span style="color:#22c55e;font-size:12px;">已设置</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+        <span style="color:#22c55e;font-size:14px;">✓</span>
+        <span style="color:#334155;flex:1;">手机绑定</span>
+        <span style="color:#22c55e;font-size:12px;">已绑定</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+        <span style="color:#22c55e;font-size:14px;">✓</span>
+        <span style="color:#334155;flex:1;">邮箱绑定</span>
+        <span style="color:#22c55e;font-size:12px;">已绑定</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+        <span style="color:#f59e0b;font-size:14px;">!</span>
+        <span style="color:#334155;flex:1;">微信绑定</span>
+        <span style="color:#3b82f6;font-size:12px;cursor:pointer;" onclick="alert('双重验证设置开发中')">去开启</span>
+      </div>
+    </div>
+  </div>`;
+
+  // 最近登录
+  html += `<div class="card">
+    <div style="font-size:16px;font-weight:600;color:#1e293b;padding-bottom:12px;border-bottom:1px solid #e2e8f0;margin-bottom:12px;">📍 最近登录</div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border-radius:6px;">
+        <div>
+          <div style="font-size:13px;color:#1e293b;font-weight:500;">Chrome / Windows</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">IP: 223.104.***.***</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:12px;color:#22c55e;font-weight:500;">当前在线</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">2026-06-02 14:32</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border-radius:6px;">
+        <div>
+          <div style="font-size:13px;color:#1e293b;font-weight:500;">Chrome / Windows</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">IP: 223.104.***.***</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;color:#64748b;">2026-06-01 18:45</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border-radius:6px;">
+        <div>
+          <div style="font-size:13px;color:#1e293b;font-weight:500;">Safari / macOS</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">IP: 117.136.***.***</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:11px;color:#64748b;">2026-05-30 09:12</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:12px;text-align:center;">
+      <span style="color:#3b82f6;font-size:13px;cursor:pointer;" onclick="alert('登录记录详情开发中')">查看全部登录记录 →</span>
+    </div>
+  </div>`;
+
+  // 快捷操作
+  html += `<div class="card">
+    <div style="font-size:16px;font-weight:600;color:#1e293b;padding-bottom:12px;border-bottom:1px solid #e2e8f0;margin-bottom:12px;">⚡ 快捷操作</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="padding:14px;background:#f8fafc;border-radius:8px;text-align:center;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'" onclick="alert('消息通知设置开发中')">
+        <div style="font-size:20px;margin-bottom:4px;">🔔</div>
+        <div style="font-size:13px;color:#334155;">消息通知</div>
+      </div>
+      <div style="padding:14px;background:#f8fafc;border-radius:8px;text-align:center;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'" onclick="alert('偏好设置开发中')">
+        <div style="font-size:20px;margin-bottom:4px;">🎨</div>
+        <div style="font-size:13px;color:#334155;">偏好设置</div>
+      </div>
+      <div style="padding:14px;background:#f8fafc;border-radius:8px;text-align:center;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'" onclick="alert('数据导出开发中')">
+        <div style="font-size:20px;margin-bottom:4px;">📤</div>
+        <div style="font-size:13px;color:#334155;">数据导出</div>
+      </div>
+      <div style="padding:14px;background:#f8fafc;border-radius:8px;text-align:center;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'" onclick="alert('帮助中心开发中')">
+        <div style="font-size:20px;margin-bottom:4px;">❓</div>
+        <div style="font-size:13px;color:#334155;">帮助中心</div>
+      </div>
+    </div>
+  </div>`;
+
+  html += `</div>`; // 右侧结束
+  html += `</div>`; // 总容器结束
 
   return html;
 }
