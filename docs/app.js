@@ -942,7 +942,12 @@ const filterState = {
   project: "all",
   director: "all",
   pm: "all",
-  time: "all"
+  projectType: "all",
+  health: "all",
+  timeMode: "all",
+  time: "all",
+  timeStart: "",
+  timeEnd: ""
 };
 
 function setFilter(key, value) {
@@ -978,14 +983,99 @@ function renderFilterBar() {
         </select>
       </div>
       <div class="filter-item">
+        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">项目类型</label>
+        <select class="filter-select" onchange="setFilter('projectType',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+          <option value="all">全部类型</option>
+          <option value="TP代运营" ${filterState.projectType==='TP代运营'?'selected':''}>TP项目</option>
+          <option value="经销模式" ${filterState.projectType==='经销模式'?'selected':''}>经销项目</option>
+          <option value="BPO外包" ${filterState.projectType==='BPO外包'?'selected':''}>外包项目</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">健康状态</label>
+        <select class="filter-select" onchange="setFilter('health',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+          <option value="all">全部状态</option>
+          <option value="🟢" ${filterState.health==='🟢'?'selected':''}>🟢 绿灯</option>
+          <option value="🟡" ${filterState.health==='🟡'?'selected':''}>🟡 黄灯</option>
+          <option value="🔴" ${filterState.health==='🔴'?'selected':''}>🔴 红灯</option>
+        </select>
+      </div>
+      <div class="filter-item">
         <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">时间筛选</label>
-        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+        <select class="filter-select" onchange="setFilter('timeMode',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
           <option value="all">全部时间</option>
+          <option value="year" ${filterState.timeMode==='year'?'selected':''}>按年度</option>
+          <option value="month" ${filterState.timeMode==='month'?'selected':''}>按月度</option>
+          <option value="week" ${filterState.timeMode==='week'?'selected':''}>按周</option>
+          <option value="custom" ${filterState.timeMode==='custom'?'selected':''}>自定义</option>
+        </select>
+      </div>
+      ${filterState.timeMode==='year' ? `
+      <div class="filter-item">
+        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">选择年份</label>
+        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+          <option value="all">全部年份</option>
           <option value="2025" ${filterState.time==='2025'?'selected':''}>2025年</option>
           <option value="2026" ${filterState.time==='2026'?'selected':''}>2026年</option>
           <option value="2027" ${filterState.time==='2027'?'selected':''}>2027年</option>
         </select>
+      </div>` : ''}
+      ${filterState.timeMode==='month' ? `
+      <div class="filter-item">
+        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">选择年月</label>
+        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+          <option value="all">全部月份</option>
+          <option value="2025-01" ${filterState.time==='2025-01'?'selected':''}>2025年1月</option>
+          <option value="2025-02" ${filterState.time==='2025-02'?'selected':''}>2025年2月</option>
+          <option value="2025-03" ${filterState.time==='2025-03'?'selected':''}>2025年3月</option>
+          <option value="2025-04" ${filterState.time==='2025-04'?'selected':''}>2025年4月</option>
+          <option value="2025-05" ${filterState.time==='2025-05'?'selected':''}>2025年5月</option>
+          <option value="2025-06" ${filterState.time==='2025-06'?'selected':''}>2025年6月</option>
+          <option value="2025-07" ${filterState.time==='2025-07'?'selected':''}>2025年7月</option>
+          <option value="2025-08" ${filterState.time==='2025-08'?'selected':''}>2025年8月</option>
+          <option value="2025-09" ${filterState.time==='2025-09'?'selected':''}>2025年9月</option>
+          <option value="2025-10" ${filterState.time==='2025-10'?'selected':''}>2025年10月</option>
+          <option value="2025-11" ${filterState.time==='2025-11'?'selected':''}>2025年11月</option>
+          <option value="2025-12" ${filterState.time==='2025-12'?'selected':''}>2025年12月</option>
+          <option value="2026-01" ${filterState.time==='2026-01'?'selected':''}>2026年1月</option>
+          <option value="2026-02" ${filterState.time==='2026-02'?'selected':''}>2026年2月</option>
+          <option value="2026-03" ${filterState.time==='2026-03'?'selected':''}>2026年3月</option>
+          <option value="2026-04" ${filterState.time==='2026-04'?'selected':''}>2026年4月</option>
+          <option value="2026-05" ${filterState.time==='2026-05'?'selected':''}>2026年5月</option>
+          <option value="2026-06" ${filterState.time==='2026-06'?'selected':''}>2026年6月</option>
+          <option value="2026-07" ${filterState.time==='2026-07'?'selected':''}>2026年7月</option>
+          <option value="2026-08" ${filterState.time==='2026-08'?'selected':''}>2026年8月</option>
+          <option value="2026-09" ${filterState.time==='2026-09'?'selected':''}>2026年9月</option>
+          <option value="2026-10" ${filterState.time==='2026-10'?'selected':''}>2026年10月</option>
+          <option value="2026-11" ${filterState.time==='2026-11'?'selected':''}>2026年11月</option>
+          <option value="2026-12" ${filterState.time==='2026-12'?'selected':''}>2026年12月</option>
+          <option value="2027-01" ${filterState.time==='2027-01'?'selected':''}>2027年1月</option>
+          <option value="2027-02" ${filterState.time==='2027-02'?'selected':''}>2027年2月</option>
+          <option value="2027-03" ${filterState.time==='2027-03'?'selected':''}>2027年3月</option>
+        </select>
+      </div>` : ''}
+      ${filterState.timeMode==='week' ? `
+      <div class="filter-item">
+        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">选择周</label>
+        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+          <option value="all">全部周</option>
+          <option value="2026-W20" ${filterState.time==='2026-W20'?'selected':''}>2026年第20周</option>
+          <option value="2026-W21" ${filterState.time==='2026-W21'?'selected':''}>2026年第21周</option>
+          <option value="2026-W22" ${filterState.time==='2026-W22'?'selected':''}>2026年第22周</option>
+          <option value="2026-W23" ${filterState.time==='2026-W23'?'selected':''}>2026年第23周</option>
+          <option value="2026-W24" ${filterState.time==='2026-W24'?'selected':''}>2026年第24周</option>
+          <option value="2026-W25" ${filterState.time==='2026-W25'?'selected':''}>2026年第25周</option>
+        </select>
+      </div>` : ''}
+      ${filterState.timeMode==='custom' ? `
+      <div class="filter-item">
+        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">开始日期</label>
+        <input type="date" class="filter-select" onchange="setFilter('timeStart',this.value)" value="${filterState.timeStart}" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
       </div>
+      <div class="filter-item">
+        <label style="font-size:11px;color:var(--c-text-2);display:block;margin-bottom:2px;">结束日期</label>
+        <input type="date" class="filter-select" onchange="setFilter('timeEnd',this.value)" value="${filterState.timeEnd}" style="padding:4px 8px;font-size:12px;border:1px solid var(--c-border);border-radius:4px;">
+      </div>` : ''}
       <div class="filter-item">
         <button class="btn btn-sm" onclick="resetFilters()" style="padding:4px 10px;font-size:12px;">重置</button>
       </div>
@@ -996,7 +1086,12 @@ function resetFilters() {
   filterState.project = "all";
   filterState.director = "all";
   filterState.pm = "all";
+  filterState.projectType = "all";
+  filterState.health = "all";
+  filterState.timeMode = "all";
   filterState.time = "all";
+  filterState.timeStart = "";
+  filterState.timeEnd = "";
   renderModule(currentModule);
 }
 
@@ -1019,14 +1114,54 @@ function getFilteredProjects(){
   if (filterState.pm !== "all") {
     list = list.filter(p => p.pm === filterState.pm);
   }
-  if (filterState.time !== "all") {
-    list = list.filter(p => {
-      const year = p.startDate ? p.startDate.substring(0,4) : '';
-      return year === filterState.time;
-    });
+  if (filterState.projectType !== "all") {
+    list = list.filter(p => p.serviceMode === filterState.projectType);
+  }
+  if (filterState.health !== "all") {
+    list = list.filter(p => p.health === filterState.health);
+  }
+  if (filterState.timeMode !== "all") {
+    if (filterState.timeMode === "year" && filterState.time !== "all") {
+      list = list.filter(p => {
+        const year = p.startDate ? p.startDate.substring(0,4) : '';
+        return year === filterState.time;
+      });
+    } else if (filterState.timeMode === "month" && filterState.time !== "all") {
+      list = list.filter(p => {
+        if (!p.startDate) return false;
+        const ym = p.startDate.substring(0,7);
+        return ym === filterState.time;
+      });
+    } else if (filterState.timeMode === "week" && filterState.time !== "all") {
+      list = list.filter(p => {
+        if (!p.startDate) return false;
+        const d = new Date(p.startDate);
+        const w = getISOWeek(d);
+        const weekStr = d.getFullYear() + '-W' + String(w).padStart(2,'0');
+        return weekStr === filterState.time;
+      });
+    } else if (filterState.timeMode === "custom") {
+      if (filterState.timeStart && filterState.timeEnd) {
+        const start = new Date(filterState.timeStart);
+        const end = new Date(filterState.timeEnd);
+        list = list.filter(p => {
+          if (!p.startDate) return false;
+          const d = new Date(p.startDate);
+          return d >= start && d <= end;
+        });
+      }
+    }
   }
 
   return list;
+}
+
+function getISOWeek(date){
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
 }
 
 function canEdit(){
