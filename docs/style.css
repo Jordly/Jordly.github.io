@@ -119,6 +119,9 @@ body {
   height: calc(100vh - 95px);
 }
 
+/* 桌面端隐藏汉堡菜单 */
+#mobile-menu-btn { display: none; }
+
 /* ===== 左侧菜单 ===== */
 #sidebar {
   width: 220px;
@@ -1195,9 +1198,6 @@ div[style*="font-size:32px"] {
   .sat-filter-bar select { max-width: 140px !important; font-size: 11px; }
   .sat-filter-bar .btn { width: auto; font-size: 11px; }
 }
-
-/* 桌面端隐藏汉堡菜单 */
-#mobile-menu-btn { display: none; }
 
 /* ===== 全局触控优化 ===== */
 .btn, .nav-item, .role-btn, .detail-tab, .stat-card, .metric-card,
