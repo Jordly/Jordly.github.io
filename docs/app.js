@@ -907,13 +907,20 @@ function toggleSection(titleEl){
 // ===== 导航 =====
 
 function initNav(){
-
+  // 为所有二级菜单项设置 tooltip
   document.querySelectorAll(".nav-item").forEach(item => {
-
+    const txt = item.querySelector('.nav-text');
+    if(txt && !item.getAttribute('title')){
+      item.setAttribute('title', txt.textContent.trim());
+    }
+  });
+ 
+  document.querySelectorAll(".nav-item").forEach(item => {
+ 
     item.addEventListener("click", e => {
-
+ 
       e.preventDefault();
-
+ 
       // 自动展开所在分组（如果处于折叠状态）
       const sec = item.closest('.nav-section');
       if(sec && sec.classList.contains('collapsed')){
@@ -921,20 +928,20 @@ function initNav(){
         const arrow = sec.querySelector('.section-arrow');
         if(arrow) arrow.textContent = '▼';
       }
-
+ 
       document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
-
+ 
       item.classList.add("active");
-
+ 
       renderModule(item.dataset.module);
-
+ 
       // 移动端点击导航项后自动关闭侧边栏抽屉
       if(window.innerWidth <= 768 || (window.innerHeight <= 500 && window.matchMedia('(orientation: landscape)').matches)){
         closeMobileSidebar();
       }
-
+ 
     });
-
+ 
   });
 
 }
