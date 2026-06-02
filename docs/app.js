@@ -770,18 +770,18 @@ const ROLES = [
 
 // 默认权限配置：每个角色对各模块的权限（read=只读, write=读写, hidden=隐藏）
 // 全局模块 key 列表（供 batchSetPermission 等函数使用）
-const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","director","permissions","performance","risk"];
+const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","director","permissions","performance","risk","profile"];
 
 const DEFAULT_PERMISSIONS = {
-  "管理候选": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"write", performance:"write", risk:"write" },
-  "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"hidden", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"read", risk:"read" },
-  "客服主管": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", director:"hidden", permissions:"hidden", performance:"write", risk:"read" },
-  "客服经理": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"hidden", performance:"write", risk:"write" },
-  "客服总监": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", director:"write", permissions:"hidden", performance:"read", risk:"read" },
-  "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"write", permissions:"write", performance:"write", risk:"write" },
-  "项目伙伴": { dashboard:"read", archive:"read", target:"hidden", cost:"hidden", operation:"read", issue:"read", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"hidden", risk:"hidden" },
-  "技术伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"hidden", operation:"read", issue:"write", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"read", risk:"hidden" },
-  "风控伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"read", operation:"read", issue:"write", knowledge:"hidden", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"hidden", risk:"read" }
+  "管理候选": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"write", performance:"write", risk:"write", profile:"write" },
+  "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"hidden", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"read", risk:"read", profile:"write" },
+  "客服主管": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", director:"hidden", permissions:"hidden", performance:"write", risk:"read", profile:"write" },
+  "客服经理": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"hidden", performance:"write", risk:"write", profile:"write" },
+  "客服总监": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", director:"write", permissions:"hidden", performance:"read", risk:"read", profile:"write" },
+  "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"write", permissions:"write", performance:"write", risk:"write", profile:"write" },
+  "项目伙伴": { dashboard:"read", archive:"read", target:"hidden", cost:"hidden", operation:"read", issue:"read", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"hidden", risk:"hidden", profile:"write" },
+  "技术伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"hidden", operation:"read", issue:"write", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"read", risk:"hidden", profile:"write" },
+  "风控伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"read", operation:"read", issue:"write", knowledge:"hidden", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"hidden", risk:"read", profile:"write" }
 };
 
 // 当前角色（默认：管理候选）
@@ -923,7 +923,7 @@ function renderModule(module){
     currentModule = module;
     const area = document.getElementById("module-content");
     if (!area) { console.error("module-content not found"); return; }
-    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector, permissions:renderPermissions, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk};
+    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector, permissions:renderPermissions, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
     area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
     bindEvents();
   } catch(e) {
@@ -5106,6 +5106,118 @@ function toggleRiskCard(el){
     el.style.borderColor = '#3b82f6';
     el.setAttribute('data-open','true');
   }
+}
+
+// ===== 个人基础设置 =====
+function renderProfile(){
+  const rowStyle = 'display:flex;align-items:center;padding:14px 0;border-bottom:1px solid #f1f5f9;';
+  const labelStyle = 'width:90px;font-size:14px;color:#334155;flex-shrink:0;';
+  const valueStyle = 'flex:1;font-size:14px;color:#1e293b;';
+  const linkStyle = 'color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;';
+  const hintStyle = 'font-size:12px;color:#94a3b8;margin-left:12px;';
+
+  let html = `<div class="page-header"><h2>👤 个人基础设置</h2></div>`;
+
+  // 基础信息卡片
+  html += `<div class="card" style="max-width:680px;">
+    <div style="font-size:16px;font-weight:600;color:#1e293b;padding-bottom:12px;border-bottom:1px solid #e2e8f0;margin-bottom:8px;">基础信息</div>
+
+    <!-- 个人头像 -->
+    <div style="${rowStyle}">
+      <div style="${labelStyle}">个人头像</div>
+      <div style="display:flex;align-items:center;flex:1;gap:16px;">
+        <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;font-size:28px;">👤</div>
+        <div>
+          <span style="${linkStyle}" onclick="alert('头像上传功能开发中')">更换头像</span>
+          <div style="font-size:12px;color:#94a3b8;margin-top:4px;">请选择 5M 以内的 jpg、jpeg、gif 或 png 图片</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 昵称 -->
+    <div style="${rowStyle}">
+      <div style="${labelStyle}">昵称</div>
+      <div style="${valueStyle}">周东利</div>
+      <span style="${linkStyle}" onclick="alert('昵称修改功能开发中')">修改</span>
+    </div>
+
+    <!-- 生日 -->
+    <div style="${rowStyle}">
+      <div style="${labelStyle}">生日</div>
+      <div style="${valueStyle}">--</div>
+      <span style="${linkStyle}" onclick="alert('生日修改功能开发中')">修改</span>
+    </div>
+
+    <!-- 职位 -->
+    <div style="${rowStyle}">
+      <div style="${labelStyle}">职位</div>
+      <div style="${valueStyle}">济南客服部经理</div>
+      <span style="${hintStyle}">职位由管理人员为您设置，如需更改请联系管理员</span>
+    </div>
+
+    <!-- 品牌 -->
+    <div style="${rowStyle}">
+      <div style="${labelStyle}">品牌</div>
+      <div style="${valueStyle}">--</div>
+    </div>
+
+    <!-- 手机号 -->
+    <div style="${rowStyle}">
+      <div style="${labelStyle}">手机号</div>
+      <div style="${valueStyle}">185****4943</div>
+      <span style="${linkStyle}" onclick="alert('手机号修改功能开发中')">修改</span>
+    </div>
+
+    <!-- 邮箱 -->
+    <div style="${rowStyle}">
+      <div style="${labelStyle}">邮箱</div>
+      <div style="${valueStyle}">z****************m</div>
+      <span style="${linkStyle}" onclick="alert('邮箱修改功能开发中')">修改</span>
+    </div>
+
+    <!-- 微信 -->
+    <div style="${rowStyle}">
+      <div style="${labelStyle}">微信</div>
+      <div style="${valueStyle}">已绑定</div>
+      <span style="${linkStyle}" onclick="alert('解绑功能开发中')">解绑</span>
+    </div>
+
+    <!-- 登录密码 -->
+    <div style="${rowStyle}border-bottom:none;">
+      <div style="${labelStyle}">登录密码</div>
+      <div style="${valueStyle}">********</div>
+      <span style="${linkStyle}" onclick="alert('密码修改功能开发中')">修改</span>
+    </div>
+  </div>`;
+
+  // 更多操作卡片
+  html += `<div class="card" style="max-width:680px;margin-top:16px;">
+    <div style="font-size:16px;font-weight:600;color:#1e293b;padding-bottom:12px;border-bottom:1px solid #e2e8f0;margin-bottom:8px;">更多操作</div>
+
+    <!-- 保持当前状态 -->
+    <div style="${rowStyle}">
+      <div style="${labelStyle}">保持当前状态</div>
+      <div style="flex:1;">
+        <label style="position:relative;display:inline-block;width:40px;height:22px;cursor:pointer;">
+          <input type="checkbox" style="opacity:0;width:0;height:0;" onchange="alert('状态切换功能开发中')">
+          <span style="position:absolute;inset:0;background:#e2e8f0;border-radius:22px;transition:.3s;"></span>
+          <span style="position:absolute;height:18px;width:18px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.15);"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- 离开团队 -->
+    <div style="${rowStyle}border-bottom:none;flex-direction:column;align-items:flex-start;gap:10px;">
+      <div style="${labelStyle}">离开团队</div>
+      <div style="font-size:13px;color:#ef4444;">一旦您离开团队，您在此团队的一切记录都无法查看！</div>
+      <div style="display:flex;gap:12px;margin-top:4px;">
+        <button class="btn" style="border:1px solid #ef4444;color:#ef4444;background:#fff;" onclick="alert('离开团队功能开发中')">离开团队</button>
+        <button class="btn" style="border:1px solid #e2e8f0;color:#64748b;background:#fff;" onclick="alert('移交工作功能开发中')">移交工作</button>
+      </div>
+    </div>
+  </div>`;
+
+  return html;
 }
 
 function exportRisk(){
