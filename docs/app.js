@@ -787,7 +787,6 @@ const DEFAULT_PERMISSIONS = {
 // 当前角色（默认：管理候选）
 let currentRole = "管理候选";
 let currentModule = "dashboard";
-let currentWpFilter = "all";
 let currentHealthFilter = "all";
 
 // 从localStorage加载权限配置（如果有的话）
@@ -827,7 +826,7 @@ function canViewModule(module) {
 document.addEventListener("DOMContentLoaded", () => {
   try {
     initNav();
-    initWpFilter();
+    
     initModal();
     // 默认：只展开第一个分组，其余折叠
     document.querySelectorAll(".nav-section").forEach((sec,idx) => {
@@ -948,17 +947,7 @@ function initNav(){
 
 
 
-function initWpFilter(){
 
-  document.getElementById("wp-filter").addEventListener("change", e => {
-
-    currentWpFilter = e.target.value;
-
-    renderModule(currentModule);
-
-  });
-
-}
 
 
 
@@ -986,6 +975,7 @@ function renderModule(module){
 // ----- 筛选栏状态 (调整4) -----
 const filterState = {
   project: "all",
+  workplace: "all",
   director: "all",
   pm: "all",
   projectType: "all",
@@ -1002,52 +992,14 @@ function setFilter(key, value) {
 }
 
 function renderFilterBar() {
+  const workplaces = [...new Set(PROJECTS.map(p => p.workplace))];
   const directors = [...new Set(PROJECTS.map(p => p.director))];
   const pms = [...new Set(PROJECTS.map(p => p.pm))];
 
   return `
     <div class="filter-bar" style="display:flex;flex-wrap:wrap;gap:12px;padding:14px 18px;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);border:1px solid #e2e8f0;border-left:3px solid #3b82f6;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.02);border-radius:8px;margin-bottom:16px;align-items:end;">
       <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目筛选</label>
-        <select class="filter-select" onchange="setFilter('project',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部项目</option>
-          ${PROJECTS.map(p => `<option value="${p.id}" ${filterState.project===p.id?'selected':''}>${p.name}</option>`).join('')}
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">管理者姓名</label>
-        <select class="filter-select" onchange="setFilter('director',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部管理者</option>
-          ${directors.map(d => `<option value="${d}" ${filterState.director===d?'selected':''}>${d}</option>`).join('')}
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目负责人</label>
-        <select class="filter-select" onchange="setFilter('pm',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部负责人</option>
-          ${pms.map(pm => `<option value="${pm}" ${filterState.pm===pm?'selected':''}>${pm}</option>`).join('')}
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目类型</label>
-        <select class="filter-select" onchange="setFilter('projectType',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部类型</option>
-          <option value="TP代运营" ${filterState.projectType==='TP代运营'?'selected':''}>TP项目</option>
-          <option value="经销模式" ${filterState.projectType==='经销模式'?'selected':''}>经销项目</option>
-          <option value="BPO外包" ${filterState.projectType==='BPO外包'?'selected':''}>外包项目</option>
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">健康状态</label>
-        <select class="filter-select" onchange="setFilter('health',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部状态</option>
-          <option value="🟢" ${filterState.health==='🟢'?'selected':''}>🟢 绿灯</option>
-          <option value="🟡" ${filterState.health==='🟡'?'selected':''}>🟡 黄灯</option>
-          <option value="🔴" ${filterState.health==='🔴'?'selected':''}>🔴 红灯</option>
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">时间筛选</label>
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">时间周期</label>
         <select class="filter-select" onchange="setFilter('timeMode',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
           <option value="all">全部时间</option>
           <option value="year" ${filterState.timeMode==='year'?'selected':''}>按年度</option>
@@ -1102,9 +1054,9 @@ function renderFilterBar() {
       </div>` : ''}
       ${filterState.timeMode==='week' ? `
       <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">选择周</label>
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">选择周次</label>
         <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部周</option>
+          <option value="all">全部周次</option>
           <option value="2026-W20" ${filterState.time==='2026-W20'?'selected':''}>2026年第20周</option>
           <option value="2026-W21" ${filterState.time==='2026-W21'?'selected':''}>2026年第21周</option>
           <option value="2026-W22" ${filterState.time==='2026-W22'?'selected':''}>2026年第22周</option>
@@ -1123,13 +1075,60 @@ function renderFilterBar() {
         <input type="date" class="filter-select" onchange="setFilter('timeEnd',this.value)" value="${filterState.timeEnd}" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
       </div>` : ''}
       <div class="filter-item">
-        <button class="btn btn-sm" onclick="resetFilters()" style="padding:5px 12px;font-size:12px;background:#fff;border:1px solid #cbd5e1;color:#64748b;border-radius:6px;cursor:pointer;font-weight:500;">重置</button>
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">职场定位</label>
+        <select class="filter-select" onchange="setFilter('workplace',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
+          <option value="all">全部职场</option>
+          ${workplaces.map(wp => `<option value="${wp}" ${filterState.workplace===wp?'selected':''}>${wp}</option>`).join('')}
+        </select>
+      </div>
+      <div class="filter-item">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目类型</label>
+        <select class="filter-select" onchange="setFilter('projectType',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
+          <option value="all">全部类型</option>
+          <option value="TP代运营" ${filterState.projectType==='TP代运营'?'selected':''}>TP项目</option>
+          <option value="经销模式" ${filterState.projectType==='经销模式'?'selected':''}>经销项目</option>
+          <option value="BPO外包" ${filterState.projectType==='BPO外包'?'selected':''}>外包项目</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目负责</label>
+        <select class="filter-select" onchange="setFilter('director',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
+          <option value="all">全部负责人</option>
+          ${directors.map(d => `<option value="${d}" ${filterState.director===d?'selected':''}>${d}</option>`).join('')}
+        </select>
+      </div>
+      <div class="filter-item">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">客服负责</label>
+        <select class="filter-select" onchange="setFilter('pm',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
+          <option value="all">全部管理者</option>
+          ${pms.map(pm => `<option value="${pm}" ${filterState.pm===pm?'selected':''}>${pm}</option>`).join('')}
+        </select>
+      </div>
+      <div class="filter-item">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">健康状态</label>
+        <select class="filter-select" onchange="setFilter('health',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
+          <option value="all">全部状态</option>
+          <option value="🟢" ${filterState.health==='🟢'?'selected':''}>🟢 绿灯</option>
+          <option value="🟡" ${filterState.health==='🟡'?'selected':''}>🟡 黄灯</option>
+          <option value="🔴" ${filterState.health==='🔴'?'selected':''}>🔴 红灯</option>
+        </select>
+      </div>
+      <div class="filter-item">
+        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目名称</label>
+        <select class="filter-select" onchange="setFilter('project',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
+          <option value="all">全部项目</option>
+          ${PROJECTS.map(p => `<option value="${p.id}" ${filterState.project===p.id?'selected':''}>${p.name}</option>`).join('')}
+        </select>
+      </div>
+      <div class="filter-item" style="display:flex;align-items:flex-end;">
+        <button class="btn btn-sm" onclick="resetFilters()" style="padding:5px 12px;font-size:12px;">重置</button>
       </div>
     </div>`;
 }
 
 function resetFilters() {
   filterState.project = "all";
+  filterState.workplace = "all";
   filterState.director = "all";
   filterState.pm = "all";
   filterState.projectType = "all";
@@ -1143,11 +1142,11 @@ function resetFilters() {
 
 
 function getFilteredProjects(){
-  let list;
-  if(currentWpFilter === "all") {
-    list = [...PROJECTS];
-  } else {
-    list = PROJECTS.filter(p => p.workplace === currentWpFilter);
+  let list = [...PROJECTS];
+
+  // 职场筛选
+  if (filterState.workplace !== "all") {
+    list = list.filter(p => p.workplace === filterState.workplace);
   }
 
   // 应用筛选栏的筛选条件
@@ -1251,7 +1250,7 @@ function renderDashboard(){
 
       <div class="module-title">📊 长信客服项目智览中心</div>
 
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">${currentWpFilter==='all'?'全部职场':currentWpFilter+'职场'} · 共 ${all.length} 个项目</div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">${filterState.workplace==='all'?'全部职场':filterState.workplace+'职场'} · 共 ${all.length} 个项目</div>
 
     </div>
 
@@ -1339,7 +1338,7 @@ function renderDashboard(){
 
             const p=PROJECTS.find(pp=>pp.id===o.projectId);
 
-            if(currentWpFilter!=='all' && p && p.workplace!==currentWpFilter) return '';
+            if(filterState.workplace!=='all' && p && p.workplace!==filterState.workplace) return '';
             const projName2 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\'' + p.id + '\');return false;">' + p.name + '</a>' : (o.projectId || '');
 
             const projName1 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\''+p.id+'\');return false;">'+p.name+'</a>' : (o.projectId||'');
@@ -1367,7 +1366,7 @@ function renderDashboard(){
 
             const p=PROJECTS.find(pp=>pp.id===o.projectId);
 
-            if(currentWpFilter!=='all' && p && p.workplace!==currentWpFilter) return '';
+            if(filterState.workplace!=='all' && p && p.workplace!==filterState.workplace) return '';
             const projName2 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\'' + p.id + '\');return false;">' + p.name + '</a>' : (o.projectId || '');
 
             return `<tr><td>${projName2}</td><td style="color:${o.responseTime>o.slaResponse?'var(--c-red)':'var(--c-green)'}">${o.responseTime}</td><td style="color:${o.csat>=4.5?'var(--c-green)':'var(--c-red)'}">${o.csat}</td></tr>`;
@@ -1422,7 +1421,7 @@ function renderDashboard(){
 
             const p=PROJECTS.find(pp=>pp.id===o.projectId);
 
-            if(currentWpFilter!=='all' && p && p.workplace!==currentWpFilter) return '';
+            if(filterState.workplace!=='all' && p && p.workplace!==filterState.workplace) return '';
 
             const projName4 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\''+p.id+'\');return false;">'+p.name+'</a>' : (o.projectId||'');
             return `<tr><td>${projName4}</td><td>${o.csat}</td><td>${o.resolutionRate}%</td></tr>`;
@@ -1869,7 +1868,7 @@ function renderOperation(){
 
           const pp=PROJECTS.find(px=>px.id===o.projectId);
 
-          return pp && (currentWpFilter==='all'||pp.workplace===currentWpFilter);
+          return pp && (filterState.workplace==='all'||pp.workplace===filterState.workplace);
 
         }).map(o=>{
 
@@ -2373,7 +2372,7 @@ function renderHandover(){
 
       <tbody>
 
-        ${PROJECTS.filter(p=>currentWpFilter==='all'||p.workplace===currentWpFilter).map(p=>{
+        ${PROJECTS.filter(p=>filterState.workplace==='all'||p.workplace===filterState.workplace).map(p=>{
 
           const lastH = HANDOVERS.filter(h=>h.projectId===p.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
 
