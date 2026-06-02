@@ -7,11 +7,12 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Chanseen | CS CloudHub</title>
-<link rel="stylesheet" href="style.css?v=20260602150722">
+<link rel="stylesheet" href="style.css?v=20260602152934">
 </head>
 <body>
 <!-- 顶部导航 -->
 <header id="top-header">
+  <button id="mobile-menu-btn" onclick="toggleMobileSidebar()" aria-label="打开菜单">☰</button>
   <div class="header-left">
     <h1>📊 Chanseen | CS CloudHub</h1>
     <span class="subtitle">多职场 · 客服项目统一管理</span>
@@ -141,6 +142,9 @@
   </div>
 </div>
 
-  <script src="app.js?v=20260602150722"></script>
+<!-- 移动端侧边栏遮罩 -->
+<div id="sidebar-overlay" class="sidebar-overlay hidden" onclick="closeMobileSidebar()"></div>
+
+  <script src="app.js?v=20260602152934"></script>
 </body>
 </html>
