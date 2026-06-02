@@ -876,6 +876,20 @@ function closeMobileSidebar(){
   document.body.style.overflow = '';
 }
 
+// ===== 侧边栏折叠/展开 =====
+function toggleSidebar(){
+  const sidebar = document.getElementById('sidebar');
+  const btn = document.getElementById('sidebar-toggle');
+  const isCollapsed = sidebar.classList.contains('collapsed');
+  if(isCollapsed){
+    sidebar.classList.remove('collapsed');
+    if(btn) btn.querySelector('.toggle-text').textContent = '收起导航';
+  }else{
+    sidebar.classList.add('collapsed');
+    if(btn) btn.querySelector('.toggle-text').textContent = '展开导航';
+  }
+}
+
 // ===== 导航折叠 =====
 function toggleSection(titleEl){
   const section = titleEl.closest('.nav-section');
