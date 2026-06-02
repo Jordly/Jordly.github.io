@@ -126,27 +126,40 @@ body {
 #sidebar {
   width: 220px;
   min-width: 220px;
-  background: var(--c-surface);
-  border-right: 1px solid var(--c-border);
+  background: #f8fafc;
+  border-right: 1px solid #e2e8f0;
   overflow-y: auto;
   padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: width 0.3s ease, min-width 0.3s ease;
 }
 .nav-section { margin-bottom: 8px; }
 .nav-section-title {
-  padding: 6px 16px;
-  font-size: 11px;
-  color: var(--c-text-3);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: space-between;
   user-select: none;
   transition: background 0.15s;
+  gap: 8px;
 }
 .nav-section-title:hover {
-  background: var(--c-bg);
+  background: #eef2f7;
+}
+.section-icon {
+  font-size: 16px;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.section-text {
+  flex: 1;
 }
 .section-arrow {
   font-size: 10px;
@@ -178,6 +191,81 @@ body {
   font-weight: 500;
 }
 .nav-icon { font-size: 16px; width: 22px; text-align: center; }
+
+/* ===== 侧边栏折叠 ===== */
+.sidebar-toggle-btn {
+  margin-top: auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  flex-shrink: 0;
+}
+.sidebar-toggle-btn:hover {
+  background: #eef2f7;
+  color: #374151;
+}
+.sidebar-toggle-btn svg {
+  transition: transform 0.3s ease;
+}
+
+/* 折叠状态 */
+#sidebar.collapsed {
+  width: 56px;
+  min-width: 56px;
+  padding: 12px 0;
+}
+#sidebar.collapsed .nav-section {
+  margin-bottom: 4px;
+}
+#sidebar.collapsed .nav-section-title {
+  padding: 10px 0;
+  justify-content: center;
+}
+#sidebar.collapsed .section-text,
+#sidebar.collapsed .section-arrow {
+  display: none;
+}
+#sidebar.collapsed .section-icon {
+  font-size: 20px;
+  width: auto;
+}
+#sidebar.collapsed .nav-item {
+  padding: 8px 0;
+  justify-content: center;
+  gap: 0;
+}
+#sidebar.collapsed .nav-text {
+  display: none;
+}
+#sidebar.collapsed .nav-icon {
+  font-size: 18px;
+  width: auto;
+}
+#sidebar.collapsed .nav-item.active {
+  border-left-color: transparent;
+}
+#sidebar.collapsed .nav-section.collapsed .nav-item {
+  display: flex !important;
+}
+#sidebar.collapsed .sidebar-toggle-btn {
+  padding: 10px 0;
+  justify-content: center;
+}
+#sidebar.collapsed .sidebar-toggle-btn svg {
+  transform: rotate(180deg);
+}
+#sidebar.collapsed .toggle-text {
+  display: none;
+}
 
 /* ===== 主内容区 ===== */
 #content-area {
