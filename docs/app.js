@@ -5036,52 +5036,76 @@ function exportPerformance(){
   a.click(); URL.revokeObjectURL(url);
 }
 
-// ===== 项目风险预警 =====
+// ===== 项目风险预警池 =====
 function renderRisk(){
-  let html = `<div class="page-header"><h2>⚠️ 项目风险预警</h2>
+  let html = `<div class="page-header"><h2>⚠️ 项目风险预警池</h2>
     <button class="btn btn-primary" onclick="exportRisk()">导出CSV</button>
   </div>`;
 
-  // 按严重程度分组
-  const high = RISK_ALERTS.filter(r=>r.severity.includes('🔴'));
-  const mid  = RISK_ALERTS.filter(r=>r.severity.includes('🟡'));
-  const ok   = RISK_ALERTS.filter(r=>r.severity.includes('🟢'));
+  const groups = [
+    {key:'健康状态', icon:'🏥', color:'#ef4444', bg:'#fef2f2', desc:'健康状态连续异常'},
+    {key:'SLA超标', icon:'⏱️', color:'#f59e0b', bg:'#fffbeb', desc:'服务等级协议超标'},
+    {key:'成本超支', icon:'💸', color:'#ef4444', bg:'#fef2f2', desc:'成本超出预算控制'},
+    {key:'满意度下滑', icon:'📉', color:'#f59e0b', bg:'#fffbeb', desc:'客户满意度下降'}
+  ];
 
-  html += `<div class="metrics-grid">
-    <div class="metric-card" style="border-top:3px solid var(--c-red)"><div class="metric-value" style="color:var(--c-red)">${high.length}</div><div class="metric-label">🔴 高风险</div></div>
-    <div class="metric-card" style="border-top:3px solid var(--c-yellow)"><div class="metric-value" style="color:var(--c-yellow)">${mid.length}</div><div class="metric-label">🟡 中风险</div></div>
-    <div class="metric-card" style="border-top:3px solid var(--c-green)"><div class="metric-value" style="color:var(--c-green)">${ok.length}</div><div class="metric-label">🟢 低风险</div></div>
-    <div class="metric-card"><div class="metric-value">${RISK_ALERTS.filter(r=>r.status==='未处理').length}</div><div class="metric-label">待处理</div></div>
-  </div>`;
-
-  const statusMap = {'未处理':'status-red','处理中':'status-yellow','已忽略':'status-green','已关闭':'status-green'};
-  html += `<div class="card"><div class="card-title">预警明细</div><table class="data-table">
-    <thead><tr><th>项目</th><th>风险类型</th><th>严重程度</th><th>触发指标</th><th>触发值</th><th>阈值要求</th><th>状态</th><th>发现日期</th><th>操作</th></tr></thead><tbody>`;
-  RISK_ALERTS.forEach(r=>{
-    html += `<tr>
-      <td><a href="#" class="table-link" onclick="showProjectDetail('${r.projectId}');return false;">${r.projectName}</a></td>
-      <td>${r.riskType}</td>
-      <td>${r.severity}</td>
-      <td>${r.indicator}</td>
-      <td>${r.triggerValue}</td>
-      <td>${r.threshold}</td>
-      <td><span class="badge ${statusMap[r.status]||''}">${r.status}</span></td>
-      <td>${r.createdAt}</td>
-      <td><button class="btn btn-sm" onclick="alert('处理功能开发中')">标记处理</button></td>
-    </tr>`;
+  html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">`;
+  groups.forEach(g => {
+    const items = RISK_ALERTS.filter(r => r.riskType === g.key);
+    const high = items.filter(r => r.severity.includes('🔴')).length;
+    const mid = items.filter(r => r.severity.includes('🟡')).length;
+    html += `<div class="risk-card" onclick="toggleRiskCard(this)" style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;overflow:hidden;transition:all 0.3s ease;" data-open="false">
+      <div style="padding:16px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:44px;height:44px;border-radius:10px;background:${g.bg};display:flex;align-items:center;justify-content:center;font-size:20px;">${g.icon}</div>
+          <div>
+            <div style="font-size:15px;font-weight:600;color:#1e293b;">${g.key}</div>
+            <div style="font-size:12px;color:#64748b;margin-top:2px;">${g.desc}</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:22px;font-weight:700;color:${g.color};">${items.length}</div>
+          <div style="font-size:11px;color:#94a3b8;">个项目</div>
+        </div>
+      </div>
+      <div style="padding:0 16px 12px;display:flex;gap:8px;flex-wrap:wrap;">
+        ${high > 0 ? `<span style="font-size:11px;color:#ef4444;background:#fef2f2;padding:2px 8px;border-radius:4px;font-weight:500;">🔴 高风险 ${high}</span>` : ''}
+        ${mid > 0 ? `<span style="font-size:11px;color:#f59e0b;background:#fffbeb;padding:2px 8px;border-radius:4px;font-weight:500;">🟡 中风险 ${mid}</span>` : ''}
+        ${items.length === 0 ? '<span style="font-size:11px;color:#22c55e;background:#f0fdf4;padding:2px 8px;border-radius:4px;font-weight:500;">✅ 无风险</span>' : ''}
+      </div>
+      <div class="risk-detail" style="max-height:0;overflow:hidden;transition:max-height 0.35s ease;">
+        <div style="padding:0 16px 16px;">
+          ${items.length > 0 ? `<table class="data-table" style="font-size:12px;">
+            <thead><tr><th>项目</th><th>严重程度</th><th>触发指标</th><th>状态</th></tr></thead>
+            <tbody>
+              ${items.map(r => `<tr>
+                <td><a href="#" class="table-link" onclick="event.stopPropagation();showProjectDetail('${r.projectId}');return false;">${r.projectName}</a></td>
+                <td>${r.severity}</td>
+                <td>${r.indicator}</td>
+                <td><span class="badge ${r.status==='未处理'?'status-red':r.status==='处理中'?'status-yellow':'status-green'}">${r.status}</span></td>
+              </tr>`).join('')}
+            </tbody>
+          </table>` : '<div style="text-align:center;color:#94a3b8;padding:16px;font-size:13px;">暂无风险项目</div>'}
+        </div>
+      </div>
+    </div>`;
   });
-  html += `</tbody></table></div>`;
-
-  // 说明
-  html += `<div class="card">
-    <div class="card-title">⚙️ 预警规则说明</div>
-    <ul style="line-height:2">
-      <li>🔴 <b>高风险</b>：健康状态连续3周红色，或利润率连续2月为负，或CSAT低于4.0</li>
-      <li>🟡 <b>中风险</b>：SLA超时超过5%，或健康状态连续2周黄色，或利润率低于5%</li>
-      <li>🟢 <b>低风险</b>：单项指标波动超过20%，或PM变更未交接</li>
-    </ul>
-  </div>`;
+  html += `</div>`;
   return html;
+}
+
+function toggleRiskCard(el){
+  const detail = el.querySelector('.risk-detail');
+  const isOpen = el.getAttribute('data-open') === 'true';
+  if (isOpen) {
+    detail.style.maxHeight = '0px';
+    el.style.borderColor = '#e2e8f0';
+    el.setAttribute('data-open','false');
+  } else {
+    detail.style.maxHeight = detail.scrollHeight + 50 + 'px';
+    el.style.borderColor = '#3b82f6';
+    el.setAttribute('data-open','true');
+  }
 }
 
 function exportRisk(){
