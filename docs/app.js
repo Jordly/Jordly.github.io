@@ -856,6 +856,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+// ===== 移动端侧边栏抽屉 =====
+function toggleMobileSidebar(){
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if(sidebar.classList.contains('open')){
+    closeMobileSidebar();
+  }else{
+    sidebar.classList.add('open');
+    overlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+}
+function closeMobileSidebar(){
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.remove('open');
+  overlay.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
 // ===== 导航折叠 =====
 function toggleSection(titleEl){
   const section = titleEl.closest('.nav-section');
@@ -893,6 +913,11 @@ function initNav(){
       item.classList.add("active");
 
       renderModule(item.dataset.module);
+
+      // 移动端点击导航项后自动关闭侧边栏抽屉
+      if(window.innerWidth <= 768 || (window.innerHeight <= 500 && window.matchMedia('(orientation: landscape)').matches)){
+        closeMobileSidebar();
+      }
 
     });
 
