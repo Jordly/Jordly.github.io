@@ -229,24 +229,31 @@ body {
 #sidebar.collapsed .nav-section-title {
   padding: 10px 0;
   justify-content: center;
+  cursor: pointer;
 }
 #sidebar.collapsed .section-text,
 #sidebar.collapsed .section-arrow {
   display: none;
 }
 #sidebar.collapsed .section-icon {
-  font-size: 20px;
-  width: auto;
+  font-size: 18px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #185fa5;
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 2px 6px rgba(24,95,165,0.25);
 }
 #sidebar.collapsed .nav-item {
   padding: 8px 0;
   justify-content: center;
   gap: 0;
+  display: flex !important;
 }
-#sidebar.collapsed .nav-text {
-  display: none;
-}
-#sidebar.collapsed .nav-icon {
+#sidebar.collapsed .nav-item .nav-icon {
   font-size: 18px;
   width: auto;
 }
@@ -254,6 +261,10 @@ body {
   border-left-color: transparent;
 }
 #sidebar.collapsed .nav-section.collapsed .nav-item {
+  display: flex !important;
+}
+/* 折叠状态下所有二级菜单图标都显示 */
+#sidebar.collapsed .nav-item {
   display: flex !important;
 }
 #sidebar.collapsed .sidebar-toggle-btn {
