@@ -53,6 +53,24 @@ const ISSUES = [
 
 ];
 
+const AGENT_PERFORMANCE = [
+  {id:1, projectId:"P001", agentName:"张伟", responseTime:105, convCount:1258, csat:4.9, resolutionRate:98.2, transferRate:2.1, fteEquiv:1.0, month:"2026-05"},
+  {id:2, projectId:"P001", agentName:"李娜", responseTime:98, convCount:1102, csat:4.8, resolutionRate:97.5, transferRate:1.8, fteEquiv:1.0, month:"2026-05"},
+  {id:3, projectId:"P002", agentName:"刘洋", responseTime:92, convCount:1842, csat:4.7, resolutionRate:96.1, transferRate:3.2, fteEquiv:1.2, month:"2026-05"},
+  {id:4, projectId:"P003", agentName:"陈静", responseTime:78, convCount:2210, csat:4.3, resolutionRate:91.8, transferRate:5.1, fteEquiv:1.5, month:"2026-05"},
+  {id:5, projectId:"P004", agentName:"王强", responseTime:110, convCount:980, csat:4.9, resolutionRate:98.5, transferRate:1.5, fteEquiv:0.8, month:"2026-05"},
+  {id:6, projectId:"P005", agentName:"赵磊", responseTime:95, convCount:1560, csat:4.6, resolutionRate:95.2, transferRate:3.8, fteEquiv:1.0, month:"2026-05"},
+  {id:7, projectId:"P007", agentName:"孙芳", responseTime:88, convCount:1320, csat:4.8, resolutionRate:97.8, transferRate:2.0, fteEquiv:1.0, month:"2026-05"},
+  {id:8, projectId:"P002", agentName:"周杰", responseTime:85, convCount:1620, csat:4.5, resolutionRate:95.8, transferRate:3.5, fteEquiv:1.1, month:"2026-05"},
+];
+
+const RISK_ALERTS = [
+  {id:1, projectId:"P003", projectName:"服装品牌客服外包", riskType:"健康状态", severity:"🔴 高风险", indicator:"健康状态：🔴 风险", triggerValue:"连续3周红色", threshold:"健康状态不得连续2周红色", status:"未处理", createdAt:"2026-05-28"},
+  {id:2, projectId:"P002", projectName:"家电自营客服项目", riskType:"SLA超标", severity:"🟡 中风险", indicator:"平均响应时长：88s", triggerValue:"88s > 目标90s", threshold:"响应时长 ≤ SLA响应目标", status:"处理中", createdAt:"2026-05-30"},
+  {id:3, projectId:"P006", projectName:"运动品牌客服项目", riskType:"成本超支", severity:"🔴 高风险", indicator:"利润率：-10.7%", triggerValue:"-10.7% < 目标≥0%", threshold:"项目利润率 ≥ 0%", status:"未处理", createdAt:"2026-05-25"},
+  {id:4, projectId:"P001", projectName:"美妆旗舰店客服项目", riskType:"满意度下滑", severity:"🟡 中风险", indicator:"CSAT：4.9", triggerValue:"4.9 较上月下降0.2", threshold:"CSAT ≥ 4.7", status:"已忽略", createdAt:"2026-05-20"},
+  {id:5, projectId:"P005", projectName:"食品生鲜客服项目", riskType:"SLA超标", severity:"🟡 中风险", indicator:"平均响应时长：92s", triggerValue:"92s > 目标90s", threshold:"响应时长 ≤ SLA响应目标", status:"处理中", createdAt:"2026-05-31"},
+];
 
 
 const KNOWLEDGE = [
@@ -752,18 +770,18 @@ const ROLES = [
 
 // 默认权限配置：每个角色对各模块的权限（read=只读, write=读写, hidden=隐藏）
 // 全局模块 key 列表（供 batchSetPermission 等函数使用）
-const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","director","permissions"];
+const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","director","permissions","performance","risk"];
 
 const DEFAULT_PERMISSIONS = {
-  "管理候选": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"write" },
-  "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"hidden", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"hidden", director:"hidden", permissions:"hidden" },
-  "客服主管": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", director:"hidden", permissions:"hidden" },
-  "客服经理": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"hidden" },
-  "客服总监": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", director:"write", permissions:"hidden" },
-  "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"write", permissions:"write" },
-  "项目伙伴": { dashboard:"read", archive:"read", target:"hidden", cost:"hidden", operation:"read", issue:"read", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden" },
-  "技术伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"hidden", operation:"read", issue:"write", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden" },
-  "风控伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"read", operation:"read", issue:"write", knowledge:"hidden", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden" }
+  "管理候选": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"write", performance:"write", risk:"write" },
+  "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"hidden", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"read", risk:"read" },
+  "客服主管": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", director:"hidden", permissions:"hidden", performance:"write", risk:"read" },
+  "客服经理": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"hidden", performance:"write", risk:"write" },
+  "客服总监": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", director:"write", permissions:"hidden", performance:"read", risk:"read" },
+  "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"write", permissions:"write", performance:"write", risk:"write" },
+  "项目伙伴": { dashboard:"read", archive:"read", target:"hidden", cost:"hidden", operation:"read", issue:"read", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"hidden", risk:"hidden" },
+  "技术伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"hidden", operation:"read", issue:"write", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"read", risk:"hidden" },
+  "风控伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"read", operation:"read", issue:"write", knowledge:"hidden", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"hidden", risk:"read" }
 };
 
 // 当前角色（默认：管理候选）
@@ -905,7 +923,7 @@ function renderModule(module){
     currentModule = module;
     const area = document.getElementById("module-content");
     if (!area) { console.error("module-content not found"); return; }
-    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector, permissions:renderPermissions, assessment:renderAssessment};
+    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector, permissions:renderPermissions, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk};
     area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
     bindEvents();
   } catch(e) {
@@ -1050,7 +1068,7 @@ function renderDashboard(){
 
     <div>
 
-      <div class="module-title">📊 项目健康度驾驶舱</div>
+      <div class="module-title">📊 长信客服项目智览中心</div>
 
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">${currentWpFilter==='all'?'全部职场':currentWpFilter+'职场'} · 共 ${all.length} 个项目</div>
 
@@ -1059,6 +1077,8 @@ function renderDashboard(){
     <div class="module-actions">
 
       <button class="btn btn-sm" onclick="exportDashboard()">📥 导出报表</button>
+
+      <a href="#" class="btn btn-sm btn-primary" onclick="renderModule('comparison');return false;">📊 项目对比</a>
 
     </div>
 
@@ -4826,4 +4846,216 @@ function exportPermissions() {
   a.download = "chansee_permissions.json";
   a.click();
   URL.revokeObjectURL(url);
+}
+// ===== 客服绩效看板 =====
+function renderPerformance(){
+  let html = `<div class="page-header"><h2>📈 客服绩效看板</h2></div>`;
+  html += `<div class="card"><div class="card-title">筛选条件</div><form class="filter-form" onsubmit="return false;">
+    <select id="pf-project"><option value="all">全部项目</option>${PROJECTS.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select>
+    <select id="pf-month"><option value="2026-05">2026-05</option><option value="2026-04">2026-04</option></select>
+    <button class="btn btn-primary" onclick="renderModule('performance')">查询</button>
+    <button class="btn" onclick="exportPerformance()">导出CSV</button>
+  </form></div>`;
+
+  // 统计汇总
+  const data = AGENT_PERFORMANCE.filter(a=>true);
+  const avgResp = (data.reduce((s,a)=>s+a.responseTime,0)/data.length).toFixed(1);
+  const avgCsat = (data.reduce((s,a)=>s+a.csat,0)/data.length).toFixed(1);
+  const totalConv = data.reduce((s,a)=>s+a.convCount,0);
+  html += `<div class="metrics-grid">
+    <div class="metric-card"><div class="metric-value">${data.length}</div><div class="metric-label">参评坐席数</div></div>
+    <div class="metric-card"><div class="metric-value">${avgResp}s</div><div class="metric-label">平均响应时长</div></div>
+    <div class="metric-card"><div class="metric-value">${avgCsat}</div><div class="metric-label">平均CSAT</div></div>
+    <div class="metric-card"><div class="metric-value">${totalConv.toLocaleString()}</div><div class="metric-label">总服务量</div></div>
+  </div>`;
+
+  html += `<div class="card"><div class="card-title">坐席绩效明细</div><table class="data-table">
+    <thead><tr><th>项目</th><th>坐席姓名</th><th>响应时长(s)</th><th>服务量</th><th>CSAT</th><th>解决率(%)</th><th>转接率(%)</th><th>FTE当量</th></tr></thead><tbody>`;
+  AGENT_PERFORMANCE.forEach(a=>{
+    const p = PROJECTS.find(pp=>pp.id===a.projectId);
+    html += `<tr>
+      <td>${p?p.name:a.projectId}</td>
+      <td>${a.agentName}</td>
+      <td style="color:${a.responseTime>120?'var(--c-red)':'var(--c-green)'}">${a.responseTime}</td>
+      <td>${a.convCount.toLocaleString()}</td>
+      <td style="color:${a.csat>=4.5?'var(--c-green)':'var(--c-red)'}">${a.csat}</td>
+      <td>${a.resolutionRate}</td>
+      <td style="color:${a.transferRate>5?'var(--c-red)':'var(--c-green)'}">${a.transferRate}</td>
+      <td>${a.fteEquiv}</td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+  return html;
+}
+
+function exportPerformance(){
+  let csv = '\uFEFF项目,坐席姓名,响应时长(s),服务量,CSAT,解决率(%),转接率(%),FTE当量\n';
+  AGENT_PERFORMANCE.forEach(a=>{
+    const p = PROJECTS.find(pp=>pp.id===a.projectId);
+    csv += `${p?p.name:a.projectId},${a.agentName},${a.responseTime},${a.convCount},${a.csat},${a.resolutionRate},${a.transferRate},${a.fteEquiv}\n`;
+  });
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = '客服绩效_2026-05.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ===== 项目风险预警 =====
+function renderRisk(){
+  let html = `<div class="page-header"><h2>⚠️ 项目风险预警</h2>
+    <button class="btn btn-primary" onclick="exportRisk()">导出CSV</button>
+  </div>`;
+
+  // 按严重程度分组
+  const high = RISK_ALERTS.filter(r=>r.severity.includes('🔴'));
+  const mid  = RISK_ALERTS.filter(r=>r.severity.includes('🟡'));
+  const ok   = RISK_ALERTS.filter(r=>r.severity.includes('🟢'));
+
+  html += `<div class="metrics-grid">
+    <div class="metric-card" style="border-top:3px solid var(--c-red)"><div class="metric-value" style="color:var(--c-red)">${high.length}</div><div class="metric-label">🔴 高风险</div></div>
+    <div class="metric-card" style="border-top:3px solid var(--c-yellow)"><div class="metric-value" style="color:var(--c-yellow)">${mid.length}</div><div class="metric-label">🟡 中风险</div></div>
+    <div class="metric-card" style="border-top:3px solid var(--c-green)"><div class="metric-value" style="color:var(--c-green)">${ok.length}</div><div class="metric-label">🟢 低风险</div></div>
+    <div class="metric-card"><div class="metric-value">${RISK_ALERTS.filter(r=>r.status==='未处理').length}</div><div class="metric-label">待处理</div></div>
+  </div>`;
+
+  const statusMap = {'未处理':'status-red','处理中':'status-yellow','已忽略':'status-green','已关闭':'status-green'};
+  html += `<div class="card"><div class="card-title">预警明细</div><table class="data-table">
+    <thead><tr><th>项目</th><th>风险类型</th><th>严重程度</th><th>触发指标</th><th>触发值</th><th>阈值要求</th><th>状态</th><th>发现日期</th><th>操作</th></tr></thead><tbody>`;
+  RISK_ALERTS.forEach(r=>{
+    html += `<tr>
+      <td><a href="#" class="table-link" onclick="showProjectDetail('${r.projectId}');return false;">${r.projectName}</a></td>
+      <td>${r.riskType}</td>
+      <td>${r.severity}</td>
+      <td>${r.indicator}</td>
+      <td>${r.triggerValue}</td>
+      <td>${r.threshold}</td>
+      <td><span class="badge ${statusMap[r.status]||''}">${r.status}</span></td>
+      <td>${r.createdAt}</td>
+      <td><button class="btn btn-sm" onclick="alert('处理功能开发中')">标记处理</button></td>
+    </tr>`;
+  });
+  html += `</tbody></table></div>`;
+
+  // 说明
+  html += `<div class="card">
+    <div class="card-title">⚙️ 预警规则说明</div>
+    <ul style="line-height:2">
+      <li>🔴 <b>高风险</b>：健康状态连续3周红色，或利润率连续2月为负，或CSAT低于4.0</li>
+      <li>🟡 <b>中风险</b>：SLA超时超过5%，或健康状态连续2周黄色，或利润率低于5%</li>
+      <li>🟢 <b>低风险</b>：单项指标波动超过20%，或PM变更未交接</li>
+    </ul>
+  </div>`;
+  return html;
+}
+
+function exportRisk(){
+  let csv = '\uFEFF项目,风险类型,严重程度,触发指标,触发值,阈值要求,状态,发现日期\n';
+  RISK_ALERTS.forEach(r=>{
+    csv += `${r.projectName},${r.riskType},${r.severity},${r.indicator},${r.triggerValue},${r.threshold},${r.status},${r.createdAt}\n`;
+  });
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = '项目风险预警_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ===== 项目对比分析 =====
+function renderComparison(){
+  let html = `<div class="page-header"><h2>📊 项目对比分析</h2>
+    <button class="btn" onclick="exportComparison()">导出对比报告</button>
+  </div>`;
+
+  // 项目选择器（多选）
+  html += `<div class="card"><div class="card-title">选择对比项目（可多选）</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">`;
+  PROJECTS.forEach(p=>{
+    html += `<label style="cursor:pointer"><input type="checkbox" class="compare-cb" value="${p.id}" style="margin-right:4px;">${p.name}</label>`;
+  });
+  html += `</div>
+    <button class="btn btn-primary" onclick="runComparison()">开始对比</button>
+  </div>`;
+
+  // 对比结果容器
+  html += `<div id="compare-result"></div>`;
+  return html;
+}
+
+function runComparison(){
+  const ids = Array.from(document.querySelectorAll('.compare-cb:checked')).map(cb=>cb.value);
+  if(ids.length<2){ alert('请至少选择2个项目进行对比'); return; }
+  const projects = ids.map(id=>PROJECTS.find(p=>p.id===id)).filter(Boolean);
+
+  let html = `<div class="card"><div class="card-title">📊 对比结果（共${projects.length}个项目）</div>
+    <table class="data-table">
+    <thead><tr><th>指标</th>${projects.map(p=>'<th>'+p.name+'</th>').join('')}<th>差值（最大-最小）</th></tr></thead><tbody>`;
+
+  const indicators = [
+    ['所属职场','workplace'],
+    ['服务品牌','brand'],
+    ['经营模式','serviceMode'],
+    ['FTE目标','fteTarget'],
+    ['SLA响应(s)','slaResponse'],
+    ['SLA解决(s)','slaResolve'],
+    ['成本预算(万)','costBudget'],
+    ['营收目标(万)','revenue'],
+    ['利润率(%)','profitRate'],
+    ['健康状态','health'],
+  ];
+
+  indicators.forEach(([label,key])=>{
+    const vals = projects.map(p=>p[key]);
+    let diff = '';
+    if(key==='profitRate'){
+      const mx = Math.max(...vals), mn = Math.min(...vals);
+      diff = (mx-mn).toFixed(1)+'%';
+    }else if(key==='health'){
+      diff = vals.join(' / ');
+    }else if(typeof vals[0]==='number'){
+      const mx = Math.max(...vals), mn = Math.min(...vals);
+      diff = (mx-mn).toFixed(1);
+    }else{
+      diff = vals.join(' / ');
+    }
+    html += `<tr><td><b>${label}</b></td>${projects.map(p=>{
+      const v = p[key];
+      if(key==='profitRate') return `<td style="color:${v>=10?'var(--c-green)':v<0?'var(--c-red)':'var(--c-yellow)'}">${v}%</td>`;
+      if(key==='health') return `<td>${v}</td>`;
+      return `<td>${v}</td>`;
+    }).join('')}<td>${diff}</td></tr>`;
+  });
+
+  html += `</tbody></table></div>`;
+
+  // 雷达图（简易文字版）
+  html += `<div class="card"><div class="card-title">📈 关键指标对比</div><div style="display:flex;gap:16px;flex-wrap:wrap;">`;
+  projects.forEach(p=>{
+    const op = OPERATIONS.find(o=>o.projectId===p.id);
+    html += `<div style="border:1px solid var(--c-border);border-radius:8px;padding:12px;min-width:180px;">
+      <div style="font-weight:600;margin-bottom:8px;">${p.name}</div>
+      <div>响应时长：${op?op.responseTime+'s':'-'}</div>
+      <div>CSAT：${op?op.csat:'-'}</div>
+      <div>解决率：${op?op.resolutionRate+'%':'-'}</div>
+      <div>利润率：${p.profitRate}%</div>
+      <div>健康状态：${p.health}</div>
+    </div>`;
+  });
+  html += `</div></div>`;
+
+  document.getElementById('compare-result').innerHTML = html;
+}
+
+function exportComparison(){
+  const ids = Array.from(document.querySelectorAll('.compare-cb:checked')).map(cb=>cb.value);
+  let csv = '\uFEFF指标,'+ids.map(id=>{const p=PROJECTS.find(pp=>pp.id===id);return p?p.name:id}).join(',')+'\n';
+  const indicators = [['所属职场','workplace'],['经营模式','serviceMode'],['FTE目标','fteTarget'],['SLA响应','slaResponse'],['利润率(%)','profitRate'],['健康状态','health']];
+  indicators.forEach(([label,key])=>{
+    csv += label+','+ids.map(id=>{const p=PROJECTS.find(pp=>pp.id===id);return p?p[key]:'-'}).join(',')+'\n';
+  });
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = '项目对比报告_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); URL.revokeObjectURL(url);
 }
