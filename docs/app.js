@@ -770,6 +770,7 @@ const DEFAULT_PERMISSIONS = {
 let currentRole = "管理候选";
 let currentModule = "dashboard";
 let currentWpFilter = "all";
+let currentHealthFilter = "all";
 
 // 从localStorage加载权限配置（如果有的话）
 let rolePermissions = {};
@@ -1065,7 +1066,7 @@ function renderDashboard(){
 
 
 
-  <div class="metric-grid">
+  <div class="metric-grid" id="dashboard-metric-grid">
 
     <div class="metric-card">
 
@@ -1138,8 +1139,10 @@ function renderDashboard(){
             const p=PROJECTS.find(pp=>pp.id===o.projectId);
 
             if(currentWpFilter!=='all' && p && p.workplace!==currentWpFilter) return '';
+            const projName2 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\'' + p.id + '\');return false;">' + p.name + '</a>' : (o.projectId || '');
 
-            return `<tr><td>${p?p.name:o.projectId}</td><td>${o.ticketVol.toLocaleString()}</td><td>${o.health}</td></tr>`;
+            const projName1 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\''+p.id+'\');return false;">'+p.name+'</a>' : (o.projectId||'');
+            return `<tr><td>${projName1}</td><td>${o.ticketVol.toLocaleString()}</td><td class="health-clickable" onclick="filterByHealth(\''+o.health+'\')">${o.health}</td></tr>`;
 
           }).join('')}
 
@@ -1164,8 +1167,9 @@ function renderDashboard(){
             const p=PROJECTS.find(pp=>pp.id===o.projectId);
 
             if(currentWpFilter!=='all' && p && p.workplace!==currentWpFilter) return '';
+            const projName2 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\'' + p.id + '\');return false;">' + p.name + '</a>' : (o.projectId || '');
 
-            return `<tr><td>${p?p.name:o.projectId}</td><td style="color:${o.responseTime>o.slaResponse?'var(--c-red)':'var(--c-green)'}">${o.responseTime}</td><td style="color:${o.csat>=4.5?'var(--c-green)':'var(--c-red)'}">${o.csat}</td></tr>`;
+            return `<tr><td>${projName2}</td><td style="color:${o.responseTime>o.slaResponse?'var(--c-red)':'var(--c-green)'}">${o.responseTime}</td><td style="color:${o.csat>=4.5?'var(--c-green)':'var(--c-red)'}">${o.csat}</td></tr>`;
 
           }).join('')}
 
@@ -1193,7 +1197,7 @@ function renderDashboard(){
 
               <td style="color:${p.profitRate>=10?'var(--c-green)':p.profitRate<0?'var(--c-red)':'var(--c-yellow)'}">${p.profitRate}%</td>
 
-              <td>${p.health}</td>
+              <td class="health-clickable" onclick="filterByHealth('${p.health}')">${p.health}</td>
 
             </tr>`).join('')}
 
@@ -1219,7 +1223,8 @@ function renderDashboard(){
 
             if(currentWpFilter!=='all' && p && p.workplace!==currentWpFilter) return '';
 
-            return `<tr><td>${p?p.name:o.projectId}</td><td>${o.csat}</td><td>${o.resolutionRate}%</td></tr>`;
+            const projName4 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\''+p.id+'\');return false;">'+p.name+'</a>' : (o.projectId||'');
+            return `<tr><td>${projName4}</td><td>${o.csat}</td><td>${o.resolutionRate}%</td></tr>`;
 
           }).join('')}
 
@@ -1454,7 +1459,7 @@ function renderCost(){
 
   </div>
 
-  <div class="metric-grid">
+  <div class="metric-grid" id="dashboard-metric-grid">
 
     <div class="metric-card">
 
@@ -2580,6 +2585,11 @@ function showProjectDetail(projectId){
 }
 
 
+
+function filterByHealth(health){
+  currentHealthFilter = health;
+  showPage('projects');
+}
 
 function switchDetailTab(el, tabName){
 
