@@ -1239,6 +1239,21 @@ function renderDashboard(){
 
   const avgProfit = all.length ? (all.reduce((s,p)=>s+p.profitRate,0)/all.length).toFixed(1) : 0;
 
+  // 计算服务模式分布
+  const tpCount = all.filter(p=>p.serviceMode==="TP代运营").length;
+  const jxCount = all.filter(p=>p.serviceMode==="经销模式").length;
+  const bpoCount = all.filter(p=>p.serviceMode==="BPO外包").length;
+
+  // 计算运营数据
+  const filteredOps = OPERATIONS.filter(o => {
+    const p = PROJECTS.find(pp=>pp.id===o.projectId);
+    if (!p) return false;
+    if (filterState.workplace !== 'all' && p.workplace !== filterState.workplace) return false;
+    return all.some(ap => ap.id === o.projectId);
+  });
+  const totalOrders = filteredOps.reduce((s,o)=>s+o.ticketVol,0);
+  const totalConv = filteredOps.reduce((s,o)=>s+o.convCount,0);
+
 
 
   return `
@@ -1266,56 +1281,74 @@ function renderDashboard(){
 
 
 
-  <div class="metric-grid" id="dashboard-metric-grid">
-
-    <div class="metric-card">
-
-      <div class="metric-label">项目总数</div>
-
-      <div class="metric-value">${all.length}</div>
-
+    <!-- 第一行：服务模式分布 -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;">
+    <div class="metric-card" onclick="setFilter('projectType','TP代运营');renderDashboard();" style="cursor:pointer;">
+      <div style="font-size:24px;margin-bottom:8px;">📋</div>
+      <div class="metric-label">TP代运营</div>
+      <div class="metric-value">${tpCount}</div>
+      <div style="font-size:11px;color:var(--c-text-3);margin-top:4px;">个项目</div>
     </div>
-
-    <div class="metric-card">
-
-      <div class="metric-label">健康状态</div>
-
-      <div class="metric-value" style="font-size:18px;">
-
-        <span style="color:#10B981">🟢${green}</span> &nbsp;
-
-        <span style="color:#F59E0B">🟡${yellow}</span> &nbsp;
-
-        <span style="color:#EF4444">🔴${red}</span>
-
-      </div>
-
+    <div class="metric-card" onclick="setFilter('projectType','经销模式');renderDashboard();" style="cursor:pointer;">
+      <div style="font-size:24px;margin-bottom:8px;">🏪</div>
+      <div class="metric-label">经销服务</div>
+      <div class="metric-value">${jxCount}</div>
+      <div style="font-size:11px;color:var(--c-text-3);margin-top:4px;">个项目</div>
     </div>
+    <div class="metric-card" onclick="setFilter('projectType','BPO外包');renderDashboard();" style="cursor:pointer;">
+      <div style="font-size:24px;margin-bottom:8px;">🤝</div>
+      <div class="metric-label">BPO外包</div>
+      <div class="metric-value">${bpoCount}</div>
+      <div style="font-size:11px;color:var(--c-text-3);margin-top:4px;">个项目</div>
+    </div>
+  </div>
 
+  <!-- 第二行：财务核心指标 -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;">
     <div class="metric-card">
-
-      <div class="metric-label">总收入（月度）</div>
-
+      <div style="font-size:24px;margin-bottom:8px;">💰</div>
+      <div class="metric-label">月度总销售额</div>
       <div class="metric-value">¥${(totalRevenue/10000).toFixed(1)}万</div>
-
+      <div style="font-size:11px;color:var(--c-green);margin-top:4px;">↑ 12.3%</div>
     </div>
-
     <div class="metric-card">
-
-      <div class="metric-label">平均利润率</div>
-
-      <div class="metric-value" style="color:${avgProfit>=10?'#0F6E56':'#854F0B'}">${avgProfit}%</div>
-
-    </div>
-
-    <div class="metric-card">
-
-      <div class="metric-label">总预算（月度）</div>
-
+      <div style="font-size:24px;margin-bottom:8px;">📊</div>
+      <div class="metric-label">月度总成本</div>
       <div class="metric-value">¥${(totalCost/10000).toFixed(1)}万</div>
-
+      <div style="font-size:11px;color:var(--c-red);margin-top:4px;">↑ 5.1%</div>
     </div>
+    <div class="metric-card">
+      <div style="font-size:24px;margin-bottom:8px;">📈</div>
+      <div class="metric-label">综合利润率</div>
+      <div class="metric-value" style="color:${avgProfit>=10?'var(--c-green)':'var(--c-red)'}">${avgProfit}%</div>
+      <div style="font-size:11px;color:var(--c-green);margin-top:4px;">↑ 2.1pp</div>
+    </div>
+  </div>
 
+  <!-- 第三行：运营规模 + 健康度 -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px;">
+    <div class="metric-card">
+      <div style="font-size:24px;margin-bottom:8px;">📦</div>
+      <div class="metric-label">月度总订单量</div>
+      <div class="metric-value">${totalOrders.toLocaleString()}</div>
+      <div style="font-size:11px;color:var(--c-green);margin-top:4px;">↑ 8.2%</div>
+    </div>
+    <div class="metric-card">
+      <div style="font-size:24px;margin-bottom:8px;">👥</div>
+      <div class="metric-label">客服总接待量</div>
+      <div class="metric-value">${totalConv.toLocaleString()}</div>
+      <div style="font-size:11px;color:var(--c-red);margin-top:4px;">↓ 1.5%</div>
+    </div>
+    <div class="metric-card" onclick="filterByHealth('all')" style="cursor:pointer;">
+      <div style="font-size:24px;margin-bottom:8px;">🚦</div>
+      <div class="metric-label">健康状态分布</div>
+      <div class="metric-value" style="font-size:18px;">
+        <span style="color:#10B981">🟢${green}</span>&nbsp;
+        <span style="color:#F59E0B">🟡${yellow}</span>&nbsp;
+        <span style="color:#EF4444">🔴${red}</span>
+      </div>
+      <div style="font-size:11px;color:var(--c-text-3);margin-top:4px;">点击筛选</div>
+    </div>
   </div>
 
 
@@ -2546,15 +2579,15 @@ function showProjectDetail(projectId){
 
     <div class="detail-tabs">
 
-      <div class="detail-tab active" onclick="switchDetailTab(this,'info')">📋 基本信息</div>
-
-      <div class="detail-tab" onclick="switchDetailTab(this,'target')">🎯 目标与边界</div>
-
-      <div class="detail-tab" onclick="switchDetailTab(this,'operation')">📈 运营现状</div>
-
-      <div class="detail-tab" onclick="switchDetailTab(this,'issue')">🐛 课题与问题</div>
-
-      <div class="detail-tab" onclick="switchDetailTab(this,'history')">📝 交接历史</div>
+      <div class="detail-tab active" onclick="switchDetailTab(this,'info')">📋 基础档案</div>
+      
+      <div class="detail-tab" onclick="switchDetailTab(this,'target')">🎯 目标约定</div>
+      
+      <div class="detail-tab" onclick="switchDetailTab(this,'operation')">📊 运营实况</div>
+      
+      <div class="detail-tab" onclick="switchDetailTab(this,'issue')">⚠️ 课题推进</div>
+      
+      <div class="detail-tab" onclick="switchDetailTab(this,'history')">📝 交接记录</div>
 
     </div>
 
