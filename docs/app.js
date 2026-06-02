@@ -1394,7 +1394,7 @@ function renderDashboard(){
 
             <tr>
 
-              <td>${p.name}</td>
+              <td><a href="#" class="table-link" onclick="showProjectDetail('${p.id}');return false;">${p.name}</a></td>
 
               <td style="color:${p.profitRate>=10?'var(--c-green)':p.profitRate<0?'var(--c-red)':'var(--c-yellow)'}">${p.profitRate}%</td>
 
