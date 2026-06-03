@@ -5798,7 +5798,7 @@ function renderProfile(){
   const labelStyle = 'width:90px;font-size:14px;color:#334155;flex-shrink:0;';
   const valueStyle = 'flex:1;font-size:14px;color:#1e293b;';
   const linkStyle = 'color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;transition:opacity .2s;';
-  const linkHover = 'onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'"';
+  const linkHover = `onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'"`;
 
   const u = currentUser || {};
   const userInDb = USERS.find(x => x.id === u.id) || {};
