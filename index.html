@@ -3,44 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Chanseen | CS CloudHub</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v={{BUILD_TIME}}">
 </head>
 <body>
-<!-- 角色切换器 -->
-<div id="role-switcher">
-  <span class="role-label">当前角色：</span>
-  <button class="role-btn active" data-role="管理候选">管理候选</button>
-  <button class="role-btn" data-role="客服组长">客服组长</button>
-  <button class="role-btn" data-role="客服主管">客服主管</button>
-  <button class="role-btn" data-role="客服经理">客服经理</button>
-  <button class="role-btn" data-role="客服总监">客服总监</button>
-  <button class="role-btn" data-role="管理员">管理员</button>
-  <button class="role-btn" data-role="项目伙伴">项目伙伴</button>
-  <button class="role-btn" data-role="技术伙伴">技术伙伴</button>
-  <button class="role-btn" data-role="风控伙伴">风控伙伴</button>
-</div>
-
 <!-- 顶部导航 -->
 <header id="top-header">
+  <button id="mobile-menu-btn" onclick="toggleMobileSidebar()" aria-label="打开菜单">☰</button>
   <div class="header-left">
     <h1>📊 Chanseen | CS CloudHub</h1>
     <span class="subtitle">多职场 · 客服项目统一管理</span>
   </div>
   <div class="header-right">
-    <div class="workplace-filter">
-      <label>职场筛选：</label>
-      <select id="wp-filter">
-        <option value="all">全部职场</option>
-        <option value="济南">职场A</option>
-        <option value="淄博">职场B</option>
-        <option value="杭州">职场C</option>
-        <option value="无锡">职场D</option>
-      </select>
-    </div>
-    <div class="search-box">
-      <input type="text" id="global-search" placeholder="搜索项目名称...">
-    </div>
+    <div id="user-display"></div>
   </div>
 </header>
 
@@ -48,11 +26,15 @@
 <div id="main-container">
   <!-- 左侧模块菜单 -->
   <nav id="sidebar">
-    <div class="nav-section">
-      <div class="nav-section-title">核心模块</div>
+    <div class="nav-section" data-section="project">
+      <div class="nav-section-title" onclick="toggleSection(this)">
+        <span class="section-icon">🗂️</span>
+        <span class="section-text">项目管理中控台</span>
+        <span class="section-arrow">▶</span>
+      </div>
       <a href="#" class="nav-item active" data-module="dashboard">
         <span class="nav-icon">📊</span>
-        <span class="nav-text">项目总览驾驶舱</span>
+        <span class="nav-text">项目总览看板</span>
       </a>
       <a href="#" class="nav-item" data-module="archive">
         <span class="nav-icon">📋</span>
@@ -60,43 +42,92 @@
       </a>
       <a href="#" class="nav-item" data-module="target">
         <span class="nav-icon">🎯</span>
-        <span class="nav-text">目标与责任边界</span>
+        <span class="nav-text">目标与权责管理</span>
+      </a>
+      <a href="#" class="nav-item" data-module="operation">
+        <span class="nav-icon">📈</span>
+        <span class="nav-text">服务与进度追踪</span>
       </a>
       <a href="#" class="nav-item" data-module="cost">
         <span class="nav-icon">💰</span>
         <span class="nav-text">成本与利润管理</span>
       </a>
-      <a href="#" class="nav-item" data-module="operation">
-        <span class="nav-icon">📈</span>
-        <span class="nav-text">运营执行现状</span>
-      </a>
     </div>
-    <div class="nav-section">
-      <div class="nav-section-title">协作与知识</div>
+    <div class="nav-section" data-section="collab">
+      <div class="nav-section-title" onclick="toggleSection(this)">
+        <span class="section-icon">🤝</span>
+        <span class="section-text">协同与知识管理</span>
+        <span class="section-arrow">▶</span>
+      </div>
       <a href="#" class="nav-item" data-module="issue">
         <span class="nav-icon">🐛</span>
-        <span class="nav-text">课题与问题协作</span>
+        <span class="nav-text">问题与课题协作</span>
       </a>
       <a href="#" class="nav-item" data-module="knowledge">
         <span class="nav-icon">📚</span>
-        <span class="nav-text">核心知识百宝箱</span>
+        <span class="nav-text">核心知识能量池</span>
+      </a>
+      <a href="#" class="nav-item" data-module="risk">
+        <span class="nav-icon">⚠️</span>
+        <span class="nav-text">项目风险预警池</span>
       </a>
     </div>
-    <div class="nav-section">
-      <div class="nav-section-title">管理工具</div>
+    <div class="nav-section" data-section="tools">
+      <div class="nav-section-title" onclick="toggleSection(this)">
+        <span class="section-icon">🛠️</span>
+        <span class="section-text">项目管理工具库</span>
+        <span class="section-arrow">▶</span>
+      </div>
       <a href="#" class="nav-item" data-module="handover">
         <span class="nav-icon">🔄</span>
-        <span class="nav-text">交接管理</span>
+        <span class="nav-text">项目承接规范</span>
+      </a>
+      <a href="#" class="nav-item" data-module="assessment">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">项目难度评估</span>
       </a>
       <a href="#" class="nav-item" data-module="satisfaction">
         <span class="nav-icon">💯</span>
-        <span class="nav-text">项目满意度评估</span>
+        <span class="nav-text">项目运维调研</span>
       </a>
       <a href="#" class="nav-item" data-module="director">
         <span class="nav-icon">👁️</span>
-        <span class="nav-text">项目总监视图</span>
+        <span class="nav-text">项目全景解析</span>
+      </a>
+      <a href="#" class="nav-item" data-module="performance">
+        <span class="nav-icon">📈</span>
+        <span class="nav-text">客服绩效看板</span>
       </a>
     </div>
+    <div class="nav-section" data-section="system">
+      <div class="nav-section-title" onclick="toggleSection(this)">
+        <span class="section-icon">🔐</span>
+        <span class="section-text">系统管理与配置</span>
+        <span class="section-arrow">▶</span>
+      </div>
+      <a href="#" class="nav-item" data-module="permissions">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-text">系统权限管理</span>
+      </a>
+      <a href="#" class="nav-item" data-module="notifications">
+        <span class="nav-icon">🔔</span>
+        <span class="nav-text">消息通知提醒</span>
+      </a>
+      <a href="#" class="nav-item" data-module="profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-text">个人基础设置</span>
+      </a>
+    </div>
+    <!-- 侧边栏折叠按钮 -->
+    <button id="sidebar-toggle" class="sidebar-toggle-btn" onclick="toggleSidebar()" title="折叠/展开导航">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0;">
+        <line x1="3" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="3" y1="9" x2="15" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="3" y1="13" x2="11" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <polyline points="12,6 15,9 12,12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="toggle-text">收起导航</span>
+    </button>
   </nav>
 
   <!-- 主内容区 -->
@@ -117,6 +148,143 @@
   </div>
 </div>
 
-<script src="app.js"></script>
+<!-- 移动端侧边栏遮罩 -->
+<div id="sidebar-overlay" class="sidebar-overlay hidden" onclick="closeMobileSidebar()"></div>
+
+  <script src="app.js?v={{BUILD_TIME}}"></script>
+
+<!-- 登录/注册弹窗 -->
+<div id="login-modal" class="modal-overlay hidden" style="z-index:10000;">
+  <div class="login-box">
+    <div class="login-header">
+      <div class="login-logo">🔐 Chanseen | CS CloudHub</div>
+      <div class="login-subtitle">项目服务管理信息中台</div>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" data-tab="login" onclick="switchAuthTab(&#39;login&#39;)">账号登录</div>
+      <div class="auth-tab" data-tab="register" onclick="switchAuthTab(&#39;register&#39;)">注册申请</div>
+    </div>
+    <div id="auth-login-form">
+      <div class="form-group">
+        <label class="form-label">登录账号</label>
+        <input type="text" id="login-username" class="form-input" placeholder="请输入账号">
+      </div>
+      <div class="form-group">
+        <label class="form-label">登录密码</label>
+        <div class="password-wrap">
+          <input type="password" id="login-password" class="form-input" placeholder="请输入密码" onkeydown="if(event.key==='Enter')doLogin()">
+          <button type="button" class="password-toggle" onclick="togglePassword()" tabindex="-1">
+            <span id="password-eye">👁️</span>
+          </button>
+        </div>
+      </div>
+      <div class="form-remember">
+        <label class="remember-label">
+          <input type="checkbox" id="login-remember" checked>
+          <span class="remember-text">记住我（1小时内免登录）</</span>
+        </label>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="doLogin()">登 录</button>
+      <div class="login-hint">提示：注册后需等待管理员审批通过方可登录</div>
+    </div>
+    <div id="auth-register-form" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">真实姓名 <span style="color:var(--c-red)">*</span></label>
+        <input type="text" id="reg-name" class="form-input" placeholder="请输入真实姓名">
+      </div>
+      <div class="form-group">
+        <label class="form-label">登录账号 <span style="color:var(--c-red)">*</span></label>
+        <input type="text" id="reg-username" class="form-input" placeholder="设置登录账号">
+      </div>
+      <div class="form-group">
+        <label class="form-label">登录密码 <span style="color:var(--c-red)">*</span></label>
+        <div class="password-wrap">
+          <input type="password" id="reg-password" class="form-input" placeholder="设置登录密码">
+          <button type="button" class="password-toggle" onclick="toggleRegPassword()" tabindex="-1">
+            <span id="reg-password-eye">👁️</span>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">确认密码 <span style="color:var(--c-red)">*</span></label>
+        <div class="password-wrap">
+          <input type="password" id="reg-confirm" class="form-input" placeholder="再次输入密码">
+          <button type="button" class="password-toggle" onclick="toggleRegConfirm()" tabindex="-1">
+            <span id="reg-confirm-eye">👁️</span>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">手机号</label>
+        <input type="text" id="reg-phone" class="form-input" placeholder="请输入手机号">
+      </div>
+      <div class="form-group">
+        <label class="form-label">邮箱</label>
+        <input type="text" id="reg-email" class="form-input" placeholder="请输入邮箱">
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="doRegister()">提交注册申请</button>
+      <div class="login-hint">提交后需管理员审批通过方可登录系统</div>
+    </div>
+  </div>
+</div>
+
+<!-- 修改密码弹窗 -->
+<div id="change-password-modal" class="modal-overlay hidden" style="z-index:10001;">
+  <div class="modal" style="width:380px;padding:0;overflow:hidden;background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="padding:20px 24px 16px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:16px;font-weight:600;color:#1e293b;">🔐 修改密码</span>
+      <span style="font-size:20px;color:#94a3b8;cursor:pointer;line-height:1;" onclick="hideChangePasswordModal()">&times;</span>
+    </div>
+    <div style="padding:20px 24px;">
+      <div class="form-group" style="margin-bottom:14px;">
+        <label class="form-label">原密码</label>
+        <div class="password-wrap">
+          <input type="password" id="cp-old" class="form-input" placeholder="请输入当前密码">
+          <button type="button" class="password-toggle" onclick="toggleCpOld()" tabindex="-1"><span id="cp-old-eye">👁️</span></button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:14px;">
+        <label class="form-label">新密码</label>
+        <div class="password-wrap">
+          <input type="password" id="cp-new" class="form-input" placeholder="至少6位">
+          <button type="button" class="password-toggle" onclick="toggleCpNew()" tabindex="-1"><span id="cp-new-eye">👁️</span></button>
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:20px;">
+        <label class="form-label">确认新密码</label>
+        <div class="password-wrap">
+          <input type="password" id="cp-confirm" class="form-input" placeholder="再次输入新密码">
+          <button type="button" class="password-toggle" onclick="toggleCpConfirm()" tabindex="-1"><span id="cp-confirm-eye">👁️</span></button>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn" style="flex:1;border:1px solid #e2e8f0;color:#64748b;" onclick="hideChangePasswordModal()">取消</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="doChangePassword()">确认修改</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleCpOld() {
+  const inp = document.getElementById("cp-old"); const eye = document.getElementById("cp-old-eye");
+  if (!inp || !eye) return;
+  if (inp.type === "password") { inp.type = "text"; eye.textContent = "👁️"; }
+  else { inp.type = "password"; eye.textContent = "🙈"; }
+}
+function toggleCpNew() {
+  const inp = document.getElementById("cp-new"); const eye = document.getElementById("cp-new-eye");
+  if (!inp || !eye) return;
+  if (inp.type === "password") { inp.type = "text"; eye.textContent = "👁️"; }
+  else { inp.type = "password"; eye.textContent = "🙈"; }
+}
+function toggleCpConfirm() {
+  const inp = document.getElementById("cp-confirm"); const eye = document.getElementById("cp-confirm-eye");
+  if (!inp || !eye) return;
+  if (inp.type === "password") { inp.type = "text"; eye.textContent = "👁️"; }
+  else { inp.type = "password"; eye.textContent = "🙈"; }
+}
+</script>
+
 </body>
 </html>
