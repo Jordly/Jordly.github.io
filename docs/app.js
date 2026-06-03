@@ -308,10 +308,10 @@ function togglePassword() {
   if (!inp || !eye) return;
   if (inp.type === "password") {
     inp.type = "text";
-    eye.textContent = "🙈"; // 闭眼（密码可见）
+    eye.textContent = "👁️"; // 睁眼 = 密码可见
   } else {
     inp.type = "password";
-    eye.textContent = "👁️"; // 睁眼（密码隐藏）
+    eye.textContent = "🙈"; // 闭眼 = 密码隐藏
   }
 }
 function toggleRegPassword() {
@@ -320,10 +320,10 @@ function toggleRegPassword() {
   if (!inp || !eye) return;
   if (inp.type === "password") {
     inp.type = "text";
-    eye.textContent = "🙈";
+    eye.textContent = "👁️";
   } else {
     inp.type = "password";
-    eye.textContent = "👁️";
+    eye.textContent = "🙈";
   }
 }
 function toggleRegConfirm() {
@@ -332,10 +332,10 @@ function toggleRegConfirm() {
   if (!inp || !eye) return;
   if (inp.type === "password") {
     inp.type = "text";
-    eye.textContent = "🙈";
+    eye.textContent = "👁️";
   } else {
     inp.type = "password";
-    eye.textContent = "👁️";
+    eye.textContent = "🙈";
   }
 }
 
