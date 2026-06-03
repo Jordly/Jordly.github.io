@@ -1450,3 +1450,86 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
 #content-area {
   -webkit-overflow-scrolling: touch;
 }
+
+/* ===== 登录/注册弹窗 ===== */
+#login-modal {
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#login-modal.hidden {
+  display: none !important;
+}
+.login-box {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  width: 420px;
+  max-width: 90vw;
+  padding: 32px;
+  animation: loginSlideIn 0.3s ease;
+}
+@keyframes loginSlideIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.login-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+.login-logo {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-primary);
+}
+.login-subtitle {
+  font-size: 13px;
+  color: var(--c-text-3);
+  margin-top: 4px;
+}
+.auth-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--c-border);
+}
+.auth-tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-text-3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.2s;
+}
+.auth-tab.active {
+  color: var(--c-primary);
+  border-bottom-color: var(--c-primary);
+}
+.auth-tab:hover {
+  color: var(--c-text);
+}
+.login-hint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--c-text-3);
+  margin-top: 12px;
+}
+
+/* ===== 用户管理状态标签扩展 ===== */
+.badge-purple {
+  background: #EDE9FE;
+  color: #7C3AED;
+}
+.badge-blue {
+  background: #DBEAFE;
+  color: #2563EB;
+}
+.badge-orange {
+  background: #FFEDD5;
+  color: #EA580C;
+}
