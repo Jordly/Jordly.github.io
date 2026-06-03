@@ -139,6 +139,7 @@ function checkLogin() {
       }
       currentUser = data;
       delete currentUser._expiry; // 不暴露内部字段
+      currentRole = currentUser.role || "新用户"; // 同步当前角色
       hideLoginModal(); // 隐藏登录弹窗，否则会盖住主界面
       updateUserDisplay();
       setAppContentVisible(true);
@@ -159,14 +160,21 @@ function updateUserDisplay() {
   if (!el) return;
   if (!currentUser) { el.innerHTML = ""; return; }
   const firstChar = currentUser.name ? currentUser.name.charAt(0) : "?";
+  const avatar = currentUser.avatar || "";
+  const avatarHtml = avatar
+    ? `<div class="user-avatar" style="background-image:url(${avatar});background-size:cover;background-position:center;color:transparent;">${firstChar}</div>`
+    : `<div class="user-avatar">${firstChar}</div>`;
+  const dropdownAvatarHtml = avatar
+    ? `<div class="user-dropdown-avatar" style="background-image:url(${avatar});background-size:cover;background-position:center;color:transparent;">${firstChar}</div>`
+    : `<div class="user-dropdown-avatar">${firstChar}</div>`;
   el.innerHTML = `
     <div class="user-avatar-wrap" onclick="toggleUserMenu(event)">
-      <div class="user-avatar">${firstChar}</div>
+      ${avatarHtml}
       <span class="user-name">${currentUser.name}</span>
       <span class="user-arrow">▼</span>
       <div class="user-dropdown" id="user-dropdown">
         <div class="user-dropdown-header">
-          <div class="user-dropdown-avatar">${firstChar}</div>
+          ${dropdownAvatarHtml}
           <div>
             <div class="user-dropdown-name">${currentUser.name}</div>
             <div class="user-dropdown-role">${currentUser.role}</div>
@@ -255,6 +263,7 @@ function doLogin() {
   if (user.status !== "已激活") { alert("账号状态：" + user.status + "，请联系管理员审批"); return; }
 
   currentUser = {id:user.id, name:user.name, username:user.username, role:user.role, status:user.status};
+  currentRole = user.role || "新用户"; // 同步当前角色
 
   const expiry = Date.now() + 3600000; // 1小时有效期（毫秒）
   const saveData = {...currentUser, _expiry: expiry};
@@ -282,7 +291,6 @@ function doRegister() {
   const username = document.getElementById("reg-username").value.trim();
   const password = document.getElementById("reg-password").value;
   const confirm = document.getElementById("reg-confirm").value;
-  const role = document.getElementById("reg-role").value;
   const phone = document.getElementById("reg-phone").value.trim();
   const email = document.getElementById("reg-email").value.trim();
 
@@ -292,7 +300,7 @@ function doRegister() {
 
   const newUser = {
     id: "U" + String(USERS.length + 1).padStart(3, "0"),
-    name, username, password, role: role || "客服组长",
+    name, username, password, role: "",
     status: "待审核", registerTime: new Date().toISOString().slice(0, 10),
     phone: phone || "", email: email || "", approvedBy: "", remark: ""
   };
@@ -1022,7 +1030,7 @@ const HEALTH_DATA = [
 
 const ROLES = [
   "管理候选", "客服组长", "客服主管", "客服经理", "客服总监",
-  "管理员", "项目伙伴", "技术伙伴", "风控伙伴"
+  "管理员", "项目伙伴", "技术伙伴", "风控伙伴", "新用户"
 ];
 
 // 默认权限配置：每个角色对各模块的权限（read=只读, write=读写, hidden=隐藏）
@@ -1038,7 +1046,8 @@ const DEFAULT_PERMISSIONS = {
   "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
   "项目伙伴": { dashboard:"read", archive:"read", target:"hidden", cost:"hidden", operation:"read", issue:"read", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", notifications:"hidden", performance:"hidden", risk:"hidden", profile:"write" },
   "技术伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"hidden", operation:"read", issue:"write", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", notifications:"hidden", performance:"read", risk:"hidden", profile:"write" },
-  "风控伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"read", operation:"read", issue:"write", knowledge:"hidden", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", notifications:"hidden", performance:"hidden", risk:"read", profile:"write" }
+  "风控伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"read", operation:"read", issue:"write", knowledge:"hidden", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", notifications:"hidden", performance:"hidden", risk:"read", profile:"write" },
+  "新用户": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", director:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" }
 };
 
 // 当前角色（默认：管理候选）
@@ -5188,6 +5197,8 @@ function approveUser(userId, action){
   if (action === "同意") {
     user.status = "已激活";
     user.approvedBy = currentUser ? currentUser.name : "admin";
+    // 新用户默认角色为"新用户"，所有权限只读
+    if (!user.role) user.role = "新用户";
     alert(`已同意 ${user.name} 的注册申请，账号已激活。`);
   } else if (action === "拒绝") {
     user.status = "已拒绝";
@@ -5787,7 +5798,14 @@ function renderProfile(){
   const labelStyle = 'width:90px;font-size:14px;color:#334155;flex-shrink:0;';
   const valueStyle = 'flex:1;font-size:14px;color:#1e293b;';
   const linkStyle = 'color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;';
-  const hintStyle = 'font-size:12px;color:#94a3b8;margin-left:12px;';
+
+  const u = currentUser || {};
+  const userInDb = USERS.find(x => x.id === u.id) || {};
+  const avatar = u.avatar || userInDb.avatar || "";
+  const nickname = u.nickname || userInDb.nickname || u.name || "未设置";
+  const position = u.position || userInDb.position || u.role || "未设置";
+  const phone = u.phone || userInDb.phone || "--";
+  const email = u.email || userInDb.email || "--";
 
   let html = `<div class="page-header"><h2>👤 个人基础设置</h2></div>`;
 
@@ -5804,19 +5822,22 @@ function renderProfile(){
     <div style="${rowStyle}">
       <div style="${labelStyle}">个人头像</div>
       <div style="display:flex;align-items:center;flex:1;gap:16px;">
-        <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;font-size:28px;">👤</div>
+        <div id="profile-avatar-preview" style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;background-size:cover;background-position:center;">
+          ${avatar ? '' : '👤'}
+        </div>
         <div>
-          <span style="${linkStyle}" onclick="alert('头像上传功能开发中')">更换头像</span>
+          <span style="${linkStyle}" onclick="document.getElementById('profile-avatar-input').click()">更换头像</span>
+          <input type="file" id="profile-avatar-input" style="display:none;" accept="image/jpeg,image/jpg,image/png,image/gif" onchange="handleAvatarUpload(this)">
           <div style="font-size:12px;color:#94a3b8;margin-top:4px;">请选择 5M 以内的 jpg、jpeg、gif 或 png 图片</div>
         </div>
       </div>
     </div>
 
     <!-- 昵称 -->
-    <div style="${rowStyle}">
+    <div style="${rowStyle}" id="profile-nickname-row">
       <div style="${labelStyle}">昵称</div>
-      <div style="${valueStyle}">程序员</div>
-      <span style="${linkStyle}" onclick="alert('昵称修改功能开发中')">修改</span>
+      <div style="${valueStyle}" id="profile-nickname-value">${nickname}</div>
+      <span style="${linkStyle}" onclick="editProfileNickname()">修改</span>
     </div>
 
     <!-- 生日 -->
@@ -5827,10 +5848,10 @@ function renderProfile(){
     </div>
 
     <!-- 职位 -->
-    <div style="${rowStyle}">
+    <div style="${rowStyle}" id="profile-position-row">
       <div style="${labelStyle}">职位</div>
-      <div style="${valueStyle}">客服经理</div>
-      <span style="${hintStyle}">职位由管理人员为您设置，如需更改请联系管理员</span>
+      <div style="${valueStyle}" id="profile-position-value">${position}</div>
+      <span style="${linkStyle}" onclick="editProfilePosition()">修改</span>
     </div>
 
     <!-- 品牌 -->
@@ -5842,14 +5863,14 @@ function renderProfile(){
     <!-- 手机号 -->
     <div style="${rowStyle}">
       <div style="${labelStyle}">手机号</div>
-      <div style="${valueStyle}">188****8888</div>
+      <div style="${valueStyle}">${phone}</div>
       <span style="${linkStyle}" onclick="alert('手机号修改功能开发中')">修改</span>
     </div>
 
     <!-- 邮箱 -->
     <div style="${rowStyle}">
       <div style="${labelStyle}">邮箱</div>
-      <div style="${valueStyle}">z****************m</div>
+      <div style="${valueStyle}">${email}</div>
       <span style="${linkStyle}" onclick="alert('邮箱修改功能开发中')">修改</span>
     </div>
 
@@ -6009,6 +6030,83 @@ function renderProfile(){
   html += `</div>`; // 总容器结束
 
   return html;
+}
+
+// 头像上传处理
+function handleAvatarUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert("图片大小超过 5M，请选择更小的图片"); return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    // 更新 currentUser
+    if (currentUser) currentUser.avatar = dataUrl;
+    // 更新 USERS 数据库
+    const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
+    if (userInDb) userInDb.avatar = dataUrl;
+    // 更新预览
+    const preview = document.getElementById("profile-avatar-preview");
+    if (preview) {
+      preview.style.backgroundImage = `url(${dataUrl})`;
+      preview.textContent = "";
+    }
+    // 更新顶部头像
+    updateUserDisplay();
+    showToast("头像更换成功");
+  };
+  reader.readAsDataURL(file);
+}
+
+// 昵称编辑
+function editProfileNickname() {
+  const valueEl = document.getElementById("profile-nickname-value");
+  const rowEl = document.getElementById("profile-nickname-row");
+  if (!valueEl || !rowEl) return;
+  const current = valueEl.textContent;
+  rowEl.innerHTML = `
+    <div style="width:90px;font-size:14px;color:#334155;flex-shrink:0;">昵称</div>
+    <input type="text" id="profile-nickname-input" value="${current}" style="flex:1;padding:6px 10px;font-size:14px;border:1px solid #e2e8f0;border-radius:6px;outline:none;" onkeydown="if(event.key==='Enter')saveProfileNickname()">
+    <span style="color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;" onclick="saveProfileNickname()">保存</span>
+    <span style="color:#94a3b8;font-size:13px;cursor:pointer;margin-left:8px;flex-shrink:0;" onclick="renderModule('profile')">取消</span>
+  `;
+  setTimeout(() => document.getElementById("profile-nickname-input")?.focus(), 50);
+}
+function saveProfileNickname() {
+  const input = document.getElementById("profile-nickname-input");
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) { alert("昵称不能为空"); return; }
+  if (currentUser) currentUser.nickname = val;
+  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
+  if (userInDb) userInDb.nickname = val;
+  renderModule("profile");
+  showToast("昵称修改成功");
+}
+
+// 职位编辑
+function editProfilePosition() {
+  const valueEl = document.getElementById("profile-position-value");
+  const rowEl = document.getElementById("profile-position-row");
+  if (!valueEl || !rowEl) return;
+  const current = valueEl.textContent;
+  rowEl.innerHTML = `
+    <div style="width:90px;font-size:14px;color:#334155;flex-shrink:0;">职位</div>
+    <input type="text" id="profile-position-input" value="${current}" style="flex:1;padding:6px 10px;font-size:14px;border:1px solid #e2e8f0;border-radius:6px;outline:none;" onkeydown="if(event.key==='Enter')saveProfilePosition()">
+    <span style="color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;" onclick="saveProfilePosition()">保存</span>
+    <span style="color:#94a3b8;font-size:13px;cursor:pointer;margin-left:8px;flex-shrink:0;" onclick="renderModule('profile')">取消</span>
+  `;
+  setTimeout(() => document.getElementById("profile-position-input")?.focus(), 50);
+}
+function saveProfilePosition() {
+  const input = document.getElementById("profile-position-input");
+  if (!input) return;
+  const val = input.value.trim();
+  if (currentUser) currentUser.position = val;
+  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
+  if (userInDb) userInDb.position = val;
+  renderModule("profile");
+  showToast("职位修改成功");
 }
 
 function exportRisk(){
