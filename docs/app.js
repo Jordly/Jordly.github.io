@@ -125,9 +125,9 @@ function setAppContentVisible(visible) {
 // 登录状态检查
 function checkLogin() {
   try {
-    // 优先读 sessionStorage（本次会话），再读 localStorage（记住我）
-    const raw = sessionStorage.getItem("chansee_current_user")
-              || localStorage.getItem("chansee_current_user");
+    // 优先读 localStorage（记住我），再读 sessionStorage（本次会话）
+    const raw = localStorage.getItem("chansee_current_user")
+              || sessionStorage.getItem("chansee_current_user");
     if (raw) {
       const data = JSON.parse(raw);
       // 校验是否过期
@@ -139,11 +139,15 @@ function checkLogin() {
       }
       currentUser = data;
       delete currentUser._expiry; // 不暴露内部字段
+      hideLoginModal(); // 隐藏登录弹窗，否则会盖住主界面
       updateUserDisplay();
       setAppContentVisible(true);
       return true;
     }
-  } catch(e) {}
+  } catch(e) {
+    console.error("checkLogin error:", e);
+  }
+  currentUser = null;
   setAppContentVisible(false);
   showLoginModal();
   return false;
@@ -253,15 +257,17 @@ function doLogin() {
   currentUser = {id:user.id, name:user.name, username:user.username, role:user.role, status:user.status};
 
   const expiry = Date.now() + 3600000; // 1小时有效期（毫秒）
-  const sessionData = JSON.stringify({...currentUser, _expiry: expiry});
+  const saveData = {...currentUser, _expiry: expiry};
+  const sessionData = JSON.stringify(saveData);
 
   if (remember) {
-    // 记住我：存 localStorage，1小时过期
+    // 记住我：存 localStorage，1小时过期；同时清 sessionStorage 避免冲突
+    sessionStorage.removeItem("chansee_current_user");
     localStorage.setItem("chansee_current_user", sessionData);
   } else {
     // 不记住：存 sessionStorage，关闭浏览器标签页即失效
+    localStorage.removeItem("chansee_current_user");
     sessionStorage.setItem("chansee_current_user", sessionData);
-    localStorage.removeItem("chansee_current_user"); // 清除可能的旧记录
   }
 
   hideLoginModal();
@@ -293,6 +299,44 @@ function doRegister() {
   USERS.push(newUser);
   alert("注册成功！请等待管理员审批后登录。");
   switchAuthTab("login");
+}
+
+// ===== 密码显示/隐藏切换 =====
+function togglePassword() {
+  const inp = document.getElementById("login-password");
+  const eye = document.getElementById("password-eye");
+  if (!inp || !eye) return;
+  if (inp.type === "password") {
+    inp.type = "text";
+    eye.textContent = "🙈"; // 闭眼（密码可见）
+  } else {
+    inp.type = "password";
+    eye.textContent = "👁️"; // 睁眼（密码隐藏）
+  }
+}
+function toggleRegPassword() {
+  const inp = document.getElementById("reg-password");
+  const eye = document.getElementById("reg-password-eye");
+  if (!inp || !eye) return;
+  if (inp.type === "password") {
+    inp.type = "text";
+    eye.textContent = "🙈";
+  } else {
+    inp.type = "password";
+    eye.textContent = "👁️";
+  }
+}
+function toggleRegConfirm() {
+  const inp = document.getElementById("reg-confirm");
+  const eye = document.getElementById("reg-confirm-eye");
+  if (!inp || !eye) return;
+  if (inp.type === "password") {
+    inp.type = "text";
+    eye.textContent = "🙈";
+  } else {
+    inp.type = "password";
+    eye.textContent = "👁️";
+  }
 }
 
 // 退出登录
