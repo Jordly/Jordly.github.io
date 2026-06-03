@@ -1324,7 +1324,10 @@ function renderFilterBar() {
           </div>
           <div style="padding:8px 10px;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
             <span style="font-size:11px;color:#94a3b8;">共 ${PROJECTS.length} 个项目</span>
-            <button class="btn btn-sm" style="padding:3px 10px;font-size:11px;" onclick="event.stopPropagation();closeProjectDropdown();">关闭</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-sm" style="padding:3px 10px;font-size:11px;background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;" onclick="event.stopPropagation();resetProjectFilter();">重置</button>
+              <button class="btn btn-sm btn-primary" style="padding:3px 14px;font-size:11px;" onclick="event.stopPropagation();applyProjectFilter();">确认</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1379,6 +1382,20 @@ function toggleProjectSelect(id) {
     filterState.project.push(id);
   }
   updateProjectFilterLabel();
+  // 只更新计数，不刷新页面，等用户点确认
+}
+
+// 确认筛选：应用选择并刷新
+function applyProjectFilter() {
+  closeProjectDropdown();
+  renderModule(currentModule);
+}
+
+// 重置项目筛选：清空选择，应用"全部"
+function resetProjectFilter() {
+  filterState.project = [];
+  updateProjectFilterLabel();
+  closeProjectDropdown();
   renderModule(currentModule);
 }
 function updateProjectFilterLabel() {
