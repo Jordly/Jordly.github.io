@@ -5906,13 +5906,13 @@ function renderProfile(){
     <!-- 保持当前状态 -->
     <div style="${rowStyle}">
       <div style="${labelStyle}">保持当前状态</div>
-      <div style="flex:1;display:flex;align-items:center;gap:10px;">
-        <label class="profile-toggle">
+      <div class="profile-toggle-row" style="flex:1;display:flex;align-items:center;gap:10px;flex-wrap:nowrap;">
+        <label class="profile-toggle" style="flex-shrink:0;">
           <input type="checkbox" ${keepStatus ? 'checked' : ''} onchange="toggleKeepStatus(this)">
           <span class="profile-toggle-track"></span>
           <span class="profile-toggle-thumb"></span>
         </label>
-        <span class="keep-status-text" style="font-size:12px;color:#94a3b8;">${keepStatus ? '已开启' : '已关闭'}</span>
+        <span class="keep-status-text" style="font-size:12px;color:#94a3b8;white-space:nowrap;flex-shrink:0;display:inline-block;">${keepStatus ? '已开启' : '已关闭'}</span>
       </div>
     </div>
 
@@ -6210,7 +6210,7 @@ function toggleKeepStatus(checkbox) {
   if (currentUser) currentUser.keepStatus = checkbox.checked;
   if (userInDb) userInDb.keepStatus = checkbox.checked;
   // 即时更新文字，不等待重新渲染（在同一位置仅改变文字）
-  const container = checkbox.closest('[style*="flex:1"]');
+  const container = checkbox.closest(".profile-toggle-row") || checkbox.closest('[style*="flex:1"]');
   const statusText = container ? container.querySelector(".keep-status-text") : null;
   if (statusText) statusText.textContent = checkbox.checked ? "已开启" : "已关闭";
   showToast(checkbox.checked ? "保持当前状态已开启" : "保持当前状态已关闭");
