@@ -5050,20 +5050,23 @@ function editUserRole(userId){
 
   const modalHtml = `
     <div class="modal-overlay" id="role-modal-overlay" onclick="if(event.target===this)closeRoleModal()">
-      <div class="modal-box" style="max-width:400px;">
-        <div class="modal-header">
-          <h3>修改角色</h3>
-          <button class="modal-close" onclick="closeRoleModal()">&times;</button>
+      <div class="modal-box" style="max-width:320px;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,0.15);">
+        <div class="modal-header" style="padding:12px 16px;border-bottom:1px solid #f1f5f9;">
+          <div style="font-size:13px;font-weight:600;color:var(--c-text);">修改角色</div>
+          <button class="modal-close" onclick="closeRoleModal()" style="font-size:18px;color:#94a3b8;">&times;</button>
         </div>
-        <div class="modal-body">
-          <p style="margin-bottom:12px;font-size:14px;color:var(--c-text-2);">为 <strong>${user.name}</strong> 选择新角色：</p>
-          <select id="role-select-input" class="form-control" style="width:100%;padding:8px 12px;font-size:14px;border:1px solid var(--c-border);border-radius:var(--radius);background:#fff;">
-            ${roleOptions}
-          </select>
+        <div class="modal-body" style="padding:16px;">
+          <div style="margin-bottom:10px;font-size:12px;color:#94a3b8;">为 <strong style="color:var(--c-primary);">${user.name}</strong> 选择新角色</div>
+          <div style="position:relative;">
+            <select id="role-select-input" style="width:100%;padding:8px 28px 8px 10px;font-size:12px;color:var(--c-text);border:1px solid #e2e8f0;border-radius:6px;background:#fff;appearance:none;cursor:pointer;outline:none;transition:border-color 0.2s;">
+              ${roleOptions}
+            </select>
+            <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:10px;color:#94a3b8;">▼</div>
+          </div>
         </div>
-        <div class="modal-footer">
-          <button class="btn" onclick="closeRoleModal()">取消</button>
-          <button class="btn btn-primary" onclick="confirmEditRole('${userId}')">确定</button>
+        <div class="modal-footer" style="padding:10px 16px 14px;gap:8px;">
+          <button class="btn" onclick="closeRoleModal()" style="padding:6px 14px;font-size:12px;border-radius:6px;background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;">取消</button>
+          <button class="btn btn-primary" onclick="confirmEditRole('${userId}')" style="padding:6px 14px;font-size:12px;border-radius:6px;">确定</button>
         </div>
       </div>
     </div>`;
