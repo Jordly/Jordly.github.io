@@ -1508,6 +1508,34 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   margin-top: 12px;
 }
 
+/* ===== 密码输入框 + 小眼睛按钮 ===== */
+.password-wrap {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.password-wrap .form-input {
+  flex: 1;
+  padding-right: 38px; /* 给眼睛按钮留空间 */
+}
+.password-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 4px;
+  color: var(--c-text-3);
+  transition: color 0.2s;
+}
+.password-toggle:hover {
+  color: var(--c-primary);
+}
+
 /* ===== 登录页"记住我"复选框 ===== */
 .form-remember {
   display: flex;
