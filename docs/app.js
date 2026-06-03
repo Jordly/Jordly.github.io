@@ -125,9 +125,20 @@ function setAppContentVisible(visible) {
 // 登录状态检查
 function checkLogin() {
   try {
-    const saved = localStorage.getItem("chansee_current_user");
-    if (saved) {
-      currentUser = JSON.parse(saved);
+    // 优先读 sessionStorage（本次会话），再读 localStorage（记住我）
+    const raw = sessionStorage.getItem("chansee_current_user")
+              || localStorage.getItem("chansee_current_user");
+    if (raw) {
+      const data = JSON.parse(raw);
+      // 校验是否过期
+      if (data._expiry && Date.now() > data._expiry) {
+        // 已过期，清除
+        sessionStorage.removeItem("chansee_current_user");
+        localStorage.removeItem("chansee_current_user");
+        throw new Error("session expired");
+      }
+      currentUser = data;
+      delete currentUser._expiry; // 不暴露内部字段
       updateUserDisplay();
       setAppContentVisible(true);
       return true;
@@ -232,6 +243,7 @@ function switchAuthTab(tab) {
 function doLogin() {
   const username = document.getElementById("login-username").value.trim();
   const password = document.getElementById("login-password").value;
+  const remember = document.getElementById("login-remember")?.checked;
   if (!username || !password) { alert("请填写账号和密码"); return; }
 
   const user = USERS.find(u => u.username === username && u.password === password);
@@ -239,7 +251,19 @@ function doLogin() {
   if (user.status !== "已激活") { alert("账号状态：" + user.status + "，请联系管理员审批"); return; }
 
   currentUser = {id:user.id, name:user.name, username:user.username, role:user.role, status:user.status};
-  localStorage.setItem("chansee_current_user", JSON.stringify(currentUser));
+
+  const expiry = Date.now() + 3600000; // 1小时有效期（毫秒）
+  const sessionData = JSON.stringify({...currentUser, _expiry: expiry});
+
+  if (remember) {
+    // 记住我：存 localStorage，1小时过期
+    localStorage.setItem("chansee_current_user", sessionData);
+  } else {
+    // 不记住：存 sessionStorage，关闭浏览器标签页即失效
+    sessionStorage.setItem("chansee_current_user", sessionData);
+    localStorage.removeItem("chansee_current_user"); // 清除可能的旧记录
+  }
+
   hideLoginModal();
   setAppContentVisible(true);
   updateUserDisplay();
@@ -275,6 +299,7 @@ function doRegister() {
 function logout() {
   currentUser = null;
   localStorage.removeItem("chansee_current_user");
+  sessionStorage.removeItem("chansee_current_user");
   setAppContentVisible(false);
   showLoginModal();
 }
