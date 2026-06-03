@@ -5903,19 +5903,6 @@ function renderProfile(){
       <span class="profile-card-icon">⚙️</span>更多操作
     </div>
 
-    <!-- 保持当前状态 -->
-    <div style="${rowStyle}">
-      <div style="${labelStyle}">保持当前状态</div>
-      <div class="profile-toggle-row" style="flex:1;display:flex;align-items:center;gap:10px;flex-wrap:nowrap;">
-        <label class="profile-toggle" style="flex-shrink:0;">
-          <input type="checkbox" ${keepStatus ? 'checked' : ''} onchange="toggleKeepStatus(this)">
-          <span class="profile-toggle-track"></span>
-          <span class="profile-toggle-thumb"></span>
-        </label>
-        <span class="keep-status-text" style="font-size:12px;color:#94a3b8;white-space:nowrap;flex-shrink:0;display:inline-block;">${keepStatus ? '已开启' : '已关闭'}</span>
-      </div>
-    </div>
-
     <!-- 离开团队 -->
     <div style="${rowStyle}border-bottom:none;flex-direction:column;align-items:flex-start;gap:10px;padding-bottom:0;">
       <div style="display:flex;align-items:center;gap:8px;width:100%;">
