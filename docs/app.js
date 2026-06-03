@@ -138,12 +138,75 @@ function checkLogin() {
   return false;
 }
 
-// 更新顶部用户显示
+// 更新顶部用户显示（头像 + 下拉菜单）
 function updateUserDisplay() {
   const el = document.getElementById("user-display");
-  if (el && currentUser) {
-    el.innerHTML = `<span style="font-size:12px;color:var(--c-text-2);">${currentUser.name}</span><span style="font-size:11px;color:var(--c-primary);margin-left:6px;padding:2px 8px;background:var(--c-primary-light);border-radius:10px;">${currentUser.role}</span><button class="btn btn-sm" style="margin-left:10px;" onclick="logout()">退出</button>`;
+  if (!el) return;
+  if (!currentUser) { el.innerHTML = ""; return; }
+  const firstChar = currentUser.name ? currentUser.name.charAt(0) : "?";
+  el.innerHTML = `
+    <div class="user-avatar-wrap" onclick="toggleUserMenu(event)">
+      <div class="user-avatar">${firstChar}</div>
+      <span class="user-name">${currentUser.name}</span>
+      <span class="user-arrow">▼</span>
+      <div class="user-dropdown" id="user-dropdown">
+        <div class="user-dropdown-header">
+          <div class="user-dropdown-avatar">${firstChar}</div>
+          <div>
+            <div class="user-dropdown-name">${currentUser.name}</div>
+            <div class="user-dropdown-role">${currentUser.role}</div>
+          </div>
+        </div>
+        <div class="user-dropdown-divider"></div>
+        <div class="user-dropdown-item" onclick="goToProfile()">
+          <span class="user-dropdown-icon">⚙️</span>
+          <span>个人设置</span>
+        </div>
+        <div class="user-dropdown-item" onclick="switchAccount()">
+          <span class="user-dropdown-icon">🔄</span>
+          <span>切换账号</span>
+        </div>
+        <div class="user-dropdown-divider"></div>
+        <div class="user-dropdown-item user-dropdown-danger" onclick="logout()">
+          <span class="user-dropdown-icon">🚪</span>
+          <span>退出账号</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+// 头像下拉菜单显隐
+function toggleUserMenu(e) {
+  e.stopPropagation();
+  const dd = document.getElementById("user-dropdown");
+  if (dd) dd.classList.toggle("show");
+}
+
+// 点击外部关闭下拉
+function closeUserMenu() {
+  const dd = document.getElementById("user-dropdown");
+  if (dd) dd.classList.remove("show");
+}
+
+document.addEventListener("click", closeUserMenu);
+
+// 跳转到个人设置
+function goToProfile() {
+  closeUserMenu();
+  // 自动展开"系统管理与配置"分组
+  const sysSection = document.querySelector('.nav-section[data-section="system"]');
+  if (sysSection) {
+    sysSection.classList.remove("collapsed");
+    const arrow = sysSection.querySelector('.section-arrow');
+    if (arrow) arrow.textContent = '▼';
   }
+  renderModule("profile");
+}
+
+// 切换账号
+function switchAccount() {
+  closeUserMenu();
+  logout();
 }
 
 // 显示登录弹窗
@@ -4894,8 +4957,7 @@ function renderNotifications(){
     "风控伙伴": "badge-gray"
   };
 
-  return `${renderFilterBar()}
-  <div class="module-header">
+  return `<div class="module-header">
     <div>
       <div class="module-title">&#x1F514; 消息通知提醒</div>
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">管理系统用户，审批注册申请，维护账号状态</div>
@@ -4984,12 +5046,47 @@ function editUserRole(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
   const roles = ["客服组长","客服主管","客服经理","客服总监","管理员","项目伙伴","技术伙伴","风控伙伴"];
-  const newRole = prompt(`修改 ${user.name} 的角色：\n可选：${roles.join("、")}`, user.role);
-  if (newRole && roles.includes(newRole)) {
+  const roleOptions = roles.map(r => `<option value="${r}" ${r===user.role?'selected':''}>${r}</option>`).join('');
+
+  const modalHtml = `
+    <div class="modal-overlay" id="role-modal-overlay" onclick="if(event.target===this)closeRoleModal()">
+      <div class="modal-box" style="max-width:400px;">
+        <div class="modal-header">
+          <h3>修改角色</h3>
+          <button class="modal-close" onclick="closeRoleModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p style="margin-bottom:12px;font-size:14px;color:var(--c-text-2);">为 <strong>${user.name}</strong> 选择新角色：</p>
+          <select id="role-select-input" class="form-control" style="width:100%;padding:8px 12px;font-size:14px;border:1px solid var(--c-border);border-radius:var(--radius);background:#fff;">
+            ${roleOptions}
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="closeRoleModal()">取消</button>
+          <button class="btn btn-primary" onclick="confirmEditRole('${userId}')">确定</button>
+        </div>
+      </div>
+    </div>`;
+
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+function closeRoleModal(){
+  const el = document.getElementById('role-modal-overlay');
+  if(el) el.remove();
+}
+
+function confirmEditRole(userId){
+  const user = USERS.find(u => u.id === userId);
+  const sel = document.getElementById('role-select-input');
+  if(!user || !sel) return;
+  const newRole = sel.value;
+  if(newRole && newRole !== user.role){
     user.role = newRole;
     alert(`已修改 ${user.name} 的角色为：${newRole}`);
     renderModule("notifications");
   }
+  closeRoleModal();
 }
 
 function resetUserPassword(userId){
