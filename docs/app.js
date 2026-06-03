@@ -1285,27 +1285,27 @@ function renderDashboard(){
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
     <div class="metric-card row-service" onclick="setFilter('projectType','TP代运营');renderDashboard();" style="cursor:pointer;">
       <div class="metric-icon-wrap">&#x2699;&#xFE0F;</div>
-      <div class="metric-body">
+      <div class="metric-center">
         <div class="metric-label">TP代运营</div>
-        <div class="metric-value">${tpCount}<span style="font-size:12px;font-weight:500;color:var(--c-text-3);margin-left:4px;">个</span></div>
-        <div class="metric-trend up">项目数</div>
+        <div class="metric-value">${tpCount}<span class="metric-unit">个</span></div>
       </div>
+      <div class="metric-right"><span class="metric-tag">项目数</span></div>
     </div>
     <div class="metric-card row-service" onclick="setFilter('projectType','经销模式');renderDashboard();" style="cursor:pointer;">
       <div class="metric-icon-wrap">&#x1F3EA;</div>
-      <div class="metric-body">
+      <div class="metric-center">
         <div class="metric-label">经销服务</div>
-        <div class="metric-value">${jxCount}<span style="font-size:12px;font-weight:500;color:var(--c-text-3);margin-left:4px;">个</span></div>
-        <div class="metric-trend up">项目数</div>
+        <div class="metric-value">${jxCount}<span class="metric-unit">个</span></div>
       </div>
+      <div class="metric-right"><span class="metric-tag">项目数</span></div>
     </div>
     <div class="metric-card row-service" onclick="setFilter('projectType','BPO外包');renderDashboard();" style="cursor:pointer;">
       <div class="metric-icon-wrap">&#x1F91D;</div>
-      <div class="metric-body">
+      <div class="metric-center">
         <div class="metric-label">BPO外包</div>
-        <div class="metric-value">${bpoCount}<span style="font-size:12px;font-weight:500;color:var(--c-text-3);margin-left:4px;">个</span></div>
-        <div class="metric-trend up">项目数</div>
+        <div class="metric-value">${bpoCount}<span class="metric-unit">个</span></div>
       </div>
+      <div class="metric-right"><span class="metric-tag">项目数</span></div>
     </div>
   </div>
 
@@ -1313,27 +1313,27 @@ function renderDashboard(){
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
     <div class="metric-card row-finance">
       <div class="metric-icon-wrap">&#x1F4B0;</div>
-      <div class="metric-body">
+      <div class="metric-center">
         <div class="metric-label">月度总销售额</div>
-        <div class="metric-value">&#xFFE5;${(totalRevenue/10000).toFixed(1)}<span style="font-size:13px;font-weight:500;color:var(--c-text-3);margin-left:2px;">万</span></div>
-        <div class="metric-trend up">&#x2191; 12.3%</div>
+        <div class="metric-value">&#xFFE5;${(totalRevenue/10000).toFixed(1)}<span class="metric-unit">万</span></div>
       </div>
+      <div class="metric-right"><span class="metric-tag up">&#x2191; 12.3%</span></div>
     </div>
     <div class="metric-card row-finance">
       <div class="metric-icon-wrap">&#x1F4C8;</div>
-      <div class="metric-body">
+      <div class="metric-center">
         <div class="metric-label">月度总成本</div>
-        <div class="metric-value">&#xFFE5;${(totalCost/10000).toFixed(1)}<span style="font-size:13px;font-weight:500;color:var(--c-text-3);margin-left:2px;">万</span></div>
-        <div class="metric-trend down">&#x2191; 5.1%</div>
+        <div class="metric-value">&#xFFE5;${(totalCost/10000).toFixed(1)}<span class="metric-unit">万</span></div>
       </div>
+      <div class="metric-right"><span class="metric-tag down">&#x2191; 5.1%</span></div>
     </div>
     <div class="metric-card row-finance">
       <div class="metric-icon-wrap">&#x1F4C9;</div>
-      <div class="metric-body">
+      <div class="metric-center">
         <div class="metric-label">综合利润率</div>
         <div class="metric-value" style="color:${avgProfit>=10?'var(--c-green)':'var(--c-red)'}">${avgProfit}%</div>
-        <div class="metric-trend up">&#x2191; 2.1pp</div>
       </div>
+      <div class="metric-right"><span class="metric-tag up">&#x2191; 2.1pp</span></div>
     </div>
   </div>
 
@@ -1341,31 +1341,31 @@ function renderDashboard(){
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
     <div class="metric-card row-operation">
       <div class="metric-icon-wrap">&#x1F4E6;</div>
-      <div class="metric-body">
+      <div class="metric-center">
         <div class="metric-label">月度总订单量</div>
         <div class="metric-value">${totalOrders.toLocaleString()}</div>
-        <div class="metric-trend up">&#x2191; 8.2%</div>
       </div>
+      <div class="metric-right"><span class="metric-tag up">&#x2191; 8.2%</span></div>
     </div>
     <div class="metric-card row-operation">
       <div class="metric-icon-wrap">&#x1F465;</div>
-      <div class="metric-body">
+      <div class="metric-center">
         <div class="metric-label">客服总接待量</div>
         <div class="metric-value">${totalConv.toLocaleString()}</div>
-        <div class="metric-trend down">&#x2193; 1.5%</div>
       </div>
+      <div class="metric-right"><span class="metric-tag down">&#x2193; 1.5%</span></div>
     </div>
     <div class="metric-card row-operation" onclick="filterByHealth('all')" style="cursor:pointer;">
       <div class="metric-icon-wrap">&#x1F6A6;</div>
-      <div class="metric-body">
+      <div class="metric-center">
         <div class="metric-label">健康状态分布</div>
         <div class="metric-value" style="font-size:16px;display:flex;gap:8px;align-items:center;">
           <span style="color:#10B981;font-weight:600;">&#x1F7E2;${green}</span>
           <span style="color:#F59E0B;font-weight:600;">&#x1F7E1;${yellow}</span>
           <span style="color:#EF4444;font-weight:600;">&#x1F534;${red}</span>
         </div>
-        <div class="metric-trend" style="color:var(--c-text-3);">点击筛选</div>
       </div>
+      <div class="metric-right"><span class="metric-tag">点击筛选</span></div>
     </div>
   </div>
 
