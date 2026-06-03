@@ -1164,7 +1164,7 @@ function renderModule(module){
 
 // ----- 筛选栏状态 (调整4) -----
 const filterState = {
-  project: "all",
+  project: [],
   workplace: "all",
   director: "all",
   pm: "all",
@@ -1303,12 +1303,30 @@ function renderFilterBar() {
           <option value="🔴" ${filterState.health==='🔴'?'selected':''}>🔴 红灯</option>
         </select>
       </div>
-      <div class="filter-item">
+      <div class="filter-item" style="position:relative;">
         <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目名称</label>
-        <select class="filter-select" onchange="setFilter('project',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部项目</option>
-          ${PROJECTS.map(p => `<option value="${p.id}" ${filterState.project===p.id?'selected':''}>${p.name}</option>`).join('')}
-        </select>
+        <div class="project-filter-trigger" onclick="toggleProjectDropdown(event)">
+          <span id="project-filter-label">${filterState.project.length ? `已选 ${filterState.project.length} 项` : '全部项目'}</span>
+          <span style="font-size:10px;color:#94a3b8;">▼</span>
+        </div>
+        <div class="project-filter-dropdown" id="project-filter-dropdown">
+          <div style="padding:8px 10px;border-bottom:1px solid #f1f5f9;">
+            <input type="text" id="project-search-input" class="project-search-input" placeholder="搜索项目..." oninput="filterProjectSearch(this.value)" onclick="event.stopPropagation()">
+          </div>
+          <div class="project-filter-list" id="project-filter-list">
+            ${PROJECTS.map(p => {
+              const checked = filterState.project.includes(p.id);
+              return `<label class="project-filter-option" onclick="event.stopPropagation()">
+                <input type="checkbox" ${checked?'checked':''} onchange="toggleProjectSelect('${p.id}')">
+                <span>${p.name}</span>
+              </label>`;
+            }).join('')}
+          </div>
+          <div style="padding:8px 10px;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:11px;color:#94a3b8;">共 ${PROJECTS.length} 个项目</span>
+            <button class="btn btn-sm" style="padding:3px 10px;font-size:11px;" onclick="event.stopPropagation();closeProjectDropdown();">关闭</button>
+          </div>
+        </div>
       </div>
       <div class="filter-item" style="display:flex;align-items:flex-end;">
         <button class="btn btn-sm" onclick="resetFilters()" style="padding:5px 12px;font-size:12px;">重置</button>
@@ -1316,8 +1334,62 @@ function renderFilterBar() {
     </div>`;
 }
 
+// ----- 项目名称搜索多选组件 -----
+function toggleProjectDropdown(e) {
+  e.stopPropagation();
+  const dd = document.getElementById("project-filter-dropdown");
+  if (!dd) return;
+  const isOpen = dd.classList.contains("show");
+  // 关闭所有其他下拉
+  document.querySelectorAll(".project-filter-dropdown.show").forEach(el => el.classList.remove("show"));
+  if (!isOpen) {
+    dd.classList.add("show");
+    setTimeout(() => {
+      const inp = document.getElementById("project-search-input");
+      if (inp) inp.focus();
+    }, 50);
+  }
+}
+function closeProjectDropdown() {
+  const dd = document.getElementById("project-filter-dropdown");
+  if (dd) dd.classList.remove("show");
+}
+// 点击外部关闭项目下拉
+document.addEventListener("click", function(e) {
+  const dd = document.getElementById("project-filter-dropdown");
+  if (dd && dd.classList.contains("show") && !e.target.closest(".project-filter-dropdown") && !e.target.closest(".project-filter-trigger")) {
+    dd.classList.remove("show");
+  }
+});
+function filterProjectSearch(keyword) {
+  const list = document.getElementById("project-filter-list");
+  if (!list) return;
+  const k = keyword.trim().toLowerCase();
+  const labels = list.querySelectorAll(".project-filter-option");
+  labels.forEach(lbl => {
+    const text = lbl.querySelector("span")?.textContent || "";
+    lbl.style.display = text.toLowerCase().includes(k) ? "" : "none";
+  });
+}
+function toggleProjectSelect(id) {
+  const idx = filterState.project.indexOf(id);
+  if (idx > -1) {
+    filterState.project.splice(idx, 1);
+  } else {
+    filterState.project.push(id);
+  }
+  updateProjectFilterLabel();
+  renderModule(currentModule);
+}
+function updateProjectFilterLabel() {
+  const el = document.getElementById("project-filter-label");
+  if (el) {
+    el.textContent = filterState.project.length ? `已选 ${filterState.project.length} 项` : "全部项目";
+  }
+}
+
 function resetFilters() {
-  filterState.project = "all";
+  filterState.project = [];
   filterState.workplace = "all";
   filterState.director = "all";
   filterState.pm = "all";
@@ -1340,8 +1412,8 @@ function getFilteredProjects(){
   }
 
   // 应用筛选栏的筛选条件
-  if (filterState.project !== "all") {
-    list = list.filter(p => p.id === filterState.project);
+  if (filterState.project.length > 0) {
+    list = list.filter(p => filterState.project.includes(p.id));
   }
   if (filterState.director !== "all") {
     list = list.filter(p => p.director === filterState.director);
