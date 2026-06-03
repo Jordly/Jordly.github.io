@@ -7,7 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>Chanseen | CS CloudHub</title>
-<link rel="stylesheet" href="style.css?v=20260603155919">
+<link rel="stylesheet" href="style.css?v=20260603163950">
 </head>
 <body>
 <!-- 顶部导航 -->
@@ -151,10 +151,10 @@
 <!-- 移动端侧边栏遮罩 -->
 <div id="sidebar-overlay" class="sidebar-overlay hidden" onclick="closeMobileSidebar()"></div>
 
-  <script src="app.js?v=20260603155919"></script>
+  <script src="app.js?v=20260603163950"></script>
 
 <!-- 登录/注册弹窗 -->
-<div id="login-modal" class="modal-overlay" style="z-index:10000;">
+<div id="login-modal" class="modal-overlay hidden" style="z-index:10000;">
   <div class="login-box">
     <div class="login-header">
       <div class="login-logo">🔐 Chanseen | CS CloudHub</div>
@@ -171,7 +171,12 @@
       </div>
       <div class="form-group">
         <label class="form-label">登录密码</label>
-        <input type="password" id="login-password" class="form-input" placeholder="请输入密码" onkeydown="if(event.key==='Enter')doLogin()">
+        <div class="password-wrap">
+          <input type="password" id="login-password" class="form-input" placeholder="请输入密码" onkeydown="if(event.key==='Enter')doLogin()">
+          <button type="button" class="password-toggle" onclick="togglePassword()" tabindex="-1">
+            <span id="password-eye">👁️</span>
+          </button>
+        </div>
       </div>
       <div class="form-remember">
         <label class="remember-label">
@@ -193,11 +198,21 @@
       </div>
       <div class="form-group">
         <label class="form-label">登录密码 <span style="color:var(--c-red)">*</span></label>
-        <input type="password" id="reg-password" class="form-input" placeholder="设置登录密码">
+        <div class="password-wrap">
+          <input type="password" id="reg-password" class="form-input" placeholder="设置登录密码">
+          <button type="button" class="password-toggle" onclick="toggleRegPassword()" tabindex="-1">
+            <span id="reg-password-eye">👁️</span>
+          </button>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">确认密码 <span style="color:var(--c-red)">*</span></label>
-        <input type="password" id="reg-confirm" class="form-input" placeholder="再次输入密码">
+        <div class="password-wrap">
+          <input type="password" id="reg-confirm" class="form-input" placeholder="再次输入密码">
+          <button type="button" class="password-toggle" onclick="toggleRegConfirm()" tabindex="-1">
+            <span id="reg-confirm-eye">👁️</span>
+          </button>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">申请角色</label>
