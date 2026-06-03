@@ -101,6 +101,119 @@ const HANDOVERS = [
 
 
 
+
+const USERS = [
+  {id:"U001", name:"系统创建者", username:"admin", role:"超级管理员", status:"已激活", registerTime:"2025-01-01", password:"admin123", phone:"138****0001", email:"admin@chanseen.com", approvedBy:"system", remark:"系统初始化超级管理员"},
+  {id:"U002", name:"王管理", username:"wangadmin", role:"管理员", status:"已激活", registerTime:"2025-03-15", password:"wang456", phone:"139****1111", email:"wang@chanseen.com", approvedBy:"admin", remark:""},
+  {id:"U003", name:"李组长", username:"lilead", role:"客服组长", status:"待审核", registerTime:"2026-05-20", password:"li789", phone:"137****2222", email:"li@chanseen.com", approvedBy:"", remark:"新入职申请"},
+  {id:"U004", name:"张主管", username:"zhangsup", role:"客服主管", status:"已拒绝", registerTime:"2026-05-18", password:"zhang000", phone:"136****3333", email:"zhang@chanseen.com", approvedBy:"wangadmin", remark:"信息不完整"},
+  {id:"U005", name:"陈经理", username:"chenmgr", role:"客服经理", status:"已激活", registerTime:"2025-06-10", password:"chen111", phone:"135****4444", email:"chen@chanseen.com", approvedBy:"admin", remark:""},
+  {id:"U006", name:"赵专员", username:"zhaocs", role:"客服组长", status:"待审核", registerTime:"2026-06-01", password:"zhao222", phone:"134****5555", email:"zhao@chanseen.com", approvedBy:"", remark:"跨部门调动"},
+];
+
+// 当前登录用户（null 表示未登录）
+let currentUser = null;
+
+// 登录状态检查
+function checkLogin() {
+  try {
+    const saved = localStorage.getItem("chansee_current_user");
+    if (saved) {
+      currentUser = JSON.parse(saved);
+      updateUserDisplay();
+      return true;
+    }
+  } catch(e) {}
+  showLoginModal();
+  return false;
+}
+
+// 更新顶部用户显示
+function updateUserDisplay() {
+  const el = document.getElementById("user-display");
+  if (el && currentUser) {
+    el.innerHTML = `<span style="font-size:12px;color:var(--c-text-2);">${currentUser.name}</span><span style="font-size:11px;color:var(--c-primary);margin-left:6px;padding:2px 8px;background:var(--c-primary-light);border-radius:10px;">${currentUser.role}</span><button class="btn btn-sm" style="margin-left:10px;" onclick="logout()">退出</button>`;
+  }
+}
+
+// 显示登录弹窗
+function showLoginModal() {
+  const modal = document.getElementById("login-modal");
+  if (modal) modal.classList.remove("hidden");
+}
+
+// 隐藏登录弹窗
+function hideLoginModal() {
+  const modal = document.getElementById("login-modal");
+  if (modal) modal.classList.add("hidden");
+}
+
+// 切换登录/注册
+function switchAuthTab(tab) {
+  document.getElementById("auth-login-form").style.display = tab === "login" ? "block" : "none";
+  document.getElementById("auth-register-form").style.display = tab === "register" ? "block" : "none";
+  document.querySelectorAll(".auth-tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
+}
+
+// 登录
+function doLogin() {
+  const username = document.getElementById("login-username").value.trim();
+  const password = document.getElementById("login-password").value;
+  if (!username || !password) { alert("请填写账号和密码"); return; }
+
+  const user = USERS.find(u => u.username === username && u.password === password);
+  if (!user) { alert("账号或密码错误"); return; }
+  if (user.status !== "已激活") { alert("账号状态：" + user.status + "，请联系管理员审批"); return; }
+
+  currentUser = {id:user.id, name:user.name, username:user.username, role:user.role, status:user.status};
+  localStorage.setItem("chansee_current_user", JSON.stringify(currentUser));
+  hideLoginModal();
+  updateUserDisplay();
+  renderModule("dashboard");
+}
+
+// 注册
+function doRegister() {
+  const name = document.getElementById("reg-name").value.trim();
+  const username = document.getElementById("reg-username").value.trim();
+  const password = document.getElementById("reg-password").value;
+  const confirm = document.getElementById("reg-confirm").value;
+  const role = document.getElementById("reg-role").value;
+  const phone = document.getElementById("reg-phone").value.trim();
+  const email = document.getElementById("reg-email").value.trim();
+
+  if (!name || !username || !password || !confirm) { alert("请填写完整信息"); return; }
+  if (password !== confirm) { alert("两次密码不一致"); return; }
+  if (USERS.some(u => u.username === username)) { alert("该账号已被注册"); return; }
+
+  const newUser = {
+    id: "U" + String(USERS.length + 1).padStart(3, "0"),
+    name, username, password, role: role || "客服组长",
+    status: "待审核", registerTime: new Date().toISOString().slice(0, 10),
+    phone: phone || "", email: email || "", approvedBy: "", remark: ""
+  };
+  USERS.push(newUser);
+  alert("注册成功！请等待管理员审批后登录。");
+  switchAuthTab("login");
+}
+
+// 退出登录
+function logout() {
+  currentUser = null;
+  localStorage.removeItem("chansee_current_user");
+  location.reload();
+}
+
+// 判断当前用户是否为管理员/超级管理员
+function isAdmin() {
+  return currentUser && (currentUser.role === "管理员" || currentUser.role === "超级管理员");
+}
+
+// 判断当前用户是否为超级管理员
+function isSuperAdmin() {
+  return currentUser && currentUser.role === "超级管理员";
+}
+
 // ===== 项目运维调研数据 =====
 
 // 对外：项目方只填写感受描述，不显示分值
@@ -770,18 +883,18 @@ const ROLES = [
 
 // 默认权限配置：每个角色对各模块的权限（read=只读, write=读写, hidden=隐藏）
 // 全局模块 key 列表（供 batchSetPermission 等函数使用）
-const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","director","permissions","performance","risk","profile"];
+const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","director","permissions","notifications","performance","risk","profile"];
 
 const DEFAULT_PERMISSIONS = {
-  "管理候选": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"write", performance:"write", risk:"write", profile:"write" },
-  "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"hidden", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"read", risk:"read", profile:"write" },
-  "客服主管": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", director:"hidden", permissions:"hidden", performance:"write", risk:"read", profile:"write" },
-  "客服经理": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"hidden", performance:"write", risk:"write", profile:"write" },
-  "客服总监": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", director:"write", permissions:"hidden", performance:"read", risk:"read", profile:"write" },
-  "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"write", permissions:"write", performance:"write", risk:"write", profile:"write" },
-  "项目伙伴": { dashboard:"read", archive:"read", target:"hidden", cost:"hidden", operation:"read", issue:"read", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"hidden", risk:"hidden", profile:"write" },
-  "技术伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"hidden", operation:"read", issue:"write", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"read", risk:"hidden", profile:"write" },
-  "风控伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"read", operation:"read", issue:"write", knowledge:"hidden", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", performance:"hidden", risk:"read", profile:"write" }
+  "管理候选": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
+  "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"hidden", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"hidden", director:"hidden", permissions:"hidden", notifications:"hidden", performance:"read", risk:"read", profile:"write" },
+  "客服主管": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", director:"hidden", permissions:"hidden", notifications:"read", performance:"write", risk:"read", profile:"write" },
+  "客服经理": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"hidden", notifications:"read", performance:"write", risk:"write", profile:"write" },
+  "客服总监": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", director:"write", permissions:"hidden", notifications:"read", performance:"read", risk:"read", profile:"write" },
+  "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
+  "项目伙伴": { dashboard:"read", archive:"read", target:"hidden", cost:"hidden", operation:"read", issue:"read", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", notifications:"hidden", performance:"hidden", risk:"hidden", profile:"write" },
+  "技术伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"hidden", operation:"read", issue:"write", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", notifications:"hidden", performance:"read", risk:"hidden", profile:"write" },
+  "风控伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"read", operation:"read", issue:"write", knowledge:"hidden", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", notifications:"hidden", performance:"hidden", risk:"read", profile:"write" }
 };
 
 // 当前角色（默认：管理候选）
@@ -958,7 +1071,7 @@ function renderModule(module){
     currentModule = module;
     const area = document.getElementById("module-content");
     if (!area) { console.error("module-content not found"); return; }
-    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector, permissions:renderPermissions, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
+    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
     area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
     bindEvents();
   } catch(e) {
@@ -4731,6 +4844,198 @@ function showSatisfactionPermission(){
 }
 
 
+
+// ===== 消息通知提醒（用户审批管理） =====
+
+let notificationFilter = "all";
+
+function renderNotifications(){
+  if (!isAdmin()) {
+    return `<div class="empty-state"><div class="empty-icon">&#x1F512;</div><p>仅管理员可访问此模块</p></div>`;
+  }
+
+  const filtered = notificationFilter === "all" ? USERS : USERS.filter(u => {
+    if (notificationFilter === "pending") return u.status === "待审核";
+    if (notificationFilter === "active") return u.status === "已激活";
+    if (notificationFilter === "rejected") return u.status === "已拒绝";
+    return true;
+  });
+
+  const statusBadge = {
+    "已激活": "badge-green",
+    "待审核": "badge-yellow",
+    "已拒绝": "badge-red",
+    "已禁用": "badge-gray"
+  };
+
+  const roleBadge = {
+    "超级管理员": "badge-purple",
+    "管理员": "badge-blue",
+    "客服总监": "badge-orange",
+    "客服经理": "badge-primary",
+    "客服主管": "badge-yellow",
+    "客服组长": "badge-green",
+    "项目伙伴": "badge-gray",
+    "技术伙伴": "badge-gray",
+    "风控伙伴": "badge-gray"
+  };
+
+  return `${renderFilterBar()}
+  <div class="module-header">
+    <div>
+      <div class="module-title">&#x1F514; 消息通知提醒</div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">管理系统用户，审批注册申请，维护账号状态</div>
+    </div>
+    <div class="module-actions">
+      <button class="btn btn-sm btn-primary" onclick="showAddUser()">&#xFF0B; 新增用户</button>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:16px;">
+    <button class="btn btn-sm ${notificationFilter==='all'?'btn-primary':''}" onclick="setNotificationFilter('all')">全部(${USERS.length})</button>
+    <button class="btn btn-sm ${notificationFilter==='pending'?'btn-primary':''}" style="background:var(--c-yellow-bg);color:var(--c-yellow);border-color:var(--c-yellow)" onclick="setNotificationFilter('pending')">待审核(${USERS.filter(u=>u.status==='待审核').length})</button>
+    <button class="btn btn-sm ${notificationFilter==='active'?'btn-primary':''}" style="background:var(--c-green-bg);color:var(--c-green);border-color:var(--c-green)" onclick="setNotificationFilter('active')">已激活(${USERS.filter(u=>u.status==='已激活').length})</button>
+    <button class="btn btn-sm ${notificationFilter==='rejected'?'btn-primary':''}" style="background:var(--c-red-bg);color:var(--c-red);border-color:var(--c-red)" onclick="setNotificationFilter('rejected')">已拒绝(${USERS.filter(u=>u.status==='已拒绝').length})</button>
+  </div>
+
+  <div class="card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>用户</th>
+          <th>用户名</th>
+          <th>角色</th>
+          <th>状态</th>
+          <th>注册时间</th>
+          <th>联系方式</th>
+          <th>审批人</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filtered.map(u => `
+          <tr>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--c-primary-light);color:var(--c-primary);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;">${u.name.charAt(0)}</div><span style="font-weight:500;">${u.name}</span></div></td>
+            <td>${u.username}</td>
+            <td><span class="badge ${roleBadge[u.role]||'badge-gray'}">${u.role}</span></td>
+            <td><span class="badge ${statusBadge[u.status]||'badge-gray'}">${u.status}</span></td>
+            <td>${u.registerTime}</td>
+            <td><div style="font-size:12px;color:var(--c-text-2);">${u.phone}<br/>${u.email}</div></td>
+            <td>${u.approvedBy || "&#x2014;"}</td>
+            <td class="actions">
+              ${u.status === "待审核" ? `
+                <button class="btn btn-sm btn-primary" onclick="approveUser('${u.id}', '同意')">同意</button>
+                <button class="btn btn-sm" style="background:var(--c-red-bg);color:var(--c-red);border-color:var(--c-red);" onclick="approveUser('${u.id}', '拒绝')">拒绝</button>
+                <button class="btn btn-sm" onclick="approveUser('${u.id}', '忽略')">忽略</button>
+              ` : `
+                <button class="btn btn-sm" onclick="editUserRole('${u.id}')">改角色</button>
+                <button class="btn btn-sm" onclick="resetUserPassword('${u.id}')">重置密码</button>
+                ${u.status !== "已禁用" ? `<button class="btn btn-sm" style="background:var(--c-yellow-bg);color:var(--c-yellow);border-color:var(--c-yellow);" onclick="disableUser('${u.id}')">禁用</button>` : `<button class="btn btn-sm btn-primary" onclick="enableUser('${u.id}')">启用</button>`}
+                ${isSuperAdmin() ? `<button class="btn btn-sm" style="background:var(--c-red-bg);color:var(--c-red);border-color:var(--c-red);" onclick="deleteUser('${u.id}')">删除</button>` : ""}
+              `}
+            </td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+    ${filtered.length === 0 ? `<div style="text-align:center;padding:40px;color:var(--c-text-3);">暂无符合条件的用户</div>` : ""}
+  </div>
+  `;
+}
+
+function setNotificationFilter(filter){
+  notificationFilter = filter;
+  renderModule("notifications");
+}
+
+function approveUser(userId, action){
+  const user = USERS.find(u => u.id === userId);
+  if (!user) return;
+  if (action === "同意") {
+    user.status = "已激活";
+    user.approvedBy = currentUser ? currentUser.name : "admin";
+    alert(`已同意 ${user.name} 的注册申请，账号已激活。`);
+  } else if (action === "拒绝") {
+    user.status = "已拒绝";
+    user.approvedBy = currentUser ? currentUser.name : "admin";
+    alert(`已拒绝 ${user.name} 的注册申请。`);
+  } else if (action === "忽略") {
+    alert(`已忽略 ${user.name} 的注册申请，该申请仍保留在待审核列表中。`);
+    return;
+  }
+  renderModule("notifications");
+}
+
+function editUserRole(userId){
+  const user = USERS.find(u => u.id === userId);
+  if (!user) return;
+  const roles = ["客服组长","客服主管","客服经理","客服总监","管理员","项目伙伴","技术伙伴","风控伙伴"];
+  const newRole = prompt(`修改 ${user.name} 的角色：\n可选：${roles.join("、")}`, user.role);
+  if (newRole && roles.includes(newRole)) {
+    user.role = newRole;
+    alert(`已修改 ${user.name} 的角色为：${newRole}`);
+    renderModule("notifications");
+  }
+}
+
+function resetUserPassword(userId){
+  const user = USERS.find(u => u.id === userId);
+  if (!user) return;
+  const newPwd = prompt(`重置 ${user.name} 的密码：\n请输入新密码（至少6位）：`);
+  if (newPwd && newPwd.length >= 6) {
+    user.password = newPwd;
+    alert(`已重置 ${user.name} 的密码。`);
+  } else if (newPwd) {
+    alert("密码长度不足6位");
+  }
+}
+
+function disableUser(userId){
+  const user = USERS.find(u => u.id === userId);
+  if (!user) return;
+  if (user.role === "超级管理员") { alert("不能禁用超级管理员"); return; }
+  if (confirm(`确定要禁用用户 ${user.name} 吗？`)) {
+    user.status = "已禁用";
+    renderModule("notifications");
+  }
+}
+
+function enableUser(userId){
+  const user = USERS.find(u => u.id === userId);
+  if (!user) return;
+  user.status = "已激活";
+  renderModule("notifications");
+}
+
+function deleteUser(userId){
+  const user = USERS.find(u => u.id === userId);
+  if (!user) return;
+  if (user.role === "超级管理员") { alert("不能删除超级管理员"); return; }
+  if (confirm(`确定要删除用户 ${user.name} 吗？此操作不可恢复。`)) {
+    const idx = USERS.findIndex(u => u.id === userId);
+    if (idx > -1) USERS.splice(idx, 1);
+    renderModule("notifications");
+  }
+}
+
+function showAddUser(){
+  if (!isAdmin()) { alert("仅管理员可新增用户"); return; }
+  const name = prompt("用户姓名：");
+  if (!name) return;
+  const username = prompt("登录账号：");
+  if (!username || USERS.some(u => u.username === username)) { alert("账号为空或已存在"); return; }
+  const password = prompt("初始密码：");
+  if (!password) return;
+  const role = prompt("角色（客服组长/客服主管/客服经理/客服总监/管理员）：") || "客服组长";
+  const newUser = {
+    id: "U" + String(USERS.length + 1).padStart(3, "0"),
+    name, username, password, role,
+    status: "已激活", registerTime: new Date().toISOString().slice(0, 10),
+    phone: "", email: "", approvedBy: currentUser ? currentUser.name : "admin", remark: ""
+  };
+  USERS.push(newUser);
+  renderModule("notifications");
+}
 
 function renderPermissions(){
   // 防御性检查
