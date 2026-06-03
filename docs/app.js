@@ -5797,15 +5797,19 @@ function renderProfile(){
   const rowStyle = 'display:flex;align-items:center;padding:14px 0;border-bottom:1px solid #f1f5f9;';
   const labelStyle = 'width:90px;font-size:14px;color:#334155;flex-shrink:0;';
   const valueStyle = 'flex:1;font-size:14px;color:#1e293b;';
-  const linkStyle = 'color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;';
+  const linkStyle = 'color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;transition:opacity .2s;';
+  const linkHover = 'onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'"';
 
   const u = currentUser || {};
   const userInDb = USERS.find(x => x.id === u.id) || {};
   const avatar = u.avatar || userInDb.avatar || "";
   const nickname = u.nickname || userInDb.nickname || u.name || "未设置";
   const position = u.position || userInDb.position || u.role || "未设置";
+  const birthday = u.birthday || userInDb.birthday || "";
   const phone = u.phone || userInDb.phone || "--";
   const email = u.email || userInDb.email || "--";
+  const wechatBound = u.wechatBound || userInDb.wechatBound || true;
+  const keepStatus = u.keepStatus || userInDb.keepStatus || false;
 
   let html = `<div class="page-header"><h2>👤 个人基础设置</h2></div>`;
 
@@ -5815,20 +5819,23 @@ function renderProfile(){
   html += `<div style="flex:1;min-width:360px;max-width:680px;">`;
 
   // 基础信息卡片
-  html += `<div class="card">
-    <div style="font-size:16px;font-weight:600;color:#1e293b;padding-bottom:12px;border-bottom:1px solid #e2e8f0;margin-bottom:8px;">基础信息</div>
+  html += `<div class="card profile-card">
+    <div class="profile-card-title">
+      <span class="profile-card-icon">📝</span>基础信息
+    </div>
 
     <!-- 个人头像 -->
     <div style="${rowStyle}">
       <div style="${labelStyle}">个人头像</div>
       <div style="display:flex;align-items:center;flex:1;gap:16px;">
-        <div id="profile-avatar-preview" style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;background-size:cover;background-position:center;">
+        <div id="profile-avatar-preview" class="profile-avatar-preview"
+          style="${avatar ? 'background-image:url('+avatar+');color:transparent;' : ''}">
           ${avatar ? '' : '👤'}
         </div>
         <div>
-          <span style="${linkStyle}" onclick="document.getElementById('profile-avatar-input').click()">更换头像</span>
+          <span style="${linkStyle}" ${linkHover} onclick="document.getElementById('profile-avatar-input').click()">更换头像</span>
           <input type="file" id="profile-avatar-input" style="display:none;" accept="image/jpeg,image/jpg,image/png,image/gif" onchange="handleAvatarUpload(this)">
-          <div style="font-size:12px;color:#94a3b8;margin-top:4px;">请选择 5M 以内的 jpg、jpeg、gif 或 png 图片</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:4px;">支持 jpg、png、gif，最大 5M</div>
         </div>
       </div>
     </div>
@@ -5837,191 +5844,191 @@ function renderProfile(){
     <div style="${rowStyle}" id="profile-nickname-row">
       <div style="${labelStyle}">昵称</div>
       <div style="${valueStyle}" id="profile-nickname-value">${nickname}</div>
-      <span style="${linkStyle}" onclick="editProfileNickname()">修改</span>
+      <span style="${linkStyle}" ${linkHover} onclick="editProfileNickname()">修改</span>
     </div>
 
     <!-- 生日 -->
-    <div style="${rowStyle}">
+    <div style="${rowStyle}" id="profile-birthday-row">
       <div style="${labelStyle}">生日</div>
-      <div style="${valueStyle}">--</div>
-      <span style="${linkStyle}" onclick="alert('生日修改功能开发中')">修改</span>
+      <div style="${valueStyle}" id="profile-birthday-value">${birthday || "--"}</div>
+      <span style="${linkStyle}" ${linkHover} onclick="editProfileBirthday()">修改</span>
     </div>
 
     <!-- 职位 -->
     <div style="${rowStyle}" id="profile-position-row">
       <div style="${labelStyle}">职位</div>
       <div style="${valueStyle}" id="profile-position-value">${position}</div>
-      <span style="${linkStyle}" onclick="editProfilePosition()">修改</span>
+      <span style="${linkStyle}" ${linkHover} onclick="editProfilePosition()">修改</span>
     </div>
 
     <!-- 品牌 -->
     <div style="${rowStyle}">
       <div style="${labelStyle}">品牌</div>
-      <div style="${valueStyle}">--</div>
+      <div style="${valueStyle}">Chanseen CloudHub</div>
     </div>
 
     <!-- 手机号 -->
-    <div style="${rowStyle}">
+    <div style="${rowStyle}" id="profile-phone-row">
       <div style="${labelStyle}">手机号</div>
-      <div style="${valueStyle}">${phone}</div>
-      <span style="${linkStyle}" onclick="alert('手机号修改功能开发中')">修改</span>
+      <div style="${valueStyle}" id="profile-phone-value">${phone}</div>
+      <span style="${linkStyle}" ${linkHover} onclick="editProfilePhone()">修改</span>
     </div>
 
     <!-- 邮箱 -->
-    <div style="${rowStyle}">
+    <div style="${rowStyle}" id="profile-email-row">
       <div style="${labelStyle}">邮箱</div>
-      <div style="${valueStyle}">${email}</div>
-      <span style="${linkStyle}" onclick="alert('邮箱修改功能开发中')">修改</span>
+      <div style="${valueStyle}" id="profile-email-value">${email}</div>
+      <span style="${linkStyle}" ${linkHover} onclick="editProfileEmail()">修改</span>
     </div>
 
     <!-- 微信 -->
     <div style="${rowStyle}">
       <div style="${labelStyle}">微信</div>
-      <div style="${valueStyle}">已绑定</div>
-      <span style="${linkStyle}" onclick="alert('解绑功能开发中')">解绑</span>
+      <div style="${valueStyle}">${wechatBound ? '已绑定' : '未绑定'}</div>
+      <span style="${linkStyle}" ${linkHover} onclick="toggleWechatBind()">${wechatBound ? '解绑' : '绑定'}</span>
     </div>
 
     <!-- 登录密码 -->
     <div style="${rowStyle}border-bottom:none;">
       <div style="${labelStyle}">登录密码</div>
       <div style="${valueStyle}">********</div>
-      <span style="${linkStyle}" onclick="alert('密码修改功能开发中')">修改</span>
+      <span style="${linkStyle}" ${linkHover} onclick="showChangePasswordModal()">修改</span>
     </div>
   </div>`;
 
   // 更多操作卡片
-  html += `<div class="card" style="margin-top:16px;">
-    <div style="font-size:16px;font-weight:600;color:#1e293b;padding-bottom:12px;border-bottom:1px solid #e2e8f0;margin-bottom:8px;">更多操作</div>
+  html += `<div class="card profile-card" style="margin-top:16px;">
+    <div class="profile-card-title">
+      <span class="profile-card-icon">⚙️</span>更多操作
+    </div>
 
     <!-- 保持当前状态 -->
     <div style="${rowStyle}">
       <div style="${labelStyle}">保持当前状态</div>
-      <div style="flex:1;">
-        <label style="position:relative;display:inline-block;width:40px;height:22px;cursor:pointer;">
-          <input type="checkbox" style="opacity:0;width:0;height:0;" onchange="alert('状态切换功能开发中')">
-          <span style="position:absolute;inset:0;background:#e2e8f0;border-radius:22px;transition:.3s;"></span>
-          <span style="position:absolute;height:18px;width:18px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.15);"></span>
+      <div style="flex:1;display:flex;align-items:center;gap:10px;">
+        <label class="profile-toggle">
+          <input type="checkbox" ${keepStatus ? 'checked' : ''} onchange="toggleKeepStatus(this)">
+          <span class="profile-toggle-track"></span>
+          <span class="profile-toggle-thumb"></span>
         </label>
+        <span style="font-size:12px;color:#94a3b8;">${keepStatus ? '已开启' : '已关闭'}</span>
       </div>
     </div>
 
     <!-- 离开团队 -->
-    <div style="${rowStyle}border-bottom:none;flex-direction:column;align-items:flex-start;gap:10px;">
-      <div style="${labelStyle}">离开团队</div>
-      <div style="font-size:13px;color:#ef4444;">一旦您离开团队，您在此团队的一切记录都无法查看！</div>
+    <div style="${rowStyle}border-bottom:none;flex-direction:column;align-items:flex-start;gap:10px;padding-bottom:0;">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;">
+        <div style="${labelStyle}">离开团队</div>
+        <div style="flex:1;"></div>
+      </div>
+      <div style="font-size:13px;color:#ef4444;background:#fef2f2;padding:10px 14px;border-radius:6px;width:100%;border:1px solid #fecaca;">
+        ⚠️ 一旦离开团队，您在此团队的一切记录将无法查看！
+      </div>
       <div style="display:flex;gap:12px;margin-top:4px;">
-        <button class="btn" style="border:1px solid #ef4444;color:#ef4444;background:#fff;" onclick="alert('离开团队功能开发中')">离开团队</button>
-        <button class="btn" style="border:1px solid #e2e8f0;color:#64748b;background:#fff;" onclick="alert('移交工作功能开发中')">移交工作</button>
+        <button class="btn profile-btn-danger" onclick="leaveTeam()">离开团队</button>
+        <button class="btn profile-btn-plain" onclick="alert('移交工作功能请联系管理员处理')">移交工作</button>
       </div>
     </div>
   </div>`;
 
   html += `</div>`; // 左侧结束
 
-  // 右侧区域 - 铺满内容
+  // 右侧区域
   html += `<div style="flex:1;min-width:300px;max-width:420px;display:flex;flex-direction:column;gap:16px;">`;
 
   // 账户安全等级
-  html += `<div class="card">
-    <div style="font-size:16px;font-weight:600;color:#1e293b;padding-bottom:12px;border-bottom:1px solid #e2e8f0;margin-bottom:12px;">🔐 账户安全</div>
+  const safeScore = (phone !== "--" ? 25 : 0) + (email !== "--" ? 25 : 0) + (wechatBound ? 20 : 0) + 30;
+  const safeColor = safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#f59e0b' : '#ef4444';
+  const safeText = safeScore >= 80 ? '良好' : safeScore >= 60 ? '一般' : '较低';
+  const dashArray = Math.round(safeScore / 100 * 226) + ' 226';
+
+  html += `<div class="card profile-card">
+    <div class="profile-card-title">
+      <span class="profile-card-icon">🔐</span>账户安全
+    </div>
     <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
       <div style="position:relative;width:80px;height:80px;">
         <svg width="80" height="80" viewBox="0 0 80 80">
           <circle cx="40" cy="40" r="36" fill="none" stroke="#e2e8f0" stroke-width="6"/>
-          <circle cx="40" cy="40" r="36" fill="none" stroke="#22c55e" stroke-width="6" stroke-linecap="round"
-            stroke-dasharray="180 226" transform="rotate(-90 40 40)"/>
+          <circle cx="40" cy="40" r="36" fill="none" stroke="${safeColor}" stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="${dashArray}" transform="rotate(-90 40 40)"/>
         </svg>
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;">
-          <div style="font-size:20px;font-weight:700;color:#22c55e;">80</div>
+          <div style="font-size:20px;font-weight:700;color:${safeColor};">${safeScore}</div>
           <div style="font-size:11px;color:#94a3b8;">分</div>
         </div>
       </div>
       <div style="flex:1;">
-        <div style="font-size:15px;font-weight:600;color:#1e293b;">安全等级：良好</div>
-        <div style="font-size:12px;color:#64748b;margin-top:4px;">建议开启双重验证提升安全性</div>
+        <div style="font-size:15px;font-weight:600;color:#1e293b;">安全等级：${safeText}</div>
+        <div style="font-size:12px;color:#64748b;margin-top:4px;">${safeScore < 100 ? '完善信息可提升安全等级' : '您的账户安全等级很高'}</div>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
-        <span style="color:#22c55e;font-size:14px;">✓</span>
-        <span style="color:#334155;flex:1;">登录密码</span>
-        <span style="color:#22c55e;font-size:12px;">已设置</span>
+    <div class="profile-safe-list">
+      <div class="profile-safe-item">
+        <span class="profile-safe-dot" style="background:#22c55e;"></span>
+        <span class="profile-safe-label">登录密码</span>
+        <span class="profile-safe-status ok">已设置</span>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
-        <span style="color:#22c55e;font-size:14px;">✓</span>
-        <span style="color:#334155;flex:1;">手机绑定</span>
-        <span style="color:#22c55e;font-size:12px;">已绑定</span>
+      <div class="profile-safe-item">
+        <span class="profile-safe-dot" style="background:${phone !== "--" ? '#22c55e' : '#94a3b8'};"></span>
+        <span class="profile-safe-label">手机绑定</span>
+        <span class="profile-safe-status ${phone !== "--" ? 'ok' : 'warn'}">${phone !== "--" ? '已绑定' : '未绑定'}</span>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
-        <span style="color:#22c55e;font-size:14px;">✓</span>
-        <span style="color:#334155;flex:1;">邮箱绑定</span>
-        <span style="color:#22c55e;font-size:12px;">已绑定</span>
+      <div class="profile-safe-item">
+        <span class="profile-safe-dot" style="background:${email !== "--" ? '#22c55e' : '#94a3b8'};"></span>
+        <span class="profile-safe-label">邮箱绑定</span>
+        <span class="profile-safe-status ${email !== "--" ? 'ok' : 'warn'}">${email !== "--" ? '已绑定' : '未绑定'}</span>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
-        <span style="color:#f59e0b;font-size:14px;">!</span>
-        <span style="color:#334155;flex:1;">微信绑定</span>
-        <span style="color:#3b82f6;font-size:12px;cursor:pointer;" onclick="alert('双重验证设置开发中')">去开启</span>
+      <div class="profile-safe-item">
+        <span class="profile-safe-dot" style="background:${wechatBound ? '#22c55e' : '#94a3b8'};"></span>
+        <span class="profile-safe-label">微信绑定</span>
+        <span class="profile-safe-status ${wechatBound ? 'ok' : 'warn'}">${wechatBound ? '已绑定' : '未绑定'}</span>
       </div>
     </div>
   </div>`;
 
   // 最近登录
-  html += `<div class="card">
-    <div style="font-size:16px;font-weight:600;color:#1e293b;padding-bottom:12px;border-bottom:1px solid #e2e8f0;margin-bottom:12px;">📍 最近登录</div>
-    <div style="display:flex;flex-direction:column;gap:12px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border-radius:6px;">
-        <div>
-          <div style="font-size:13px;color:#1e293b;font-weight:500;">Chrome / Windows</div>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">IP: 223.104.***.***</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:12px;color:#22c55e;font-weight:500;">当前在线</div>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">2026-06-02 14:32</div>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border-radius:6px;">
-        <div>
-          <div style="font-size:13px;color:#1e293b;font-weight:500;">Chrome / Windows</div>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">IP: 223.104.***.***</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:11px;color:#64748b;">2026-06-01 18:45</div>
-        </div>
-      </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border-radius:6px;">
-        <div>
-          <div style="font-size:13px;color:#1e293b;font-weight:500;">Safari / macOS</div>
-          <div style="font-size:11px;color:#94a3b8;margin-top:2px;">IP: 117.136.***.***</div>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-size:11px;color:#64748b;">2026-05-30 09:12</div>
-        </div>
-      </div>
+  html += `<div class="card profile-card">
+    <div class="profile-card-title">
+      <span class="profile-card-icon">📍</span>最近登录
     </div>
-    <div style="margin-top:12px;text-align:center;">
-      <span style="color:#3b82f6;font-size:13px;cursor:pointer;" onclick="alert('登录记录详情开发中')">查看全部登录记录 →</span>
-    </div>
-  </div>`;
-
-  // 快捷操作
-  html += `<div class="card">
-    <div style="font-size:16px;font-weight:600;color:#1e293b;padding-bottom:12px;border-bottom:1px solid #e2e8f0;margin-bottom:12px;">⚡ 快捷操作</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-      <div style="padding:14px;background:#f8fafc;border-radius:8px;text-align:center;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'" onclick="alert('消息通知设置开发中')">
-        <div style="font-size:20px;margin-bottom:4px;">🔔</div>
-        <div style="font-size:13px;color:#334155;">消息通知</div>
+    <div class="profile-login-list">
+      <div class="profile-login-item current">
+        <div class="profile-login-device">
+          <div class="profile-login-icon" style="background:#dbeafe;color:#3b82f6;">🖥️</div>
+          <div>
+            <div class="profile-login-name">Chrome / Windows</div>
+            <div class="profile-login-ip">IP: 223.104.***.***</div>
+          </div>
+        </div>
+        <div class="profile-login-meta">
+          <span class="profile-login-badge">当前在线</span>
+          <div class="profile-login-time">2026-06-03 17:24</div>
+        </div>
       </div>
-      <div style="padding:14px;background:#f8fafc;border-radius:8px;text-align:center;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'" onclick="alert('偏好设置开发中')">
-        <div style="font-size:20px;margin-bottom:4px;">🎨</div>
-        <div style="font-size:13px;color:#334155;">偏好设置</div>
+      <div class="profile-login-item">
+        <div class="profile-login-device">
+          <div class="profile-login-icon" style="background:#dbeafe;color:#3b82f6;">🖥️</div>
+          <div>
+            <div class="profile-login-name">Chrome / Windows</div>
+            <div class="profile-login-ip">IP: 223.104.***.***</div>
+          </div>
+        </div>
+        <div class="profile-login-meta">
+          <div class="profile-login-time">2026-06-01 18:45</div>
+        </div>
       </div>
-      <div style="padding:14px;background:#f8fafc;border-radius:8px;text-align:center;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'" onclick="alert('数据导出开发中')">
-        <div style="font-size:20px;margin-bottom:4px;">📤</div>
-        <div style="font-size:13px;color:#334155;">数据导出</div>
-      </div>
-      <div style="padding:14px;background:#f8fafc;border-radius:8px;text-align:center;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#f8fafc'" onclick="alert('帮助中心开发中')">
-        <div style="font-size:20px;margin-bottom:4px;">❓</div>
-        <div style="font-size:13px;color:#334155;">帮助中心</div>
+      <div class="profile-login-item">
+        <div class="profile-login-device">
+          <div class="profile-login-icon" style="background:#dcfce7;color:#22c55e;">🍎</div>
+          <div>
+            <div class="profile-login-name">Safari / macOS</div>
+            <div class="profile-login-ip">IP: 117.136.***.***</div>
+          </div>
+        </div>
+        <div class="profile-login-meta">
+          <div class="profile-login-time">2026-05-30 09:12</div>
+        </div>
       </div>
     </div>
   </div>`;
@@ -6040,37 +6047,35 @@ function handleAvatarUpload(input) {
   const reader = new FileReader();
   reader.onload = function(e) {
     const dataUrl = e.target.result;
-    // 更新 currentUser
     if (currentUser) currentUser.avatar = dataUrl;
-    // 更新 USERS 数据库
     const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
     if (userInDb) userInDb.avatar = dataUrl;
-    // 更新预览
     const preview = document.getElementById("profile-avatar-preview");
-    if (preview) {
-      preview.style.backgroundImage = `url(${dataUrl})`;
-      preview.textContent = "";
-    }
-    // 更新顶部头像
+    if (preview) { preview.style.backgroundImage = `url(${dataUrl})`; preview.textContent = ""; }
     updateUserDisplay();
     showToast("头像更换成功");
   };
   reader.readAsDataURL(file);
 }
 
-// 昵称编辑
-function editProfileNickname() {
-  const valueEl = document.getElementById("profile-nickname-value");
-  const rowEl = document.getElementById("profile-nickname-row");
-  if (!valueEl || !rowEl) return;
-  const current = valueEl.textContent;
+// 通用：将某行变为编辑模式
+function enterEditMode(rowId, label, inputId, inputType, currentValue, saveFn) {
+  const rowEl = document.getElementById(rowId);
+  if (!rowEl) return;
   rowEl.innerHTML = `
-    <div style="width:90px;font-size:14px;color:#334155;flex-shrink:0;">昵称</div>
-    <input type="text" id="profile-nickname-input" value="${current}" style="flex:1;padding:6px 10px;font-size:14px;border:1px solid #e2e8f0;border-radius:6px;outline:none;" onkeydown="if(event.key==='Enter')saveProfileNickname()">
-    <span style="color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;" onclick="saveProfileNickname()">保存</span>
+    <div style="width:90px;font-size:14px;color:#334155;flex-shrink:0;">${label}</div>
+    <input type="${inputType}" id="${inputId}" value="${currentValue}" style="flex:1;padding:6px 10px;font-size:14px;border:1.5px solid #bfdbfe;border-radius:6px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#bfdbfe'" onkeydown="if(event.key==='Enter')${saveFn}()">
+    <span style="color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;font-weight:500;" onclick="${saveFn}()">保存</span>
     <span style="color:#94a3b8;font-size:13px;cursor:pointer;margin-left:8px;flex-shrink:0;" onclick="renderModule('profile')">取消</span>
   `;
-  setTimeout(() => document.getElementById("profile-nickname-input")?.focus(), 50);
+  setTimeout(() => { const el = document.getElementById(inputId); if(el){ el.focus(); el.select(); } }, 50);
+}
+
+// 昵称编辑
+function editProfileNickname() {
+  const el = document.getElementById("profile-nickname-value");
+  if (!el) return;
+  enterEditMode("profile-nickname-row", "昵称", "profile-nickname-input", "text", el.textContent, "saveProfileNickname");
 }
 function saveProfileNickname() {
   const input = document.getElementById("profile-nickname-input");
@@ -6086,17 +6091,9 @@ function saveProfileNickname() {
 
 // 职位编辑
 function editProfilePosition() {
-  const valueEl = document.getElementById("profile-position-value");
-  const rowEl = document.getElementById("profile-position-row");
-  if (!valueEl || !rowEl) return;
-  const current = valueEl.textContent;
-  rowEl.innerHTML = `
-    <div style="width:90px;font-size:14px;color:#334155;flex-shrink:0;">职位</div>
-    <input type="text" id="profile-position-input" value="${current}" style="flex:1;padding:6px 10px;font-size:14px;border:1px solid #e2e8f0;border-radius:6px;outline:none;" onkeydown="if(event.key==='Enter')saveProfilePosition()">
-    <span style="color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;" onclick="saveProfilePosition()">保存</span>
-    <span style="color:#94a3b8;font-size:13px;cursor:pointer;margin-left:8px;flex-shrink:0;" onclick="renderModule('profile')">取消</span>
-  `;
-  setTimeout(() => document.getElementById("profile-position-input")?.focus(), 50);
+  const el = document.getElementById("profile-position-value");
+  if (!el) return;
+  enterEditMode("profile-position-row", "职位", "profile-position-input", "text", el.textContent, "saveProfilePosition");
 }
 function saveProfilePosition() {
   const input = document.getElementById("profile-position-input");
@@ -6107,6 +6104,130 @@ function saveProfilePosition() {
   if (userInDb) userInDb.position = val;
   renderModule("profile");
   showToast("职位修改成功");
+}
+
+// 生日编辑
+function editProfileBirthday() {
+  const el = document.getElementById("profile-birthday-value");
+  if (!el) return;
+  const current = el.textContent === "--" ? "" : el.textContent;
+  enterEditMode("profile-birthday-row", "生日", "profile-birthday-input", "date", current, "saveProfileBirthday");
+}
+function saveProfileBirthday() {
+  const input = document.getElementById("profile-birthday-input");
+  if (!input) return;
+  const val = input.value;
+  if (currentUser) currentUser.birthday = val;
+  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
+  if (userInDb) userInDb.birthday = val;
+  renderModule("profile");
+  showToast("生日修改成功");
+}
+
+// 手机号编辑
+function editProfilePhone() {
+  const el = document.getElementById("profile-phone-value");
+  if (!el) return;
+  const current = el.textContent === "--" ? "" : el.textContent;
+  enterEditMode("profile-phone-row", "手机号", "profile-phone-input", "tel", current, "saveProfilePhone");
+}
+function saveProfilePhone() {
+  const input = document.getElementById("profile-phone-input");
+  if (!input) return;
+  const val = input.value.trim();
+  if (val && !/^1[3-9]\d{9}$/.test(val)) { alert("请输入正确的手机号"); return; }
+  if (currentUser) currentUser.phone = val || "";
+  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
+  if (userInDb) userInDb.phone = val || "";
+  renderModule("profile");
+  showToast(val ? "手机号修改成功" : "手机号已清空");
+}
+
+// 邮箱编辑
+function editProfileEmail() {
+  const el = document.getElementById("profile-email-value");
+  if (!el) return;
+  const current = el.textContent === "--" ? "" : el.textContent;
+  enterEditMode("profile-email-row", "邮箱", "profile-email-input", "email", current, "saveProfileEmail");
+}
+function saveProfileEmail() {
+  const input = document.getElementById("profile-email-input");
+  if (!input) return;
+  const val = input.value.trim();
+  if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { alert("请输入正确的邮箱地址"); return; }
+  if (currentUser) currentUser.email = val || "";
+  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
+  if (userInDb) userInDb.email = val || "";
+  renderModule("profile");
+  showToast(val ? "邮箱修改成功" : "邮箱已清空");
+}
+
+// 微信绑定/解绑
+function toggleWechatBind() {
+  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
+  const current = currentUser && currentUser.wechatBound;
+  if (current) {
+    if (!confirm("确定要解绑微信吗？")) return;
+    if (currentUser) currentUser.wechatBound = false;
+    if (userInDb) userInDb.wechatBound = false;
+    showToast("微信已解绑");
+  } else {
+    if (currentUser) currentUser.wechatBound = true;
+    if (userInDb) userInDb.wechatBound = true;
+    showToast("微信绑定成功");
+  }
+  renderModule("profile");
+}
+
+// 保持当前状态切换
+function toggleKeepStatus(checkbox) {
+  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
+  if (currentUser) currentUser.keepStatus = checkbox.checked;
+  if (userInDb) userInDb.keepStatus = checkbox.checked;
+  showToast(checkbox.checked ? "保持当前状态已开启" : "保持当前状态已关闭");
+  setTimeout(() => renderModule("profile"), 400);
+}
+
+// 修改密码弹窗
+function showChangePasswordModal() {
+  const modal = document.getElementById("change-password-modal");
+  if (modal) {
+    modal.classList.remove("hidden");
+    setTimeout(() => document.getElementById("cp-old")?.focus(), 100);
+  }
+}
+function hideChangePasswordModal() {
+  const modal = document.getElementById("change-password-modal");
+  if (modal) {
+    modal.classList.add("hidden");
+    ["cp-old","cp-new","cp-confirm"].forEach(id => { const el = document.getElementById(id); if(el) el.value=""; });
+  }
+}
+function doChangePassword() {
+  const oldPwd = document.getElementById("cp-old").value;
+  const newPwd = document.getElementById("cp-new").value;
+  const confirm = document.getElementById("cp-confirm").value;
+  if (!oldPwd || !newPwd || !confirm) { alert("请填写完整"); return; }
+  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
+  if (!userInDb || userInDb.password !== oldPwd) { alert("原密码不正确"); return; }
+  if (newPwd.length < 6) { alert("新密码至少6位"); return; }
+  if (newPwd !== confirm) { alert("两次输入的新密码不一致"); return; }
+  userInDb.password = newPwd;
+  showToast("密码修改成功，请牢记新密码");
+  hideChangePasswordModal();
+}
+
+// 离开团队
+function leaveTeam() {
+  if (!confirm("⚠️ 确定要离开团队吗？离开后您将无法查看此团队的任何记录！")) return;
+  if (!confirm("再次确认：您真的要离开团队吗？此操作不可撤销。")) return;
+  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
+  if (userInDb) {
+    userInDb.status = "已禁用";
+    userInDb.remark = "用户主动离开团队";
+  }
+  showToast("您已离开团队");
+  setTimeout(() => logout(), 800);
 }
 
 function exportRisk(){
