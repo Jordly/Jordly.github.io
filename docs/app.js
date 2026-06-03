@@ -114,6 +114,14 @@ const USERS = [
 // 当前登录用户（null 表示未登录）
 let currentUser = null;
 
+// 控制主界面（header + main-container）显示/隐藏
+function setAppContentVisible(visible) {
+  const hd = document.getElementById("top-header");
+  const mc = document.getElementById("main-container");
+  if (hd) hd.style.display = visible ? "" : "none";
+  if (mc) mc.style.display = visible ? "" : "none";
+}
+
 // 登录状态检查
 function checkLogin() {
   try {
@@ -121,9 +129,11 @@ function checkLogin() {
     if (saved) {
       currentUser = JSON.parse(saved);
       updateUserDisplay();
+      setAppContentVisible(true);
       return true;
     }
   } catch(e) {}
+  setAppContentVisible(false);
   showLoginModal();
   return false;
 }
@@ -168,6 +178,7 @@ function doLogin() {
   currentUser = {id:user.id, name:user.name, username:user.username, role:user.role, status:user.status};
   localStorage.setItem("chansee_current_user", JSON.stringify(currentUser));
   hideLoginModal();
+  setAppContentVisible(true);
   updateUserDisplay();
   renderModule("dashboard");
 }
@@ -201,7 +212,8 @@ function doRegister() {
 function logout() {
   currentUser = null;
   localStorage.removeItem("chansee_current_user");
-  location.reload();
+  setAppContentVisible(false);
+  showLoginModal();
 }
 
 // 判断当前用户是否为管理员/超级管理员
@@ -939,8 +951,10 @@ function canViewModule(module) {
 document.addEventListener("DOMContentLoaded", () => {
   try {
     initNav();
-    
     initModal();
+    // 登录检查：未登录则只显示登录框，不初始化主界面
+    const loggedIn = checkLogin();
+    if (!loggedIn) return;
     // 默认：只展开第一个分组，其余折叠
     document.querySelectorAll(".nav-section").forEach((sec,idx) => {
       const arrow = sec.querySelector('.section-arrow');
