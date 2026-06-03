@@ -1508,6 +1508,32 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   margin-top: 12px;
 }
 
+/* ===== 登录页"记住我"复选框 ===== */
+.form-remember {
+  display: flex;
+  align-items: center;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+.remember-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--c-text-2);
+  cursor: pointer;
+  user-select: none;
+}
+.remember-label input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--c-primary);
+  cursor: pointer;
+}
+.remember-text {
+  font-size: 12px;
+}
+
 /* ===== 用户管理状态标签扩展 ===== */
 .badge-purple {
   background: #EDE9FE;
