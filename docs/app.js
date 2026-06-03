@@ -5862,9 +5862,10 @@ function renderProfile(){
     </div>
 
     <!-- 品牌 -->
-    <div style="${rowStyle}">
+    <div style="${rowStyle}" id="profile-brand-row">
       <div style="${labelStyle}">品牌</div>
-      <div style="${valueStyle}">Chanseen CloudHub</div>
+      <div style="${valueStyle}" id="profile-brand-value">${u.brand || userInDb.brand || "Chanseen CloudHub"}</div>
+      <span style="${linkStyle}" ${linkHover} onclick="editProfileBrand()">修改</span>
     </div>
 
     <!-- 手机号 -->
@@ -6082,9 +6083,16 @@ function saveProfileNickname() {
   if (!input) return;
   const val = input.value.trim();
   if (!val) { alert("昵称不能为空"); return; }
-  if (currentUser) currentUser.nickname = val;
+  if (currentUser) {
+    currentUser.nickname = val;
+    currentUser.name = val; // 同步更新右上角显示的名称
+  }
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
-  if (userInDb) userInDb.nickname = val;
+  if (userInDb) {
+    userInDb.nickname = val;
+    userInDb.name = val;
+  }
+  updateUserDisplay(); // 同步刷新右上角
   renderModule("profile");
   showToast("昵称修改成功");
 }
@@ -6179,13 +6187,32 @@ function toggleWechatBind() {
   renderModule("profile");
 }
 
+// 品牌编辑
+function editProfileBrand() {
+  const el = document.getElementById("profile-brand-value");
+  if (!el) return;
+  enterEditMode("profile-brand-row", "品牌", "profile-brand-input", "text", el.textContent, "saveProfileBrand");
+}
+function saveProfileBrand() {
+  const input = document.getElementById("profile-brand-input");
+  if (!input) return;
+  const val = input.value.trim();
+  if (currentUser) currentUser.brand = val;
+  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
+  if (userInDb) userInDb.brand = val;
+  renderModule("profile");
+  showToast("品牌修改成功");
+}
+
 // 保持当前状态切换
 function toggleKeepStatus(checkbox) {
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (currentUser) currentUser.keepStatus = checkbox.checked;
   if (userInDb) userInDb.keepStatus = checkbox.checked;
+  // 即时更新文字，不等待重新渲染
+  const statusText = checkbox.parentElement.parentElement.querySelector("span:last-child");
+  if (statusText) statusText.textContent = checkbox.checked ? "已开启" : "已关闭";
   showToast(checkbox.checked ? "保持当前状态已开启" : "保持当前状态已关闭");
-  setTimeout(() => renderModule("profile"), 400);
 }
 
 // 修改密码弹窗
