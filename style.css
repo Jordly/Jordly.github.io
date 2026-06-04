@@ -1531,10 +1531,11 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   color: #93c5fd;
 }
 .brand-tagline {
-  font-size: 14px;
-  color: rgba(255,255,255,0.75);
-  margin-top: 6px;
-  font-weight: 400;
+  font-size: 15px;
+  color: rgba(255,255,255,0.85);
+  margin-top: 8px;
+  font-weight: 300;
+  letter-spacing: 3px;
 }
 
 /* 亮点卡片 */
@@ -1597,19 +1598,20 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   border-color: #fff;
 }
 .btn-text-light {
-  padding: 8px 16px;
+  padding: 8px 20px;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  border: none;
+  border: 1.5px solid rgba(255,255,255,0.35);
+  border-radius: var(--radius);
   background: transparent;
   color: rgba(255,255,255,0.8);
-  text-decoration: underline;
-  text-underline-offset: 3px;
 }
 .btn-text-light:hover {
   color: #fff;
+  border-color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.08);
 }
 
 /* 右侧表单区 */
