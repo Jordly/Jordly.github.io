@@ -6248,6 +6248,97 @@ function doChangePassword() {
   showToast("密码修改成功，请牢记新密码");
   hideChangePasswordModal();
 }
+// 忘记密码功能
+let forgotVerifyCode = '';
+let forgotTargetUser = null;
+
+function openForgotPassword() {
+  const modal = document.getElementById('forgot-password-modal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    document.getElementById('forgot-step-1').style.display = 'block';
+    document.getElementById('forgot-step-2').style.display = 'none';
+    ['forgot-contact','forgot-code','forgot-new-pwd','forgot-confirm-pwd'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+  }
+}
+
+function hideForgotPassword() {
+  const modal = document.getElementById('forgot-password-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    forgotVerifyCode = '';
+    forgotTargetUser = null;
+  }
+}
+
+function sendVerifyCode() {
+  const contact = document.getElementById('forgot-contact').value.trim();
+  if (!contact) { alert('请输入手机号或邮箱'); return; }
+  
+  // Find user by phone or email
+  const user = USERS.find(u => 
+    (u.phone && u.phone.indexOf(contact) >= 0) || 
+    (u.email && u.email.toLowerCase() === contact.toLowerCase()) ||
+    u.username === contact
+  );
+  
+  if (!user) { alert('未找到该账号，请确认手机号/邮箱是否正确'); return; }
+  
+  forgotTargetUser = user;
+  // Generate 6-digit verification code
+  forgotVerifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+  
+  // Display the code (simulation - in real scenario, send via SMS/email)
+  const display = document.getElementById('forgot-code-display');
+  if (display) {
+    display.textContent = forgotVerifyCode;
+  }
+  
+  // Switch to step 2
+  document.getElementById('forgot-step-1').style.display = 'none';
+  document.getElementById('forgot-step-2').style.display = 'block';
+  
+  showToast('模拟验证码已生成，请查看弹窗内提示');
+}
+
+function toggleForgotNewPwd() {
+  const inp = document.getElementById('forgot-new-pwd');
+  const eye = document.getElementById('forgot-new-pwd-eye');
+  if (!inp || !eye) return;
+  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '👁️'; }
+  else { inp.type = 'password'; eye.textContent = '🙈'; }
+}
+
+function toggleForgotConfirmPwd() {
+  const inp = document.getElementById('forgot-confirm-pwd');
+  const eye = document.getElementById('forgot-confirm-pwd-eye');
+  if (!inp || !eye) return;
+  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '👁️'; }
+  else { inp.type = 'password'; eye.textContent = '🙈'; }
+}
+
+function resetPassword() {
+  const code = document.getElementById('forgot-code').value.trim();
+  const newPwd = document.getElementById('forgot-new-pwd').value;
+  const confirmPwd = document.getElementById('forgot-confirm-pwd').value;
+  
+  if (!code) { alert('请输入验证码'); return; }
+  if (code !== forgotVerifyCode) { alert('验证码错误'); return; }
+  if (!newPwd || newPwd.length < 6) { alert('新密码至少6位'); return; }
+  if (newPwd !== confirmPwd) { alert('两次输入的新密码不一致'); return; }
+  if (!forgotTargetUser) { alert('操作超时，请重新操作'); hideForgotPassword(); return; }
+  
+  // Update password
+  forgotTargetUser.password = newPwd;
+  
+  showToast('密码重置成功，请使用新密码登录');
+  hideForgotPassword();
+}
+
+
 
 // 离开团队
 function leaveTeam() {
