@@ -6,18 +6,18 @@ const ASSESSMENTS_DATA = [{"month":"7月","dept":"B事业部","group":"Alpha组"
 
 const PROJECTS = [
 
-  {id:"P001", name:"美妆旗舰店客服项目", brand:"兰蔻", category:"美妆", serviceMode:"TP代运营", workplace:"济南", pm:"张伟", director:"李明", pmHistory:[{name:"王芳", from:"2025-06", to:"2026-03", reason:"调岗"}], status:"运营中", startDate:"2025-04-01", endDate:"2026-12-31", base:"济南职场2F", platforms:"天猫,抖音", serviceHours:"09:00-24:00", fteTarget:30, slaResponse:120, slaResolve:360, costBudget:450000, revenue:520000, profitRate:13.5, health:"🟢"},
+  {id:"P001", name:"美妆旗舰店客服项目", brand:"兰蔻", category:"美妆", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"李明", pmHistory:[{name:"王芳", from:"2025-06", to:"2026-03", reason:"调岗"}], status:"运营中", startDate:"2025-04-01", endDate:"2026-12-31", base:"济南职场2F", platforms:"天猫,抖音", serviceHours:"09:00-24:00", fteTarget:30, slaResponse:120, slaResolve:360, costBudget:450000, revenue:520000, profitRate:13.5, health:"🟢"},
 
-  {id:"P002", name:"家电自营客服项目", brand:"美的", category:"家电", serviceMode:"经销模式", workplace:"淄博", pm:"刘洋", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-01-15", endDate:"2026-12-31", base:"淄博职场1F", platforms:"京东,天猫", serviceHours:"08:00-22:00", fteTarget:45, slaResponse:90, slaResolve:300, costBudget:680000, revenue:750000, profitRate:9.3, health:"🟡"},
+  {id:"P002", name:"家电自营客服项目", brand:"美的", category:"家电", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-01-15", endDate:"2026-12-31", base:"淄博职场1F", platforms:"京东,天猫", serviceHours:"08:00-22:00", fteTarget:45, slaResponse:90, slaResolve:300, costBudget:680000, revenue:750000, profitRate:9.3, health:"🟡"},
 
-  {id:"P003", name:"服装品牌客服外包", brand:"优衣库", category:"服装", serviceMode:"BPO外包", workplace:"杭州", pm:"陈静", director:"李明", pmHistory:[{name:"赵丽", from:"2025-01", to:"2025-11", reason:"离职"}], status:"运营中", startDate:"2025-01-10", endDate:"2026-06-30", base:"杭州职场3F", platforms:"全平台", serviceHours:"08:00-24:00", fteTarget:60, slaResponse:60, slaResolve:240, costBudget:880000, revenue:920000, profitRate:4.3, health:"🔴"},
+  {id:"P003", name:"服装品牌客服外包", brand:"优衣库", category:"服装", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"李明", pmHistory:[{name:"赵丽", from:"2025-01", to:"2025-11", reason:"离职"}], status:"运营中", startDate:"2025-01-10", endDate:"2026-06-30", base:"杭州职场3F", platforms:"全平台", serviceHours:"08:00-24:00", fteTarget:60, slaResponse:60, slaResolve:240, costBudget:880000, revenue:920000, profitRate:4.3, health:"🔴"},
 
-  {id:"P004", name:"母婴用品客服项目", brand:"好孩子", category:"母婴", serviceMode:"TP代运营", workplace:"济南", pm:"张伟", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-08-01", endDate:"2027-01-31", base:"济南职场2F", platforms:"天猫,京东,拼多多", serviceHours:"09:00-21:00", fteTarget:25, slaResponse:120, slaResolve:360, costBudget:320000, revenue:380000, profitRate:15.8, health:"🟢"},
+  {id:"P004", name:"母婴用品客服项目", brand:"好孩子", category:"母婴", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-08-01", endDate:"2027-01-31", base:"济南职场2F", platforms:"天猫,京东,拼多多", serviceHours:"09:00-21:00", fteTarget:25, slaResponse:120, slaResolve:360, costBudget:320000, revenue:380000, profitRate:15.8, health:"🟢"},
 
-  {id:"P005", name:"食品生鲜客服项目", brand:"三只松鼠", category:"食品", serviceMode:"经销模式", workplace:"淄博", pm:"刘洋", director:"李明", pmHistory:[{name:"孙磊", from:"2025-03", to:"2026-02", reason:"内部调换"}], status:"运营中", startDate:"2025-03-01", endDate:"2026-08-31", base:"淄博职场1F", platforms:"天猫,抖音", serviceHours:"08:00-23:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:520000, revenue:600000, profitRate:13.3, health:"🟡"},
+  {id:"P005", name:"食品生鲜客服项目", brand:"三只松鼠", category:"食品", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"李明", pmHistory:[{name:"孙磊", from:"2025-03", to:"2026-02", reason:"内部调换"}], status:"运营中", startDate:"2025-03-01", endDate:"2026-08-31", base:"淄博职场1F", platforms:"天猫,抖音", serviceHours:"08:00-23:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:520000, revenue:600000, profitRate:13.3, health:"🟡"},
 
-  {id:"P006", name:"运动品牌客服项目", brand:"耐克", category:"运动", serviceMode:"BPO外包", workplace:"杭州", pm:"陈静", director:"王强", pmHistory:[], status:"暂停", startDate:"2025-06-01", endDate:"2026-05-31", base:"杭州职场3F", platforms:"天猫,官网", serviceHours:"09:00-21:00", fteTarget:20, slaResponse:60, slaResolve:240, costBudget:280000, revenue:250000, profitRate:-10.7, health:"🔴"},
-  {id:"P007", name:"智能家居客服项目", brand:"小米", category:"智能硬件", serviceMode:"TP代运营", workplace:"无锡", pm:"张伟", director:"李明", pmHistory:[], status:"运营中", startDate:"2026-03-01", endDate:"2027-02-28", base:"无锡职场1F", platforms:"天猫,京东,抖音", serviceHours:"09:00-22:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:420000, revenue:480000, profitRate:12.5, health:"🟢"},
+  {id:"P006", name:"运动品牌客服项目", brand:"耐克", category:"运动", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"王强", pmHistory:[], status:"暂停", startDate:"2025-06-01", endDate:"2026-05-31", base:"杭州职场3F", platforms:"天猫,官网", serviceHours:"09:00-21:00", fteTarget:20, slaResponse:60, slaResolve:240, costBudget:280000, revenue:250000, profitRate:-10.7, health:"🔴"},
+  {id:"P007", name:"智能家居客服项目", brand:"小米", category:"智能硬件", serviceMode:"TP项目", workplace:"无锡", pm:"张伟", director:"李明", pmHistory:[], status:"运营中", startDate:"2026-03-01", endDate:"2027-02-28", base:"无锡职场1F", platforms:"天猫,京东,抖音", serviceHours:"09:00-22:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:420000, revenue:480000, profitRate:12.5, health:"🟢"},
 
 ];
 
@@ -77,7 +77,7 @@ const KNOWLEDGE = [
 
   {id:1, title:"美妆类目大促客服应对SOP", type:"SOP操作规范", sourceProject:"P001", tags:"美妆,大促, SOP", scope:"通用", createdAt:"2025-11-20"},
 
-  {id:2, title:"BPO外包模式成本控制经验", type:"成本优化经验", sourceProject:"P003", tags:"BPO,成本,外包", scope:"特定品类", createdAt:"2026-03-15"},
+  {id:2, title:"BPO项目成本控制经验", type:"成本优化经验", sourceProject:"P003", tags:"BPO,成本,外包", scope:"特定品类", createdAt:"2026-03-15"},
 
   {id:3, title:"天猫平台回复话术规范（2026版）", type:"品牌特殊话术", sourceProject:"P001", tags:"天猫,话术,规范", scope:"特定平台", createdAt:"2026-01-10"},
 
@@ -1361,9 +1361,9 @@ function renderFilterBar() {
         <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目类型</label>
         <select class="filter-select" onchange="setFilter('projectType',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
           <option value="all">全部类型</option>
-          <option value="TP代运营" ${filterState.projectType==='TP代运营'?'selected':''}>TP项目</option>
-          <option value="经销模式" ${filterState.projectType==='经销模式'?'selected':''}>经销项目</option>
-          <option value="BPO外包" ${filterState.projectType==='BPO外包'?'selected':''}>外包项目</option>
+          <option value="TP项目" ${filterState.projectType==='TP项目'?'selected':''}>TP项目</option>
+          <option value="DP项目" ${filterState.projectType==='DP项目'?'selected':''}>DP项目</option>
+          <option value="BPO项目" ${filterState.projectType==='BPO项目'?'selected':''}>BPO项目</option>
         </select>
       </div>
       <div class="filter-item">
@@ -1604,10 +1604,10 @@ function renderDashboard(){
 
   const avgProfit = all.length ? (all.reduce((s,p)=>s+p.profitRate,0)/all.length).toFixed(1) : 0;
 
-  // 计算服务模式分布
-  const tpCount = all.filter(p=>p.serviceMode==="TP代运营").length;
-  const jxCount = all.filter(p=>p.serviceMode==="经销模式").length;
-  const bpoCount = all.filter(p=>p.serviceMode==="BPO外包").length;
+  // 计算项目类型分布
+  const tpCount = all.filter(p=>p.serviceMode==="TP项目").length;
+  const jxCount = all.filter(p=>p.serviceMode==="DP项目").length;
+  const bpoCount = all.filter(p=>p.serviceMode==="BPO项目").length;
 
   // 计算运营数据
   const filteredOps = OPERATIONS.filter(o => {
@@ -1646,17 +1646,17 @@ function renderDashboard(){
 
 
 
-    <!-- 第一行：服务模式分布 -->
+    <!-- 第一行：项目类型分布 -->
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
-    <div class="metric-card row-service" onclick="setFilter('projectType','TP代运营');renderDashboard();" style="cursor:pointer;">
+    <div class="metric-card row-service" onclick="setFilter('projectType','TP项目');renderDashboard();" style="cursor:pointer;">
       <div class="metric-icon-wrap">&#x2699;&#xFE0F;</div>
       <div class="metric-center">
-        <div class="metric-label">TP代运营</div>
+        <div class="metric-label">TP项目</div>
         <div class="metric-value">${tpCount}<span class="metric-unit">个</span></div>
       </div>
       <div class="metric-right"><span class="metric-tag">项目数</span></div>
     </div>
-    <div class="metric-card row-service" onclick="setFilter('projectType','经销模式');renderDashboard();" style="cursor:pointer;">
+    <div class="metric-card row-service" onclick="setFilter('projectType','DP项目');renderDashboard();" style="cursor:pointer;">
       <div class="metric-icon-wrap">&#x1F3EA;</div>
       <div class="metric-center">
         <div class="metric-label">经销服务</div>
@@ -1664,10 +1664,10 @@ function renderDashboard(){
       </div>
       <div class="metric-right"><span class="metric-tag">项目数</span></div>
     </div>
-    <div class="metric-card row-service" onclick="setFilter('projectType','BPO外包');renderDashboard();" style="cursor:pointer;">
+    <div class="metric-card row-service" onclick="setFilter('projectType','BPO项目');renderDashboard();" style="cursor:pointer;">
       <div class="metric-icon-wrap">&#x1F91D;</div>
       <div class="metric-center">
-        <div class="metric-label">BPO外包</div>
+        <div class="metric-label">BPO项目</div>
         <div class="metric-value">${bpoCount}<span class="metric-unit">个</span></div>
       </div>
       <div class="metric-right"><span class="metric-tag">项目数</span></div>
@@ -1941,7 +1941,7 @@ function renderArchive(){
 
     <table class="data-table">
 
-      <thead><tr><th>项目编号</th><th>项目名称</th><th>品牌/品类</th><th>服务模式</th><th>所属职场</th><th>负责人</th><th>项目总监</th><th>交接历史</th><th>操作</th></tr></thead>
+      <thead><tr><th>项目编号</th><th>项目名称</th><th>品牌/品类</th><th>项目类型</th><th>所属职场</th><th>负责人</th><th>项目总监</th><th>交接历史</th><th>操作</th></tr></thead>
 
       <tbody>
 
@@ -1955,7 +1955,7 @@ function renderArchive(){
 
             <td>${p.brand} / ${p.category}</td>
 
-            <td><span class="badge ${p.serviceMode==='TP代运营'?'badge-blue':p.serviceMode==='经销模式'?'badge-green':'badge-orange'}">${p.serviceMode}</span></td>
+            <td><span class="badge ${p.serviceMode==='TP项目'?'badge-blue':p.serviceMode==='DP项目'?'badge-green':'badge-orange'}">${p.serviceMode}</span></td>
 
             <td><span class="wp-tag wp-${p.workplace}">${p.workplace}</span></td>
 
@@ -2856,7 +2856,7 @@ function renderDirector(){
 
       <table class="data-table">
 
-        <thead><tr><th>项目</th><th>职场</th><th>服务模式</th><th>利润率</th><th>健康</th><th>负责人</th></tr></thead>
+        <thead><tr><th>项目</th><th>职场</th><th>项目类型</th><th>利润率</th><th>健康</th><th>负责人</th></tr></thead>
 
         <tbody>
 
@@ -2934,7 +2934,7 @@ function showProjectDetail(projectId){
 
           <span class="wp-tag wp-${p.workplace}">${p.workplace}</span>
 
-          <span class="badge ${p.serviceMode==='TP代运营'?'badge-blue':p.serviceMode==='经销模式'?'badge-green':'badge-orange'}">${p.serviceMode}</span>
+          <span class="badge ${p.serviceMode==='TP项目'?'badge-blue':p.serviceMode==='DP项目'?'badge-green':'badge-orange'}">${p.serviceMode}</span>
 
           <span>${p.category} · ${p.brand}</span>
 
@@ -2988,7 +2988,7 @@ function showProjectDetail(projectId){
 
         <div class="detail-item"><div class="detail-label">品类</div><div class="detail-value">${p.category}</div></div>
 
-        <div class="detail-item"><div class="detail-label">服务模式</div><div class="detail-value">${p.serviceMode}</div></div>
+        <div class="detail-item"><div class="detail-label">项目类型</div><div class="detail-value">${p.serviceMode}</div></div>
 
         <div class="detail-item"><div class="detail-label">所属职场</div><div class="detail-value">${p.workplace}</div></div>
 
@@ -3341,11 +3341,11 @@ function showAddProject(){
 
       <div class="form-group">
 
-        <label class="form-label">服务模式</label>
+        <label class="form-label">项目类型</label>
 
         <select class="form-select" id="f-mode">
 
-          <option>TP代运营</option><option>经销模式</option><option>BPO外包</option>
+          <option>TP项目</option><option>DP项目</option><option>BPO项目</option>
 
         </select>
 
