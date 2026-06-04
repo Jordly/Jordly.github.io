@@ -31,7 +31,7 @@
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "x1kmwrv9fw");
 </script>
-<link rel="stylesheet" href="style.css?v=20260604170355">
+<link rel="stylesheet" href="style.css?v=20260604172109">
 </head>
 <body>
 <!-- 顶部导航 -->
@@ -175,7 +175,7 @@
 <!-- 移动端侧边栏遮罩 -->
 <div id="sidebar-overlay" class="sidebar-overlay hidden" onclick="closeMobileSidebar()"></div>
 
-  <script src="app.js?v=20260604170355"></script>
+  <script src="app.js?v=20260604172109"></script>
 
 <!-- 登录/注册弹窗 - 左右分栏布局 -->
 <div id="login-modal" class="modal-overlay hidden" style="z-index:10000; background: linear-gradient(135deg, #f8f9fa 0%, #e8f4fd 100%);">
@@ -252,6 +252,9 @@
             </label>
           </div>
           <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="doLogin()">登  录</button>
+          <div class="forgot-password-link">
+            <a href="javascript:void(0)" onclick="openForgotPassword()">忘记密码？</a>
+          </div>
           <div class="login-hint">提示：注册后需等待管理员审批通过方可登录</div>
         </div>
         <div id="auth-register-form" style="display:none;">
@@ -297,6 +300,47 @@
   </div>
 </div>
 
+
+<!-- 忘记密码弹窗 -->
+<div id="forgot-password-modal" class="modal-overlay hidden" style="z-index:10002;">
+  <div style="width:400px;padding:0;overflow:hidden;background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="padding:20px 24px 16px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:16px;font-weight:600;color:#1e293b;">🔑 找回密码</span>
+      <span style="font-size:20px;color:#94a3b8;cursor:pointer;line-height:1;" onclick="hideForgotPassword()">&times;</span>
+    </div>
+    <div id="forgot-step-1" style="padding:24px;">
+      <div style="font-size:13px;color:#64748b;margin-bottom:16px;">请输入注册时填写的手机号或邮箱，我们将模拟发送验证码</div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:13px;font-weight:500;color:#1e293b;margin-bottom:6px;">手机号 / 邮箱</label>
+        <input type="text" id="forgot-contact" style="width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;" placeholder="请输入手机号或邮箱">
+      </div>
+      <button style="width:100%;padding:10px;background:linear-gradient(135deg,#1e40af,#1e3a8a);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;" onclick="sendVerifyCode()">发送验证码</button>
+    </div>
+    <div id="forgot-step-2" style="padding:24px;display:none;">
+      <div style="font-size:13px;color:#64748b;margin-bottom:16px;">模拟验证码已生成，请查看下方提示并输入验证码</div>
+      <div id="forgot-code-display" style="background:#f0f9ff;padding:14px 16px;border-radius:8px;margin-bottom:16px;color:#0369a1;text-align:center;font-weight:600;letter-spacing:6px;font-size:22px;"></div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:13px;font-weight:500;color:#1e293b;margin-bottom:6px;">验证码</label>
+        <input type="text" id="forgot-code" style="width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;" placeholder="请输入6位验证码" maxlength="6">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:13px;font-weight:500;color:#1e293b;margin-bottom:6px;">新密码</label>
+        <div style="position:relative;">
+          <input type="password" id="forgot-new-pwd" style="width:100%;padding:9px 40px 9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;" placeholder="至少6位">
+          <button type="button" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;" onclick="toggleForgotNewPwd()"><span id="forgot-new-pwd-eye">👁️</span></button>
+        </div>
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block;font-size:13px;font-weight:500;color:#1e293b;margin-bottom:6px;">确认新密码</label>
+        <div style="position:relative;">
+          <input type="password" id="forgot-confirm-pwd" style="width:100%;padding:9px 40px 9px 12px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;" placeholder="再次输入新密码">
+          <button type="button" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;" onclick="toggleForgotConfirmPwd()"><span id="forgot-confirm-pwd-eye">👁️</span></button>
+        </div>
+      </div>
+      <button style="width:100%;padding:10px;background:linear-gradient(135deg,#1e40af,#1e3a8a);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;" onclick="resetPassword()">重置密码</button>
+    </div>
+  </div>
+</div>
 
 <!-- 修改密码弹窗 -->
 <div id="change-password-modal" class="modal-overlay hidden" style="z-index:10001;">
