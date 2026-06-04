@@ -1668,6 +1668,22 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   color: var(--c-text-3);
   margin-top: 12px;
 }
+.forgot-password-link {
+  text-align: right;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+.forgot-password-link a {
+  font-size: 13px;
+  color: var(--c-primary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.forgot-password-link a:hover {
+  color: var(--c-primary-dark);
+  text-decoration: underline;
+}
 
 /* 移动端：上下堆叠 */
 @media (max-width: 768px) {
