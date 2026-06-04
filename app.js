@@ -1659,7 +1659,7 @@ function renderDashboard(){
     <div class="metric-card row-service" onclick="setFilter('projectType','DP项目');renderDashboard();" style="cursor:pointer;">
       <div class="metric-icon-wrap">&#x1F3EA;</div>
       <div class="metric-center">
-        <div class="metric-label">经销服务</div>
+        <div class="metric-label">DP项目</div>
         <div class="metric-value">${jxCount}<span class="metric-unit">个</span></div>
       </div>
       <div class="metric-right"><span class="metric-tag">项目数</span></div>
