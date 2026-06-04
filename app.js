@@ -5097,7 +5097,7 @@ function showSatisfactionPermission(){
 
 
 
-// ===== 消息通知提醒（用户审批管理） =====
+// ===== 系统用户管理（用户审批管理） =====
 
 let notificationFilter = "all";
 
@@ -5134,7 +5134,7 @@ function renderNotifications(){
 
   return `<div class="module-header">
     <div>
-      <div class="module-title">&#x1F514; 消息通知提醒</div>
+      <div class="module-title">&#x1F514; 系统用户管理</div>
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">管理系统用户，审批注册申请，维护账号状态</div>
     </div>
     <div class="module-actions">
