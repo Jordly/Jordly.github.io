@@ -258,6 +258,9 @@ function doLogin() {
   const remember = document.getElementById("login-remember")?.checked;
   if (!username || !password) { alert("请填写账号和密码"); return; }
 
+  const btn = document.querySelector("#login-form .btn-primary");
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "登录中"; }
+
   const user = USERS.find(u => u.username === username && u.password === password);
   if (!user) { alert("账号或密码错误"); return; }
   if (user.status !== "已激活") { alert("账号状态：" + user.status + "，请联系管理员审批"); return; }
@@ -279,6 +282,7 @@ function doLogin() {
     sessionStorage.setItem("chansee_current_user", sessionData);
   }
 
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "登录"; }
   hideLoginModal();
   setAppContentVisible(true);
   updateUserDisplay();
@@ -295,6 +299,9 @@ function doRegister() {
   const email = document.getElementById("reg-email").value.trim();
 
   if (!name || !username || !password || !confirm) { alert("请填写完整信息"); return; }
+
+  const btn = document.querySelector("#register-form .btn-primary");
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "注册中"; }
   if (password !== confirm) { alert("两次密码不一致"); return; }
   if (USERS.some(u => u.username === username)) { alert("该账号已被注册"); return; }
 
@@ -305,6 +312,7 @@ function doRegister() {
     phone: phone || "", email: email || "", approvedBy: "", remark: ""
   };
   USERS.push(newUser);
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "注册"; }
   alert("注册成功！请等待管理员审批后登录。");
   switchAuthTab("login");
 }
@@ -6069,6 +6077,8 @@ function saveProfileNickname() {
   const input = document.getElementById("profile-nickname-input");
   if (!input) return;
   const val = input.value.trim();
+  const btn = input.parentElement.querySelector("button");
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   if (!val) { alert("昵称不能为空"); return; }
   if (currentUser) {
     currentUser.nickname = val;
@@ -6080,6 +6090,7 @@ function saveProfileNickname() {
     userInDb.name = val;
   }
   updateUserDisplay(); // 同步刷新右上角
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "保存"; }
   renderModule("profile");
   showToast("昵称修改成功");
 }
@@ -6094,9 +6105,12 @@ function saveProfilePosition() {
   const input = document.getElementById("profile-position-input");
   if (!input) return;
   const val = input.value.trim();
+  const btn = input.parentElement.querySelector("button");
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   if (currentUser) currentUser.position = val;
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (userInDb) userInDb.position = val;
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "保存"; }
   renderModule("profile");
   showToast("职位修改成功");
 }
@@ -6223,11 +6237,14 @@ function doChangePassword() {
   const newPwd = document.getElementById("cp-new").value;
   const confirm = document.getElementById("cp-confirm").value;
   if (!oldPwd || !newPwd || !confirm) { alert("请填写完整"); return; }
+  const btn = document.querySelector("#change-password-modal .btn-primary");
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (!userInDb || userInDb.password !== oldPwd) { alert("原密码不正确"); return; }
   if (newPwd.length < 6) { alert("新密码至少6位"); return; }
   if (newPwd !== confirm) { alert("两次输入的新密码不一致"); return; }
   userInDb.password = newPwd;
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "确认修改"; }
   showToast("密码修改成功，请牢记新密码");
   hideChangePasswordModal();
 }
@@ -6236,6 +6253,8 @@ function doChangePassword() {
 function leaveTeam() {
   if (!confirm("⚠️ 确定要离开团队吗？离开后您将无法查看此团队的任何记录！")) return;
   if (!confirm("再次确认：您真的要离开团队吗？此操作不可撤销。")) return;
+  const btn = document.querySelector(".profile-btn-danger");
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "处理中"; }
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (userInDb) {
     userInDb.status = "已禁用";
