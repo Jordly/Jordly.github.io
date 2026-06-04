@@ -1153,6 +1153,30 @@ div[style*="font-size:32px"] {
   line-height: 1 !important;
 }
 
+/* ===== 触控区域保证（移动端≥44px）===== */
+.btn, .nav-item, .role-btn, .detail-tab,
+.module-tab, .sat-tab, .hdp-dim-label,
+.badge, .action-btn, .icon-btn {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+.nav-item {
+  min-height: 44px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.role-btn, .detail-tab, .module-tab, .sat-tab {
+  min-height: 36px;
+  padding: 6px 14px;
+}
+/* iOS 表单不自动缩放 */
+.form-input, .form-select, .form-textarea {
+  font-size: 16px;
+}
 /* ===== 移动端响应式 ===== */
 @media (max-width: 768px) {
   /* 整体布局：内容区全宽 */
@@ -1234,6 +1258,8 @@ div[style*="font-size:32px"] {
 
   /* 统计卡片：2列 */
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  /* 触控区域保证 */
+  .nav-item { min-height: 44px; padding: 10px 12px; font-size: 13px; }
   .stat-card { padding: 10px 12px; }
   .stat-value { font-size: 20px; }
 
@@ -1283,13 +1309,31 @@ div[style*="font-size:32px"] {
   .sat-filter-bar select { max-width: 100% !important; width: 100%; }
   .sat-filter-bar .btn { width: 100%; text-align: center; }
 
+
+  /* 表单元素触控优化 */
+  .form-input, .form-select, .form-textarea {
+    min-height: 44px;
+    font-size: 16px;
+    padding: 10px 12px;
+  }
+  /* 弹窗优化 */
+  .modal-box {
+    margin: 0 8px;
+    max-height: 90vh;
+  }
+  /* 表格横向滚动 */
+  .data-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   /* 交接管理时间线 */
   .handover-timeline { padding-left: 16px; }
 }
 
 /* 超小屏幕（iPhone 5/SE 等 320px）*/
 @media (max-width: 375px) {
-  .stats-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr; gap: 6px; }
+  .nav-item { min-height: 44px; padding: 10px 12px; }
   .metric-grid { grid-template-columns: 1fr; }
   .header-left h1 { font-size: 14px; }
   .search-box { display: none; }
@@ -1298,7 +1342,7 @@ div[style*="font-size:32px"] {
 /* 中等屏幕（平板竖屏 769~1024px）*/
 @media (min-width: 769px) and (max-width: 1024px) {
   #sidebar { width: 180px; min-width: 180px; }
-  .nav-item { padding: 7px 10px; font-size: 12px; }
+  .nav-item { min-height: 44px; padding: 10px 12px; font-size: 13px; }
   .dashboard-grid { grid-template-columns: 1fr; }
 }
 
@@ -1324,7 +1368,7 @@ div[style*="font-size:32px"] {
   #sidebar.open {
     transform: translateX(0);
   }
-  .nav-item { padding: 8px 16px; justify-content: flex-start; font-size: 13px; }
+  .nav-item { min-height: 44px; padding: 10px 16px; justify-content: flex-start; font-size: 13px; }
   .nav-item .nav-icon { margin-right: 0; font-size: 16px; }
   .nav-item span { display: inline; }
 
