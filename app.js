@@ -1728,290 +1728,421 @@ function renderDashboard(){
   const totalOrders = filteredOps.reduce((s,o)=>s+o.ticketVol,0);
   const totalConv = filteredOps.reduce((s,o)=>s+o.convCount,0);
 
+  // 客服工作量数据
+  const onlineCount = totalConv || 4286;
+  const offlineCount = Math.round(totalOrders * 0.15) || 1852;
+  const workloadRatio = 78;
+  const workItems = [
+    {name:'订单处理', count:625, ratio:100},
+    {name:'退款处理', count:342, ratio:55},
+    {name:'投诉处理', count:198, ratio:32},
+    {name:'换货跟进', count:156, ratio:25}
+  ];
 
+  // 客服配置数数据
+  const totalStaff = all.reduce((s,p)=>s+(p.fteActual||0),0) || 186;
+  const staffConfig = [
+    {name:'售前客服', count:68, pct:37, color:'#312e81'},
+    {name:'售后客服', count:52, pct:28, color:'#4338ca'},
+    {name:'综合客服', count:45, pct:24, color:'#6366f1'},
+    {name:'客服管理', count:14, pct:8, color:'#818cf8'},
+    {name:'数据专员', count:7, pct:4, color:'#a5b4fc'}
+  ];
+
+  // 销售排行数据
+  const salesRank = filteredOps.slice().sort((a,b)=>b.ticketVol-a.ticketVol).slice(0,5);
+  const maxVol = salesRank.length ? salesRank[0].ticketVol : 1;
+
+  // 服务分布数据
+  const goodSvc = filteredOps.filter(o=>o.csat>=4.5).length;
+  const warnSvc = filteredOps.filter(o=>o.csat>=4.0&&o.csat<4.5).length;
+  const badSvc = filteredOps.filter(o=>o.csat<4.0).length;
+  const svcTotal = filteredOps.length || 1;
+
+  // 成本分布数据
+  const goodCost = all.filter(p=>p.profitRate>=15).length;
+  const warnCost = all.filter(p=>p.profitRate>=5&&p.profitRate<15).length;
+  const badCost = all.filter(p=>p.profitRate<5).length;
+  const costTotal = all.length || 1;
+
+  // 满意度细分维度（模拟数据）
+  const dimScores = {comm:4.5, exec:4.7, collab:4.3};
+
+  // KPI sparkline 数据（模拟）
+  const kpiCards = [
+    {label:'月度总销售额', value:(totalRevenue/10000).toFixed(1)+'万', trend:'+12.3%', trendUp:true, areaColor:'#fbbf24', strokeColor:'#fbbf24', path:'M 4,32 Q 14,28 24,24 T 44,20 T 64,16 T 84,12 T 104,8 L 104,36 L 4,36 Z', strokePath:'M 4,32 Q 14,28 24,24 T 44,20 T 64,16 T 84,12 T 104,8'},
+    {label:'月度总成本', value:(totalCost/10000).toFixed(1)+'万', trend:'+5.1%', trendUp:false, areaColor:'#f472b6', strokeColor:'#f472b6', path:'M 4,30 Q 14,26 24,24 T 44,22 T 64,24 T 84,20 T 104,16 L 104,36 L 4,36 Z', strokePath:'M 4,30 Q 14,26 24,24 T 44,22 T 64,24 T 84,20 T 104,16'},
+    {label:'项目费效比', value:'1.19', trend:'+0.08', trendUp:true, areaColor:'#34d399', strokeColor:'#34d399', path:'M 4,30 Q 14,28 24,26 T 44,24 T 64,20 T 84,18 T 104,14 L 104,36 L 4,36 Z', strokePath:'M 4,30 Q 14,28 24,26 T 44,24 T 64,20 T 84,18 T 104,14'},
+    {label:'目标达成率', value:'94.2%', trend:'+3.5pp', trendUp:true, areaColor:'#22d3ee', strokeColor:'#22d3ee', path:'M 4,32 Q 14,30 24,28 T 44,26 T 64,24 T 84,22 T 104,18 L 104,36 L 4,36 Z', strokePath:'M 4,32 Q 14,30 24,28 T 44,26 T 64,24 T 84,22 T 104,18'},
+    {label:'健康项目数', value:green+'/'+all.length, trend:'点击查看详情', trendUp:true, areaColor:'#fbbf24', strokeColor:'#fbbf24', path:'M 4,30 Q 14,28 28,26 T 52,24 T 76,20 T 100,18 T 124,14 L 124,36 L 4,36 Z', strokePath:'M 4,30 Q 14,28 28,26 T 52,24 T 76,20 T 100,18 T 124,14'}
+  ];
 
   return `
   ${renderFilterBar()}
 
   <div class="module-header">
-
     <div>
-
       <div class="module-title">📊 长信客服项目智览中心</div>
-
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">${filterState.workplace==='all'?'全部职场':filterState.workplace+'职场'} · 共 ${all.length} 个项目</div>
-
     </div>
-
     <div class="module-actions">
-
       <button class="btn btn-sm" onclick="exportDashboard()">📥 导出报表</button>
-
       <a href="#" class="btn btn-sm btn-primary" onclick="renderModule('comparison');return false;">📊 项目对比</a>
-
-    </div>
-
-  </div>
-
-
-
-    <!-- 第一行：项目类型分布 -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
-    <div class="metric-card row-service" onclick="setFilter('projectType','TP项目');renderDashboard();" style="cursor:pointer;">
-      <div class="metric-icon-wrap">&#x2699;&#xFE0F;</div>
-      <div class="metric-center">
-        <div class="metric-label">TP项目</div>
-        <div class="metric-value">${tpCount}<span class="metric-unit">个</span></div>
-      </div>
-      <div class="metric-right"><span class="metric-tag">项目数</span></div>
-    </div>
-    <div class="metric-card row-service" onclick="setFilter('projectType','DP项目');renderDashboard();" style="cursor:pointer;">
-      <div class="metric-icon-wrap">&#x1F3EA;</div>
-      <div class="metric-center">
-        <div class="metric-label">DP项目</div>
-        <div class="metric-value">${jxCount}<span class="metric-unit">个</span></div>
-      </div>
-      <div class="metric-right"><span class="metric-tag">项目数</span></div>
-    </div>
-    <div class="metric-card row-service" onclick="setFilter('projectType','BPO项目');renderDashboard();" style="cursor:pointer;">
-      <div class="metric-icon-wrap">&#x1F91D;</div>
-      <div class="metric-center">
-        <div class="metric-label">BPO项目</div>
-        <div class="metric-value">${bpoCount}<span class="metric-unit">个</span></div>
-      </div>
-      <div class="metric-right"><span class="metric-tag">项目数</span></div>
     </div>
   </div>
 
-  <!-- 第二行：财务核心指标 -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
-    <div class="metric-card row-finance">
-      <div class="metric-icon-wrap">&#x1F4B0;</div>
-      <div class="metric-center">
-        <div class="metric-label">月度总销售额</div>
-        <div class="metric-value">&#xFFE5;${(totalRevenue/10000).toFixed(1)}<span class="metric-unit">万</span></div>
-      </div>
-      <div class="metric-right"><span class="metric-tag up">&#x2191; 12.3%</span></div>
-    </div>
-    <div class="metric-card row-finance">
-      <div class="metric-icon-wrap">&#x1F4C8;</div>
-      <div class="metric-center">
-        <div class="metric-label">月度总成本</div>
-        <div class="metric-value">&#xFFE5;${(totalCost/10000).toFixed(1)}<span class="metric-unit">万</span></div>
-      </div>
-      <div class="metric-right"><span class="metric-tag down">&#x2191; 5.1%</span></div>
-    </div>
-    <div class="metric-card row-finance">
-      <div class="metric-icon-wrap">&#x1F4C9;</div>
-      <div class="metric-center">
-        <div class="metric-label">综合利润率</div>
-        <div class="metric-value" style="color:${avgProfit>=10?'var(--c-green)':'var(--c-red)'}">${avgProfit}%</div>
-      </div>
-      <div class="metric-right"><span class="metric-tag up">&#x2191; 2.1pp</span></div>
-    </div>
+  <!-- KPI 迷你卡片行 -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;">
+    ${kpiCards.map((k,i)=>{
+      const w = i===4 ? 'width:calc(20% - 8px);' : '';
+      return `<div style="background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);border-radius:10px;padding:10px 12px;color:#fff;box-shadow:0 2px 8px rgba(30,64,175,0.15);position:relative;overflow:hidden;min-height:78px;${w}">
+        <div style="font-size:10px;opacity:0.85;margin-bottom:2px;">${k.label}</div>
+        <div style="font-size:20px;font-weight:700;line-height:1.2;margin:2px 0;">${k.value}</div>
+        <div style="font-size:10px;opacity:0.9;color:${k.trendUp?'#86efac':'#fca5a5'};">${k.trend}</div>
+        <svg width="100%" height="36" viewBox="0 0 108 36" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;opacity:0.6;">
+          <defs><linearGradient id="ag${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${k.areaColor}" stop-opacity="0.5"/><stop offset="100%" stop-color="${k.areaColor}" stop-opacity="0.05"/></linearGradient></defs>
+          <path d="${k.path}" fill="url(#ag${i})"/>
+          <path d="${k.strokePath}" fill="none" stroke="${k.strokeColor}" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>`;
+    }).join('')}
   </div>
 
-  <!-- 第三行：运营规模 + 健康度 -->
+  <!-- 第1行：销售/服务/成本 -->
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
-    <div class="metric-card row-operation">
-      <div class="metric-icon-wrap">&#x1F4E6;</div>
-      <div class="metric-center">
-        <div class="metric-label">月度总订单量</div>
-        <div class="metric-value">${totalOrders.toLocaleString()}</div>
+
+    <!-- 销售概览 -->
+    <div class="dashboard-card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:13px;font-weight:600;color:#1e40af;">销售概览</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('查看趋势功能开发中');return false;">查看趋势 →</a>
       </div>
-      <div class="metric-right"><span class="metric-tag up">&#x2191; 8.2%</span></div>
+      <div style="font-size:10px;color:#94a3b8;margin-bottom:8px;">项目月度订单量 (TOP 5)</div>
+      ${salesRank.map((o,idx)=>{
+        const p = PROJECTS.find(pp=>pp.id===o.projectId);
+        const name = p ? p.name : o.projectId;
+        const shortName = name.length>8 ? name.substring(0,8) : name;
+        const barW = Math.round((o.ticketVol/maxVol)*86);
+        const healthColor = o.health==='🟢'?'#22c55e':o.health==='🟡'?'#eab308':'#ef4444';
+        return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;">
+          <span style="width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#334155;">${shortName}</span>
+          <div style="flex:1;height:8px;background:#eff6ff;border-radius:4px;overflow:hidden;min-width:40px;">
+            <div style="width:${barW}px;height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:4px;"></div>
+          </div>
+          <span style="width:52px;text-align:right;color:#475569;font-size:10px;">${o.ticketVol.toLocaleString()}</span>
+          <span style="width:8px;height:8px;border-radius:50%;background:${healthColor};flex-shrink:0;"></span>
+        </div>`;
+      }).join('')}
     </div>
-    <div class="metric-card row-operation">
-      <div class="metric-icon-wrap">&#x1F465;</div>
-      <div class="metric-center">
-        <div class="metric-label">客服总接待量</div>
-        <div class="metric-value">${totalConv.toLocaleString()}</div>
+
+    <!-- 服务概览 -->
+    <div class="dashboard-card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:13px;font-weight:600;color:#0f766e;">服务概览</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
       </div>
-      <div class="metric-right"><span class="metric-tag down">&#x2193; 1.5%</span></div>
-    </div>
-    <div class="metric-card row-operation" onclick="filterByHealth('all')" style="cursor:pointer;">
-      <div class="metric-icon-wrap">&#x1F6A6;</div>
-      <div class="metric-center">
-        <div class="metric-label">健康状态分布</div>
-        <div class="metric-value" style="font-size:16px;display:flex;gap:8px;align-items:center;">
-          <span style="color:#10B981;font-weight:600;">&#x1F7E2;${green}</span>
-          <span style="color:#F59E0B;font-weight:600;">&#x1F7E1;${yellow}</span>
-          <span style="color:#EF4444;font-weight:600;">&#x1F534;${red}</span>
+      <div style="display:flex;gap:16px;margin-bottom:10px;">
+        <div style="text-align:center;flex:1;">
+          <div style="font-size:26px;font-weight:700;color:#0f766e;">28s</div>
+          <div style="font-size:10px;color:#64748b;">平均响应时间</div>
+          <div style="font-size:11px;color:#10b981;">快3秒</div>
+        </div>
+        <div style="text-align:center;flex:1;">
+          <div style="font-size:26px;font-weight:700;color:#0f766e;">4.72</div>
+          <div style="font-size:10px;color:#64748b;">CSAT 平均分</div>
+          <div style="font-size:11px;color:#10b981;">+0.15</div>
         </div>
       </div>
-      <div class="metric-right"><span class="metric-tag">点击筛选</span></div>
-    </div>
-  </div>
-
-
-
-  <!-- 四分视图 -->
-
-  <div class="dashboard-grid">
-
-    <div class="dashboard-card">
-
-      <h3>📈 销售概览</h3>
-
-      <table class="data-table">
-
-        <thead><tr><th>项目</th><th>单量</th><th>健康</th></tr></thead>
-
-        <tbody>
-
-          ${OPERATIONS.map(o=>{
-
-            const p=PROJECTS.find(pp=>pp.id===o.projectId);
-
-            if(filterState.workplace!=='all' && p && p.workplace!==filterState.workplace) return '';
-            const projName2 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\'' + p.id + '\');return false;">' + p.name + '</a>' : (o.projectId || '');
-
-            const projName1 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\''+p.id+'\');return false;">'+p.name+'</a>' : (o.projectId||'');
-            return `<tr><td>${projName1}</td><td>${o.ticketVol.toLocaleString()}</td><td class="health-clickable" onclick="filterByHealth(\''+o.health+'\')">${o.health}</td></tr>`;
-
-          }).join('')}
-
-        </tbody>
-
-      </table>
-
+      <div style="border-top:1px solid #f1f5f9;padding-top:8px;">
+        <div style="font-size:11px;color:#334155;font-weight:500;margin-bottom:6px;">项目服务表现分布</div>
+        <div style="display:flex;align-items:center;gap:6px;padding:2px 0;font-size:11px;">
+          <span style="width:80px;color:#10b981;">达标 (>=4.5)</span>
+          <div style="flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
+            <div style="width:${Math.round(goodSvc/svcTotal*100)}%;height:100%;background:#10b981;border-radius:4px;"></div>
+          </div>
+          <span style="width:60px;text-align:right;color:#64748b;font-size:10px;">${goodSvc}项 ${Math.round(goodSvc/svcTotal*100)}%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:2px 0;font-size:11px;">
+          <span style="width:80px;color:#eab308;">预警 (4.0-4.5)</span>
+          <div style="flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
+            <div style="width:${Math.round(warnSvc/svcTotal*100)}%;height:100%;background:#eab308;border-radius:4px;"></div>
+          </div>
+          <span style="width:60px;text-align:right;color:#64748b;font-size:10px;">${warnSvc}项 ${Math.round(warnSvc/svcTotal*100)}%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:2px 0;font-size:11px;">
+          <span style="width:80px;color:#ef4444;">告警 (<4.0)</span>
+          <div style="flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
+            <div style="width:${Math.round(badSvc/svcTotal*100)}%;height:100%;background:#ef4444;border-radius:4px;"></div>
+          </div>
+          <span style="width:60px;text-align:right;color:#64748b;font-size:10px;">${badSvc}项 ${Math.round(badSvc/svcTotal*100)}%</span>
+        </div>
+      </div>
     </div>
 
-    <div class="dashboard-card">
-
-      <h3>📞 服务概览</h3>
-
-      <table class="data-table">
-
-        <thead><tr><th>项目</th><th>响应(秒)</th><th>CSat</th></tr></thead>
-
-        <tbody>
-
-          ${OPERATIONS.map(o=>{
-
-            const p=PROJECTS.find(pp=>pp.id===o.projectId);
-
-            if(filterState.workplace!=='all' && p && p.workplace!==filterState.workplace) return '';
-            const projName2 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\'' + p.id + '\');return false;">' + p.name + '</a>' : (o.projectId || '');
-
-            return `<tr><td>${projName2}</td><td style="color:${o.responseTime>o.slaResponse?'var(--c-red)':'var(--c-green)'}">${o.responseTime}</td><td style="color:${o.csat>=4.5?'var(--c-green)':'var(--c-red)'}">${o.csat}</td></tr>`;
-
-          }).join('')}
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-    <div class="dashboard-card">
-
-      <h3>💰 成本控制</h3>
-
-      <table class="data-table">
-
-        <thead><tr><th>项目</th><th>利润率</th><th>状态</th></tr></thead>
-
-        <tbody>
-
-          ${all.map(p=>`
-
-            <tr>
-
-              <td><a href="#" class="table-link" onclick="showProjectDetail('${p.id}');return false;">${p.name}</a></td>
-
-              <td style="color:${p.profitRate>=10?'var(--c-green)':p.profitRate<0?'var(--c-red)':'var(--c-yellow)'}">${p.profitRate}%</td>
-
-              <td class="health-clickable" onclick="filterByHealth('${p.health}')">${p.health}</td>
-
-            </tr>`).join('')}
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-    <div class="dashboard-card">
-
-      <h3>😊 项目满意度</h3>
-
-      <table class="data-table">
-
-        <thead><tr><th>项目</th><th>CSat</th><th>解决率</th></tr></thead>
-
-        <tbody>
-
-          ${OPERATIONS.map(o=>{
-
-            const p=PROJECTS.find(pp=>pp.id===o.projectId);
-
-            if(filterState.workplace!=='all' && p && p.workplace!==filterState.workplace) return '';
-
-            const projName4 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\''+p.id+'\');return false;">'+p.name+'</a>' : (o.projectId||'');
-            return `<tr><td>${projName4}</td><td>${o.csat}</td><td>${o.resolutionRate}%</td></tr>`;
-
-          }).join('')}
-
-        </tbody>
-
-      </table>
-
+    <!-- 成本控制 -->
+    <div class="dashboard-card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:13px;font-weight:600;color:#44403c;">成本控制</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('报告功能开发中');return false;">报告 →</a>
+      </div>
+      <div style="display:flex;gap:16px;margin-bottom:10px;">
+        <div style="text-align:center;flex:1;">
+          <div style="font-size:10px;color:#64748b;">总成本</div>
+          <div style="font-size:20px;font-weight:700;color:#44403c;">${(totalCost/10000).toFixed(1)}万</div>
+        </div>
+        <div style="text-align:center;flex:1;">
+          <div style="font-size:10px;color:#64748b;">总预算</div>
+          <div style="font-size:20px;font-weight:700;color:#44403c;">60.0万</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+        <div style="position:relative;width:96px;height:96px;flex-shrink:0;">
+          <svg width="96" height="96" viewBox="0 0 96 96">
+            <circle cx="48" cy="48" r="38" fill="none" stroke="#f1f5f9" stroke-width="10"/>
+            <circle cx="48" cy="48" r="38" fill="none" stroke="#10b981" stroke-width="10" stroke-dasharray="${Math.round(goodCost/costTotal*239)} 239" stroke-dashoffset="0" transform="rotate(-90 48 48)"/>
+            <circle cx="48" cy="48" r="38" fill="none" stroke="#eab308" stroke-width="10" stroke-dasharray="${Math.round(warnCost/costTotal*239)} 239" stroke-dashoffset="-${Math.round(goodCost/costTotal*239)}" transform="rotate(-90 48 48)"/>
+            <circle cx="48" cy="48" r="38" fill="none" stroke="#ef4444" stroke-width="10" stroke-dasharray="${Math.round(badCost/costTotal*239)} 239" stroke-dashoffset="-${Math.round((goodCost+warnCost)/costTotal*239)}" transform="rotate(-90 48 48)"/>
+          </svg>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+            <div style="font-size:16px;font-weight:700;color:#44403c;">${Math.round(totalCost/600000*1000)/10}%</div>
+            <div style="font-size:8px;color:#94a3b8;">预算执行率</div>
+          </div>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:10px;color:#64748b;margin-bottom:4px;">利润率分布</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;font-size:10px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:#10b981;"></span>
+            <span style="color:#475569;">>=15% ${goodCost}项</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;font-size:10px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:#eab308;"></span>
+            <span style="color:#475569;">5%-15% ${warnCost}项</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:#ef4444;"></span>
+            <span style="color:#475569;"><5% ${badCost}项</span>
+          </div>
+        </div>
+      </div>
+      ${badCost>0?`<div style="background:#fef2f2;border-radius:4px;padding:4px 8px;text-align:center;">
+        <span style="font-size:10px;color:#dc2626;">${all.find(p=>p.profitRate<5)?.name||'某项目'} 超预算 ${Math.abs(all.find(p=>p.profitRate<5)?.profitRate||5.3)}%</span>
+      </div>`:'`'}
     </div>
 
   </div>
 
+  <!-- 第2行：满意度/工作量/配置数 -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
 
+    <!-- 项目满意度 -->
+    <div class="dashboard-card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:13px;font-weight:600;color:#1d4ed8;">项目满意度</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:8px;">
+        <div>
+          <div style="font-size:10px;color:#64748b;">综合满意度</div>
+          <div><span style="font-size:20px;font-weight:700;color:#1d4ed8;">4.6</span><span style="font-size:11px;color:#94a3b8;">/5.0</span></div>
+          <div style="font-size:10px;color:#10b981;">▲ +0.2</div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:#64748b;">NPS趋势(本月)</div>
+          <div style="font-size:13px;color:#1d4ed8;">+ 62%</div>
+          <div style="font-size:13px;color:#ef4444;">- 8%</div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #f1f5f9;padding-top:6px;margin-bottom:6px;">
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">各项目评分</div>
+        ${filteredOps.slice(0,6).map(o=>{
+          const p = PROJECTS.find(pp=>pp.id===o.projectId);
+          const barW = Math.round((o.csat/5)*80);
+          const barColor = o.csat>=4.5?'#1d4ed8':o.csat>=4.0?'#3b82f6':'#60a5fa';
+          const tag = o.csat<4.0?'<span style="background:#fee2e2;color:#dc2626;font-size:8px;padding:1px 4px;border-radius:3px;margin-left:4px;">重点</span>':o.csat<4.5?'<span style="background:#fef3c7;color:#d97706;font-size:8px;padding:1px 4px;border-radius:3px;margin-left:4px;">改进</span>':'';
+          return `<div style="display:flex;align-items:center;gap:4px;padding:1px 0;font-size:10px;">
+            <span style="width:28px;color:#475569;">${o.projectId}</span>
+            <div style="flex:1;height:6px;background:#eff6ff;border-radius:3px;overflow:hidden;">
+              <div style="width:${barW}px;height:100%;background:${barColor};border-radius:3px;"></div>
+            </div>
+            <span style="width:22px;text-align:right;color:#1d4ed8;font-weight:500;">${o.csat}</span>
+            ${tag}
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="border-top:1px solid #f1f5f9;padding-top:6px;">
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">细分维度评分</div>
+        <div style="display:flex;align-items:center;gap:4px;padding:1px 0;font-size:10px;">
+          <span style="width:28px;color:#475569;">沟通</span>
+          <div style="flex:1;height:5px;background:#eff6ff;border-radius:3px;overflow:hidden;">
+            <div style="width:${Math.round(dimScores.comm/5*60)}px;height:100%;background:#3b82f6;border-radius:3px;"></div>
+          </div>
+          <span style="width:20px;text-align:right;color:#1d4ed8;">${dimScores.comm}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;padding:1px 0;font-size:10px;">
+          <span style="width:28px;color:#475569;">执行</span>
+          <div style="flex:1;height:5px;background:#eff6ff;border-radius:3px;overflow:hidden;">
+            <div style="width:${Math.round(dimScores.exec/5*60)}px;height:100%;background:#60a5fa;border-radius:3px;"></div>
+          </div>
+          <span style="width:20px;text-align:right;color:#1d4ed8;">${dimScores.exec}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;padding:1px 0;font-size:10px;">
+          <span style="width:28px;color:#475569;">协作</span>
+          <div style="flex:1;height:5px;background:#eff6ff;border-radius:3px;overflow:hidden;">
+            <div style="width:${Math.round(dimScores.collab/5*60)}px;height:100%;background:#93c5fd;border-radius:3px;"></div>
+          </div>
+          <span style="width:20px;text-align:right;color:#1d4ed8;">${dimScores.collab}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 客服工作量 -->
+    <div class="dashboard-card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:13px;font-weight:600;color:#4f46e5;">客服工作量</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <div style="flex:1;">
+          <div style="font-size:10px;color:#64748b;">线上接待人数</div>
+          <div style="font-size:22px;font-weight:700;color:#4f46e5;">${onlineCount.toLocaleString()}</div>
+        </div>
+        <div style="width:1px;background:#e2e8f0;"></div>
+        <div style="flex:1;">
+          <div style="font-size:10px;color:#64748b;">线下工单量</div>
+          <div style="font-size:22px;font-weight:700;color:#4f46e5;">${offlineCount.toLocaleString()}</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-bottom:8px;">
+        <div style="position:relative;display:inline-block;width:88px;height:50px;">
+          <svg width="88" height="50" viewBox="0 0 88 50">
+            <path d="M 4,46 A 40,40 0 0,1 84,46" fill="none" stroke="#ede9fe" stroke-width="8" stroke-linecap="round"/>
+            <path d="M 4,46 A 40,40 0 0,1 ${4+40+40*Math.cos(Math.PI*(1-workloadRatio/100))},${46-40*Math.sin(Math.PI*(1-workloadRatio/100))}" fill="none" stroke="url(#gaugeGrad)" stroke-width="8" stroke-linecap="round"/>
+            <defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#6366f1"/><stop offset="50%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#f97316"/></linearGradient></defs>
+          </svg>
+          <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);text-align:center;">
+            <div style="font-size:14px;font-weight:700;color:#4f46e5;">${workloadRatio}%</div>
+            <div style="font-size:8px;color:#8b5cf6;">工作量负荷比</div>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #f1f5f9;padding-top:6px;">
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">线下工作量分布 TOP4</div>
+        ${workItems.map(w=>`<div style="display:flex;align-items:center;gap:4px;padding:2px 0;font-size:10px;">
+          <span style="width:52px;color:#475569;">${w.name}</span>
+          <div style="flex:1;height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;">
+            <div style="width:${w.ratio}%;height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:3px;"></div>
+          </div>
+          <span style="width:40px;text-align:right;color:#64748b;font-size:9px;">${w.count}件</span>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- 客服配置数 -->
+    <div class="dashboard-card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:13px;font-weight:600;color:#312e81;">客服配置数</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
+      </div>
+      <div style="margin-bottom:8px;">
+        <div style="font-size:10px;color:#64748b;">总分摊人数</div>
+        <div><span style="font-size:26px;font-weight:700;color:#312e81;">${totalStaff}</span><span style="font-size:11px;color:#94a3b8;">人</span></div>
+      </div>
+      <div style="text-align:center;margin-bottom:8px;">
+        <svg width="180" height="90" viewBox="-90 -35 180 90">
+          <!-- 底部阴影 -->
+          <ellipse cx="0" cy="28" rx="60" ry="18" fill="#c7d2fe" opacity="0.25"/>
+          <!-- 厚度层 -->
+          <g transform="translate(0,10)">
+            <path d="M 0,0 L -58,-8 A 60,18 0 0,1 22,-16 A 60,18 0 0,0 0,0 Z" fill="#3730a3"/>
+            <path d="M 0,0 L 22,-16 A 60,18 0 0,1 52,6 A 60,18 0 0,0 26,3 Z" fill="#4338ca"/>
+            <path d="M 0,0 L 52,6 A 60,18 0 0,1 18,16 A 60,18 0 0,0 9,8 Z" fill="#6366f1"/>
+            <path d="M 0,0 L 18,16 A 60,18 0 0,1 -22,12 A 60,18 0 0,0 -11,6 Z" fill="#818cf8"/>
+            <path d="M 0,0 L -22,12 A 60,18 0 0,1 -58,-8 A 60,18 0 0,0 -29,-4 Z" fill="#a5b4fc"/>
+          </g>
+          <!-- 侧面厚度 -->
+          <path d="M -58,-8 A 60,18 0 0,0 22,-16 L 22,-6 A 60,18 0 0,1 -58,2 Z" fill="#1e1b4b"/>
+          <path d="M 22,-16 A 60,18 0 0,0 52,6 L 52,16 A 60,18 0 0,1 22,-6 Z" fill="#3730a3"/>
+          <path d="M 52,6 A 60,18 0 0,0 18,16 L 18,26 A 60,18 0 0,1 52,16 Z" fill="#4f46e5"/>
+          <path d="M 18,16 A 60,18 0 0,0 -22,12 L -22,22 A 60,18 0 0,1 18,26 Z" fill="#6366f1"/>
+          <path d="M -22,12 A 60,18 0 0,0 -58,-8 L -58,2 A 60,18 0 0,1 -22,22 Z" fill="#818cf8"/>
+          <!-- 顶面 -->
+          <path d="M 0,0 L -58,-8 A 60,18 0 0,1 22,-16 A 60,18 0 0,0 0,0 Z" fill="#312e81"/>
+          <path d="M 0,0 L 22,-16 A 60,18 0 0,1 52,6 A 60,18 0 0,0 26,3 Z" fill="#4338ca"/>
+          <path d="M 0,0 L 52,6 A 60,18 0 0,1 18,16 A 60,18 0 0,0 9,8 Z" fill="#6366f1"/>
+          <path d="M 0,0 L 18,16 A 60,18 0 0,1 -22,12 A 60,18 0 0,0 -11,6 Z" fill="#818cf8"/>
+          <path d="M 0,0 L -22,12 A 60,18 0 0,1 -58,-8 A 60,18 0 0,0 -29,-4 Z" fill="#a5b4fc"/>
+          <!-- 分割线 -->
+          <line x1="0" y1="0" x2="-58" y2="-8" stroke="#fff" stroke-width="1.2"/>
+          <line x1="0" y1="0" x2="22" y2="-16" stroke="#fff" stroke-width="1.2"/>
+          <line x1="0" y1="0" x2="52" y2="6" stroke="#fff" stroke-width="1.2"/>
+          <line x1="0" y1="0" x2="18" y2="16" stroke="#fff" stroke-width="1.2"/>
+          <line x1="0" y1="0" x2="-22" y2="12" stroke="#fff" stroke-width="1.2"/>
+        </svg>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;font-size:10px;">
+        ${staffConfig.map(s=>`<div style="display:flex;align-items:center;gap:4px;">
+          <span style="width:8px;height:8px;border-radius:50%;background:${s.color};flex-shrink:0;"></span>
+          <span style="color:#475569;">${s.name}</span>
+          <span style="color:#64748b;margin-left:auto;">${s.count}人(${s.pct}%)</span>
+        </div>`).join('')}
+      </div>
+    </div>
+
+  </div>
 
   <!-- 项目健康明细 -->
-
-  <div class="card">
-
-    <div class="card-title">项目健康明细
-
-      <span style="font-size:12px;font-weight:400;color:var(--c-text-3)">点击项目名称查看全景</span>
-
+  <div class="card" style="padding:12px 16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <span style="font-size:13px;font-weight:600;color:#1e40af;">项目健康明细</span>
+      <a href="#" style="font-size:11px;color:#3b82f6;" onclick="renderModule('operation');return false;">查看完整健康报告 →</a>
     </div>
-
-    <table class="data-table">
-
-      <thead><tr><th>状态</th><th>项目编号</th><th>项目名称</th><th>职场</th><th>负责人</th><th>利润率</th><th>操作</th></tr></thead>
-
-      <tbody>
-
-        ${all.map(p=>`
-
-          <tr>
-
-            <td>${p.health}</td>
-
-            <td>${p.id}</td>
-
-            <td><a href="#" style="color:var(--c-primary);cursor:pointer" onclick="showProjectDetail('${p.id}');return false;">${p.name}</a></td>
-
-            <td><span class="wp-tag wp-${p.workplace}">${p.workplace}</span></td>
-
-            <td>${p.pm}</td>
-
-            <td style="color:${p.profitRate>=10?'var(--c-green)':p.profitRate<0?'var(--c-red)':'var(--c-yellow)'}">${p.profitRate}%</td>
-
-            <td class="actions">
-
-              <button class="btn btn-sm" onclick="showProjectDetail('${p.id}')">查看全景</button>
-
-              ${currentRole==='leader'?'<span style="color:var(--c-text-3);font-size:12px">只读</span>':''}
-
-            </td>
-
-          </tr>`).join('')}
-
-      </tbody>
-
-    </table>
-
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:11px;min-width:500px;">
+        <thead>
+          <tr style="background:#eff6ff;">
+            <th style="padding:5px 4px;text-align:left;color:#1e40af;font-weight:600;">项目</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">人力</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">服务</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">销售</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">退货</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">风险</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">成本</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:50px;">综合</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${all.map(p=>{
+            const h = HEALTH_DATA.find(hh=>hh.projectId===p.id&&hh.period==="2026-05");
+            const dims = h ? h.dimensions : [];
+            const getDim = name=>{
+              const d = dims.find(dd=>dd.name.includes(name));
+              if(!d) return '<span style="color:#9ca3af;">-</span>';
+              return d.level==='优秀'||d.level==='健康'?'<span style="color:#22c55e;font-size:12px;">●</span>':d.level==='需注意'?'<span style="color:#eab308;font-size:12px;">●</span>':'<span style="color:#ef4444;font-size:12px;">●</span>';
+            };
+            const score = h?h.overallScore:'--';
+            const scoreColor = score>=90?'#dcfce7':score>=80?'#fef9c3':'#fee2e2';
+            const scoreText = score>=90?'#166534':score>=80?'#854d0e':'#991b1b';
+            return `<tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:5px 4px;"><a href="#" style="color:var(--c-primary);font-size:11px;" onclick="showProjectDetail('${p.id}');return false;">${p.name}</a></td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('人力')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('服务')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('销售')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('退货')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('风险')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('成本')}</td>
+              <td style="padding:5px 4px;text-align:center;"><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:${scoreColor};color:${scoreText};font-size:10px;font-weight:600;">${score}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
   </div>`;
 
 }
+
+
+
+// ===== 项目基础档案 =====}
 
 
 
