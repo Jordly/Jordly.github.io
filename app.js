@@ -6100,6 +6100,7 @@ function saveProfileNickname() {
   if (currentUser) {
     currentUser.nickname = val;
     currentUser.name = val; // 同步更新右上角显示的名称
+    localStorage.setItem("chansee_current_user", JSON.stringify(currentUser));
     saveUsers();
   }
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
@@ -6217,6 +6218,7 @@ function saveProfileBrand() {
   if (!input) return;
   const val = input.value.trim();
   if (currentUser) { currentUser.brand = val; }
+    localStorage.setItem("chansee_current_user", JSON.stringify(currentUser));
   saveUsers();
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (userInDb) userInDb.brand = val;
@@ -6263,6 +6265,7 @@ function doChangePassword() {
   if (newPwd.length < 6) { alert("新密码至少6位"); return; }
   if (newPwd !== confirm) { alert("两次输入的新密码不一致"); return; }
   userInDb.password = newPwd;
+  if (currentUser) { currentUser.password = newPwd; localStorage.setItem("chansee_current_user", JSON.stringify(currentUser)); }
   saveUsers();
   if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "确认修改"; }
   showToast("密码修改成功，请牢记新密码");
@@ -6353,6 +6356,7 @@ function resetPassword() {
   
   // Update password
   forgotTargetUser.password = newPwd;
+  if (currentUser && forgotTargetUser.id === currentUser.id) { currentUser.password = newPwd; localStorage.setItem("chansee_current_user", JSON.stringify(currentUser)); }
   saveUsers();
   
   showToast('密码重置成功，请使用新密码登录');
