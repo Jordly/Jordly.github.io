@@ -6064,20 +6064,33 @@ function renderProfile(){
   return html;
 }
 
-// 头像上传处理
+// 头像上传处理（压缩后存储，避免 localStorage 超限）
 function handleAvatarUpload(input) {
   const file = input.files[0];
   if (!file) return;
   if (file.size > 5 * 1024 * 1024) { alert("图片大小超过 5M，请选择更小的图片"); return; }
   const reader = new FileReader();
   reader.onload = function(e) {
-    const dataUrl = e.target.result;
-    if (currentUser) currentUser.avatar = dataUrl;
-    persistCurrentUser();
-    const preview = document.getElementById("profile-avatar-preview");
-    if (preview) { preview.style.backgroundImage = `url(${dataUrl})`; preview.textContent = ""; }
-    updateUserDisplay();
-    showToast("头像更换成功");
+    const img = new Image();
+    img.onload = function() {
+      // 压缩：最大边长 200px，JPEG 质量 0.8
+      const maxSize = 200;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; } }
+      else        { if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; } }
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, w, h);
+      const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.8);
+      if (currentUser) currentUser.avatar = compressedDataUrl;
+      persistCurrentUser();
+      const preview = document.getElementById("profile-avatar-preview");
+      if (preview) { preview.style.backgroundImage = `url(${compressedDataUrl})`; preview.textContent = ""; }
+      updateUserDisplay();
+      showToast("头像更换成功");
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
@@ -6089,7 +6102,7 @@ function enterEditMode(rowId, label, inputId, inputType, currentValue, saveFn) {
   rowEl.innerHTML = `
     <div style="width:90px;font-size:14px;color:#334155;flex-shrink:0;">${label}</div>
     <input type="${inputType}" id="${inputId}" value="${currentValue}" style="flex:1;padding:6px 10px;font-size:14px;border:1.5px solid #bfdbfe;border-radius:6px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#bfdbfe'" onkeydown="if(event.key==='Enter')${saveFn}()">
-    <span style="color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;font-weight:500;" onclick="${saveFn}()">保存</span>
+    <button type="button" style="color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;font-weight:500;background:none;border:1.5px solid #3b82f6;border-radius:6px;padding:4px 14px;" onclick="${saveFn}()">保存</button>
     <span style="color:#94a3b8;font-size:13px;cursor:pointer;margin-left:8px;flex-shrink:0;" onclick="renderModule('profile')">取消</span>
   `;
   setTimeout(() => { const el = document.getElementById(inputId); if(el){ el.focus(); el.select(); } }, 50);
@@ -6105,9 +6118,9 @@ function saveProfileNickname() {
   const input = document.getElementById("profile-nickname-input");
   if (!input) return;
   const val = input.value.trim();
+  if (!val) { alert("昵称不能为空"); return; }
   const btn = input.parentElement.querySelector("button");
   if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
-  if (!val) { alert("昵称不能为空"); return; }
   if (currentUser) {
     currentUser.nickname = val;
     currentUser.name = val;
