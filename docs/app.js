@@ -178,8 +178,15 @@ function checkLogin() {
         localStorage.removeItem("chansee_current_user");
         throw new Error("session expired");
       }
-      currentUser = data;
-      delete currentUser._expiry; // 不暴露内部字段
+      // 用 session 里的 id 从 USERS 数组取最新完整数据，避免缓存旧数据
+      const userInDb = USERS.find(u => u.id === data.id);
+      if (userInDb) {
+        currentUser = {...userInDb};
+        delete currentUser.password; // 不暴露密码
+      } else {
+        currentUser = data;
+        delete currentUser._expiry;
+      }
       currentRole = currentUser.role || "新用户"; // 同步当前角色
       hideLoginModal(); // 隐藏登录弹窗，否则会盖住主界面
       updateUserDisplay();
@@ -306,11 +313,12 @@ function doLogin() {
   if (!user) { alert("账号或密码错误"); return; }
   if (user.status !== "已激活") { alert("账号状态：" + user.status + "，请联系管理员审批"); return; }
 
-  currentUser = {id:user.id, name:user.name, username:user.username, role:user.role, status:user.status};
+  currentUser = {...user}; // 浅拷贝完整用户对象，确保所有字段（avatar/position/brand等）都携带
+  delete currentUser.password; // session 中不保存密码
   currentRole = user.role || "新用户"; // 同步当前角色
 
   const expiry = Date.now() + 3600000; // 1小时有效期（毫秒）
-  const saveData = {...currentUser, _expiry: expiry};
+  const saveData = {id: user.id, _expiry: expiry}; // session 只存 id，恢复时从 USERS 数组取最新完整数据
   const sessionData = JSON.stringify(saveData);
 
   if (remember) {
