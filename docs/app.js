@@ -4,20 +4,20 @@
 const GROUPS_DATA = [{"month":"7月","group":"济南B事业部-Alpha组","manager":"张伟","level":"组长-1-1级","shopCount":6,"categoryCount":1,"platformCount":4,"manageCount":1.0,"qcCount":0.4,"trainCount":0,"evalCount":0.35,"aiCount":0,"csCount":10,"new3m":2,"manageTrainSum":1.4,"storeMgrCount":5,"pptCount":2,"totalStaff":11.75,"manageRatio":7.14285714285714,"shopRatio":6.0,"platformRatio":0.307692307692308},{"month":"7月","group":"济南B事业部-Beta组","manager":"李娜","level":"培训师","shopCount":10,"categoryCount":5,"platformCount":2,"manageCount":0.3,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.3,"storeMgrCount":8,"pptCount":0,"totalStaff":3.3,"manageRatio":10.0,"shopRatio":33.3333333333333,"platformRatio":0.153846153846154},{"month":"7月","group":"济南B事业部-Gamma组","manager":"王强","level":"组长-2级","shopCount":2,"categoryCount":2,"platformCount":2,"manageCount":1.0,"qcCount":0.5,"trainCount":0.25,"evalCount":0.7,"aiCount":0,"csCount":9,"new3m":3,"manageTrainSum":1.75,"storeMgrCount":1,"pptCount":2,"totalStaff":11.45,"manageRatio":5.14285714285714,"shopRatio":2.0,"platformRatio":0.153846153846154},{"month":"7月","group":"济南A事业部-Delta组","manager":"刘洋","level":"组长-2级","shopCount":6,"categoryCount":1,"platformCount":4,"manageCount":0.6,"qcCount":0.2,"trainCount":0,"evalCount":0.275,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":0.8,"storeMgrCount":3,"pptCount":1,"totalStaff":4.075,"manageRatio":3.75,"shopRatio":10.0,"platformRatio":0.307692307692308},{"month":"7月","group":"济南A事业部-Echo组","manager":"刘洋","level":"组长-2级","shopCount":4,"categoryCount":1,"platformCount":3,"manageCount":0.4,"qcCount":0.2,"trainCount":0,"evalCount":0.06,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.6,"storeMgrCount":2,"pptCount":1,"totalStaff":3.66,"manageRatio":5.0,"shopRatio":10.0,"platformRatio":0.230769230769231},{"month":"7月","group":"济南A事业部-Foxtrot组","manager":"陈静","level":"组长-2级","shopCount":5,"categoryCount":3,"platformCount":3,"manageCount":1.0,"qcCount":0.33,"trainCount":0.3,"evalCount":0.68,"aiCount":0,"csCount":7,"new3m":0,"manageTrainSum":1.63,"storeMgrCount":5,"pptCount":2,"totalStaff":9.31,"manageRatio":4.29447852760736,"shopRatio":5.0,"platformRatio":0.230769230769231},{"month":"7月","group":"济南A事业部-Golf组","manager":"赵磊","level":"组长-3级","shopCount":2,"categoryCount":1,"platformCount":2,"manageCount":0.7,"qcCount":0.43,"trainCount":0.45,"evalCount":0.35,"aiCount":0.5,"csCount":6,"new3m":1,"manageTrainSum":1.58,"storeMgrCount":2,"pptCount":2,"totalStaff":8.43,"manageRatio":3.79746835443038,"shopRatio":2.85714285714286,"platformRatio":0.153846153846154},{"month":"7月","group":"济南A事业部-Hotel组","manager":"赵磊","level":"组长-3级","shopCount":8,"categoryCount":2,"platformCount":5,"manageCount":0.3,"qcCount":0,"trainCount":0,"evalCount":0.05,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":0.3,"storeMgrCount":4,"pptCount":1,"totalStaff":3.35,"manageRatio":10.0,"shopRatio":26.6666666666667,"platformRatio":0.384615384615385},{"month":"7月","group":"济南A事业部-India组","manager":"孙明&周芳","level":"组长-3级","shopCount":1,"categoryCount":1,"platformCount":1,"manageCount":2.0,"qcCount":0.67,"trainCount":0.98,"evalCount":2.2,"aiCount":0.5,"csCount":18,"new3m":5,"manageTrainSum":3.65,"storeMgrCount":1,"pptCount":2,"totalStaff":24.35,"manageRatio":4.93150684931507,"shopRatio":0.5,"platformRatio":0.0769230769230769},{"month":"7月","group":"济南C事业部-Juliet组","manager":"吴涛","level":"组长-3级","shopCount":3,"categoryCount":3,"platformCount":3,"manageCount":0.9,"qcCount":1.9,"trainCount":0,"evalCount":0.53,"aiCount":0,"csCount":4,"new3m":1,"manageTrainSum":2.8,"storeMgrCount":4,"pptCount":6,"totalStaff":7.33,"manageRatio":1.42857142857143,"shopRatio":3.33333333333333,"platformRatio":0.230769230769231},{"month":"7月","group":"济南C事业部-Kilo组","manager":"吴涛","level":"组长-3级","shopCount":4,"categoryCount":1,"platformCount":2,"manageCount":0.1,"qcCount":0.07,"trainCount":0,"evalCount":0.27,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.17,"storeMgrCount":2,"pptCount":0,"totalStaff":3.44,"manageRatio":17.6470588235294,"shopRatio":40.0,"platformRatio":0.153846153846154},{"month":"7月","group":"济南B事业部-Lima组","manager":"郑华","level":"主管-2级","shopCount":5,"categoryCount":2,"platformCount":5,"manageCount":0.6,"qcCount":0.3,"trainCount":0,"evalCount":0.35,"aiCount":0,"csCount":4,"new3m":1,"manageTrainSum":0.9,"storeMgrCount":2,"pptCount":1,"totalStaff":5.25,"manageRatio":4.44444444444444,"shopRatio":8.33333333333333,"platformRatio":0.384615384615385},{"month":"7月","group":"济南B事业部-Mike组","manager":"郑华","level":"主管-2级","shopCount":6,"categoryCount":2,"platformCount":5,"manageCount":0.4,"qcCount":0,"trainCount":0,"evalCount":0.1,"aiCount":0,"csCount":4,"new3m":1,"manageTrainSum":0.4,"storeMgrCount":4,"pptCount":1,"totalStaff":4.5,"manageRatio":10.0,"shopRatio":15.0,"platformRatio":0.384615384615385},{"month":"7月","group":"济南B事业部-November组","manager":"黄丽","level":"主管-2级","shopCount":2,"categoryCount":1,"platformCount":1,"manageCount":3.0,"qcCount":0.5,"trainCount":1.0,"evalCount":1.0,"aiCount":0.5,"csCount":37,"new3m":32,"manageTrainSum":4.5,"storeMgrCount":2,"pptCount":4,"totalStaff":43.0,"manageRatio":8.22222222222222,"shopRatio":0.666666666666667,"platformRatio":0.0769230769230769},{"month":"7月","group":"济南支持组-Oscar组","manager":"林峰","level":"主管-1级","shopCount":2,"categoryCount":1,"platformCount":2,"manageCount":0.5,"qcCount":0.15,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.65,"storeMgrCount":1,"pptCount":4,"totalStaff":3.65,"manageRatio":4.61538461538461,"shopRatio":4.0,"platformRatio":0.153846153846154},{"month":"7月","group":"济南C事业部-Papa组","manager":"徐杰","level":"组长-1-1级","shopCount":3,"categoryCount":1,"platformCount":2,"manageCount":0.4,"qcCount":0.5,"trainCount":0.02,"evalCount":0.2,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":0.92,"storeMgrCount":3,"pptCount":1,"totalStaff":4.12,"manageRatio":3.26086956521739,"shopRatio":7.5,"platformRatio":0.153846153846154},{"month":"7月","group":"济南A事业部-Quebec组","manager":"徐杰","level":"组长-1-1级","shopCount":4,"categoryCount":2,"platformCount":2,"manageCount":0.6,"qcCount":0.5,"trainCount":0,"evalCount":0.3,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":1.1,"storeMgrCount":2,"pptCount":1,"totalStaff":4.4,"manageRatio":2.72727272727273,"shopRatio":6.66666666666667,"platformRatio":0.153846153846154},{"month":"定量指标汇总","group":"","manager":"","level":"","shopCount":0,"categoryCount":0,"platformCount":0,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"月份","group":"管理姓名","manager":"客服人数","level":"3个月内人数","shopCount":"管理+质培人数","categoryCount":"店长对接人数","platformCount":"PPT年度汇报次数","manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"张伟","manager":"10","level":"2","shopCount":1.4,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"李娜","manager":"3","level":"","shopCount":0.3,"categoryCount":8,"platformCount":0,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"王强","manager":"9","level":"3","shopCount":1.75,"categoryCount":1,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"刘洋","manager":"6","level":"1","shopCount":1.4,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"陈静","manager":"7","level":"","shopCount":1.63,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"赵磊","manager":"9","level":"2","shopCount":1.88,"categoryCount":6,"platformCount":3,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"孙明&周芳","manager":"9","level":"5","shopCount":3.65,"categoryCount":1,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"吴涛","manager":"7","level":"1","shopCount":2.97,"categoryCount":6,"platformCount":6,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"郑华","manager":"8","level":"2","shopCount":1.3,"categoryCount":6,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"黄丽","manager":"12.3333333333333","level":"32","shopCount":4.5,"categoryCount":2,"platformCount":4,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"林峰","manager":"3","level":"","shopCount":0.65,"categoryCount":1,"platformCount":4,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"徐杰","manager":"6","level":"2","shopCount":2.02,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0}];
 const ASSESSMENTS_DATA = [{"month":"7月","dept":"B事业部","group":"Alpha组","manager":"张伟","level":"组长-1-1级","totalScore":65.4428571428572,"quantScore":43.4428571428571,"qualScore":22.0,"csCountScore":10.0,"new3mScore":2.0,"ratioScore":1.4,"storeMgrScore":5.0,"pptScore":2.0,"qual1":3,"qual2":3,"qual3":3,"qual4":3,"qual5":3,"qual6":1,"qual7":3,"qual8":0},{"month":"7月","dept":"B事业部","group":"Beta组","manager":"李娜","level":"培训师","totalScore":8.0,"quantScore":0,"qualScore":8.0,"csCountScore":3.0,"new3mScore":0,"ratioScore":0.3,"storeMgrScore":8.0,"pptScore":0,"qual1":0,"qual2":0,"qual3":1,"qual4":0,"qual5":3,"qual6":3,"qual7":0,"qual8":0},{"month":"7月","dept":"B事业部","group":"Gamma组","manager":"王强","level":"组长-2级","totalScore":52.2261904761905,"quantScore":34.2261904761905,"qualScore":18.0,"csCountScore":9.0,"new3mScore":3.0,"ratioScore":1.75,"storeMgrScore":1.0,"pptScore":2.0,"qual1":2,"qual2":1,"qual3":1,"qual4":3,"qual5":1,"qual6":1,"qual7":3,"qual8":0},{"month":"7月","dept":"A事业部","group":"Delta手表&Echo组","manager":"刘洋","level":"组长-2级","totalScore":40.2523809523809,"quantScore":32.2523809523809,"qualScore":8.0,"csCountScore":6.0,"new3mScore":1.0,"ratioScore":1.4,"storeMgrScore":5.0,"pptScore":2.0,"qual1":1,"qual2":0,"qual3":1,"qual4":1,"qual5":2,"qual6":1,"qual7":0,"qual8":0},{"month":"7月","dept":"A事业部","group":"Foxtrot组","manager":"陈静","level":"组长-2级","totalScore":41.3598159509203,"quantScore":31.3598159509202,"qualScore":10.0,"csCountScore":7.0,"new3mScore":0,"ratioScore":1.63,"storeMgrScore":5.0,"pptScore":2.0,"qual1":0,"qual2":0,"qual3":1,"qual4":1,"qual5":2,"qual6":3,"qual7":0,"qual8":2},{"month":"7月","dept":"A事业部","group":"Golf组&Hotel2&Hotel","manager":"赵磊","level":"组长-3级","totalScore":60.0971158392435,"quantScore":41.0971158392435,"qualScore":19.0,"csCountScore":9.0,"new3mScore":2.0,"ratioScore":1.88,"storeMgrScore":6.0,"pptScore":3.0,"qual1":3,"qual2":1,"qual3":3,"qual4":1,"qual5":3,"qual6":3,"qual7":1,"qual8":2},{"month":"7月","dept":"A事业部","group":"India组","manager":"孙明&周芳","level":"组长-3级","totalScore":47.75,"quantScore":31.75,"qualScore":16.0,"csCountScore":9.0,"new3mScore":5.0,"ratioScore":3.65,"storeMgrScore":1.0,"pptScore":2.0,"qual1":3,"qual2":2,"qual3":2,"qual4":3,"qual5":1,"qual6":1,"qual7":1,"qual8":2},{"month":"7月","dept":"A事业部","group":"Juliet组&手表拼多多&抖音","manager":"吴涛","level":"组长-3级","totalScore":60.6385714285714,"quantScore":41.6385714285714,"qualScore":19.0,"csCountScore":7.0,"new3mScore":1.0,"ratioScore":2.97,"storeMgrScore":6.0,"pptScore":6.0,"qual1":3,"qual2":2,"qual3":2,"qual4":3,"qual5":2,"qual6":3,"qual7":0,"qual8":3},{"month":"7月","dept":"B事业部","group":"Lima&Lima2&Mike组","manager":"郑华","level":"主管-2级","totalScore":55.3830769230769,"quantScore":41.3830769230769,"qualScore":14.0,"csCountScore":8.0,"new3mScore":2.0,"ratioScore":1.3,"storeMgrScore":6.0,"pptScore":2.0,"qual1":2,"qual2":0,"qual3":1,"qual4":2,"qual5":2,"qual6":2,"qual7":1,"qual8":0},{"month":"7月","dept":"C事业部","group":"November组","manager":"黄丽","level":"主管-2级","totalScore":59.57,"quantScore":39.57,"qualScore":20.0,"csCountScore":12.3333333333333,"new3mScore":32.0,"ratioScore":4.5,"storeMgrScore":2.0,"pptScore":4.0,"qual1":2,"qual2":3,"qual3":3,"qual4":3,"qual5":1,"qual6":1,"qual7":2,"qual8":1},{"month":"7月","dept":"支持组","group":"Oscar组","manager":"林峰","level":"主管-1级","totalScore":32.6923076923077,"quantScore":28.6923076923077,"qualScore":4.0,"csCountScore":3.0,"new3mScore":0,"ratioScore":0.65,"storeMgrScore":1.0,"pptScore":4.0,"qual1":0,"qual2":1,"qual3":1,"qual4":0,"qual5":1,"qual6":1,"qual7":0,"qual8":0},{"month":"7月","dept":"A事业部","group":"Quebec组&Papa","manager":"徐杰","level":"组长-1-1级","totalScore":43.1333333333333,"quantScore":32.1333333333333,"qualScore":11.0,"csCountScore":6.0,"new3mScore":2.0,"ratioScore":2.02,"storeMgrScore":5.0,"pptScore":2.0,"qual1":1,"qual2":1,"qual3":1,"qual4":2,"qual5":1,"qual6":3,"qual7":1,"qual8":0},{"month":"1、项目管理难度依据定量与定性综合评估法计算得分，定量指标权重占比70%，定性因素权重占比30%；\n2、定量指标下有5项，100分/项，70%权重下共计70分；定性因素10项，不涉及或可以忽略，则为0分；如涉及则根据大、中、小计算每项得分分别为3分、2分和1分，最高得分30分，合计100分；\n3、定量难度指标为关键指标，原则上管理人数越多or新人占比越高or管理配置越少or对接项目越多or复盘次数越多，管理难度越大；定性因素主要为附加补充因素，需要依据特殊项目实际业务开展情况评分；\n4、管理难度评估参考标准分：\n     组长1-1/1-2级：管理难度30-40分\n     组长2级：管理难度41-50分\n     组长3级：管理难度51-60分\n     主管级1/2/3：管理难度61-80分\n     经理级1/2/3：管理难度＞81分\n5、依据现阶段团队管理水平及所负责店铺管理难度，管理等级在上述参考标准分之内，同时设定基准分数差值±5分均为正常值，基准分差值＞5分，适当给予奖励or补助；\n6、此管理难度评估为短期行为，同时要基于管理难度评分与管理者自身能力水平进行匹配：管理难度高，管理水平高，但超出5分差异，奖励金额X元；\n     管理难度高，管理水平低，但因特殊情况，如无法快速调换组别，无法快速补充人员等，可补助金额Y元；管理难度低，管理水平高/低，优先调配组别，但无补助；\n7、管理奖励/补助参考金额：\n      基准分差值5-10分，奖励/补助金额500元\n      基准分差值11-15分，奖励/补助金额1000元\n      基准分差值16-20分，奖励/补助金额1500元\n","dept":"","group":"","manager":"","level":"","totalScore":0,"quantScore":0,"qualScore":0,"csCountScore":0,"new3mScore":0,"ratioScore":0,"storeMgrScore":0,"pptScore":0,"qual1":0,"qual2":0,"qual3":0,"qual4":0,"qual5":0,"qual6":0,"qual7":0,"qual8":0}];
 
-const PROJECTS = [
+let PROJECTS = JSON.parse(localStorage.getItem("chansee_projects") || "null") || [
 
-  {id:"P001", name:"美妆旗舰店客服项目", brand:"兰蔻", category:"美妆", serviceMode:"TP代运营", workplace:"济南", pm:"张伟", director:"李明", pmHistory:[{name:"王芳", from:"2025-06", to:"2026-03", reason:"调岗"}], status:"运营中", startDate:"2025-04-01", endDate:"2026-12-31", base:"济南职场2F", platforms:"天猫,抖音", serviceHours:"09:00-24:00", fteTarget:30, slaResponse:120, slaResolve:360, costBudget:450000, revenue:520000, profitRate:13.5, health:"🟢"},
+  {id:"P001", name:"美妆旗舰店客服项目", brand:"兰蔻", category:"美妆", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"李明", pmHistory:[{name:"王芳", from:"2025-06", to:"2026-03", reason:"调岗"}], status:"运营中", startDate:"2025-04-01", endDate:"2026-12-31", base:"济南职场2F", platforms:"天猫,抖音", serviceHours:"09:00-24:00", fteTarget:30, slaResponse:120, slaResolve:360, costBudget:450000, revenue:520000, profitRate:13.5, health:"🟢"},
 
-  {id:"P002", name:"家电自营客服项目", brand:"美的", category:"家电", serviceMode:"经销模式", workplace:"淄博", pm:"刘洋", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-01-15", endDate:"2026-12-31", base:"淄博职场1F", platforms:"京东,天猫", serviceHours:"08:00-22:00", fteTarget:45, slaResponse:90, slaResolve:300, costBudget:680000, revenue:750000, profitRate:9.3, health:"🟡"},
+  {id:"P002", name:"家电自营客服项目", brand:"美的", category:"家电", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-01-15", endDate:"2026-12-31", base:"淄博职场1F", platforms:"京东,天猫", serviceHours:"08:00-22:00", fteTarget:45, slaResponse:90, slaResolve:300, costBudget:680000, revenue:750000, profitRate:9.3, health:"🟡"},
 
-  {id:"P003", name:"服装品牌客服外包", brand:"优衣库", category:"服装", serviceMode:"BPO外包", workplace:"杭州", pm:"陈静", director:"李明", pmHistory:[{name:"赵丽", from:"2025-01", to:"2025-11", reason:"离职"}], status:"运营中", startDate:"2025-01-10", endDate:"2026-06-30", base:"杭州职场3F", platforms:"全平台", serviceHours:"08:00-24:00", fteTarget:60, slaResponse:60, slaResolve:240, costBudget:880000, revenue:920000, profitRate:4.3, health:"🔴"},
+  {id:"P003", name:"服装品牌客服外包", brand:"优衣库", category:"服装", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"李明", pmHistory:[{name:"赵丽", from:"2025-01", to:"2025-11", reason:"离职"}], status:"运营中", startDate:"2025-01-10", endDate:"2026-06-30", base:"杭州职场3F", platforms:"全平台", serviceHours:"08:00-24:00", fteTarget:60, slaResponse:60, slaResolve:240, costBudget:880000, revenue:920000, profitRate:4.3, health:"🔴"},
 
-  {id:"P004", name:"母婴用品客服项目", brand:"好孩子", category:"母婴", serviceMode:"TP代运营", workplace:"济南", pm:"张伟", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-08-01", endDate:"2027-01-31", base:"济南职场2F", platforms:"天猫,京东,拼多多", serviceHours:"09:00-21:00", fteTarget:25, slaResponse:120, slaResolve:360, costBudget:320000, revenue:380000, profitRate:15.8, health:"🟢"},
+  {id:"P004", name:"母婴用品客服项目", brand:"好孩子", category:"母婴", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-08-01", endDate:"2027-01-31", base:"济南职场2F", platforms:"天猫,京东,拼多多", serviceHours:"09:00-21:00", fteTarget:25, slaResponse:120, slaResolve:360, costBudget:320000, revenue:380000, profitRate:15.8, health:"🟢"},
 
-  {id:"P005", name:"食品生鲜客服项目", brand:"三只松鼠", category:"食品", serviceMode:"经销模式", workplace:"淄博", pm:"刘洋", director:"李明", pmHistory:[{name:"孙磊", from:"2025-03", to:"2026-02", reason:"内部调换"}], status:"运营中", startDate:"2025-03-01", endDate:"2026-08-31", base:"淄博职场1F", platforms:"天猫,抖音", serviceHours:"08:00-23:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:520000, revenue:600000, profitRate:13.3, health:"🟡"},
+  {id:"P005", name:"食品生鲜客服项目", brand:"三只松鼠", category:"食品", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"李明", pmHistory:[{name:"孙磊", from:"2025-03", to:"2026-02", reason:"内部调换"}], status:"运营中", startDate:"2025-03-01", endDate:"2026-08-31", base:"淄博职场1F", platforms:"天猫,抖音", serviceHours:"08:00-23:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:520000, revenue:600000, profitRate:13.3, health:"🟡"},
 
-  {id:"P006", name:"运动品牌客服项目", brand:"耐克", category:"运动", serviceMode:"BPO外包", workplace:"杭州", pm:"陈静", director:"王强", pmHistory:[], status:"暂停", startDate:"2025-06-01", endDate:"2026-05-31", base:"杭州职场3F", platforms:"天猫,官网", serviceHours:"09:00-21:00", fteTarget:20, slaResponse:60, slaResolve:240, costBudget:280000, revenue:250000, profitRate:-10.7, health:"🔴"},
-  {id:"P007", name:"智能家居客服项目", brand:"小米", category:"智能硬件", serviceMode:"TP代运营", workplace:"无锡", pm:"张伟", director:"李明", pmHistory:[], status:"运营中", startDate:"2026-03-01", endDate:"2027-02-28", base:"无锡职场1F", platforms:"天猫,京东,抖音", serviceHours:"09:00-22:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:420000, revenue:480000, profitRate:12.5, health:"🟢"},
+  {id:"P006", name:"运动品牌客服项目", brand:"耐克", category:"运动", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"王强", pmHistory:[], status:"暂停", startDate:"2025-06-01", endDate:"2026-05-31", base:"杭州职场3F", platforms:"天猫,官网", serviceHours:"09:00-21:00", fteTarget:20, slaResponse:60, slaResolve:240, costBudget:280000, revenue:250000, profitRate:-10.7, health:"🔴"},
+  {id:"P007", name:"智能家居客服项目", brand:"小米", category:"智能硬件", serviceMode:"TP项目", workplace:"无锡", pm:"张伟", director:"李明", pmHistory:[], status:"运营中", startDate:"2026-03-01", endDate:"2027-02-28", base:"无锡职场1F", platforms:"天猫,京东,抖音", serviceHours:"09:00-22:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:420000, revenue:480000, profitRate:12.5, health:"🟢"},
 
 ];
 
@@ -77,7 +77,7 @@ const KNOWLEDGE = [
 
   {id:1, title:"美妆类目大促客服应对SOP", type:"SOP操作规范", sourceProject:"P001", tags:"美妆,大促, SOP", scope:"通用", createdAt:"2025-11-20"},
 
-  {id:2, title:"BPO外包模式成本控制经验", type:"成本优化经验", sourceProject:"P003", tags:"BPO,成本,外包", scope:"特定品类", createdAt:"2026-03-15"},
+  {id:2, title:"BPO项目成本控制经验", type:"成本优化经验", sourceProject:"P003", tags:"BPO,成本,外包", scope:"特定品类", createdAt:"2026-03-15"},
 
   {id:3, title:"天猫平台回复话术规范（2026版）", type:"品牌特殊话术", sourceProject:"P001", tags:"天猫,话术,规范", scope:"特定平台", createdAt:"2026-01-10"},
 
@@ -102,7 +102,7 @@ const HANDOVERS = [
 
 
 
-const USERS = [
+let USERS = JSON.parse(localStorage.getItem("chansee_users") || "null") || [
   {id:"U001", name:"系统创建者", username:"admin", role:"超级管理员", status:"已激活", registerTime:"2025-01-01", password:"admin123", phone:"138****0001", email:"admin@chanseen.com", approvedBy:"system", remark:"系统初始化超级管理员"},
   {id:"U002", name:"王管理", username:"wangadmin", role:"管理员", status:"已激活", registerTime:"2025-03-15", password:"wang456", phone:"139****1111", email:"wang@chanseen.com", approvedBy:"admin", remark:""},
   {id:"U003", name:"李组长", username:"lilead", role:"客服组长", status:"待审核", registerTime:"2026-05-20", password:"li789", phone:"137****2222", email:"li@chanseen.com", approvedBy:"", remark:"新入职申请"},
@@ -110,6 +110,15 @@ const USERS = [
   {id:"U005", name:"陈经理", username:"chenmgr", role:"客服经理", status:"已激活", registerTime:"2025-06-10", password:"chen111", phone:"135****4444", email:"chen@chanseen.com", approvedBy:"admin", remark:""},
   {id:"U006", name:"赵专员", username:"zhaocs", role:"客服组长", status:"待审核", registerTime:"2026-06-01", password:"zhao222", phone:"134****5555", email:"zhao@chanseen.com", approvedBy:"", remark:"跨部门调动"},
 ];
+
+// ===== 数据持久化 =====
+function saveUsers() {
+  try { localStorage.setItem("chansee_users", JSON.stringify(USERS)); } catch(e) { console.warn("saveUsers failed", e); }
+}
+function saveProjects() {
+  try { localStorage.setItem("chansee_projects", JSON.stringify(PROJECTS)); } catch(e) { console.warn("saveProjects failed", e); }
+}
+
 
 // 当前登录用户（null 表示未登录）
 let currentUser = null;
@@ -258,6 +267,9 @@ function doLogin() {
   const remember = document.getElementById("login-remember")?.checked;
   if (!username || !password) { alert("请填写账号和密码"); return; }
 
+  const btn = document.querySelector("#login-form .btn-primary");
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "登录中"; }
+
   const user = USERS.find(u => u.username === username && u.password === password);
   if (!user) { alert("账号或密码错误"); return; }
   if (user.status !== "已激活") { alert("账号状态：" + user.status + "，请联系管理员审批"); return; }
@@ -279,6 +291,7 @@ function doLogin() {
     sessionStorage.setItem("chansee_current_user", sessionData);
   }
 
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "登录"; }
   hideLoginModal();
   setAppContentVisible(true);
   updateUserDisplay();
@@ -295,6 +308,9 @@ function doRegister() {
   const email = document.getElementById("reg-email").value.trim();
 
   if (!name || !username || !password || !confirm) { alert("请填写完整信息"); return; }
+
+  const btn = document.querySelector("#register-form .btn-primary");
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "注册中"; }
   if (password !== confirm) { alert("两次密码不一致"); return; }
   if (USERS.some(u => u.username === username)) { alert("该账号已被注册"); return; }
 
@@ -305,6 +321,8 @@ function doRegister() {
     phone: phone || "", email: email || "", approvedBy: "", remark: ""
   };
   USERS.push(newUser);
+  saveUsers();
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "注册"; }
   alert("注册成功！请等待管理员审批后登录。");
   switchAuthTab("login");
 }
@@ -1353,9 +1371,9 @@ function renderFilterBar() {
         <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目类型</label>
         <select class="filter-select" onchange="setFilter('projectType',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
           <option value="all">全部类型</option>
-          <option value="TP代运营" ${filterState.projectType==='TP代运营'?'selected':''}>TP项目</option>
-          <option value="经销模式" ${filterState.projectType==='经销模式'?'selected':''}>经销项目</option>
-          <option value="BPO外包" ${filterState.projectType==='BPO外包'?'selected':''}>外包项目</option>
+          <option value="TP项目" ${filterState.projectType==='TP项目'?'selected':''}>TP项目</option>
+          <option value="DP项目" ${filterState.projectType==='DP项目'?'selected':''}>DP项目</option>
+          <option value="BPO项目" ${filterState.projectType==='BPO项目'?'selected':''}>BPO项目</option>
         </select>
       </div>
       <div class="filter-item">
@@ -1596,10 +1614,10 @@ function renderDashboard(){
 
   const avgProfit = all.length ? (all.reduce((s,p)=>s+p.profitRate,0)/all.length).toFixed(1) : 0;
 
-  // 计算服务模式分布
-  const tpCount = all.filter(p=>p.serviceMode==="TP代运营").length;
-  const jxCount = all.filter(p=>p.serviceMode==="经销模式").length;
-  const bpoCount = all.filter(p=>p.serviceMode==="BPO外包").length;
+  // 计算项目类型分布
+  const tpCount = all.filter(p=>p.serviceMode==="TP项目").length;
+  const jxCount = all.filter(p=>p.serviceMode==="DP项目").length;
+  const bpoCount = all.filter(p=>p.serviceMode==="BPO项目").length;
 
   // 计算运营数据
   const filteredOps = OPERATIONS.filter(o => {
@@ -1638,28 +1656,28 @@ function renderDashboard(){
 
 
 
-    <!-- 第一行：服务模式分布 -->
+    <!-- 第一行：项目类型分布 -->
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
-    <div class="metric-card row-service" onclick="setFilter('projectType','TP代运营');renderDashboard();" style="cursor:pointer;">
+    <div class="metric-card row-service" onclick="setFilter('projectType','TP项目');renderDashboard();" style="cursor:pointer;">
       <div class="metric-icon-wrap">&#x2699;&#xFE0F;</div>
       <div class="metric-center">
-        <div class="metric-label">TP代运营</div>
+        <div class="metric-label">TP项目</div>
         <div class="metric-value">${tpCount}<span class="metric-unit">个</span></div>
       </div>
       <div class="metric-right"><span class="metric-tag">项目数</span></div>
     </div>
-    <div class="metric-card row-service" onclick="setFilter('projectType','经销模式');renderDashboard();" style="cursor:pointer;">
+    <div class="metric-card row-service" onclick="setFilter('projectType','DP项目');renderDashboard();" style="cursor:pointer;">
       <div class="metric-icon-wrap">&#x1F3EA;</div>
       <div class="metric-center">
-        <div class="metric-label">经销服务</div>
+        <div class="metric-label">DP项目</div>
         <div class="metric-value">${jxCount}<span class="metric-unit">个</span></div>
       </div>
       <div class="metric-right"><span class="metric-tag">项目数</span></div>
     </div>
-    <div class="metric-card row-service" onclick="setFilter('projectType','BPO外包');renderDashboard();" style="cursor:pointer;">
+    <div class="metric-card row-service" onclick="setFilter('projectType','BPO项目');renderDashboard();" style="cursor:pointer;">
       <div class="metric-icon-wrap">&#x1F91D;</div>
       <div class="metric-center">
-        <div class="metric-label">BPO外包</div>
+        <div class="metric-label">BPO项目</div>
         <div class="metric-value">${bpoCount}<span class="metric-unit">个</span></div>
       </div>
       <div class="metric-right"><span class="metric-tag">项目数</span></div>
@@ -1933,7 +1951,7 @@ function renderArchive(){
 
     <table class="data-table">
 
-      <thead><tr><th>项目编号</th><th>项目名称</th><th>品牌/品类</th><th>服务模式</th><th>所属职场</th><th>负责人</th><th>项目总监</th><th>交接历史</th><th>操作</th></tr></thead>
+      <thead><tr><th>项目编号</th><th>项目名称</th><th>品牌/品类</th><th>项目类型</th><th>所属职场</th><th>负责人</th><th>项目总监</th><th>交接历史</th><th>操作</th></tr></thead>
 
       <tbody>
 
@@ -1947,7 +1965,7 @@ function renderArchive(){
 
             <td>${p.brand} / ${p.category}</td>
 
-            <td><span class="badge ${p.serviceMode==='TP代运营'?'badge-blue':p.serviceMode==='经销模式'?'badge-green':'badge-orange'}">${p.serviceMode}</span></td>
+            <td><span class="badge ${p.serviceMode==='TP项目'?'badge-blue':p.serviceMode==='DP项目'?'badge-green':'badge-orange'}">${p.serviceMode}</span></td>
 
             <td><span class="wp-tag wp-${p.workplace}">${p.workplace}</span></td>
 
@@ -2848,7 +2866,7 @@ function renderDirector(){
 
       <table class="data-table">
 
-        <thead><tr><th>项目</th><th>职场</th><th>服务模式</th><th>利润率</th><th>健康</th><th>负责人</th></tr></thead>
+        <thead><tr><th>项目</th><th>职场</th><th>项目类型</th><th>利润率</th><th>健康</th><th>负责人</th></tr></thead>
 
         <tbody>
 
@@ -2926,7 +2944,7 @@ function showProjectDetail(projectId){
 
           <span class="wp-tag wp-${p.workplace}">${p.workplace}</span>
 
-          <span class="badge ${p.serviceMode==='TP代运营'?'badge-blue':p.serviceMode==='经销模式'?'badge-green':'badge-orange'}">${p.serviceMode}</span>
+          <span class="badge ${p.serviceMode==='TP项目'?'badge-blue':p.serviceMode==='DP项目'?'badge-green':'badge-orange'}">${p.serviceMode}</span>
 
           <span>${p.category} · ${p.brand}</span>
 
@@ -2980,7 +2998,7 @@ function showProjectDetail(projectId){
 
         <div class="detail-item"><div class="detail-label">品类</div><div class="detail-value">${p.category}</div></div>
 
-        <div class="detail-item"><div class="detail-label">服务模式</div><div class="detail-value">${p.serviceMode}</div></div>
+        <div class="detail-item"><div class="detail-label">项目类型</div><div class="detail-value">${p.serviceMode}</div></div>
 
         <div class="detail-item"><div class="detail-label">所属职场</div><div class="detail-value">${p.workplace}</div></div>
 
@@ -3333,11 +3351,11 @@ function showAddProject(){
 
       <div class="form-group">
 
-        <label class="form-label">服务模式</label>
+        <label class="form-label">项目类型</label>
 
         <select class="form-select" id="f-mode">
 
-          <option>TP代运营</option><option>经销模式</option><option>BPO外包</option>
+          <option>TP项目</option><option>DP项目</option><option>BPO项目</option>
 
         </select>
 
@@ -3464,6 +3482,7 @@ function doAddProject(){
   };
 
   PROJECTS.push(p);
+  saveProjects();
 
   OPERATIONS.push({id:OPERATIONS.length+1, projectId:p.id, period:new Date().toISOString().slice(0,7), fteActual:0, attendance:0, ticketVol:0, responseTime:0, resolveTime:0, csat:0, resolutionRate:0, reviewRate:0, health:"🟡"});
 
@@ -5089,7 +5108,7 @@ function showSatisfactionPermission(){
 
 
 
-// ===== 消息通知提醒（用户审批管理） =====
+// ===== 系统用户管理（用户审批管理） =====
 
 let notificationFilter = "all";
 
@@ -5126,7 +5145,7 @@ function renderNotifications(){
 
   return `<div class="module-header">
     <div>
-      <div class="module-title">&#x1F514; 消息通知提醒</div>
+      <div class="module-title">&#x1F514; 系统用户管理</div>
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">管理系统用户，审批注册申请，维护账号状态</div>
     </div>
     <div class="module-actions">
@@ -5199,10 +5218,12 @@ function approveUser(userId, action){
     user.approvedBy = currentUser ? currentUser.name : "admin";
     // 新用户默认角色为"新用户"，所有权限只读
     if (!user.role) user.role = "新用户";
+    saveUsers();
     alert(`已同意 ${user.name} 的注册申请，账号已激活。`);
   } else if (action === "拒绝") {
     user.status = "已拒绝";
     user.approvedBy = currentUser ? currentUser.name : "admin";
+    saveUsers();
     alert(`已拒绝 ${user.name} 的注册申请。`);
   } else if (action === "忽略") {
     alert(`已忽略 ${user.name} 的注册申请，该申请仍保留在待审核列表中。`);
@@ -5255,6 +5276,7 @@ function confirmEditRole(userId){
   const newRole = sel.value;
   if(newRole && newRole !== user.role){
     user.role = newRole;
+    saveUsers();
     alert(`已修改 ${user.name} 的角色为：${newRole}`);
     renderModule("notifications");
   }
@@ -5279,6 +5301,7 @@ function disableUser(userId){
   if (user.role === "超级管理员") { alert("不能禁用超级管理员"); return; }
   if (confirm(`确定要禁用用户 ${user.name} 吗？`)) {
     user.status = "已禁用";
+    saveUsers();
     renderModule("notifications");
   }
 }
@@ -5287,6 +5310,7 @@ function enableUser(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
   user.status = "已激活";
+  saveUsers();
   renderModule("notifications");
 }
 
@@ -5297,6 +5321,7 @@ function deleteUser(userId){
   if (confirm(`确定要删除用户 ${user.name} 吗？此操作不可恢复。`)) {
     const idx = USERS.findIndex(u => u.id === userId);
     if (idx > -1) USERS.splice(idx, 1);
+    saveUsers();
     renderModule("notifications");
   }
 }
@@ -5682,10 +5707,10 @@ function renderPerformance(){
   const avgCsat = (data.reduce((s,a)=>s+a.csat,0)/data.length).toFixed(1);
   const totalConv = data.reduce((s,a)=>s+a.convCount,0);
   html += `<div class="metrics-grid">
-    <div class="metric-card"><div class="metric-value">${data.length}</div><div class="metric-label">参评坐席数</div></div>
-    <div class="metric-card"><div class="metric-value">${avgResp}s</div><div class="metric-label">平均响应时长</div></div>
-    <div class="metric-card"><div class="metric-value">${avgCsat}</div><div class="metric-label">平均CSAT</div></div>
-    <div class="metric-card"><div class="metric-value">${totalConv.toLocaleString()}</div><div class="metric-label">总服务量</div></div>
+    <div class="metric-card metric-card-kpi"><div class="metric-value">${data.length}</div><div class="metric-label">参评坐席数</div></div>
+    <div class="metric-card metric-card-kpi"><div class="metric-value">${avgResp}<span style="font-size:16px;font-weight:500;margin-left:2px;">s</span></div><div class="metric-label">平均响应时长</div></div>
+    <div class="metric-card metric-card-kpi"><div class="metric-value">${avgCsat}</div><div class="metric-label">平均CSAT</div></div>
+    <div class="metric-card metric-card-kpi"><div class="metric-value">${totalConv.toLocaleString()}</div><div class="metric-label">总服务量</div></div>
   </div>`;
 
   html += `<div class="card"><div class="card-title">坐席绩效明细</div><table class="data-table">
@@ -5903,19 +5928,6 @@ function renderProfile(){
       <span class="profile-card-icon">⚙️</span>更多操作
     </div>
 
-    <!-- 保持当前状态 -->
-    <div style="${rowStyle}">
-      <div style="${labelStyle}">保持当前状态</div>
-      <div style="flex:1;display:flex;align-items:center;gap:10px;">
-        <label class="profile-toggle">
-          <input type="checkbox" ${keepStatus ? 'checked' : ''} onchange="toggleKeepStatus(this)">
-          <span class="profile-toggle-track"></span>
-          <span class="profile-toggle-thumb"></span>
-        </label>
-        <span style="font-size:12px;color:#94a3b8;">${keepStatus ? '已开启' : '已关闭'}</span>
-      </div>
-    </div>
-
     <!-- 离开团队 -->
     <div style="${rowStyle}border-bottom:none;flex-direction:column;align-items:flex-start;gap:10px;padding-bottom:0;">
       <div style="display:flex;align-items:center;gap:8px;width:100%;">
@@ -6053,6 +6065,8 @@ function handleAvatarUpload(input) {
     if (userInDb) userInDb.avatar = dataUrl;
     const preview = document.getElementById("profile-avatar-preview");
     if (preview) { preview.style.backgroundImage = `url(${dataUrl})`; preview.textContent = ""; }
+    saveUsers();
+    if (currentUser) localStorage.setItem("chansee_current_user", JSON.stringify(currentUser));
     updateUserDisplay();
     showToast("头像更换成功");
   };
@@ -6082,10 +6096,14 @@ function saveProfileNickname() {
   const input = document.getElementById("profile-nickname-input");
   if (!input) return;
   const val = input.value.trim();
+  const btn = input.parentElement.querySelector("button");
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   if (!val) { alert("昵称不能为空"); return; }
   if (currentUser) {
     currentUser.nickname = val;
     currentUser.name = val; // 同步更新右上角显示的名称
+    localStorage.setItem("chansee_current_user", JSON.stringify(currentUser));
+    saveUsers();
   }
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (userInDb) {
@@ -6093,6 +6111,7 @@ function saveProfileNickname() {
     userInDb.name = val;
   }
   updateUserDisplay(); // 同步刷新右上角
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "保存"; }
   renderModule("profile");
   showToast("昵称修改成功");
 }
@@ -6107,9 +6126,12 @@ function saveProfilePosition() {
   const input = document.getElementById("profile-position-input");
   if (!input) return;
   const val = input.value.trim();
+  const btn = input.parentElement.querySelector("button");
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   if (currentUser) currentUser.position = val;
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (userInDb) userInDb.position = val;
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "保存"; }
   renderModule("profile");
   showToast("职位修改成功");
 }
@@ -6197,7 +6219,9 @@ function saveProfileBrand() {
   const input = document.getElementById("profile-brand-input");
   if (!input) return;
   const val = input.value.trim();
-  if (currentUser) currentUser.brand = val;
+  if (currentUser) { currentUser.brand = val; }
+    localStorage.setItem("chansee_current_user", JSON.stringify(currentUser));
+  saveUsers();
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (userInDb) userInDb.brand = val;
   renderModule("profile");
@@ -6209,8 +6233,9 @@ function toggleKeepStatus(checkbox) {
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (currentUser) currentUser.keepStatus = checkbox.checked;
   if (userInDb) userInDb.keepStatus = checkbox.checked;
-  // 即时更新文字，不等待重新渲染
-  const statusText = checkbox.parentElement.parentElement.querySelector("span:last-child");
+  // 即时更新文字，不等待重新渲染（在同一位置仅改变文字）
+  const container = checkbox.closest(".profile-toggle-row") || checkbox.closest('[style*="flex:1"]');
+  const statusText = container ? container.querySelector(".keep-status-text") : null;
   if (statusText) statusText.textContent = checkbox.checked ? "已开启" : "已关闭";
   showToast(checkbox.checked ? "保持当前状态已开启" : "保持当前状态已关闭");
 }
@@ -6235,19 +6260,119 @@ function doChangePassword() {
   const newPwd = document.getElementById("cp-new").value;
   const confirm = document.getElementById("cp-confirm").value;
   if (!oldPwd || !newPwd || !confirm) { alert("请填写完整"); return; }
+  const btn = document.querySelector("#change-password-modal .btn-primary");
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (!userInDb || userInDb.password !== oldPwd) { alert("原密码不正确"); return; }
   if (newPwd.length < 6) { alert("新密码至少6位"); return; }
   if (newPwd !== confirm) { alert("两次输入的新密码不一致"); return; }
   userInDb.password = newPwd;
+  if (currentUser) { currentUser.password = newPwd; localStorage.setItem("chansee_current_user", JSON.stringify(currentUser)); }
+  saveUsers();
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "确认修改"; }
   showToast("密码修改成功，请牢记新密码");
   hideChangePasswordModal();
 }
+// 忘记密码功能
+let forgotVerifyCode = '';
+let forgotTargetUser = null;
+
+function openForgotPassword() {
+  const modal = document.getElementById('forgot-password-modal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    document.getElementById('forgot-step-1').style.display = 'block';
+    document.getElementById('forgot-step-2').style.display = 'none';
+    ['forgot-contact','forgot-code','forgot-new-pwd','forgot-confirm-pwd'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+  }
+}
+
+function hideForgotPassword() {
+  const modal = document.getElementById('forgot-password-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    forgotVerifyCode = '';
+    forgotTargetUser = null;
+  }
+}
+
+function sendVerifyCode() {
+  const contact = document.getElementById('forgot-contact').value.trim();
+  if (!contact) { alert('请输入手机号或邮箱'); return; }
+  
+  // Find user by phone or email
+  const user = USERS.find(u => 
+    (u.phone && u.phone.indexOf(contact) >= 0) || 
+    (u.email && u.email.toLowerCase() === contact.toLowerCase()) ||
+    u.username === contact
+  );
+  
+  if (!user) { alert('未找到该账号，请确认手机号/邮箱是否正确'); return; }
+  
+  forgotTargetUser = user;
+  // Generate 6-digit verification code
+  forgotVerifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+  
+  // Display the code (simulation - in real scenario, send via SMS/email)
+  const display = document.getElementById('forgot-code-display');
+  if (display) {
+    display.textContent = forgotVerifyCode;
+  }
+  
+  // Switch to step 2
+  document.getElementById('forgot-step-1').style.display = 'none';
+  document.getElementById('forgot-step-2').style.display = 'block';
+  
+  showToast('模拟验证码已生成，请查看弹窗内提示');
+}
+
+function toggleForgotNewPwd() {
+  const inp = document.getElementById('forgot-new-pwd');
+  const eye = document.getElementById('forgot-new-pwd-eye');
+  if (!inp || !eye) return;
+  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '👁️'; }
+  else { inp.type = 'password'; eye.textContent = '🙈'; }
+}
+
+function toggleForgotConfirmPwd() {
+  const inp = document.getElementById('forgot-confirm-pwd');
+  const eye = document.getElementById('forgot-confirm-pwd-eye');
+  if (!inp || !eye) return;
+  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '👁️'; }
+  else { inp.type = 'password'; eye.textContent = '🙈'; }
+}
+
+function resetPassword() {
+  const code = document.getElementById('forgot-code').value.trim();
+  const newPwd = document.getElementById('forgot-new-pwd').value;
+  const confirmPwd = document.getElementById('forgot-confirm-pwd').value;
+  
+  if (!code) { alert('请输入验证码'); return; }
+  if (code !== forgotVerifyCode) { alert('验证码错误'); return; }
+  if (!newPwd || newPwd.length < 6) { alert('新密码至少6位'); return; }
+  if (newPwd !== confirmPwd) { alert('两次输入的新密码不一致'); return; }
+  if (!forgotTargetUser) { alert('操作超时，请重新操作'); hideForgotPassword(); return; }
+  
+  // Update password
+  forgotTargetUser.password = newPwd;
+  if (currentUser && forgotTargetUser.id === currentUser.id) { currentUser.password = newPwd; localStorage.setItem("chansee_current_user", JSON.stringify(currentUser)); }
+  saveUsers();
+  
+  showToast('密码重置成功，请使用新密码登录');
+  hideForgotPassword();
+}
+
+
 
 // 离开团队
 function leaveTeam() {
   if (!confirm("⚠️ 确定要离开团队吗？离开后您将无法查看此团队的任何记录！")) return;
   if (!confirm("再次确认：您真的要离开团队吗？此操作不可撤销。")) return;
+  const btn = document.querySelector(".profile-btn-danger");
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "处理中"; }
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (userInDb) {
     userInDb.status = "已禁用";
