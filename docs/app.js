@@ -1,3 +1,4 @@
+// VERSION: 20260605161000 - FIX: doLogin浅拷贝+checkLogin从USERS恢复
 // ===== Mock 数据 =====
 
 // 管理难度评估数据（自动生成）
