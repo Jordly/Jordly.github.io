@@ -115,6 +115,26 @@ let USERS = JSON.parse(localStorage.getItem("chansee_users") || "null") || [
 function saveUsers() {
   try { localStorage.setItem("chansee_users", JSON.stringify(USERS)); } catch(e) { console.warn("saveUsers failed", e); }
 }
+
+// 启动时自动修复：清理过大的 avatar，避免 localStorage 超限
+(function autoFixOversizedAvatars() {
+  const raw = localStorage.getItem("chansee_users");
+  if (!raw) return;
+  let fixed = false;
+  try {
+    const users = JSON.parse(raw);
+    users.forEach(u => {
+      if (u.avatar && u.avatar.length > 50000) {
+        u.avatar = "";
+        fixed = true;
+      }
+    });
+    if (fixed) {
+      localStorage.setItem("chansee_users", JSON.stringify(users));
+      console.log("[autoFix] 已清理过大的头像数据，释放 localStorage 空间");
+    }
+  } catch(e) {}
+})();
 function saveProjects() {
   try { localStorage.setItem("chansee_projects", JSON.stringify(PROJECTS)); } catch(e) { console.warn("saveProjects failed", e); }
 }
