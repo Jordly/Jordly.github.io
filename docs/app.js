@@ -1,4 +1,4 @@
-// VERSION: 20260605161000 - FIX: doLogin浅拷贝+checkLogin从USERS恢复
+// VERSION: 20260605172500 - 彻底修复持久化：重写init+safeSetItem+doLogin+checkLogin
 // ===== Mock 数据 =====
 
 // 管理难度评估数据（自动生成）
@@ -103,53 +103,118 @@ const HANDOVERS = [
 
 
 
-let USERS = JSON.parse(localStorage.getItem("chansee_users") || "null") || [
+// ===== 数据持久化（彻底修复版）=====
+// 安全写入 localStorage（带 quota 处理和用户提示）
+function safeSetItem(key, value) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch(e) {
+    console.error('[safeSetItem]', key, '写入失败:', e);
+    if (e.name === 'QuotaExceededError' || e.code === 22) {
+      // 尝试清理超大头像
+      try {
+        var users = JSON.parse(localStorage.getItem('chansee_users') || '[]');
+        var cleaned = 0;
+        users.forEach(function(u) {
+          if (u.avatar && u.avatar.length > 50000) { u.avatar = ''; cleaned++; }
+        });
+        if (cleaned > 0) {
+          localStorage.setItem('chansee_users', JSON.stringify(users));
+          console.log('[safeSetItem] 已清理 ' + cleaned + ' 个大头像，重试写入');
+          localStorage.setItem(key, value);
+          return true;
+        }
+      } catch(e2) {}
+      alert('浏览器存储空间不足，无法保存修改！\n请清理浏览器数据（设置→隐私和安全→清除浏览数据），然后重新登录。');
+    }
+    return false;
+  }
+}
+
+// 默认用户数据（只在首次初始化时使用）
+var DEFAULT_USERS = [
   {id:"U001", name:"系统创建者", username:"admin", role:"超级管理员", status:"已激活", registerTime:"2025-01-01", password:"admin123", phone:"138****0001", email:"admin@chanseen.com", approvedBy:"system", remark:"系统初始化超级管理员"},
   {id:"U002", name:"王管理", username:"wangadmin", role:"管理员", status:"已激活", registerTime:"2025-03-15", password:"wang456", phone:"139****1111", email:"wang@chanseen.com", approvedBy:"admin", remark:""},
   {id:"U003", name:"李组长", username:"lilead", role:"客服组长", status:"待审核", registerTime:"2026-05-20", password:"li789", phone:"137****2222", email:"li@chanseen.com", approvedBy:"", remark:"新入职申请"},
   {id:"U004", name:"张主管", username:"zhangsup", role:"客服主管", status:"已拒绝", registerTime:"2026-05-18", password:"zhang000", phone:"136****3333", email:"zhang@chanseen.com", approvedBy:"wangadmin", remark:"信息不完整"},
   {id:"U005", name:"陈经理", username:"chenmgr", role:"客服经理", status:"已激活", registerTime:"2025-06-10", password:"chen111", phone:"135****4444", email:"chen@chanseen.com", approvedBy:"admin", remark:""},
-  {id:"U006", name:"赵专员", username:"zhaocs", role:"客服组长", status:"待审核", registerTime:"2026-06-01", password:"zhao222", phone:"134****5555", email:"zhao@chanseen.com", approvedBy:"", remark:"跨部门调动"},
+  {id:"U006", name:"赵专员", username:"zhaocs", role:"客服组长", status:"待审核", registerTime:"2026-06-01", password:"zhao222", phone:"134****5555", email:"zhao@chanseen.com", approvedBy:"", remark:"跨部门调动"}
 ];
 
-// ===== 数据持久化 =====
-function saveUsers() {
-  try { localStorage.setItem("chansee_users", JSON.stringify(USERS)); } catch(e) { console.warn("saveUsers failed", e); }
-}
+var DEFAULT_PROJECTS = [
+  {id:"P001", name:"美妆旗舰店客服项目", brand:"兰蔻", category:"美妆", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"李明", pmHistory:[{name:"王芳", from:"2025-06", to:"2026-03", reason:"调岗"}], status:"运营中", startDate:"2025-04-01", endDate:"2026-12-31", base:"济南职场2F", platforms:"天猫,抖音", serviceHours:"09:00-24:00", fteTarget:30, slaResponse:120, slaResolve:360, costBudget:450000, revenue:520000, profitRate:13.5, health:"🟢"},
+  {id:"P002", name:"家电自营客服项目", brand:"美的", category:"家电", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-01-15", endDate:"2026-12-31", base:"淄博职场1F", platforms:"京东,天猫", serviceHours:"08:00-22:00", fteTarget:45, slaResponse:90, slaResolve:300, costBudget:680000, revenue:750000, profitRate:9.3, health:"🟡"},
+  {id:"P003", name:"服装品牌客服外包", brand:"优衣库", category:"服装", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"李明", pmHistory:[{name:"赵丽", from:"2025-01", to:"2025-11", reason:"离职"}]}, status:"运营中", startDate:"2025-01-10", endDate:"2026-06-30", base:"杭州职场3F", platforms:"全平台", serviceHours:"08:00-24:00", fteTarget:60, slaResponse:60, slaResolve:240, costBudget:880000, revenue:920000, profitRate:4.3, health:"🔴"},
+  {id:"P004", name:"母婴用品客服项目", brand:"好孩子", category:"母婴", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-08-01", endDate:"2027-01-31", base:"济南职场2F", platforms:"天猫,京东,拼多多", serviceHours:"09:00-21:00", fteTarget:25, slaResponse:120, slaResolve:360, costBudget:320000, revenue:380000, profitRate:15.8, health:"🟢"},
+  {id:"P005", name:"食品生鲜客服项目", brand:"三只松鼠", category:"食品", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"李明", pmHistory:[{name:"孙磊", from:"2025-03", to:"2026-02", reason:"内部调换"}]}, status:"运营中", startDate:"2025-03-01", endDate:"2026-08-31", base:"淄博职场1F", platforms:"天猫,抖音", serviceHours:"08:00-23:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:520000, revenue:600000, profitRate:13.3, health:"🟡"},
+  {id:"P006", name:"运动品牌客服项目", brand:"耐克", category:"运动", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"王强", pmHistory:[], status:"暂停", startDate:"2025-06-01", endDate:"2026-05-31", base:"杭州职场3F", platforms:"天猫,官网", serviceHours:"09:00-21:00", fteTarget:20, slaResponse:60, slaResolve:240, costBudget:280000, revenue:250000, profitRate:-10.7, health:"🔴"},
+  {id:"P007", name:"智能家居客服项目", brand:"小米", category:"智能硬件", serviceMode:"TP项目", workplace:"无锡", pm:"张伟", director:"李明", pmHistory:[], status:"运营中", startDate:"2026-03-01", endDate:"2027-02-28", base:"无锡职场1F", platforms:"天猫,京东,抖音", serviceHours:"09:00-22:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:420000, revenue:480000, profitRate:12.5, health:"🟢"}
+];
 
-// 启动时自动修复：清理过大的 avatar，避免 localStorage 超限
-(function autoFixOversizedAvatars() {
-  const raw = localStorage.getItem("chansee_users");
-  if (!raw) return;
-  let fixed = false;
-  try {
-    const users = JSON.parse(raw);
-    users.forEach(u => {
-      if (u.avatar && u.avatar.length > 50000) {
-        u.avatar = "";
-        fixed = true;
-      }
-    });
-    if (fixed) {
-      localStorage.setItem("chansee_users", JSON.stringify(users));
-      console.log("[autoFix] 已清理过大的头像数据，释放 localStorage 空间");
+// 初始化 USERS
+var USERS = [];
+(function initUsers() {
+  var raw = localStorage.getItem('chansee_users');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      USERS = JSON.parse(raw);
+      console.log('[init] 从 localStorage 恢复 ' + USERS.length + ' 个用户');
+      return;
+    } catch(e) {
+      console.error('[init] 用户数据损坏，重置:', e);
     }
-  } catch(e) {}
+  }
+  // 首次初始化
+  USERS = JSON.parse(JSON.stringify(DEFAULT_USERS));
+  safeSetItem('chansee_users', JSON.stringify(USERS));
+  console.log('[init] 首次初始化用户数据');
 })();
+
+// 初始化 PROJECTS
+var PROJECTS = [];
+(function initProjects() {
+  var raw = localStorage.getItem('chansee_projects');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      PROJECTS = JSON.parse(raw);
+      console.log('[init] 从 localStorage 恢复 ' + PROJECTS.length + ' 个项目');
+      return;
+    } catch(e) {
+      console.error('[init] 项目数据损坏，重置:', e);
+    }
+  }
+  PROJECTS = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+  safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
+  console.log('[init] 首次初始化项目数据');
+})();
+
+function saveUsers() {
+  safeSetItem('chansee_users', JSON.stringify(USERS));
+}
 function saveProjects() {
-  try { localStorage.setItem("chansee_projects", JSON.stringify(PROJECTS)); } catch(e) { console.warn("saveProjects failed", e); }
+  safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
 }
 
-// 持久化当前用户：同步更新 USERS 数组 + currentUser 到 localStorage
+// 持久化当前用户（同步到 USERS 数组 + 更新 session）
 function persistCurrentUser() {
   if (!currentUser) return;
-  const userInDb = USERS.find(u => u.id === currentUser.id);
-  if (userInDb) {
-    // 将 currentUser 的所有属性同步到 USERS 数组中的对象
-    Object.keys(currentUser).forEach(k => { userInDb[k] = currentUser[k]; });
+  // 同步到 USERS 数组
+  for (var i = 0; i < USERS.length; i++) {
+    if (USERS[i].id === currentUser.id) {
+      // 把 currentUser 的所有字段同步到 USERS[i]
+      var keys = Object.keys(currentUser);
+      for (var j = 0; j < keys.length; j++) {
+        USERS[i][keys[j]] = currentUser[keys[j]];
+      }
+      break;
+    }
   }
   saveUsers();
-  try { localStorage.setItem("chansee_current_user", JSON.stringify(currentUser)); } catch(e) {}
+  // 更新 session 中的 currentUser（不含密码）
+  var sessionData = JSON.parse(JSON.stringify(currentUser));
+  delete sessionData.password;
+  try { localStorage.setItem('chansee_current_user', JSON.stringify(sessionData)); } catch(e) {}
 }
 
 
@@ -164,32 +229,38 @@ function setAppContentVisible(visible) {
   if (mc) mc.style.display = visible ? "" : "none";
 }
 
-// 登录状态检查
 function checkLogin() {
   try {
-    // 优先读 localStorage（记住我），再读 sessionStorage（本次会话）
     const raw = localStorage.getItem("chansee_current_user")
               || sessionStorage.getItem("chansee_current_user");
     if (raw) {
       const data = JSON.parse(raw);
       // 校验是否过期
       if (data._expiry && Date.now() > data._expiry) {
-        // 已过期，清除
         sessionStorage.removeItem("chansee_current_user");
         localStorage.removeItem("chansee_current_user");
         throw new Error("session expired");
       }
-      // 用 session 里的 id 从 USERS 数组取最新完整数据，避免缓存旧数据
+      // 用 session 里的 id 从 USERS 数组取最新完整数据
       const userInDb = USERS.find(u => u.id === data.id);
       if (userInDb) {
-        currentUser = {...userInDb};
-        delete currentUser.password; // 不暴露密码
+        // 构造 currentUser（不含密码）
+        currentUser = {};
+        var keys = Object.keys(userInDb);
+        for (var i = 0; i < keys.length; i++) {
+          if (keys[i] !== "password") {
+            currentUser[keys[i]] = userInDb[keys[i]];
+          }
+        }
       } else {
-        currentUser = data;
-        delete currentUser._expiry;
+        // 用户已被删除，清除 session
+        currentUser = null;
+        sessionStorage.removeItem("chansee_current_user");
+        localStorage.removeItem("chansee_current_user");
+        throw new Error("user not found");
       }
-      currentRole = currentUser.role || "新用户"; // 同步当前角色
-      hideLoginModal(); // 隐藏登录弹窗，否则会盖住主界面
+      currentRole = currentUser.role || "新用户";
+      hideLoginModal();
       updateUserDisplay();
       setAppContentVisible(true);
       return true;
@@ -314,23 +385,33 @@ function doLogin() {
   if (!user) { alert("账号或密码错误"); return; }
   if (user.status !== "已激活") { alert("账号状态：" + user.status + "，请联系管理员审批"); return; }
 
-  currentUser = {...user}; // 浅拷贝完整用户对象，确保所有字段（avatar/position/brand等）都携带
-  delete currentUser.password; // session 中不保存密码
-  currentRole = user.role || "新用户"; // 同步当前角色
+  // 浅拷贝完整用户对象（保留 avatar/position/brand 等所有字段）
+  currentUser = {};
+  const keys = Object.keys(user);
+  for (var i = 0; i < keys.length; i++) {
+    if (keys[i] !== "password") {
+      currentUser[keys[i]] = user[keys[i]];
+    }
+  }
+  currentRole = user.role || "新用户";
 
-  const expiry = Date.now() + 3600000; // 1小时有效期（毫秒）
-  const saveData = {id: user.id, _expiry: expiry}; // session 只存 id，恢复时从 USERS 数组取最新完整数据
-  const sessionData = JSON.stringify(saveData);
+  const expiry = Date.now() + 3600000; // 1小时有效期
+  // session 只存 id + 过期时间，不存完整用户数据
+  const sessionData = JSON.stringify({id: user.id, _expiry: expiry});
 
   if (remember) {
-    // 记住我：存 localStorage，1小时过期；同时清 sessionStorage 避免冲突
     sessionStorage.removeItem("chansee_current_user");
-    localStorage.setItem("chansee_current_user", sessionData);
+    safeSetItem("chansee_current_user", sessionData);
   } else {
-    // 不记住：存 sessionStorage，关闭浏览器标签页即失效
     localStorage.removeItem("chansee_current_user");
     sessionStorage.setItem("chansee_current_user", sessionData);
   }
+
+  hideLoginModal();
+  updateUserDisplay();
+  setAppContentVisible(true);
+  showToast("登录成功，欢迎回来！");
+}
 
   if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "登录"; }
   hideLoginModal();
