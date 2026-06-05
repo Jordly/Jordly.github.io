@@ -2000,38 +2000,38 @@ function renderDashboard(){
         <span style="font-size:13px;font-weight:600;color:#4f46e5;">客服工作量</span>
         <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
       </div>
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <div style="flex:1;">
-          <div style="font-size:10px;color:#64748b;">线上接待人数</div>
-          <div style="font-size:22px;font-weight:700;color:#4f46e5;">${onlineCount.toLocaleString()}</div>
+      <div style="display:flex;gap:12px;margin-bottom:10px;">
+        <div style="flex:1;text-align:center;">
+          <div style="font-size:10px;color:#64748b;margin-bottom:2px;">线上接待人数</div>
+          <div style="font-size:18px;font-weight:700;color:#4f46e5;">${onlineCount.toLocaleString()}</div>
         </div>
         <div style="width:1px;background:#e2e8f0;"></div>
-        <div style="flex:1;">
-          <div style="font-size:10px;color:#64748b;">线下工单量</div>
-          <div style="font-size:22px;font-weight:700;color:#4f46e5;">${offlineCount.toLocaleString()}</div>
+        <div style="flex:1;text-align:center;">
+          <div style="font-size:10px;color:#64748b;margin-bottom:2px;">线下工单量</div>
+          <div style="font-size:18px;font-weight:700;color:#4f46e5;">${offlineCount.toLocaleString()}</div>
         </div>
       </div>
-      <div style="text-align:center;margin-bottom:8px;">
-        <div style="position:relative;display:inline-block;width:88px;height:50px;">
-          <svg width="88" height="50" viewBox="0 0 88 50">
-            <path d="M 4,46 A 40,40 0 0,1 84,46" fill="none" stroke="#ede9fe" stroke-width="8" stroke-linecap="round"/>
-            <path d="M 4,46 A 40,40 0 0,1 ${4+40+40*Math.cos(Math.PI*(1-workloadRatio/100))},${46-40*Math.sin(Math.PI*(1-workloadRatio/100))}" fill="none" stroke="url(#gaugeGrad)" stroke-width="8" stroke-linecap="round"/>
+      <div style="text-align:center;margin-bottom:10px;">
+        <div style="position:relative;display:inline-block;width:120px;height:66px;">
+          <svg width="120" height="66" viewBox="0 0 120 66">
+            <path d="M 10,58 A 50,50 0 0,1 110,58" fill="none" stroke="#ede9fe" stroke-width="10" stroke-linecap="round"/>
+            <path d="M 10,58 A 50,50 0 0,1 ${10+50+50*Math.cos(Math.PI*(1-workloadRatio/100))},${58-50*Math.sin(Math.PI*(1-workloadRatio/100))}" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round"/>
             <defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#6366f1"/><stop offset="50%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#f97316"/></linearGradient></defs>
           </svg>
-          <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);text-align:center;">
-            <div style="font-size:14px;font-weight:700;color:#4f46e5;">${workloadRatio}%</div>
-            <div style="font-size:8px;color:#8b5cf6;">工作量负荷比</div>
+          <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);text-align:center;width:100%;">
+            <div style="font-size:15px;font-weight:700;color:#4f46e5;line-height:1;">${workloadRatio}%</div>
+            <div style="font-size:9px;color:#8b5cf6;line-height:1;margin-top:2px;">工作量负荷比</div>
           </div>
         </div>
       </div>
       <div style="border-top:1px solid #f1f5f9;padding-top:6px;">
-        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">线下工作量分布 TOP4</div>
-        ${workItems.map(w=>`<div style="display:flex;align-items:center;gap:4px;padding:2px 0;font-size:10px;">
-          <span style="width:52px;color:#475569;">${w.name}</span>
-          <div style="flex:1;height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;">
-            <div style="width:${w.ratio}%;height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:3px;"></div>
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:5px;">线下工作量分布 TOP4</div>
+        ${workItems.map(w=>`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;">
+          <span style="width:56px;color:#475569;flex-shrink:0;">${w.name}</span>
+          <div style="flex:1;height:7px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
+            <div style="width:${w.ratio}%;height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:4px;"></div>
           </div>
-          <span style="width:40px;text-align:right;color:#64748b;font-size:9px;">${w.count}件</span>
+          <span style="width:42px;text-align:right;color:#64748b;font-size:10px;flex-shrink:0;">${w.count}件</span>
         </div>`).join('')}
       </div>
     </div>
@@ -2042,47 +2042,35 @@ function renderDashboard(){
         <span style="font-size:13px;font-weight:600;color:#312e81;">客服配置数</span>
         <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
       </div>
-      <div style="margin-bottom:8px;">
+      <div style="margin-bottom:10px;">
         <div style="font-size:10px;color:#64748b;">总分摊人数</div>
-        <div><span style="font-size:26px;font-weight:700;color:#312e81;">${totalStaff}</span><span style="font-size:11px;color:#94a3b8;">人</span></div>
+        <div><span style="font-size:24px;font-weight:700;color:#312e81;">${totalStaff}</span><span style="font-size:12px;color:#94a3b8;">人</span></div>
       </div>
-      <div style="text-align:center;margin-bottom:8px;">
-        <svg width="180" height="90" viewBox="-90 -35 180 90">
-          <!-- 底部阴影 -->
-          <ellipse cx="0" cy="28" rx="60" ry="18" fill="#c7d2fe" opacity="0.25"/>
-          <!-- 厚度层 -->
-          <g transform="translate(0,10)">
-            <path d="M 0,0 L -58,-8 A 60,18 0 0,1 22,-16 A 60,18 0 0,0 0,0 Z" fill="#3730a3"/>
-            <path d="M 0,0 L 22,-16 A 60,18 0 0,1 52,6 A 60,18 0 0,0 26,3 Z" fill="#4338ca"/>
-            <path d="M 0,0 L 52,6 A 60,18 0 0,1 18,16 A 60,18 0 0,0 9,8 Z" fill="#6366f1"/>
-            <path d="M 0,0 L 18,16 A 60,18 0 0,1 -22,12 A 60,18 0 0,0 -11,6 Z" fill="#818cf8"/>
-            <path d="M 0,0 L -22,12 A 60,18 0 0,1 -58,-8 A 60,18 0 0,0 -29,-4 Z" fill="#a5b4fc"/>
+      <div style="text-align:center;margin-bottom:12px;">
+        <svg width="140" height="140" viewBox="-70 -70 140 140">
+          <defs>
+            <filter id="pieShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.12"/>
+            </filter>
+          </defs>
+          <g filter="url(#pieShadow)">
+            <path d="M 0,0 L 0,-52 A 52,52 0 0,1 47,-22 Z" fill="#312e81" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L 47,-22 A 52,52 0 0,1 37,38 Z" fill="#4338ca" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L 37,38 A 52,52 0 0,1 -15,50 Z" fill="#6366f1" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L -15,50 A 52,52 0 0,1 -44,26 Z" fill="#818cf8" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L -44,26 A 52,52 0 0,1 -51,-13 A 52,52 0 0,1 0,-52 Z" fill="#a5b4fc" stroke="#fff" stroke-width="2"/>
           </g>
-          <!-- 侧面厚度 -->
-          <path d="M -58,-8 A 60,18 0 0,0 22,-16 L 22,-6 A 60,18 0 0,1 -58,2 Z" fill="#1e1b4b"/>
-          <path d="M 22,-16 A 60,18 0 0,0 52,6 L 52,16 A 60,18 0 0,1 22,-6 Z" fill="#3730a3"/>
-          <path d="M 52,6 A 60,18 0 0,0 18,16 L 18,26 A 60,18 0 0,1 52,16 Z" fill="#4f46e5"/>
-          <path d="M 18,16 A 60,18 0 0,0 -22,12 L -22,22 A 60,18 0 0,1 18,26 Z" fill="#6366f1"/>
-          <path d="M -22,12 A 60,18 0 0,0 -58,-8 L -58,2 A 60,18 0 0,1 -22,22 Z" fill="#818cf8"/>
-          <!-- 顶面 -->
-          <path d="M 0,0 L -58,-8 A 60,18 0 0,1 22,-16 A 60,18 0 0,0 0,0 Z" fill="#312e81"/>
-          <path d="M 0,0 L 22,-16 A 60,18 0 0,1 52,6 A 60,18 0 0,0 26,3 Z" fill="#4338ca"/>
-          <path d="M 0,0 L 52,6 A 60,18 0 0,1 18,16 A 60,18 0 0,0 9,8 Z" fill="#6366f1"/>
-          <path d="M 0,0 L 18,16 A 60,18 0 0,1 -22,12 A 60,18 0 0,0 -11,6 Z" fill="#818cf8"/>
-          <path d="M 0,0 L -22,12 A 60,18 0 0,1 -58,-8 A 60,18 0 0,0 -29,-4 Z" fill="#a5b4fc"/>
-          <!-- 分割线 -->
-          <line x1="0" y1="0" x2="-58" y2="-8" stroke="#fff" stroke-width="1.2"/>
-          <line x1="0" y1="0" x2="22" y2="-16" stroke="#fff" stroke-width="1.2"/>
-          <line x1="0" y1="0" x2="52" y2="6" stroke="#fff" stroke-width="1.2"/>
-          <line x1="0" y1="0" x2="18" y2="16" stroke="#fff" stroke-width="1.2"/>
-          <line x1="0" y1="0" x2="-22" y2="12" stroke="#fff" stroke-width="1.2"/>
+          <circle cx="0" cy="0" r="22" fill="#fff"/>
+          <text x="0" y="-2" text-anchor="middle" font-size="11" font-weight="700" fill="#312e81">${totalStaff}</text>
+          <text x="0" y="11" text-anchor="middle" font-size="8" fill="#64748b">总人数</text>
         </svg>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;font-size:10px;">
-        ${staffConfig.map(s=>`<div style="display:flex;align-items:center;gap:4px;">
-          <span style="width:8px;height:8px;border-radius:50%;background:${s.color};flex-shrink:0;"></span>
-          <span style="color:#475569;">${s.name}</span>
-          <span style="color:#64748b;margin-left:auto;">${s.count}人(${s.pct}%)</span>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px 12px;font-size:11px;">
+        ${staffConfig.map(s=>`<div style="display:flex;align-items:center;gap:6px;">
+          <span style="width:10px;height:10px;border-radius:2px;background:${s.color};flex-shrink:0;"></span>
+          <span style="color:#475569;flex:1;">${s.name}</span>
+          <span style="color:#1e293b;font-weight:600;">${s.count}</span>
+          <span style="color:#64748b;">(${s.pct}%)</span>
         </div>`).join('')}
       </div>
     </div>
