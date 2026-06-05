@@ -1566,23 +1566,6 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   font-weight: 300;
   letter-spacing: 3px;
 }
-.brand-headline {
-  font-size: 15px;
-  color: rgba(255,255,255,0.92);
-  font-weight: 400;
-  line-height: 1.7;
-  margin-bottom: 14px;
-  letter-spacing: 0.5px;
-}
-.brand-value {
-  font-size: 13px;
-  color: rgba(255,255,255,0.78);
-  font-weight: 400;
-  letter-spacing: 1px;
-  margin-top: 6px;
-  padding: 8px 0 0;
-  border-top: 1px solid rgba(255,255,255,0.13);
-}
 
 /* 亮点卡片 */
 .brand-highlights {
