@@ -119,6 +119,18 @@ function saveProjects() {
   try { localStorage.setItem("chansee_projects", JSON.stringify(PROJECTS)); } catch(e) { console.warn("saveProjects failed", e); }
 }
 
+// 持久化当前用户：同步更新 USERS 数组 + currentUser 到 localStorage
+function persistCurrentUser() {
+  if (!currentUser) return;
+  const userInDb = USERS.find(u => u.id === currentUser.id);
+  if (userInDb) {
+    // 将 currentUser 的所有属性同步到 USERS 数组中的对象
+    Object.keys(currentUser).forEach(k => { userInDb[k] = currentUser[k]; });
+  }
+  saveUsers();
+  try { localStorage.setItem("chansee_current_user", JSON.stringify(currentUser)); } catch(e) {}
+}
+
 
 // 当前登录用户（null 表示未登录）
 let currentUser = null;
@@ -6061,12 +6073,9 @@ function handleAvatarUpload(input) {
   reader.onload = function(e) {
     const dataUrl = e.target.result;
     if (currentUser) currentUser.avatar = dataUrl;
-    const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
-    if (userInDb) userInDb.avatar = dataUrl;
+    persistCurrentUser();
     const preview = document.getElementById("profile-avatar-preview");
     if (preview) { preview.style.backgroundImage = `url(${dataUrl})`; preview.textContent = ""; }
-    saveUsers();
-    if (currentUser) localStorage.setItem("chansee_current_user", JSON.stringify(currentUser));
     updateUserDisplay();
     showToast("头像更换成功");
   };
@@ -6101,15 +6110,9 @@ function saveProfileNickname() {
   if (!val) { alert("昵称不能为空"); return; }
   if (currentUser) {
     currentUser.nickname = val;
-    currentUser.name = val; // 同步更新右上角显示的名称
-    localStorage.setItem("chansee_current_user", JSON.stringify(currentUser));
-    saveUsers();
+    currentUser.name = val;
   }
-  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
-  if (userInDb) {
-    userInDb.nickname = val;
-    userInDb.name = val;
-  }
+  persistCurrentUser();
   updateUserDisplay(); // 同步刷新右上角
   if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "保存"; }
   renderModule("profile");
@@ -6129,8 +6132,7 @@ function saveProfilePosition() {
   const btn = input.parentElement.querySelector("button");
   if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   if (currentUser) currentUser.position = val;
-  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
-  if (userInDb) userInDb.position = val;
+  persistCurrentUser();
   if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "保存"; }
   renderModule("profile");
   showToast("职位修改成功");
@@ -6148,8 +6150,7 @@ function saveProfileBirthday() {
   if (!input) return;
   const val = input.value;
   if (currentUser) currentUser.birthday = val;
-  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
-  if (userInDb) userInDb.birthday = val;
+  persistCurrentUser();
   renderModule("profile");
   showToast("生日修改成功");
 }
@@ -6167,8 +6168,7 @@ function saveProfilePhone() {
   const val = input.value.trim();
   if (val && !/^1[3-9]\d{9}$/.test(val)) { alert("请输入正确的手机号"); return; }
   if (currentUser) currentUser.phone = val || "";
-  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
-  if (userInDb) userInDb.phone = val || "";
+  persistCurrentUser();
   renderModule("profile");
   showToast(val ? "手机号修改成功" : "手机号已清空");
 }
@@ -6186,26 +6186,23 @@ function saveProfileEmail() {
   const val = input.value.trim();
   if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { alert("请输入正确的邮箱地址"); return; }
   if (currentUser) currentUser.email = val || "";
-  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
-  if (userInDb) userInDb.email = val || "";
+  persistCurrentUser();
   renderModule("profile");
   showToast(val ? "邮箱修改成功" : "邮箱已清空");
 }
 
 // 微信绑定/解绑
 function toggleWechatBind() {
-  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   const current = currentUser && currentUser.wechatBound;
   if (current) {
     if (!confirm("确定要解绑微信吗？")) return;
     if (currentUser) currentUser.wechatBound = false;
-    if (userInDb) userInDb.wechatBound = false;
     showToast("微信已解绑");
   } else {
     if (currentUser) currentUser.wechatBound = true;
-    if (userInDb) userInDb.wechatBound = true;
     showToast("微信绑定成功");
   }
+  persistCurrentUser();
   renderModule("profile");
 }
 
@@ -6219,20 +6216,16 @@ function saveProfileBrand() {
   const input = document.getElementById("profile-brand-input");
   if (!input) return;
   const val = input.value.trim();
-  if (currentUser) { currentUser.brand = val; }
-    localStorage.setItem("chansee_current_user", JSON.stringify(currentUser));
-  saveUsers();
-  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
-  if (userInDb) userInDb.brand = val;
+  if (currentUser) currentUser.brand = val;
+  persistCurrentUser();
   renderModule("profile");
   showToast("品牌修改成功");
 }
 
 // 保持当前状态切换
 function toggleKeepStatus(checkbox) {
-  const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (currentUser) currentUser.keepStatus = checkbox.checked;
-  if (userInDb) userInDb.keepStatus = checkbox.checked;
+  persistCurrentUser();
   // 即时更新文字，不等待重新渲染（在同一位置仅改变文字）
   const container = checkbox.closest(".profile-toggle-row") || checkbox.closest('[style*="flex:1"]');
   const statusText = container ? container.querySelector(".keep-status-text") : null;
