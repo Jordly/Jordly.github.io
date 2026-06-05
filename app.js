@@ -5690,10 +5690,10 @@ function renderPerformance(){
   const avgCsat = (data.reduce((s,a)=>s+a.csat,0)/data.length).toFixed(1);
   const totalConv = data.reduce((s,a)=>s+a.convCount,0);
   html += `<div class="metrics-grid">
-    <div class="metric-card"><div class="metric-value">${data.length}</div><div class="metric-label">参评坐席数</div></div>
-    <div class="metric-card"><div class="metric-value">${avgResp}s</div><div class="metric-label">平均响应时长</div></div>
-    <div class="metric-card"><div class="metric-value">${avgCsat}</div><div class="metric-label">平均CSAT</div></div>
-    <div class="metric-card"><div class="metric-value">${totalConv.toLocaleString()}</div><div class="metric-label">总服务量</div></div>
+    <div class="metric-card metric-card-kpi"><div class="metric-value">${data.length}</div><div class="metric-label">参评坐席数</div></div>
+    <div class="metric-card metric-card-kpi"><div class="metric-value">${avgResp}<span style="font-size:16px;font-weight:500;margin-left:2px;">s</span></div><div class="metric-label">平均响应时长</div></div>
+    <div class="metric-card metric-card-kpi"><div class="metric-value">${avgCsat}</div><div class="metric-label">平均CSAT</div></div>
+    <div class="metric-card metric-card-kpi"><div class="metric-value">${totalConv.toLocaleString()}</div><div class="metric-label">总服务量</div></div>
   </div>`;
 
   html += `<div class="card"><div class="card-title">坐席绩效明细</div><table class="data-table">
