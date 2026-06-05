@@ -1378,156 +1378,53 @@ function setFilter(key, value) {
 
 function renderFilterBar() {
   const workplaces = [...new Set(PROJECTS.map(p => p.workplace))];
-  const directors = [...new Set(PROJECTS.map(p => p.director))];
-  const pms = [...new Set(PROJECTS.map(p => p.pm))];
+
+  const timeOptions = [
+    {label:'本月', value:'month'},
+    {label:'上月', value:'lastMonth'},
+    {label:'本季', value:'quarter'},
+    {label:'本年', value:'year'}
+  ];
+
+  const wpOptions = [{label:'全部', value:'all'}, ...workplaces.map(w => ({label:w, value:w}))];
+
+  const typeOptions = [
+    {label:'全部', value:'all'},
+    {label:'TP', value:'TP项目'},
+    {label:'DP', value:'DP项目'},
+    {label:'BPO', value:'BPO项目'}
+  ];
+
+  const activeTags = [];
+  if(filterState.workplace !== 'all') activeTags.push({key:'workplace', label:filterState.workplace});
+  if(filterState.projectType !== 'all') activeTags.push({key:'projectType', label:filterState.projectType.replace('项目','')});
+  if(filterState.director !== 'all') activeTags.push({key:'director', label:filterState.director});
+  if(filterState.pm !== 'all') activeTags.push({key:'pm', label:filterState.pm});
+  if(filterState.health !== 'all') activeTags.push({key:'health', label:filterState.health});
 
   return `
-    <div class="filter-bar" style="display:flex;flex-wrap:wrap;gap:12px;padding:14px 18px;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);border:1px solid #e2e8f0;border-left:3px solid #3b82f6;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.02);border-radius:8px;margin-bottom:16px;align-items:end;">
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">时间周期</label>
-        <select class="filter-select" onchange="setFilter('timeMode',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部时间</option>
-          <option value="year" ${filterState.timeMode==='year'?'selected':''}>按年度</option>
-          <option value="month" ${filterState.timeMode==='month'?'selected':''}>按月度</option>
-          <option value="week" ${filterState.timeMode==='week'?'selected':''}>按周</option>
-          <option value="custom" ${filterState.timeMode==='custom'?'selected':''}>自定义</option>
-        </select>
-      </div>
-      ${filterState.timeMode==='year' ? `
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">选择年份</label>
-        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部年份</option>
-          <option value="2025" ${filterState.time==='2025'?'selected':''}>2025年</option>
-          <option value="2026" ${filterState.time==='2026'?'selected':''}>2026年</option>
-          <option value="2027" ${filterState.time==='2027'?'selected':''}>2027年</option>
-        </select>
-      </div>` : ''}
-      ${filterState.timeMode==='month' ? `
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">选择年月</label>
-        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部月份</option>
-          <option value="2025-01" ${filterState.time==='2025-01'?'selected':''}>2025年1月</option>
-          <option value="2025-02" ${filterState.time==='2025-02'?'selected':''}>2025年2月</option>
-          <option value="2025-03" ${filterState.time==='2025-03'?'selected':''}>2025年3月</option>
-          <option value="2025-04" ${filterState.time==='2025-04'?'selected':''}>2025年4月</option>
-          <option value="2025-05" ${filterState.time==='2025-05'?'selected':''}>2025年5月</option>
-          <option value="2025-06" ${filterState.time==='2025-06'?'selected':''}>2025年6月</option>
-          <option value="2025-07" ${filterState.time==='2025-07'?'selected':''}>2025年7月</option>
-          <option value="2025-08" ${filterState.time==='2025-08'?'selected':''}>2025年8月</option>
-          <option value="2025-09" ${filterState.time==='2025-09'?'selected':''}>2025年9月</option>
-          <option value="2025-10" ${filterState.time==='2025-10'?'selected':''}>2025年10月</option>
-          <option value="2025-11" ${filterState.time==='2025-11'?'selected':''}>2025年11月</option>
-          <option value="2025-12" ${filterState.time==='2025-12'?'selected':''}>2025年12月</option>
-          <option value="2026-01" ${filterState.time==='2026-01'?'selected':''}>2026年1月</option>
-          <option value="2026-02" ${filterState.time==='2026-02'?'selected':''}>2026年2月</option>
-          <option value="2026-03" ${filterState.time==='2026-03'?'selected':''}>2026年3月</option>
-          <option value="2026-04" ${filterState.time==='2026-04'?'selected':''}>2026年4月</option>
-          <option value="2026-05" ${filterState.time==='2026-05'?'selected':''}>2026年5月</option>
-          <option value="2026-06" ${filterState.time==='2026-06'?'selected':''}>2026年6月</option>
-          <option value="2026-07" ${filterState.time==='2026-07'?'selected':''}>2026年7月</option>
-          <option value="2026-08" ${filterState.time==='2026-08'?'selected':''}>2026年8月</option>
-          <option value="2026-09" ${filterState.time==='2026-09'?'selected':''}>2026年9月</option>
-          <option value="2026-10" ${filterState.time==='2026-10'?'selected':''}>2026年10月</option>
-          <option value="2026-11" ${filterState.time==='2026-11'?'selected':''}>2026年11月</option>
-          <option value="2026-12" ${filterState.time==='2026-12'?'selected':''}>2026年12月</option>
-          <option value="2027-01" ${filterState.time==='2027-01'?'selected':''}>2027年1月</option>
-          <option value="2027-02" ${filterState.time==='2027-02'?'selected':''}>2027年2月</option>
-          <option value="2027-03" ${filterState.time==='2027-03'?'selected':''}>2027年3月</option>
-        </select>
-      </div>` : ''}
-      ${filterState.timeMode==='week' ? `
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">选择周次</label>
-        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部周次</option>
-          <option value="2026-W20" ${filterState.time==='2026-W20'?'selected':''}>2026年第20周</option>
-          <option value="2026-W21" ${filterState.time==='2026-W21'?'selected':''}>2026年第21周</option>
-          <option value="2026-W22" ${filterState.time==='2026-W22'?'selected':''}>2026年第22周</option>
-          <option value="2026-W23" ${filterState.time==='2026-W23'?'selected':''}>2026年第23周</option>
-          <option value="2026-W24" ${filterState.time==='2026-W24'?'selected':''}>2026年第24周</option>
-          <option value="2026-W25" ${filterState.time==='2026-W25'?'selected':''}>2026年第25周</option>
-        </select>
-      </div>` : ''}
-      ${filterState.timeMode==='custom' ? `
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">开始日期</label>
-        <input type="date" class="filter-select" onchange="setFilter('timeStart',this.value)" value="${filterState.timeStart}" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">结束日期</label>
-        <input type="date" class="filter-select" onchange="setFilter('timeEnd',this.value)" value="${filterState.timeEnd}" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-      </div>` : ''}
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">职场定位</label>
-        <select class="filter-select" onchange="setFilter('workplace',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部职场</option>
-          ${workplaces.map(wp => `<option value="${wp}" ${filterState.workplace===wp?'selected':''}>${wp}</option>`).join('')}
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目类型</label>
-        <select class="filter-select" onchange="setFilter('projectType',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部类型</option>
-          <option value="TP项目" ${filterState.projectType==='TP项目'?'selected':''}>TP项目</option>
-          <option value="DP项目" ${filterState.projectType==='DP项目'?'selected':''}>DP项目</option>
-          <option value="BPO项目" ${filterState.projectType==='BPO项目'?'selected':''}>BPO项目</option>
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目负责</label>
-        <select class="filter-select" onchange="setFilter('director',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部负责人</option>
-          ${directors.map(d => `<option value="${d}" ${filterState.director===d?'selected':''}>${d}</option>`).join('')}
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">客服负责</label>
-        <select class="filter-select" onchange="setFilter('pm',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部管理者</option>
-          ${pms.map(pm => `<option value="${pm}" ${filterState.pm===pm?'selected':''}>${pm}</option>`).join('')}
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">健康状态</label>
-        <select class="filter-select" onchange="setFilter('health',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部状态</option>
-          <option value="🟢" ${filterState.health==='🟢'?'selected':''}>🟢 绿灯</option>
-          <option value="🟡" ${filterState.health==='🟡'?'selected':''}>🟡 黄灯</option>
-          <option value="🔴" ${filterState.health==='🔴'?'selected':''}>🔴 红灯</option>
-        </select>
-      </div>
-      <div class="filter-item" style="position:relative;">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目名称</label>
-        <div class="project-filter-trigger" onclick="toggleProjectDropdown(event)">
-          <span id="project-filter-label">${filterState.project.length ? `已选 ${filterState.project.length} 项` : '全部项目'}</span>
-          <span style="font-size:10px;color:#94a3b8;">▼</span>
-        </div>
-        <div class="project-filter-dropdown" id="project-filter-dropdown">
-          <div style="padding:8px 10px;border-bottom:1px solid #f1f5f9;">
-            <input type="text" id="project-search-input" class="project-search-input" placeholder="搜索项目..." oninput="filterProjectSearch(this.value)" onclick="event.stopPropagation()">
-          </div>
-          <div class="project-filter-list" id="project-filter-list">
-            ${PROJECTS.map(p => {
-              const checked = filterState.project.includes(p.id);
-              return `<label class="project-filter-option" onclick="event.stopPropagation()">
-                <input type="checkbox" ${checked?'checked':''} onchange="toggleProjectSelect('${p.id}')">
-                <span>${p.name}</span>
-              </label>`;
-            }).join('')}
-          </div>
-          <div style="padding:8px 10px;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:11px;color:#94a3b8;">共 ${PROJECTS.length} 个项目</span>
-            <div style="display:flex;gap:6px;">
-              <button class="btn btn-sm" style="padding:3px 10px;font-size:11px;background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;" onclick="event.stopPropagation();resetProjectFilter();">重置</button>
-              <button class="btn btn-sm btn-primary" style="padding:3px 14px;font-size:11px;" onclick="event.stopPropagation();applyProjectFilter();">确认</button>
-            </div>
-          </div>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:12px 16px;background:#f8fafc;border-radius:10px;margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:12px;color:#94a3b8;white-space:nowrap;">时间</span>
+        <div style="display:flex;gap:4px;">
+          ${timeOptions.map(t => `<button onclick="setFilter('timeMode','${t.value}')" style="padding:4px 12px;font-size:12px;border-radius:14px;border:1px solid ${filterState.timeMode===t.value?'#2563eb':'#e2e8f0'};background:${filterState.timeMode===t.value?'#2563eb':'#fff'};color:${filterState.timeMode===t.value?'#fff':'#64748b'};cursor:pointer;transition:all 0.2s;">${t.label}</button>`).join('')}
         </div>
       </div>
-      <div class="filter-item" style="display:flex;align-items:flex-end;">
-        <button class="btn btn-sm" onclick="resetFilters()" style="padding:5px 12px;font-size:12px;">重置</button>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:12px;color:#94a3b8;white-space:nowrap;">职场</span>
+        <div style="display:flex;gap:4px;">
+          ${wpOptions.map(w => `<button onclick="setFilter('workplace','${w.value}')" style="padding:4px 12px;font-size:12px;border-radius:14px;border:1px solid ${filterState.workplace===w.value?'#2563eb':'#e2e8f0'};background:${filterState.workplace===w.value?'#2563eb':'#fff'};color:${filterState.workplace===w.value?'#fff':'#64748b'};cursor:pointer;transition:all 0.2s;">${w.label}</button>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <span style="font-size:12px;color:#94a3b8;white-space:nowrap;">类型</span>
+        <div style="display:flex;gap:4px;">
+          ${typeOptions.map(t => `<button onclick="setFilter('projectType','${t.value}')" style="padding:4px 12px;font-size:12px;border-radius:14px;border:1px solid ${filterState.projectType===t.value?'#2563eb':'#e2e8f0'};background:${filterState.projectType===t.value?'#2563eb':'#fff'};color:${filterState.projectType===t.value?'#fff':'#64748b'};cursor:pointer;transition:all 0.2s;">${t.label}</button>`).join('')}
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap;">
+        ${activeTags.map(tag => `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;font-size:11px;background:#eff6ff;color:#2563eb;border-radius:12px;border:1px solid #bfdbfe;">${tag.label} <span onclick="setFilter('${tag.key}','all')" style="cursor:pointer;font-size:13px;line-height:1;">×</span></span>`).join('')}
+        ${activeTags.length > 0 ? `<button onclick="resetFilters()" style="padding:3px 10px;font-size:11px;color:#94a3b8;background:transparent;border:none;cursor:pointer;">清空</button>` : ''}
       </div>
     </div>`;
 }
@@ -1794,12 +1691,19 @@ function renderDashboard(){
   <!-- KPI 迷你卡片行 -->
   <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;">
     ${kpiCards.map((k,i)=>{
-      return `<div style="background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);border-radius:10px;padding:10px 12px;color:#fff;box-shadow:0 2px 8px rgba(30,64,175,0.15);position:relative;overflow:hidden;min-height:110px;">
-        <div style="font-size:11px;opacity:0.85;margin-bottom:3px;">${k.label}</div>
-        <div style="font-size:18px;font-weight:700;line-height:1.2;margin:2px 0;">${k.value}</div>
-        <div style="font-size:10px;opacity:0.9;color:${k.trendUp?'#86efac':'#fca5a5'};">${k.trend}</div>
-        <svg width="100%" height="50" viewBox="0 0 108 50" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;opacity:0.55;">
-          <defs><linearGradient id="ag${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${k.areaColor}" stop-opacity="0.5"/><stop offset="100%" stop-color="${k.areaColor}" stop-opacity="0.05"/></linearGradient></defs>
+      const decoColors = ['rgba(96,165,250,0.15)','rgba(147,197,253,0.15)','rgba(191,219,254,0.15)','rgba(147,197,253,0.12)','rgba(96,165,250,0.12)'];
+      return `<div style="background:linear-gradient(145deg,#1e40af 0%,#2563eb 60%,#3b82f6 100%);border-radius:12px;padding:14px 16px;color:#fff;box-shadow:0 4px 12px rgba(30,64,175,0.2);position:relative;overflow:hidden;min-height:110px;">
+        <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:${decoColors[i]};"></div>
+        <div style="position:relative;z-index:1;">
+          <div style="font-size:12px;opacity:0.7;margin-bottom:4px;letter-spacing:0.5px;">${k.label}</div>
+          <div style="font-size:22px;font-weight:700;line-height:1.2;margin:4px 0;letter-spacing:-0.5px;">${k.value}</div>
+          <div style="font-size:11px;opacity:0.85;">
+            <span style="color:${k.trendUp?'#86efac':'#fca5a5'};font-weight:500;">${k.trend}</span>
+            <span style="opacity:0.7;margin-left:2px;">较上月</span>
+          </div>
+        </div>
+        <svg width="100%" height="50" viewBox="0 0 108 50" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;opacity:0.5;">
+          <defs><linearGradient id="ag${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${k.areaColor}" stop-opacity="0.6"/><stop offset="100%" stop-color="${k.areaColor}" stop-opacity="0.05"/></linearGradient></defs>
           <path d="${k.path}" fill="url(#ag${i})"/>
           <path d="${k.strokePath}" fill="none" stroke="${k.strokeColor}" stroke-width="2" stroke-linecap="round"/>
         </svg>
