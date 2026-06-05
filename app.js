@@ -1770,11 +1770,11 @@ function renderDashboard(){
 
   // KPI sparkline 数据（模拟）
   const kpiCards = [
-    {label:'月度总销售额', value:(totalRevenue/10000).toFixed(1)+'万', trend:'+12.3%', trendUp:true, areaColor:'#fbbf24', strokeColor:'#fbbf24', path:'M 4,32 Q 14,28 24,24 T 44,20 T 64,16 T 84,12 T 104,8 L 104,36 L 4,36 Z', strokePath:'M 4,32 Q 14,28 24,24 T 44,20 T 64,16 T 84,12 T 104,8'},
-    {label:'月度总成本', value:(totalCost/10000).toFixed(1)+'万', trend:'+5.1%', trendUp:false, areaColor:'#f472b6', strokeColor:'#f472b6', path:'M 4,30 Q 14,26 24,24 T 44,22 T 64,24 T 84,20 T 104,16 L 104,36 L 4,36 Z', strokePath:'M 4,30 Q 14,26 24,24 T 44,22 T 64,24 T 84,20 T 104,16'},
-    {label:'项目费效比', value:'1.19', trend:'+0.08', trendUp:true, areaColor:'#34d399', strokeColor:'#34d399', path:'M 4,30 Q 14,28 24,26 T 44,24 T 64,20 T 84,18 T 104,14 L 104,36 L 4,36 Z', strokePath:'M 4,30 Q 14,28 24,26 T 44,24 T 64,20 T 84,18 T 104,14'},
-    {label:'目标达成率', value:'94.2%', trend:'+3.5pp', trendUp:true, areaColor:'#22d3ee', strokeColor:'#22d3ee', path:'M 4,32 Q 14,30 24,28 T 44,26 T 64,24 T 84,22 T 104,18 L 104,36 L 4,36 Z', strokePath:'M 4,32 Q 14,30 24,28 T 44,26 T 64,24 T 84,22 T 104,18'},
-    {label:'健康项目数', value:green+'/'+all.length, trend:'点击查看详情', trendUp:true, areaColor:'#fbbf24', strokeColor:'#fbbf24', path:'M 4,30 Q 14,28 28,26 T 52,24 T 76,20 T 100,18 T 124,14 L 124,36 L 4,36 Z', strokePath:'M 4,30 Q 14,28 28,26 T 52,24 T 76,20 T 100,18 T 124,14'}
+    {label:'月度总销售额', value:(totalRevenue/10000).toFixed(1)+'万', trend:'+12.3%', trendUp:true, areaColor:'#fbbf24', strokeColor:'#fbbf24', path:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20'},
+    {label:'月度总成本', value:(totalCost/10000).toFixed(1)+'万', trend:'+5.1%', trendUp:false, areaColor:'#f472b6', strokeColor:'#f472b6', path:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28'},
+    {label:'项目费效比', value:'1.19', trend:'+0.08', trendUp:true, areaColor:'#34d399', strokeColor:'#34d399', path:'M 4,42 Q 14,40 24,38 T 44,36 T 64,32 T 84,30 T 104,26 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,40 24,38 T 44,36 T 64,32 T 84,30 T 104,26'},
+    {label:'目标达成率', value:'94.2%', trend:'+3.5pp', trendUp:true, areaColor:'#22d3ee', strokeColor:'#22d3ee', path:'M 4,44 Q 14,42 24,40 T 44,38 T 64,36 T 84,34 T 104,30 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,42 24,40 T 44,38 T 64,36 T 84,34 T 104,30'},
+    {label:'健康项目数', value:green+'/'+all.length, trend:'查看详情 →', trendUp:true, areaColor:'#fbbf24', strokeColor:'#fbbf24', path:'M 4,42 Q 14,40 28,38 T 52,36 T 76,32 T 100,30 T 124,26 L 124,50 L 4,50 Z', strokePath:'M 4,42 Q 14,40 28,38 T 52,36 T 76,32 T 100,30 T 124,26'}
   ];
 
   return `
@@ -1794,15 +1794,14 @@ function renderDashboard(){
   <!-- KPI 迷你卡片行 -->
   <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;">
     ${kpiCards.map((k,i)=>{
-      const w = i===4 ? 'width:calc(20% - 8px);' : '';
-      return `<div style="background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);border-radius:10px;padding:10px 12px;color:#fff;box-shadow:0 2px 8px rgba(30,64,175,0.15);position:relative;overflow:hidden;min-height:78px;${w}">
-        <div style="font-size:10px;opacity:0.85;margin-bottom:2px;">${k.label}</div>
-        <div style="font-size:20px;font-weight:700;line-height:1.2;margin:2px 0;">${k.value}</div>
+      return `<div style="background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);border-radius:10px;padding:10px 12px;color:#fff;box-shadow:0 2px 8px rgba(30,64,175,0.15);position:relative;overflow:hidden;min-height:110px;">
+        <div style="font-size:11px;opacity:0.85;margin-bottom:3px;">${k.label}</div>
+        <div style="font-size:18px;font-weight:700;line-height:1.2;margin:2px 0;">${k.value}</div>
         <div style="font-size:10px;opacity:0.9;color:${k.trendUp?'#86efac':'#fca5a5'};">${k.trend}</div>
-        <svg width="100%" height="36" viewBox="0 0 108 36" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;opacity:0.6;">
+        <svg width="100%" height="50" viewBox="0 0 108 50" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;opacity:0.55;">
           <defs><linearGradient id="ag${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${k.areaColor}" stop-opacity="0.5"/><stop offset="100%" stop-color="${k.areaColor}" stop-opacity="0.05"/></linearGradient></defs>
           <path d="${k.path}" fill="url(#ag${i})"/>
-          <path d="${k.strokePath}" fill="none" stroke="${k.strokeColor}" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="${k.strokePath}" fill="none" stroke="${k.strokeColor}" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </div>`;
     }).join('')}
