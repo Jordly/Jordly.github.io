@@ -232,8 +232,8 @@ function checkLogin() {
 
           currentUser = {
             id: 'demo_user',
-            username: auth.user?.username || 'demo',
-            name: auth.user?.name || '演示用户',
+            username: (savedSession && savedSession.username) || auth.user?.username || 'demo',
+            name: (savedSession && savedSession.name) || auth.user?.name || '演示用户',
             role: '管理员',
             avatar: (savedSession && savedSession.avatar) || '',
             position: (savedSession && savedSession.position) || '客服总监',
