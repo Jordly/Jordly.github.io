@@ -1161,3 +1161,38 @@ html {
   border-color: var(--c-border) !important;
   box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
 }
+
+/* ===== 基础按钮暗黑模式（修复白底浅色字问题）===== */
+[data-theme="dark"] .btn:not(.btn-primary):not(.btn-danger):not(.btn-secondary) {
+  background: var(--c-surface) !important;
+  color: var(--c-text) !important;
+  border-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .btn:not(.btn-primary):not(.btn-danger):not(.btn-secondary):hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ===== 个人基础设置 label 暗黑模式 ===== */
+[data-theme="dark"] .profile-field-label {
+  color: var(--c-text-2) !important;
+}
+
+/* ===== 灰色徽章暗黑模式 ===== */
+[data-theme="dark"] .badge-gray {
+  background: rgba(148, 163, 184, 0.15) !important;
+  color: #94A3B8 !important;
+}
+
+/* ===== 操作列按钮暗黑模式修复 ===== */
+[data-theme="dark"] .actions .btn {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: var(--c-text-2) !important;
+  border-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .actions .btn:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: var(--c-text) !important;
+}

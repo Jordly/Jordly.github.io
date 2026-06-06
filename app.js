@@ -6037,7 +6037,7 @@ function renderProfile(){
 
     <!-- 个人头像 -->
     <div style="${rowStyle}">
-      <div style="${labelStyle}">个人头像</div>
+      <div style="${labelStyle}" class="profile-field-label">个人头像</div>
       <div style="display:flex;align-items:center;flex:1;gap:16px;">
         <div id="profile-avatar-preview" class="profile-avatar-preview"
           style="${avatar ? 'background-image:url('+avatar+');color:transparent;' : ''}">
@@ -6053,56 +6053,56 @@ function renderProfile(){
 
     <!-- 昵称 -->
     <div style="${rowStyle}" id="profile-nickname-row">
-      <div style="${labelStyle}">昵称</div>
+      <div style="${labelStyle}" class="profile-field-label">昵称</div>
       <div style="${valueStyle}" id="profile-nickname-value">${nickname}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileNickname()">修改</span>
     </div>
 
     <!-- 生日 -->
     <div style="${rowStyle}" id="profile-birthday-row">
-      <div style="${labelStyle}">生日</div>
+      <div style="${labelStyle}" class="profile-field-label">生日</div>
       <div style="${valueStyle}" id="profile-birthday-value">${birthday || "--"}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileBirthday()">修改</span>
     </div>
 
     <!-- 职位 -->
     <div style="${rowStyle}" id="profile-position-row">
-      <div style="${labelStyle}">职位</div>
+      <div style="${labelStyle}" class="profile-field-label">职位</div>
       <div style="${valueStyle}" id="profile-position-value">${position}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfilePosition()">修改</span>
     </div>
 
     <!-- 品牌 -->
     <div style="${rowStyle}" id="profile-brand-row">
-      <div style="${labelStyle}">品牌</div>
+      <div style="${labelStyle}" class="profile-field-label">品牌</div>
       <div style="${valueStyle}" id="profile-brand-value">${u.brand || userInDb.brand || "Chanseen CloudHub"}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileBrand()">修改</span>
     </div>
 
     <!-- 手机号 -->
     <div style="${rowStyle}" id="profile-phone-row">
-      <div style="${labelStyle}">手机号</div>
+      <div style="${labelStyle}" class="profile-field-label">手机号</div>
       <div style="${valueStyle}" id="profile-phone-value">${phone}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfilePhone()">修改</span>
     </div>
 
     <!-- 邮箱 -->
     <div style="${rowStyle}" id="profile-email-row">
-      <div style="${labelStyle}">邮箱</div>
+      <div style="${labelStyle}" class="profile-field-label">邮箱</div>
       <div style="${valueStyle}" id="profile-email-value">${email}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileEmail()">修改</span>
     </div>
 
     <!-- 微信 -->
     <div style="${rowStyle}">
-      <div style="${labelStyle}">微信</div>
+      <div style="${labelStyle}" class="profile-field-label">微信</div>
       <div style="${valueStyle}">${wechatBound ? '已绑定' : '未绑定'}</div>
       <span style="${linkStyle}" ${linkHover} onclick="toggleWechatBind()">${wechatBound ? '解绑' : '绑定'}</span>
     </div>
 
     <!-- 登录密码 -->
     <div style="${rowStyle}border-bottom:none;">
-      <div style="${labelStyle}">登录密码</div>
+      <div style="${labelStyle}" class="profile-field-label">登录密码</div>
       <div style="${valueStyle}">********</div>
       <span style="${linkStyle}" ${linkHover} onclick="showChangePasswordModal()">修改</span>
     </div>
@@ -6117,7 +6117,7 @@ function renderProfile(){
     <!-- 离开团队 -->
     <div style="${rowStyle}border-bottom:none;flex-direction:column;align-items:flex-start;gap:10px;padding-bottom:0;">
       <div style="display:flex;align-items:center;gap:8px;width:100%;">
-        <div style="${labelStyle}">离开团队</div>
+        <div style="${labelStyle}" class="profile-field-label">离开团队</div>
         <div style="flex:1;"></div>
       </div>
       <div style="font-size:13px;color:#ef4444;background:#fef2f2;padding:10px 14px;border-radius:6px;width:100%;border:1px solid #fecaca;">
