@@ -2646,7 +2646,7 @@
 
 
 /* ============================================================
-   筛选栏 v4 样式 —�?两行 + 搜索多选下�?   ============================================================ */
+   筛选栏 v4 样式 —�?两行 + 搜索多选下�?   ============================================================ */
 .filter-bar-v4 {
   margin-bottom: 16px !important;
   user-select: none !important;
@@ -2665,28 +2665,37 @@
 .filter-tag {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 3px !important;
-  padding: 2px 8px 2px 10px !important;
-  font-size: 11px !important;
-  background: #eff6ff !important;
-  color: #2563eb !important;
-  border-radius: 12px !important;
-  border: 1px solid #bfdbfe !important;
-  line-height: 1.6 !important;
+  gap: 4px !important;
+  padding: 4px 10px 4px 12px !important;
+  font-size: 12px !important;
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%) !important;
+  color: #fff !important;
+  border-radius: 14px !important;
+  border: none !important;
+  line-height: 1.5 !important;
   white-space: nowrap !important;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25) !important;
+  font-weight: 500 !important;
 }
 
 .filter-tag i {
   cursor: pointer !important;
   font-style: normal !important;
-  font-size: 12px !important;
-  opacity: 0.6 !important;
-  transition: opacity 0.15s !important;
+  font-size: 13px !important;
+  opacity: 0.8 !important;
+  transition: all 0.15s !important;
   margin-left: 2px !important;
+  width: 16px !important;
+  height: 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
 }
 
 .filter-tag i:hover {
   opacity: 1 !important;
+  background: rgba(255,255,255,0.2) !important;
 }
 
 .filter-tags-row .filter-clear-btn {
@@ -2711,19 +2720,20 @@
   display: flex !important;
   flex-wrap: wrap !important;
   align-items: center !important;
-  gap: 8px !important;
-  padding: 10px 14px !important;
+  gap: 14px !important;
+  padding: 12px 18px !important;
   background: #fff !important;
   border: 1px solid #e2e8f0 !important;
-  border-radius: 12px !important;
+  border-radius: 14px !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 10px !important;
   position: relative !important;
 }
 
 .filter-row-v4-second {
-  background: #fafbfc !important;
+  background: linear-gradient(180deg, #fafbfc 0%, #f4f6f8 100%) !important;
   border-style: dashed !important;
+  border-color: #d0d7de !important;
 }
 
 .fb-divider {
@@ -2734,13 +2744,13 @@
   flex-shrink: 0 !important;
 }
 
-/* 普通下�?*/
+/* 普通下拉 */
 .fb-select {
-  padding: 5px 26px 5px 10px !important;
-  font-size: 12px !important;
-  border-radius: 8px !important;
-  border: 1px solid #e2e8f0 !important;
-  background: #fff !important;
+  padding: 7px 28px 7px 12px !important;
+  font-size: 13px !important;
+  border-radius: 10px !important;
+  border: 1px solid #d0d7de !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
   color: #334155 !important;
   cursor: pointer !important;
   -webkit-appearance: none !important;
@@ -2748,24 +2758,26 @@
   appearance: none !important;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
-  background-position: right 8px center !important;
+  background-position: right 10px center !important;
   background-size: 10px !important;
-  transition: all 0.2s !important;
-  min-width: 80px !important;
-  max-width: 130px !important;
+  transition: all 0.25s ease !important;
+  min-width: 90px !important;
+  max-width: 140px !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
 }
 
 .fb-select:hover {
-  border-color: #cbd5e1 !important;
-  background-color: #f8fafc !important;
+  border-color: #2563eb !important;
+  background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08), 0 2px 4px rgba(37, 99, 235, 0.06) !important;
 }
 
 .fb-select:focus {
   border-color: #2563eb !important;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
   outline: none !important;
 }
 
@@ -2796,44 +2808,47 @@
 .fb-search-trigger {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 5px !important;
-  padding: 5px 26px 5px 10px !important;
-  font-size: 12px !important;
-  border-radius: 8px !important;
-  border: 1px solid #e2e8f0 !important;
-  background: #fff !important;
+  gap: 6px !important;
+  padding: 7px 28px 7px 12px !important;
+  font-size: 13px !important;
+  border-radius: 10px !important;
+  border: 1px solid #d0d7de !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
   color: #334155 !important;
   cursor: pointer !important;
-  transition: all 0.2s !important;
+  transition: all 0.25s ease !important;
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
-  background-position: right 8px center !important;
+  background-position: right 10px center !important;
   background-size: 10px !important;
-  min-width: 80px !important;
-  max-width: 130px !important;
+  min-width: 90px !important;
+  max-width: 140px !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   user-select: none !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
 }
 
 .fb-search-trigger:hover {
-  border-color: #cbd5e1 !important;
-  background-color: #f8fafc !important;
+  border-color: #2563eb !important;
+  background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08), 0 2px 4px rgba(37, 99, 235, 0.06) !important;
 }
 
 .fb-search-trigger.active {
   border-color: #2563eb !important;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
 }
 
 .fb-search-trigger.has-value {
-  color: #2563eb !important;
-  background: #eff6ff !important;
-  border-color: #bfdbfe !important;
+  color: #1d4ed8 !important;
+  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%) !important;
+  border-color: #2563eb !important;
+  font-weight: 500 !important;
 }
 
 .fb-search-trigger svg {
@@ -2850,30 +2865,33 @@
 /* 搜索下拉面板 */
 .fb-search-panel {
   position: fixed !important;
-  width: 200px !important;
-  max-height: 290px !important;
+  width: 220px !important;
+  max-height: 320px !important;
   background: #fff !important;
   border: 1px solid #e2e8f0 !important;
-  border-radius: 10px !important;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.12) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.15), 0 4px 12px rgba(0,0,0,0.08) !important;
   z-index: 99999 !important;
-  display: none !important;
+  display: none;
   flex-direction: column !important;
   overflow: hidden !important;
-  animation: fbPanelIn 0.2s ease !important;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.97);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-@keyframes fbPanelIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
+.fb-search-panel.show {
+  display: flex !important;
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
-/* 搜索输入�?*/
+/* 搜索输入框 */
 .fb-sp-search {
   display: flex !important;
   align-items: center !important;
-  gap: 6px !important;
-  padding: 8px 10px !important;
+  gap: 8px !important;
+  padding: 10px 12px !important;
   border-bottom: 1px solid #f1f5f9 !important;
 }
 
@@ -2881,7 +2899,7 @@
   flex: 1 !important;
   border: none !important;
   outline: none !important;
-  font-size: 12px !important;
+  font-size: 13px !important;
   color: #1e293b !important;
   background: transparent !important;
   min-width: 0 !important;
@@ -2900,51 +2918,54 @@
 .fb-sp-options {
   flex: 1 !important;
   overflow-y: auto !important;
-  padding: 4px !important;
+  padding: 6px !important;
   max-height: 240px !important;
 }
 
 .fb-sp-option {
   display: flex !important;
   align-items: center !important;
-  gap: 6px !important;
-  padding: 6px 10px !important;
-  font-size: 12px !important;
+  gap: 8px !important;
+  padding: 7px 10px !important;
+  font-size: 13px !important;
   color: #334155 !important;
   cursor: pointer !important;
-  border-radius: 6px !important;
-  transition: background 0.15s !important;
+  border-radius: 8px !important;
+  transition: all 0.15s ease !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
+  border-left: 3px solid transparent !important;
 }
 
 .fb-sp-option:hover {
-  background: #f1f5f9 !important;
+  background: #f0f7ff !important;
+  border-left-color: #bfdbfe !important;
 }
 
 .fb-sp-option.selected {
   background: #eff6ff !important;
   color: #2563eb !important;
   font-weight: 500 !important;
+  border-left-color: #2563eb !important;
 }
 
 .fb-sp-check {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 14px !important;
-  height: 14px !important;
+  width: 16px !important;
+  height: 16px !important;
   border: 1.5px solid #cbd5e1 !important;
-  border-radius: 3px !important;
-  font-size: 9px !important;
+  border-radius: 4px !important;
+  font-size: 10px !important;
   color: #fff !important;
   flex-shrink: 0 !important;
   transition: all 0.15s !important;
 }
 
 .fb-sp-option.selected .fb-sp-check {
-  background: #2563eb !important;
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%) !important;
   border-color: #2563eb !important;
 }
 
@@ -2952,8 +2973,8 @@
 .fb-sp-footer {
   display: flex !important;
   justify-content: flex-end !important;
-  gap: 6px !important;
-  padding: 8px 10px !important;
+  gap: 8px !important;
+  padding: 10px 12px !important;
   border-top: 1px solid #f1f5f9 !important;
 }
 
@@ -2961,55 +2982,60 @@
   background: none !important;
   border: 1px solid #e2e8f0 !important;
   color: #64748b !important;
-  font-size: 11px !important;
-  padding: 3px 10px !important;
-  border-radius: 6px !important;
+  font-size: 12px !important;
+  padding: 5px 12px !important;
+  border-radius: 8px !important;
   cursor: pointer !important;
   transition: all 0.15s !important;
 }
 
 .fb-sp-clear:hover {
-  background: #f1f5f9 !important;
+  background: #fef2f2 !important;
   color: #ef4444 !important;
   border-color: #fca5a5 !important;
 }
 
 .fb-sp-confirm {
-  background: #2563eb !important;
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%) !important;
   border: none !important;
   color: #fff !important;
-  font-size: 11px !important;
-  padding: 3px 12px !important;
-  border-radius: 6px !important;
+  font-size: 12px !important;
+  padding: 5px 14px !important;
+  border-radius: 8px !important;
   cursor: pointer !important;
-  transition: background 0.15s !important;
+  transition: all 0.15s !important;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25) !important;
 }
 
 .fb-sp-confirm:hover {
-  background: #1d4ed8 !important;
+  background: linear-gradient(135deg, #1d4ed8 0%, #4338ca 100%) !important;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35) !important;
 }
 
-/* 高级筛选按�?*/
+/* 高级筛选按钮 */
 .fb-adv-btn {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 4px !important;
-  padding: 5px 12px !important;
-  font-size: 12px !important;
-  border-radius: 8px !important;
-  border: 1px dashed #cbd5e1 !important;
-  background: #fff !important;
+  gap: 6px !important;
+  padding: 7px 14px !important;
+  font-size: 13px !important;
+  border-radius: 10px !important;
+  border: 1.5px dashed #cbd5e1 !important;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
   color: #64748b !important;
   cursor: pointer !important;
-  transition: all 0.2s !important;
+  transition: all 0.25s ease !important;
   white-space: nowrap !important;
   margin-left: auto !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
 }
 
 .fb-adv-btn:hover {
   border-color: #2563eb !important;
+  border-style: solid !important;
   color: #2563eb !important;
-  background: #eff6ff !important;
+  background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08), 0 2px 4px rgba(37, 99, 235, 0.06) !important;
 }
 
 .fb-adv-btn svg {
