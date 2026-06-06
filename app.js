@@ -215,6 +215,37 @@ function setAppContentVisible(visible) {
 
 function checkLogin() {
   try {
+    // 先检查 login.html 的登录状态
+    const authStr = localStorage.getItem('chanseen_auth');
+    if (authStr) {
+      try {
+        const auth = JSON.parse(authStr);
+        const maxAge = auth.remember ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
+        if (auth.token && (Date.now() - auth.loginAt) < maxAge) {
+          // login.html 登录的演示用户
+          currentUser = {
+            id: 'demo_user',
+            username: auth.user?.username || 'demo',
+            name: auth.user?.name || '演示用户',
+            role: '管理员',
+            avatar: '',
+            position: '客服总监',
+            brand: 'Chanseen'
+          };
+          currentRole = '管理员';
+          hideLoginModal();
+          updateUserDisplay();
+          setAppContentVisible(true);
+          return true;
+        } else {
+          localStorage.removeItem('chanseen_auth');
+        }
+      } catch(e) {
+        localStorage.removeItem('chanseen_auth');
+      }
+    }
+
+    // 再检查现有系统的登录状态
     const raw = localStorage.getItem("chansee_current_user")
               || sessionStorage.getItem("chansee_current_user");
     if (raw) {
@@ -464,13 +495,26 @@ function toggleRegConfirm() {
   }
 }
 
+// 演示登录（快速进入系统）
+function demoLogin() {
+  const auth = {
+    token: 'demo_' + Date.now(),
+    user: { username: 'demo', name: '演示用户', role: '管理员' },
+    loginAt: Date.now(),
+    remember: true
+  };
+  localStorage.setItem('chanseen_auth', JSON.stringify(auth));
+  window.location.href = 'index.html';
+}
+
 // 退出登录
 function logout() {
   currentUser = null;
   localStorage.removeItem("chansee_current_user");
   sessionStorage.removeItem("chansee_current_user");
-  setAppContentVisible(false);
-  showLoginModal();
+  localStorage.removeItem("chanseen_auth");
+  sessionStorage.removeItem("chanseen_auth");
+  window.location.href = "login.html";
 }
 
 // 判断当前用户是否为管理员/超级管理员

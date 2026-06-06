@@ -11,6 +11,39 @@
 <meta name="keywords" content="客服管理,项目管理,电商客服,CS CloudHub,Chanseen,客服总监,项目服务管理">
 <link rel="canonical" href="https://chanseen.pages.dev/">
 
+<!-- 登录状态检查：未登录跳转到登录页 -->
+<script>
+(function() {
+  // 检查 login.html 的登录状态
+  const authStr = localStorage.getItem('chanseen_auth');
+  if (authStr) {
+    try {
+      const auth = JSON.parse(authStr);
+      const maxAge = auth.remember ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
+      if (auth.token && (Date.now() - auth.loginAt) < maxAge) {
+        return; // 已登录，不跳转
+      } else {
+        localStorage.removeItem('chanseen_auth');
+      }
+    } catch(e) {
+      localStorage.removeItem('chanseen_auth');
+    }
+  }
+  // 检查现有系统的登录状态
+  const raw = localStorage.getItem('chansee_current_user') || sessionStorage.getItem('chansee_current_user');
+  if (raw) {
+    try {
+      const data = JSON.parse(raw);
+      if (data._expiry && Date.now() < data._expiry) {
+        return; // 已登录，不跳转
+      }
+    } catch(e) {}
+  }
+  // 未登录，跳转
+  window.location.replace('login.html');
+})();
+</script>
+
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://chanseen.pages.dev/">

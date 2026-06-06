@@ -757,8 +757,6 @@
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
   border: 1px solid rgba(0, 0, 0, 0.04) !important;
   animation: cardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-  opacity: 0 !important;
-  transform: translateY(20px) !important;
 }
 
 @keyframes cardFadeIn {
