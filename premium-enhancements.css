@@ -468,3 +468,281 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===== 登录弹窗 Premium 设计 ===== */
+.login-modal-premium {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  animation: fadeIn 0.3s var(--ease-premium) !important;
+}
+
+.login-split-premium {
+  backdrop-filter: blur(20px) !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3) !important;
+  animation: modalSlideUp 0.4s var(--ease-premium) !important;
+  display: flex !important;
+  max-width: 900px !important;
+  width: 90% !important;
+  max-height: 90vh !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95) !important;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) !important;
+  }
+}
+
+/* 品牌展示区 */
+.login-brand-premium {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  padding: 40px !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.login-brand-premium::before {
+  content: '' !important;
+  position: absolute !important;
+  top: -50% !important;
+  left: -50% !important;
+  width: 200% !important;
+  height: 200% !important;
+  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%) !important;
+  animation: shimmer 3s infinite !important;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(10%, 10%); }
+}
+
+.highlight-card-premium {
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
+  margin-bottom: 12px !important;
+  transition: all 0.3s var(--ease-premium) !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.highlight-card-premium:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-4px) scale(1.02) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 表单区域 */
+.login-form-premium {
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(20px) !important;
+  padding: 40px !important;
+  flex: 1 !important;
+  max-width: 400px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+
+/* 浮动标签输入框 */
+.input-group-premium {
+  position: relative !important;
+  margin-bottom: 20px !important;
+}
+
+.form-input-premium {
+  width: 100% !important;
+  padding: 16px !important;
+  border: 2px solid var(--c-border) !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+  transition: all 0.2s var(--ease-premium) !important;
+  background: white !important;
+}
+
+.form-input-premium:focus {
+  outline: none !important;
+  border-color: var(--c-primary) !important;
+  box-shadow: 0 0 0 3px rgba(24, 95, 165, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+.form-label-premium {
+  position: absolute !important;
+  left: 16px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: var(--c-text-3) !important;
+  font-size: 14px !important;
+  transition: all 0.2s var(--ease-premium) !important;
+  pointer-events: none !important;
+  background: white !important;
+  padding: 0 4px !important;
+}
+
+.form-input-premium:focus ~ .form-label-premium,
+.form-input-premium:not(:placeholder-shown) ~ .form-label-premium {
+  top: 0 !important;
+  font-size: 12px !important;
+  color: var(--c-primary) !important;
+  font-weight: 600 !important;
+}
+
+/* 登录按钮 */
+.btn-login-premium {
+  width: 100% !important;
+  padding: 14px !important;
+  background: linear-gradient(135deg, var(--c-primary) 0%, #4F46E5 100%) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.3s var(--ease-premium) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 15px rgba(24, 95, 165, 0.4) !important;
+  margin-top: 8px !important;
+}
+
+.btn-login-premium:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px rgba(24, 95, 165, 0.5) !important;
+}
+
+/* 按钮波纹效果 */
+.btn-login-premium::after {
+  content: '' !important;
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  pointer-events: none !important;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10%) !important;
+  background-repeat: no-repeat !important;
+  background-position: 50% !important;
+  transform: scale(10, 10) !important;
+  opacity: 0 !important;
+  transition: transform 0.5s, opacity 1s !important;
+}
+
+.btn-login-premium:active::after {
+  transform: scale(0, 0) !important;
+  opacity: 0.3 !important;
+  transition: 0s !important;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .login-split-premium {
+    flex-direction: column !important;
+    max-width: 95% !important;
+  }
+  
+  .login-brand-premium {
+    display: none !important;
+  }
+  
+  .login-form-premium {
+    max-width: 100% !important;
+  }
+}
+
+/* ===== Toast 通知系统 ===== */
+.toast-container {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  z-index: 99999 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
+.toast {
+  background: white !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+  padding: 16px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-width: 300px !important;
+  max-width: 450px !important;
+  transform: translateX(500px) !important;
+  transition: transform 0.4s var(--ease-premium) !important;
+  border-left: 4px solid var(--c-primary) !important;
+}
+
+.toast.show {
+  transform: translateX(0) !important;
+}
+
+.toast-success {
+  border-left-color: var(--c-green) !important;
+}
+
+.toast-error {
+  border-left-color: var(--c-red) !important;
+}
+
+.toast-warning {
+  border-left-color: var(--c-orange) !important;
+}
+
+.toast-icon {
+  font-size: 24px !important;
+  flex-shrink: 0 !important;
+}
+
+.toast-content {
+  flex: 1 !important;
+}
+
+.toast-title {
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  color: var(--c-text) !important;
+  margin-bottom: 2px !important;
+}
+
+.toast-message {
+  font-size: 13px !important;
+  color: var(--c-text-2) !important;
+  line-height: 1.4 !important;
+}
+
+.toast-close {
+  background: none !important;
+  border: none !important;
+  font-size: 18px !important;
+  color: var(--c-text-3) !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  transition: color 0.2s !important;
+}
+
+.toast-close:hover {
+  color: var(--c-text) !important;
+}

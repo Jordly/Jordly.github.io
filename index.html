@@ -179,38 +179,38 @@
   <script src="app.js?v=20260606011500"></script>
   <script src="premium-enhancements.js?v=20260606091105"></script>
 
-<!-- 登录/注册弹窗 - 左右分栏布局 -->
-<div id="login-modal" class="modal-overlay hidden" style="z-index:10000; background: linear-gradient(135deg, #f8f9fa 0%, #e8f4fd 100%);">
-  <div class="login-split-box">
+<!-- 登录/注册弹窗 - Premium 设计 -->
+<div id="login-modal" class="modal-overlay hidden login-modal-premium">
+  <div class="login-split-box login-split-premium">
     <!-- 左侧：品牌 + 亮点展示 -->
-    <div class="login-brand">
+    <div class="login-brand login-brand-premium">
       <div class="brand-top">
         <div class="brand-logo">🔐 <strong>Chanseen</strong></div>
         <div class="brand-tagline">客服项目统一管控平台</div>
       </div>
       <div class="brand-highlights">
-        <div class="highlight-card">
+        <div class="highlight-card highlight-card-premium">
           <div class="highlight-icon">🌍</div>
           <div class="highlight-text">
             <div class="highlight-title">多职场协同管理</div>
             <div class="highlight-desc">济南 · 淄博 · 杭州 · 无锡 四地团队<br>统一管控，信息实时同步</div>
           </div>
         </div>
-        <div class="highlight-card">
+        <div class="highlight-card highlight-card-premium">
           <div class="highlight-icon">📊</div>
           <div class="highlight-text">
             <div class="highlight-title">多项目类型支持</div>
             <div class="highlight-desc">TP项目 / DP项目 / BPO项目<br>全模式覆盖，灵活切换</div>
           </div>
         </div>
-        <div class="highlight-card">
+        <div class="highlight-card highlight-card-premium">
           <div class="highlight-icon">📈</div>
           <div class="highlight-text">
             <div class="highlight-title">实时数据看板</div>
             <div class="highlight-desc">项目进度 · 成本利润 · 服务指标<br>一站式查看，决策更高效</div>
           </div>
         </div>
-        <div class="highlight-card">
+        <div class="highlight-card highlight-card-premium">
           <div class="highlight-icon">🧰</div>
           <div class="highlight-text">
             <div class="highlight-title">工具知识双引擎</div>
@@ -219,30 +219,30 @@
         </div>
       </div>
       <div class="brand-cta">
-        <button class="btn btn-outline-light" onclick="demoLogin()">🎬 查看演示</button>
-        <button class="btn btn-text-light" onclick="scrollToFeatures()">📖 了解更多</button>
+        <button class="btn btn-outline-light btn-premium" onclick="demoLogin()">🎬 查看演示</button>
+        <button class="btn btn-text-light btn-premium" onclick="scrollToFeatures()">📖 了解更多</button>
       </div>
     </div>
     <!-- 右侧：登录/注册表单 -->
     <div class="login-form-area">
-      <div class="login-form-box">
+      <div class="login-form-box login-form-premium">
         <div class="login-header">
           <div class="login-logo">🔐 Chanseen | CS CloudHub</div>
         </div>
-        <div class="auth-tabs">
+        <div class="auth-tabs auth-tabs-premium">
           <div class="auth-tab active" data-tab="login" onclick="switchAuthTab('login')">账号登录</div>
           <div class="auth-tab" data-tab="register" onclick="switchAuthTab('register')">注册申请</div>
         </div>
         <div id="auth-login-form">
-          <div class="form-group">
-            <label class="form-label">登录账号</label>
-            <input type="text" id="login-username" class="form-input" placeholder="请输入账号">
+          <div class="input-group-premium">
+            <input type="text" id="login-username" class="form-input form-input-premium" placeholder=" ">
+            <label class="form-label-premium">登录账号</label>
           </div>
-          <div class="form-group">
-            <label class="form-label">登录密码</label>
+          <div class="input-group-premium">
             <div class="password-wrap">
-              <input type="password" id="login-password" class="form-input" placeholder="请输入密码" onkeydown="if(event.key==='Enter')doLogin()">
-              <button type="button" class="password-toggle" onclick="togglePassword()" tabindex="-1">
+              <input type="password" id="login-password" class="form-input form-input-premium" placeholder=" " onkeydown="if(event.key==='Enter')doLogin()">
+              <label class="form-label-premium">登录密码</label>
+              <button type="button" class="password-toggle password-toggle-premium" onclick="togglePassword()" tabindex="-1">
                 <span id="password-eye">👁️</span>
               </button>
             </div>
@@ -253,48 +253,48 @@
               <span class="remember-text">记住我（1小时内免登录）</span>
             </label>
           </div>
-          <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="doLogin()">登  录</button>
+          <button class="btn btn-primary btn-login-premium" onclick="doLogin()">登  录</button>
           <div class="forgot-password-link">
             <a href="javascript:void(0)" onclick="openForgotPassword()">忘记密码？</a>
           </div>
           <div class="login-hint">提示：注册后需等待管理员审批通过方可登录</div>
         </div>
         <div id="auth-register-form" style="display:none;">
-          <div class="form-group">
-            <label class="form-label">真实姓名 <span style="color:var(--c-red)">*</span></label>
-            <input type="text" id="reg-name" class="form-input" placeholder="请输入真实姓名">
+          <div class="input-group-premium">
+            <input type="text" id="reg-name" class="form-input form-input-premium" placeholder=" ">
+            <label class="form-label-premium">真实姓名 <span style="color:var(--c-red)">*</span></label>
           </div>
-          <div class="form-group">
-            <label class="form-label">登录账号 <span style="color:var(--c-red)">*</span></label>
-            <input type="text" id="reg-username" class="form-input" placeholder="设置登录账号">
+          <div class="input-group-premium">
+            <input type="text" id="reg-username" class="form-input form-input-premium" placeholder=" ">
+            <label class="form-label-premium">登录账号 <span style="color:var(--c-red)">*</span></label>
           </div>
-          <div class="form-group">
-            <label class="form-label">登录密码 <span style="color:var(--c-red)">*</span></label>
+          <div class="input-group-premium">
             <div class="password-wrap">
-              <input type="password" id="reg-password" class="form-input" placeholder="设置登录密码">
-              <button type="button" class="password-toggle" onclick="toggleRegPassword()" tabindex="-1">
+              <input type="password" id="reg-password" class="form-input form-input-premium" placeholder=" ">
+              <label class="form-label-premium">登录密码 <span style="color:var(--c-red)">*</span></label>
+              <button type="button" class="password-toggle password-toggle-premium" onclick="toggleRegPassword()" tabindex="-1">
                 <span id="reg-password-eye">👁️</span>
               </button>
             </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">确认密码 <span style="color:var(--c-red)">*</span></label>
+          <div class="input-group-premium">
             <div class="password-wrap">
-              <input type="password" id="reg-confirm" class="form-input" placeholder="再次输入密码">
-              <button type="button" class="password-toggle" onclick="toggleRegConfirm()" tabindex="-1">
+              <input type="password" id="reg-confirm" class="form-input form-input-premium" placeholder=" ">
+              <label class="form-label-premium">确认密码 <span style="color:var(--c-red)">*</span></label>
+              <button type="button" class="password-toggle password-toggle-premium" onclick="toggleRegConfirm()" tabindex="-1">
                 <span id="reg-confirm-eye">👁️</span>
               </button>
             </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">手机号</label>
-            <input type="text" id="reg-phone" class="form-input" placeholder="请输入手机号">
+          <div class="input-group-premium">
+            <input type="text" id="reg-phone" class="form-input form-input-premium" placeholder=" ">
+            <label class="form-label-premium">手机号</label>
           </div>
-          <div class="form-group">
-            <label class="form-label">邮箱</label>
-            <input type="text" id="reg-email" class="form-input" placeholder="请输入邮箱">
+          <div class="input-group-premium">
+            <input type="text" id="reg-email" class="form-input form-input-premium" placeholder=" ">
+            <label class="form-label-premium">邮箱</label>
           </div>
-          <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="doRegister()">提交注册申请</button>
+          <button class="btn btn-primary btn-login-premium" onclick="doRegister()">提交注册申请</button>
           <div class="login-hint">提交后需管理员审批通过方可登录系统</div>
         </div>
       </div>
