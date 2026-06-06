@@ -1422,7 +1422,7 @@ function renderModule(module){
 
 
 
-// ----- 筛选栏状态 (调整4) -----
+// ----- 筛选栏状态 (v4) -----
 const filterState = {
   project: [],
   workplace: "all",
@@ -1434,10 +1434,10 @@ const filterState = {
   time: "all",
   timeStart: "",
   timeEnd: "",
-  brand: "all",
-  category: "all",
-  status: "all",
-  moreExpanded: false
+  brand: [],
+  category: [],
+  platforms: [],
+  status: "all"
 };
 
 function setFilter(key, value) {
@@ -1446,105 +1446,267 @@ function setFilter(key, value) {
 }
 
 function renderFilterBar() {
-  const workplaces = [...new Set(PROJECTS.map(p => p.workplace))];
-  const brands = [...new Set(PROJECTS.map(p => p.brand))].sort();
-  const categories = [...new Set(PROJECTS.map(p => p.category))].sort();
-  const statuses = [...new Set(PROJECTS.map(p => p.status))];
-  const directors = [...new Set(PROJECTS.map(p => p.director))].sort();
-  const pms = [...new Set(PROJECTS.map(p => p.pm))].sort();
-  const healthOptions = [
-    {label:'🟢 健康', value:'🟢'},
-    {label:'🟡 预警', value:'🟡'},
-    {label:'🔴 风险', value:'🔴'}
-  ];
+  var timeLabel = {all:'全部时间', month:'本月', lastMonth:'上月', quarter:'本季', year:'本年', custom:'自定义'};
 
-  const timeOptions = [
-    {label:'本月', value:'month'},
-    {label:'上月', value:'lastMonth'},
-    {label:'本季', value:'quarter'},
-    {label:'本年', value:'year'}
-  ];
+  // 已选标签
+  var tagsHtml = '';
+  var hasFilter = false;
+  if (filterState.timeMode !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + timeLabel[filterState.timeMode] + '<i onclick="setFilter(\'timeMode\',\'all\')">×</i></span>'; }
+  if (filterState.workplace !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.workplace + '<i onclick="setFilter(\'workplace\',\'all\')">×</i></span>'; }
+  if (filterState.projectType !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.projectType + '<i onclick="setFilter(\'projectType\',\'all\')">×</i></span>'; }
+  if (filterState.status !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.status + '<i onclick="setFilter(\'status\',\'all\')">×</i></span>'; }
+  if (filterState.health !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.health + '<i onclick="setFilter(\'health\',\'all\')">×</i></span>'; }
+  if (filterState.pm !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.pm + '<i onclick="setFilter(\'pm\',\'all\')">×</i></span>'; }
+  if (filterState.director !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.director + '<i onclick="setFilter(\'director\',\'all\')">×</i></span>'; }
+  filterState.platforms.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'platforms\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  filterState.category.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'category\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  filterState.brand.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'brand\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  if (hasFilter) tagsHtml = '<div class="filter-tags-row">' + tagsHtml + '<button class="filter-clear-btn" onclick="resetFilters()">清空筛选</button></div>';
 
-  const wpOptions = [{label:'全部', value:'all'}, ...workplaces.map(w => ({label:w, value:w}))];
+  // 第一行：普通下拉
+  var workplaces = [...new Set(PROJECTS.map(function(p){return p.workplace}))].sort();
+  var types = ['TP项目','DP项目','BPO项目'];
+  var statuses = [...new Set(PROJECTS.map(function(p){return p.status}))];
+  var healths = ['🟢','🟡','🔴'];
 
-  const typeOptions = [
-    {label:'全部', value:'all'},
-    {label:'TP', value:'TP项目'},
-    {label:'DP', value:'DP项目'},
-    {label:'BPO', value:'BPO项目'}
-  ];
+  var row1 = '<div class="filter-row-v4">';
+  row1 += '<select class="fb-select" onchange="onFilterTimeChange(this.value)">';
+  row1 += '<option value="all"'+(filterState.timeMode==='all'?' selected':'')+'>全部时间</option>';
+  row1 += '<option value="month"'+(filterState.timeMode==='month'?' selected':'')+'>本月</option>';
+  row1 += '<option value="lastMonth"'+(filterState.timeMode==='lastMonth'?' selected':'')+'>上月</option>';
+  row1 += '<option value="quarter"'+(filterState.timeMode==='quarter'?' selected':'')+'>本季</option>';
+  row1 += '<option value="year"'+(filterState.timeMode==='year'?' selected':'')+'>本年</option>';
+  row1 += '<option value="custom"'+(filterState.timeMode==='custom'?' selected':'')+'>自定义</option>';
+  row1 += '</select>';
 
-  const brandOptions = [{label:'全部品牌', value:'all'}, ...brands.map(b => ({label:b, value:b}))];
-  const categoryOptions = [{label:'全部品类', value:'all'}, ...categories.map(c => ({label:c, value:c}))];
-  const statusOptions = [{label:'全部状态', value:'all'}, ...statuses.map(s => ({label:s, value:s}))];
-  const directorOptions = [{label:'全部总监', value:'all'}, ...directors.map(d => ({label:d, value:d}))];
-  const pmOptions = [{label:'全部PM', value:'all'}, ...pms.map(p => ({label:p, value:p}))];
+  row1 += '<select class="fb-select" onchange="setFilter(\'workplace\',this.value)">';
+  row1 += '<option value="all"'+(filterState.workplace==='all'?' selected':'')+'>全部职场</option>';
+  workplaces.forEach(function(w){ row1 += '<option value="'+w+'"'+(filterState.workplace===w?' selected':'')+'>'+w+'</option>'; });
+  row1 += '</select>';
 
-  const activeTags = [];
-  if(filterState.timeMode !== 'all') activeTags.push({key:'timeMode', label:timeOptions.find(t=>t.value===filterState.timeMode)?.label || filterState.timeMode});
-  if(filterState.workplace !== 'all') activeTags.push({key:'workplace', label:filterState.workplace});
-  if(filterState.projectType !== 'all') activeTags.push({key:'projectType', label:filterState.projectType.replace('项目','')});
-  if(filterState.brand !== 'all') activeTags.push({key:'brand', label:filterState.brand});
-  if(filterState.category !== 'all') activeTags.push({key:'category', label:filterState.category});
-  if(filterState.status !== 'all') activeTags.push({key:'status', label:filterState.status});
-  if(filterState.health !== 'all') activeTags.push({key:'health', label:filterState.health});
-  if(filterState.director !== 'all') activeTags.push({key:'director', label:filterState.director});
-  if(filterState.pm !== 'all') activeTags.push({key:'pm', label:filterState.pm});
+  row1 += '<select class="fb-select" onchange="setFilter(\'projectType\',this.value)">';
+  row1 += '<option value="all"'+(filterState.projectType==='all'?' selected':'')+'>全部类型</option>';
+  types.forEach(function(t){ row1 += '<option value="'+t+'"'+(filterState.projectType===t?' selected':'')+'>'+t+'</option>'; });
+  row1 += '</select>';
 
-  const isActive = (key, val) => filterState[key] === val;
-  const pillBtn = (key, val, label, color) => {
-    const active = isActive(key, val);
-    const bg = active ? (color || '#2563eb') : '#fff';
-    const fg = active ? '#fff' : '#64748b';
-    const border = active ? (color || '#2563eb') : '#e2e8f0';
-    return `<button onclick="setFilter('${key}','${val}')" class="filter-pill ${active ? 'active' : ''}" style="padding:5px 14px;font-size:12px;border-radius:16px;border:1.5px solid ${border};background:${bg};color:${fg};cursor:pointer;transition:all 0.2s;white-space:nowrap;font-weight:${active ? '600' : '400'};" onmouseover="if(!${active}){this.style.borderColor='#cbd5e1';this.style.background='#f8fafc';}" onmouseout="if(!${active}){this.style.borderColor='#e2e8f0';this.style.background='#fff';}">${label}</button>`;
-  };
+  row1 += '<select class="fb-select" onchange="setFilter(\'status\',this.value)">';
+  row1 += '<option value="all"'+(filterState.status==='all'?' selected':'')+'>全部状态</option>';
+  statuses.forEach(function(s){ row1 += '<option value="'+s+'"'+(filterState.status===s?' selected':'')+'>'+s+'</option>'; });
+  row1 += '</select>';
 
-  const pillGroup = (label, options, filterKey) => `
-    <div class="filter-group" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-      <span class="filter-group-label" style="font-size:11px;color:#94a3b8;white-space:nowrap;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;">${label}</span>
-      <div style="display:flex;gap:5px;flex-wrap:nowrap;">${options.map(o => pillBtn(filterKey, o.value, o.label)).join('')}</div>
-    </div>
-  `;
+  row1 += '<select class="fb-select" onchange="setFilter(\'health\',this.value)">';
+  row1 += '<option value="all"'+(filterState.health==='all'?' selected':'')+'>全部健康度</option>';
+  healths.forEach(function(h){
+    var label = h==='🟢'?'🟢 健康':h==='🟡'?'🟡 预警':'🔴 风险';
+    row1 += '<option value="'+h+'"'+(filterState.health===h?' selected':'')+'>'+label+'</option>';
+  });
+  row1 += '</select>';
+  row1 += '</div>';
 
-  const moreSection = filterState.moreExpanded ? `
-    <div class="filter-more-section" style="display:flex;align-items:center;gap:12px;padding-top:10px;border-top:1px dashed #e2e8f0;margin-top:8px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;">
-      ${pillGroup('品牌', brandOptions, 'brand')}
-      ${pillGroup('品类', categoryOptions, 'category')}
-      ${pillGroup('状态', statusOptions, 'status')}
-      ${pillGroup('健康', healthOptions, 'health')}
-      ${pillGroup('总监', directorOptions, 'director')}
-      ${pillGroup('PM', pmOptions, 'pm')}
-    </div>
-  ` : '';
+  // 自定义时间
+  var customTimeHtml = '';
+  if (filterState.timeMode === 'custom') {
+    customTimeHtml = '<div class="fb-custom-time">'+
+      '<span>开始日期</span><input type="date" class="fb-date" id="fb-time-start" value="'+(filterState.timeStart||'')+'" onchange="filterState.timeStart=this.value;applyTimeFilter()">'+
+      '<span>结束日期</span><input type="date" class="fb-date" id="fb-time-end" value="'+(filterState.timeEnd||'')+'" onchange="filterState.timeEnd=this.value;applyTimeFilter()">'+
+      '</div>';
+  }
 
-  return `
-    <div class="filter-bar-container" style="padding:14px 18px;background:#fff;border-radius:12px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.02);border:1px solid #f1f5f9;">
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;">
-        ${pillGroup('时间', timeOptions, 'timeMode')}
-        <div style="width:1px;height:20px;background:#e2e8f0;flex-shrink:0;"></div>
-        ${pillGroup('职场', wpOptions, 'workplace')}
-        <div style="width:1px;height:20px;background:#e2e8f0;flex-shrink:0;"></div>
-        ${pillGroup('类型', typeOptions, 'projectType')}
-        <div style="width:1px;height:20px;background:#e2e8f0;flex-shrink:0;"></div>
-        <button onclick="toggleMoreFilters()" class="filter-more-btn" style="display:flex;align-items:center;gap:4px;padding:5px 12px;font-size:12px;border-radius:16px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;" onmouseover="this.style.borderColor='#94a3b8';this.style.background='#f1f5f9;" onmouseout="this.style.borderColor='#cbd5e1';this.style.background='#f8fafc';">
-          <span>${filterState.moreExpanded ? '收起' : '更多'}</span>
-          <span style="font-size:10px;transition:transform 0.2s;display:inline-block;transform:rotate(${filterState.moreExpanded ? '180deg' : '0deg'});">▼</span>
-        </button>
-        <div style="flex:1;min-width:10px;"></div>
-        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;">
-          ${activeTags.map(tag => `<span class="filter-tag" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;font-size:11px;background:#eff6ff;color:#2563eb;border-radius:12px;border:1px solid #bfdbfe;font-weight:500;">${tag.label} <span onclick="setFilter('${tag.key}','all')" style="cursor:pointer;font-size:13px;line-height:1;width:14px;height:14px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background 0.2s;" onmouseover="this.style.background='rgba(37,99,235,0.1)'" onmouseout="this.style.background='transparent'">×</span></span>`).join('')}
-          ${activeTags.length > 0 ? `<button onclick="resetFilters()" class="filter-reset-btn" style="padding:4px 10px;font-size:11px;color:#ef4444;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;cursor:pointer;transition:all 0.2s;font-weight:500;white-space:nowrap;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'">清空 ${activeTags.length}</button>` : ''}
-        </div>
-      </div>
-      ${moreSection}
-    </div>`;
+  // 第二行：搜索下拉
+  var row2 = '<div class="filter-row-v4 filter-row-v4-second">';
+
+  // 平台
+  var pfLabel = '全部平台';
+  if (filterState.platforms.length === 1) pfLabel = filterState.platforms[0];
+  else if (filterState.platforms.length > 1) pfLabel = '已选'+filterState.platforms.length+'项';
+  row2 += '<div class="fb-search-wrap" data-filter="platforms">';
+  row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+pfLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  row2 += '<div class="fb-search-panel" id="fb-panel-platforms" style="display:none;">'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索平台..." oninput="renderFbOptions(\'platforms\')"></div>'+
+    '<div class="fb-sp-options" id="fb-options-platforms"></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-clear" onclick="clearFbMulti(\'platforms\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'platforms\')">确定</button></div>'+
+    '</div>';
+  row2 += '</div>';
+
+  // 品类
+  var caLabel = '全部分类';
+  if (filterState.category.length === 1) caLabel = filterState.category[0];
+  else if (filterState.category.length > 1) caLabel = '已选'+filterState.category.length+'项';
+  row2 += '<div class="fb-search-wrap" data-filter="category">';
+  row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+caLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  row2 += '<div class="fb-search-panel" id="fb-panel-category" style="display:none;">'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索品类..." oninput="renderFbOptions(\'category\')"></div>'+
+    '<div class="fb-sp-options" id="fb-options-category"></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-clear" onclick="clearFbMulti(\'category\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'category\')">确定</button></div>'+
+    '</div>';
+  row2 += '</div>';
+
+  // 品牌
+  var brLabel = '全部品牌';
+  if (filterState.brand.length === 1) brLabel = filterState.brand[0];
+  else if (filterState.brand.length > 1) brLabel = '已选'+filterState.brand.length+'项';
+  row2 += '<div class="fb-search-wrap" data-filter="brand">';
+  row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+brLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  row2 += '<div class="fb-search-panel" id="fb-panel-brand" style="display:none;">'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索品牌..." oninput="renderFbOptions(\'brand\')"></div>'+
+    '<div class="fb-sp-options" id="fb-options-brand"></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-clear" onclick="clearFbMulti(\'brand\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'brand\')">确定</button></div>'+
+    '</div>';
+  row2 += '</div>';
+
+  // PM（单选）
+  var pmLabel = filterState.pm === 'all' ? '全部PM' : filterState.pm;
+  row2 += '<div class="fb-search-wrap" data-filter="pm">';
+  row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+pmLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  row2 += '<div class="fb-search-panel" id="fb-panel-pm" style="display:none;">'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索PM..." oninput="renderFbOptions(\'pm\')"></div>'+
+    '<div class="fb-sp-options" id="fb-options-pm"></div>'+
+    '</div>';
+  row2 += '</div>';
+
+  // 客服管理（单选）
+  var drLabel = filterState.director === 'all' ? '全部管理' : filterState.director;
+  row2 += '<div class="fb-search-wrap" data-filter="director">';
+  row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+drLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  row2 += '<div class="fb-search-panel" id="fb-panel-director" style="display:none;">'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索客服管理..." oninput="renderFbOptions(\'director\')"></div>'+
+    '<div class="fb-sp-options" id="fb-options-director"></div>'+
+    '</div>';
+  row2 += '</div>';
+
+  // 高级筛选按钮
+  row2 += '<button class="fb-adv-btn" onclick="alert(\'高级筛选 - 待开发\')">高级筛选</button>';
+  row2 += '</div>';
+
+  return '<div class="filter-bar-v4">' + tagsHtml + row1 + customTimeHtml + row2 + '</div>';
 }
 
-function toggleMoreFilters() {
-  filterState.moreExpanded = !filterState.moreExpanded;
+// ----- 筛选栏 v4 辅助函数 -----
+function onFilterTimeChange(val) {
+  filterState.timeMode = val;
+  if (val !== 'custom') {
+    filterState.timeStart = '';
+    filterState.timeEnd = '';
+  }
   renderModule(currentModule);
 }
+
+function applyTimeFilter() {
+  if (filterState.timeStart && filterState.timeEnd) {
+    renderModule(currentModule);
+  }
+}
+
+function toggleMultiFilter(key, val) {
+  var arr = filterState[key];
+  var idx = arr.indexOf(val);
+  if (idx >= 0) arr.splice(idx, 1);
+  else arr.push(val);
+  renderModule(currentModule);
+}
+
+var activeFbPanel = null;
+
+function toggleFbSearch(triggerEl) {
+  var wrap = triggerEl.closest('.fb-search-wrap');
+  var key = wrap.getAttribute('data-filter');
+  var panel = document.getElementById('fb-panel-' + key);
+  if (!panel) return;
+  var isOpen = panel.style.display === 'block';
+  if (activeFbPanel && activeFbPanel !== panel) {
+    activeFbPanel.style.display = 'none';
+  }
+  if (isOpen) {
+    panel.style.display = 'none';
+    activeFbPanel = null;
+  } else {
+    panel.style.display = 'block';
+    activeFbPanel = panel;
+    renderFbOptions(key);
+    setTimeout(function() {
+      var input = panel.querySelector('.fb-search-input');
+      if (input) input.focus();
+    }, 50);
+  }
+}
+
+function renderFbOptions(key) {
+  var panel = document.getElementById('fb-panel-' + key);
+  if (!panel) return;
+  var input = panel.querySelector('.fb-search-input');
+  var keyword = input ? input.value.toLowerCase() : '';
+  var values = [];
+  if (key === 'platforms') {
+    values = [...new Set(PROJECTS.flatMap(function(p) { return (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean); }))].sort();
+  } else if (key === 'category') {
+    values = [...new Set(PROJECTS.map(function(p){return p.category}))].sort();
+  } else if (key === 'brand') {
+    values = [...new Set(PROJECTS.map(function(p){return p.brand}))].sort();
+  } else if (key === 'pm') {
+    values = [...new Set(PROJECTS.map(function(p){return p.pm}))].sort();
+  } else if (key === 'director') {
+    values = [...new Set(PROJECTS.map(function(p){return p.director}))].sort();
+  }
+  var filtered = keyword ? values.filter(function(v){ return v.toLowerCase().indexOf(keyword) !== -1; }) : values;
+  var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
+  var selected = filterState[key];
+  var html = filtered.map(function(v) {
+    var isSelected = isMulti ? (selected.indexOf(v) !== -1) : (selected === v);
+    return '<div class="fb-sp-option' + (isSelected ? ' selected' : '') + '" data-value="' + v.replace(/"/g, '&quot;') + '" onclick="onFbOptionClick(this,\'' + key + '\')">' +
+      '<span class="fb-sp-check">' + (isSelected ? '✓' : '') + '</span>' +
+      '<span>' + v + '</span>' +
+    '</div>';
+  }).join('');
+  panel.querySelector('.fb-sp-options').innerHTML = html;
+}
+
+function onFbOptionClick(el, key) {
+  var val = el.getAttribute('data-value');
+  var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
+  if (isMulti) {
+    var idx = filterState[key].indexOf(val);
+    if (idx >= 0) {
+      filterState[key].splice(idx, 1);
+      el.classList.remove('selected');
+      el.querySelector('.fb-sp-check').textContent = '';
+    } else {
+      filterState[key].push(val);
+      el.classList.add('selected');
+      el.querySelector('.fb-sp-check').textContent = '✓';
+    }
+  } else {
+    filterState[key] = val;
+    if (activeFbPanel) activeFbPanel.style.display = 'none';
+    activeFbPanel = null;
+    renderModule(currentModule);
+  }
+}
+
+function applyFbMulti(key) {
+  if (activeFbPanel) {
+    activeFbPanel.style.display = 'none';
+    activeFbPanel = null;
+  }
+  renderModule(currentModule);
+}
+
+function clearFbMulti(key) {
+  filterState[key] = [];
+  if (activeFbPanel) {
+    activeFbPanel.style.display = 'none';
+    activeFbPanel = null;
+  }
+  renderModule(currentModule);
+}
+
+// 点击页面空白处关闭面板
+document.addEventListener('click', function(e) {
+  if (activeFbPanel && !activeFbPanel.contains(e.target) && !e.target.closest('.fb-search-trigger')) {
+    activeFbPanel.style.display = 'none';
+    activeFbPanel = null;
+    renderModule(currentModule);
+  }
+});
 
 // ----- 项目名称搜索多选组件 -----
 function toggleProjectDropdown(e) {
@@ -1625,10 +1787,10 @@ function resetFilters() {
   filterState.time = "all";
   filterState.timeStart = "";
   filterState.timeEnd = "";
-  filterState.brand = "all";
-  filterState.category = "all";
+  filterState.brand = [];
+  filterState.category = [];
+  filterState.platforms = [];
   filterState.status = "all";
-  filterState.moreExpanded = false;
   renderModule(currentModule);
 }
 
@@ -1657,11 +1819,17 @@ function getFilteredProjects(){
   if (filterState.health !== "all") {
     list = list.filter(p => p.health === filterState.health);
   }
-  if (filterState.brand !== "all") {
-    list = list.filter(p => p.brand === filterState.brand);
+  if (filterState.brand.length > 0) {
+    list = list.filter(p => filterState.brand.indexOf(p.brand) !== -1);
   }
-  if (filterState.category !== "all") {
-    list = list.filter(p => p.category === filterState.category);
+  if (filterState.category.length > 0) {
+    list = list.filter(p => filterState.category.indexOf(p.category) !== -1);
+  }
+  if (filterState.platforms.length > 0) {
+    list = list.filter(p => {
+      var pfs = (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean);
+      return filterState.platforms.some(function(fp){ return pfs.indexOf(fp) !== -1; });
+    });
   }
   if (filterState.status !== "all") {
     list = list.filter(p => p.status === filterState.status);
