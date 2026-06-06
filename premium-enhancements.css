@@ -259,8 +259,7 @@
 
 /* 导航项入场动画 */
 .nav-section {
-  animation: sectionFadeIn 0.4s var(--ease-premium) forwards !important;
-  opacity: 0 !important;
+  animation: sectionFadeIn 0.5s var(--ease-premium) forwards !important;
 }
 
 .nav-section:nth-child(1) { animation-delay: 0.05s !important; }
@@ -281,8 +280,7 @@
 
 /* 导航项依次入场 */
 .nav-item {
-  animation: navItemSlideIn 0.3s var(--ease-premium) forwards !important;
-  opacity: 0 !important;
+  animation: navItemSlideIn 0.4s var(--ease-premium) forwards !important;
 }
 
 .nav-section:nth-child(1) .nav-item:nth-child(2) { animation-delay: 0.08s !important; }
