@@ -1432,3 +1432,10 @@ html {
   opacity: 1 !important;
   background: rgba(59, 130, 246, 0.2) !important;
 }
+
+/* PM/总监下拉加宽 - 暗黑模式 */
+[data-theme="dark"] .filter-select-wide {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+  color: var(--c-text) !important;
+}

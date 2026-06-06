@@ -1,33 +1,38 @@
-// filterBarNew.js - 筛选栏覆盖脚本（可搜索下拉版本）
-// 此文件在 app.js 之后引入，会覆盖 app.js 中的 renderFilterBar 等函数
+// filterBarNew.js - 筛选栏覆盖脚本（可搜索多选下拉版本）
+// 此文件在 app.js 之后引入，覆盖 renderFilterBar 等函数
+// 设计规范：
+//   时间/职场/类型/总监/PM → 普通下拉
+//   品牌/品类 → 可搜索多选下拉
+//   状态/健康度 → 多选下拉
 
 /* ============================================
-   可搜索下拉组件（品牌/品类筛选）
+   可搜索多选下拉组件
    ============================================ */
 
 // 切换下拉面板显示/隐藏
 function toggleSearchDropdown(id) {
-  const panel = document.getElementById(id + '-panel');
-  const trigger = document.getElementById(id + '-trigger');
+  var panel = document.getElementById(id + '-panel');
+  var trigger = document.getElementById(id + '-trigger');
   if (!panel) return;
-  const isShow = panel.classList.contains('show');
-  closeAllSearchDropdowns(exceptId);
+  var isShow = panel.classList.contains('show');
+  // 关闭其他下拉，排除当前这个
+  closeAllSearchDropdowns(id);
   if (!isShow) {
     panel.classList.add('show');
-    trigger.classList.add('active');
-    const searchInput = document.getElementById(id + '-search');
+    if (trigger) trigger.classList.add('active');
+    var searchInput = document.getElementById(id + '-search');
     if (searchInput) {
       setTimeout(function() { searchInput.focus(); }, 50);
     }
   } else {
     panel.classList.remove('show');
-    trigger.classList.remove('active');
+    if (trigger) trigger.classList.remove('active');
   }
 }
 
 // 关闭所有下拉（可选排除某个 id）
 function closeAllSearchDropdowns(exceptId) {
-  const panels = document.querySelectorAll('.search-dropdown-panel.show');
+  var panels = document.querySelectorAll('.search-dropdown-panel.show');
   panels.forEach(function(p) {
     if (exceptId && p.id === exceptId + '-panel') return;
     p.classList.remove('show');
@@ -37,78 +42,20 @@ function closeAllSearchDropdowns(exceptId) {
   });
 }
 
-// 搜索过滤下拉选项
+// 搜索过滤下拉选项（品牌/品类）
 function filterSearchDropdownOptions(id, keyword) {
   var panel = document.getElementById(id + '-panel');
   if (!panel) return;
   var options = panel.querySelectorAll('.search-dropdown-option');
-  var lowerKeyword = keyword.toLowerCase();
+  var lowerKeyword = (keyword || '').toLowerCase();
   options.forEach(function(opt) {
-    var text = opt.textContent.toLowerCase();
+    var text = (opt.dataset.label || opt.textContent).toLowerCase();
     if (text.indexOf(lowerKeyword) !== -1 || opt.dataset.value === 'all') {
       opt.style.display = '';
     } else {
       opt.style.display = 'none';
     }
   });
-}
-
-// 选中下拉选项（从 data-*- 属性读取参数）
-function selectSearchDropdownOption(el) {
-  var id = el.dataset.id;
-  var key = el.dataset.key;
-  var value = el.dataset.value;
-  var label = el.dataset.label || el.textContent;
-  if (!id || !key || value === undefined) return;
-  setFilter(key, value);
-  // 更新触发按钮显示
-  var valueEl = document.getElementById(id + '-value');
-  var trigger = document.getElementById(id + '-trigger');
-  if (valueEl && trigger) {
-    if (value === 'all') {
-      valueEl.textContent = label;
-      trigger.classList.remove('has-value');
-    } else {
-      // 截断过长文本
-      var displayText = label.length > 8 ? label.substring(0, 7) + '...' : label;
-      valueEl.textContent = displayText;
-      trigger.classList.add('has-value');
-    }
-  }
-  // 关闭下拉
-  var panel = document.getElementById(id + '-panel');
-  if (panel) panel.classList.remove('show');
-  if (trigger) trigger.classList.remove('active');
-  // 重新渲染模块
-  renderModule(currentModule);
-}
-
-// 多选下拉：切换选中状态
-function selectMultiSelectOption(el) {
-  var id = el.dataset.id;
-  var key = el.dataset.key;
-  var value = el.dataset.value;
-  var label = el.dataset.label || el.textContent;
-  if (!id || !key || value === undefined) return;
-  setFilter(key, value);
-  // 更新触发按钮显示
-  var valueEl = document.getElementById(id + '-value');
-  var trigger = document.getElementById(id + '-trigger');
-  if (valueEl && trigger) {
-    if (value === 'all') {
-      valueEl.textContent = label;
-      trigger.classList.remove('has-value');
-    } else {
-      var displayText = label.length > 8 ? label.substring(0, 7) + '...' : label;
-      valueEl.textContent = displayText;
-      trigger.classList.add('has-value');
-    }
-  }
-  // 关闭下拉
-  var panel = document.getElementById(id + '-panel');
-  if (panel) panel.classList.remove('show');
-  if (trigger) trigger.classList.remove('active');
-  renderModule(currentModule);
 }
 
 // 点击页面其他区域关闭所有下拉
@@ -119,15 +66,16 @@ document.addEventListener('click', function(e) {
 });
 
 /* ============================================
-   渲染筛选栏（新版本：可搜索下拉）
+   渲染筛选栏
    ============================================ */
 function renderFilterBar() {
-  var workplaces = [].concat(PROJECTS.map(function(p) { return p.workplace; })).filter(function(v, i, a) { return a.indexOf(v) === i; }).sort();
-  var brands     = [].concat(PROJECTS.map(function(p) { return p.brand; })).filter(function(v, i, a) { return a.indexOf(v) === i; }).sort();
-  var categories  = [].concat(PROJECTS.map(function(p) { return p.category; })).filter(function(v, i, a) { return a.indexOf(v) === i; }).sort();
-  var statuses    = [].concat(PROJECTS.map(function(p) { return p.status; })).filter(function(v, i, a) { return a.indexOf(v) === i; }).sort();
-  var directors   = [].concat(PROJECTS.map(function(p) { return p.director; })).filter(function(v, i, a) { return a.indexOf(v) === i; }).sort();
-  var pms         = [].concat(PROJECTS.map(function(p) { return p.pm; })).filter(function(v, i, a) { return a.indexOf(v) === i; }).sort();
+  // 去重并排序
+  var workplaces  = uniqueSort(PROJECTS.map(function(p) { return p.workplace; }));
+  var brands     = uniqueSort(PROJECTS.map(function(p) { return p.brand; }));
+  var categories = uniqueSort(PROJECTS.map(function(p) { return p.category; }));
+  var statuses   = uniqueSort(PROJECTS.map(function(p) { return p.status; }));
+  var directors  = uniqueSort(PROJECTS.map(function(p) { return p.director; }));
+  var pms        = uniqueSort(PROJECTS.map(function(p) { return p.pm; }));
 
   // 已选标签
   var activeTags = [];
@@ -135,56 +83,77 @@ function renderFilterBar() {
     var lbl = {month:'本月',lastMonth:'上月',quarter:'本季',year:'本年',custom:'自定义'}[filterState.timeMode] || filterState.timeMode;
     activeTags.push({key:'timeMode', label:lbl});
   }
-  if (filterState.workplace !== 'all')  activeTags.push({key:'workplace', label:filterState.workplace});
-  if (filterState.projectType !== 'all') activeTags.push({key:'projectType', label:filterState.projectType.replace('项目','')});
-  if (filterState.brand !== 'all')      activeTags.push({key:'brand', label:filterState.brand});
-  if (filterState.category !== 'all')   activeTags.push({key:'category', label:filterState.category});
-  if (filterState.status !== 'all')     activeTags.push({key:'status', label:filterState.status});
-  if (filterState.health !== 'all')     activeTags.push({key:'health', label:filterState.health});
-  if (filterState.director !== 'all')    activeTags.push({key:'director', label:filterState.director});
-  if (filterState.pm !== 'all')         activeTags.push({key:'pm', label:filterState.pm});
+  if (filterState.workplace !== 'all')    activeTags.push({key:'workplace',   label:filterState.workplace});
+  if (filterState.projectType !== 'all')   activeTags.push({key:'projectType', label:filterState.projectType.replace('项目','')});
+  // 品牌可能是数组（多选）
+  if (filterState.brand !== 'all') {
+    if (typeof filterState.brand === 'string') {
+      activeTags.push({key:'brand', label:filterState.brand});
+    } else if (Array.isArray(filterState.brand)) {
+      filterState.brand.forEach(function(b) { activeTags.push({key:'brand', label:b}); });
+    }
+  }
+  // 品类可能是数组（多选）
+  if (filterState.category !== 'all') {
+    if (typeof filterState.category === 'string') {
+      activeTags.push({key:'category', label:filterState.category});
+    } else if (Array.isArray(filterState.category)) {
+      filterState.category.forEach(function(c) { activeTags.push({key:'category', label:c}); });
+    }
+  }
+  if (filterState.status !== 'all')       activeTags.push({key:'status',  label:filterState.status});
+  if (filterState.health !== 'all')       activeTags.push({key:'health',  label:filterState.health});
+  if (filterState.director !== 'all')     activeTags.push({key:'director',label:filterState.director});
+  if (filterState.pm !== 'all')           activeTags.push({key:'pm',      label:filterState.pm});
 
   var showCustomTime = filterState.timeMode === 'custom';
 
-  // 品牌下拉选项 HTML（使用 data-* 属性，避免引号转义问题）
+  // 品牌下拉选项 HTML
   var brandOptionsHtml = '';
-  brandOptionsHtml += '<div class="search-dropdown-option' + (filterState.brand==='all'?' selected':'') + '" data-id="filter-brand" data-key="brand" data-value="all" data-label="全部品牌" onclick="selectSearchDropdownOption(this)">全部品牌</div>';
+  brandOptionsHtml += '<div class="search-dropdown-option' + (filterState.brand==='all'?' selected':'') + '" data-id="filter-brand" data-key="brand" data-value="all" data-label="全部品牌" onclick="onSearchMultiSelect(this)">全部品牌</div>';
   brands.forEach(function(b) {
-    var safeValue = b.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    var selected = filterState.brand === b ? ' selected' : '';
-    brandOptionsHtml += '<div class="search-dropdown-option' + selected + '" data-id="filter-brand" data-key="brand" data-value="' + safeValue + '" data-label="' + safeValue + '" onclick="selectSearchDropdownOption(this)">' + b + '</div>';
+    var safe = escapeHtml(b);
+    var checked = (Array.isArray(filterState.brand) && filterState.brand.indexOf(b) !== -1) ? ' selected' : (filterState.brand === b ? ' selected' : '');
+    brandOptionsHtml += '<div class="search-dropdown-option' + checked + '" data-id="filter-brand" data-key="brand" data-value="' + safe + '" data-label="' + safe + '" onclick="onSearchMultiSelect(this)">' + b + '</div>';
   });
 
   // 品类下拉选项 HTML
   var categoryOptionsHtml = '';
-  categoryOptionsHtml += '<div class="search-dropdown-option' + (filterState.category==='all'?' selected':'') + '" data-id="filter-category" data-key="category" data-value="all" data-label="全部分类" onclick="selectSearchDropdownOption(this)">全部分类</div>';
+  categoryOptionsHtml += '<div class="search-dropdown-option' + (filterState.category==='all'?' selected':'') + '" data-id="filter-category" data-key="category" data-value="all" data-label="全部分类" onclick="onSearchMultiSelect(this)">全部分类</div>';
   categories.forEach(function(c) {
-    var safeValue = c.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    var selected = filterState.category === c ? ' selected' : '';
-    categoryOptionsHtml += '<div class="search-dropdown-option' + selected + '" data-id="filter-category" data-key="category" data-value="' + safeValue + '" data-label="' + safeValue + '" onclick="selectSearchDropdownOption(this)">' + c + '</div>';
+    var safe = escapeHtml(c);
+    var checked = (Array.isArray(filterState.category) && filterState.category.indexOf(c) !== -1) ? ' selected' : (filterState.category === c ? ' selected' : '');
+    categoryOptionsHtml += '<div class="search-dropdown-option' + checked + '" data-id="filter-category" data-key="category" data-value="' + safe + '" data-label="' + safe + '" onclick="onSearchMultiSelect(this)">' + c + '</div>';
   });
 
-  // 状态下拉选项
+  // 状态下拉选项（多选）
   var statusOptionsHtml = '';
-  statusOptionsHtml += '<div class="search-dropdown-option' + (filterState.status==='all'?' selected':'') + '" data-id="filter-status" data-key="status" data-value="all" data-label="全部状态" onclick="selectMultiSelectOption(this)">全部状态</div>';
+  statusOptionsHtml += '<div class="search-dropdown-option' + (filterState.status==='all'?' selected':'') + '" data-id="filter-status" data-key="status" data-value="all" data-label="全部状态" onclick="onMultiSelectOption(this)">全部状态</div>';
   statuses.forEach(function(s) {
-    var safeValue = s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    var selected = filterState.status === s ? ' selected' : '';
-    statusOptionsHtml += '<div class="search-dropdown-option' + selected + '" data-id="filter-status" data-key="status" data-value="' + safeValue + '" data-label="' + safeValue + '" onclick="selectMultiSelectOption(this)">' + s + '</div>';
+    var safe = escapeHtml(s);
+    var checked = (Array.isArray(filterState.status) && filterState.status.indexOf(s) !== -1) ? ' selected' : (filterState.status === s ? ' selected' : '');
+    statusOptionsHtml += '<div class="search-dropdown-option' + checked + '" data-id="filter-status" data-key="status" data-value="' + safe + '" data-label="' + safe + '" onclick="onMultiSelectOption(this)">' + s + '</div>';
   });
 
-  // 健康度下拉选项
+  // 健康度下拉选项（多选）
+  var healthItems = [
+    {value:'🟢', label:'🟢 健康'},
+    {value:'🟡', label:'🟡 预警'},
+    {value:'🔴', label:'🔴 风险'}
+  ];
   var healthOptionsHtml = '';
-  healthOptionsHtml += '<div class="search-dropdown-option' + (filterState.health==='all'?' selected':'') + '" data-id="filter-health" data-key="health" data-value="all" data-label="全部健康度" onclick="selectMultiSelectOption(this)">全部健康度</div>';
-  healthOptionsHtml += '<div class="search-dropdown-option' + (filterState.health==='🟢'?' selected':'') + '" data-id="filter-health" data-key="health" data-value="🟢" data-label="🟢 健康" onclick="selectMultiSelectOption(this)">🟢 健康</div>';
-  healthOptionsHtml += '<div class="search-dropdown-option' + (filterState.health==='🟡'?' selected':'') + '" data-id="filter-health" data-key="health" data-value="🟡" data-label="🟡 预警" onclick="selectMultiSelectOption(this)">🟡 预警</div>';
-  healthOptionsHtml += '<div class="search-dropdown-option' + (filterState.health==='🔴'?' selected':'') + '" data-id="filter-health" data-key="health" data-value="🔴" data-label="🔴 风险" onclick="selectMultiSelectOption(this)">🔴 风险</div>';
+  healthOptionsHtml += '<div class="search-dropdown-option' + (filterState.health==='all'?' selected':'') + '" data-id="filter-health" data-key="health" data-value="all" data-label="全部健康度" onclick="onMultiSelectOption(this)">全部健康度</div>';
+  healthItems.forEach(function(h) {
+    var safe = escapeHtml(h.value);
+    var checked = (Array.isArray(filterState.health) && filterState.health.indexOf(h.value) !== -1) ? ' selected' : (filterState.health === h.value ? ' selected' : '');
+    healthOptionsHtml += '<div class="search-dropdown-option' + checked + '" data-id="filter-health" data-key="health" data-value="' + safe + '" data-label="' + escapeHtml(h.label) + '" onclick="onMultiSelectOption(this)">' + h.label + '</div>';
+  });
 
-  // 品牌触发按钮显示文本
-  var brandDisplay = filterState.brand !== 'all' ? (filterState.brand.length > 8 ? filterState.brand.substring(0, 7) + '...' : filterState.brand) : '全部品牌';
-  var categoryDisplay = filterState.category !== 'all' ? (filterState.category.length > 8 ? filterState.category.substring(0, 7) + '...' : filterState.category) : '全部分类';
-  var statusDisplay = filterState.status !== 'all' ? filterState.status : '全部状态';
-  var healthDisplay = filterState.health !== 'all' ? filterState.health : '全部健康度';
+  // 触发按钮显示文本
+  var brandDisplay    = getFilterDisplayText('brand', '全部品牌');
+  var categoryDisplay = getFilterDisplayText('category', '全部分类');
+  var statusDisplay   = getFilterDisplayText('status', '全部状态');
+  var healthDisplay   = getFilterDisplayText('health', '全部健康度');
 
   var html = '<div class="filter-bar-wrap">';
 
@@ -192,7 +161,7 @@ function renderFilterBar() {
   if (activeTags.length > 0) {
     html += '<div class="filter-tags-row">';
     activeTags.forEach(function(tag) {
-      html += '<span class="filter-tag">' + tag.label + '<i onclick="setFilter(\'' + tag.key + '\',\'all\')" class="filter-tag-close">&times;</i></span>';
+      html += '<span class="filter-tag">' + escapeHtml(tag.label) + '<i onclick="setFilter(\'' + tag.key + '\',\'all\')" class="filter-tag-close">&times;</i></span>';
     });
     html += '<button onclick="resetFilters()" class="filter-clear-btn">清空筛选</button>';
     html += '</div>';
@@ -225,93 +194,137 @@ function renderFilterBar() {
 
   // 职场
   html += '<div class="filter-item"><label class="filter-label">职场</label>';
-  html += '<select onchange="setFilter(\'workplace\',this.value);renderModule(currentModule);" class="filter-select">';
+  html += '<select onchange="onSimpleSelectChange(\'workplace\',this.value)" class="filter-select">';
   html += '<option value="all">全部职场</option>';
   workplaces.forEach(function(w) {
-    html += '<option value="' + w + '"' + (filterState.workplace===w?' selected':'') + '>' + w + '</option>';
+    html += '<option value="' + escapeHtml(w) + '"' + (filterState.workplace===w?' selected':'') + '>' + w + '</option>';
   });
   html += '</select></div>';
 
   html += '<div class="filter-divider"></div>';
 
-  // 品牌（可搜索下拉）
-  html += '<div class="filter-item search-dropdown" id="filter-brand">';
-  html += '<label class="filter-label">品牌</label>';
-  html += '<div class="search-dropdown-trigger' + (filterState.brand!=='all'?' has-value':'') + '" id="filter-brand-trigger" onclick="toggleSearchDropdown(\'filter-brand\')">';
-  html += '<span id="filter-brand-value">' + brandDisplay + '</span>';
-  html += '</div>';
-  html += '<div class="search-dropdown-panel" id="filter-brand-panel">';
-  html += '<div class="search-dropdown-search">';
-  html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>';
-  html += '<input type="text" id="filter-brand-search" placeholder="搜索品牌..." oninput="filterSearchDropdownOptions(\'filter-brand\', this.value)" onclick="event.stopPropagation()">';
-  html += '</div>';
-  html += '<div class="search-dropdown-options">' + brandOptionsHtml + '</div>';
-  html += '</div></div>';
+  // 类型（TP/DP/BPO）
+  html += '<div class="filter-item"><label class="filter-label">类型</label>';
+  html += '<select onchange="onSimpleSelectChange(\'projectType\',this.value)" class="filter-select">';
+  html += '<option value="all">全部类型</option>';
+  html += '<option value="TP项目"' + (filterState.projectType==='TP项目'?' selected':'') + '>TP</option>';
+  html += '<option value="DP项目"' + (filterState.projectType==='DP项目'?' selected':'') + '>DP</option>';
+  html += '<option value="BPO项目"' + (filterState.projectType==='BPO项目'?' selected':'') + '>BPO</option>';
+  html += '</select></div>';
 
   html += '<div class="filter-divider"></div>';
 
-  // 品类（可搜索下拉）
-  html += '<div class="filter-item search-dropdown" id="filter-category">';
-  html += '<label class="filter-label">品类</label>';
-  html += '<div class="search-dropdown-trigger' + (filterState.category!=='all'?' has-value':'') + '" id="filter-category-trigger" onclick="toggleSearchDropdown(\'filter-category\')">';
-  html += '<span id="filter-category-value">' + categoryDisplay + '</span>';
-  html += '</div>';
-  html += '<div class="search-dropdown-panel" id="filter-category-panel">';
-  html += '<div class="search-dropdown-search">';
-  html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>';
-  html += '<input type="text" id="filter-category-search" placeholder="搜索品类..." oninput="filterSearchDropdownOptions(\'filter-category\', this.value)" onclick="event.stopPropagation()">';
-  html += '</div>';
-  html += '<div class="search-dropdown-options">' + categoryOptionsHtml + '</div>';
-  html += '</div></div>';
+  // 品牌（可搜索多选下拉）
+  html += buildSearchDropdown('filter-brand', '品牌', brandDisplay, brandOptionsHtml);
 
   html += '<div class="filter-divider"></div>';
 
-  // 状态（下拉）
-  html += '<div class="filter-item search-dropdown" id="filter-status">';
-  html += '<label class="filter-label">状态</label>';
-  html += '<div class="search-dropdown-trigger' + (filterState.status!=='all'?' has-value':'') + '" id="filter-status-trigger" onclick="toggleSearchDropdown(\'filter-status\')">';
-  html += '<span id="filter-status-value">' + statusDisplay + '</span>';
-  html += '</div>';
-  html += '<div class="search-dropdown-panel" id="filter-status-panel">';
-  html += '<div class="search-dropdown-options">' + statusOptionsHtml + '</div>';
-  html += '</div></div>';
+  // 品类（可搜索多选下拉）
+  html += buildSearchDropdown('filter-category', '品类', categoryDisplay, categoryOptionsHtml);
 
   html += '<div class="filter-divider"></div>';
 
-  // 健康度（下拉）
-  html += '<div class="filter-item search-dropdown" id="filter-health">';
-  html += '<label class="filter-label">健康度</label>';
-  html += '<div class="search-dropdown-trigger' + (filterState.health!=='all'?' has-value':'') + '" id="filter-health-trigger" onclick="toggleSearchDropdown(\'filter-health\')">';
-  html += '<span id="filter-health-value">' + healthDisplay + '</span>';
-  html += '</div>';
-  html += '<div class="search-dropdown-panel" id="filter-health-panel">';
-  html += '<div class="search-dropdown-options">' + healthOptionsHtml + '</div>';
-  html += '</div></div>';
+  // 状态（多选下拉）
+  html += buildMultiSelectDropdown('filter-status', '状态', statusDisplay, statusOptionsHtml);
+
+  html += '<div class="filter-divider"></div>';
+
+  // 健康度（多选下拉）
+  html += buildMultiSelectDropdown('filter-health', '健康度', healthDisplay, healthOptionsHtml);
 
   html += '<div class="filter-divider"></div>';
 
   // 总监
   html += '<div class="filter-item"><label class="filter-label">总监</label>';
-  html += '<select onchange="setFilter(\'director\',this.value);renderModule(currentModule);" class="filter-select">';
+  html += '<select onchange="onSimpleSelectChange(\'director\',this.value)" class="filter-select">';
   html += '<option value="all">全部总监</option>';
   directors.forEach(function(d) {
-    html += '<option value="' + d + '"' + (filterState.director===d?' selected':'') + '>' + d + '</option>';
+    html += '<option value="' + escapeHtml(d) + '"' + (filterState.director===d?' selected':'') + '>' + d + '</option>';
   });
   html += '</select></div>';
 
   html += '<div class="filter-divider"></div>';
 
-  // PM
+  // PM（加宽，防止看不全）
   html += '<div class="filter-item"><label class="filter-label">PM</label>';
-  html += '<select onchange="setFilter(\'pm\',this.value);renderModule(currentModule);" class="filter-select">';
+  html += '<select onchange="onSimpleSelectChange(\'pm\',this.value)" class="filter-select filter-select-wide">';
   html += '<option value="all">全部PM</option>';
   pms.forEach(function(p) {
-    html += '<option value="' + p + '"' + (filterState.pm===p?' selected':'') + '>' + p + '</option>';
+    html += '<option value="' + escapeHtml(p) + '"' + (filterState.pm===p?' selected':'') + '>' + p + '</option>';
   });
   html += '</select></div>';
 
   html += '</div></div>';
   return html;
+}
+
+/* ===== 工具函数 ===== */
+
+function uniqueSort(arr) {
+  var map = {};
+  for (var i = 0; i < arr.length; i++) { map[arr[i]] = true; }
+  var keys = [];
+  for (var k in map) { keys.push(k); }
+  keys.sort();
+  return keys;
+}
+
+function escapeHtml(str) {
+  return (str||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// 获取筛选显示文本（支持数组多选）
+function getFilterDisplayText(key, defaultText) {
+  var val = filterState[key];
+  if (val === 'all') return defaultText;
+  if (Array.isArray(val)) {
+    if (val.length === 0) return defaultText;
+    if (val.length === 1) return val[0].length > 8 ? val[0].substring(0, 7) + '...' : val[0];
+    return '已选' + val.length + '项';
+  }
+  return val.length > 8 ? val.substring(0, 7) + '...' : val;
+}
+
+// 构建可搜索多选下拉 HTML
+function buildSearchDropdown(id, label, displayText, optionsHtml) {
+  var hasValue = (filterState[id.replace('filter-','')] !== 'all');
+  var cls = 'search-dropdown-trigger' + (hasValue ? ' has-value' : '');
+  var html = '<div class="filter-item search-dropdown" id="' + id + '">';
+  html += '<label class="filter-label">' + label + '</label>';
+  html += '<div class="' + cls + '" id="' + id + '-trigger" onclick="toggleSearchDropdown(\'' + id + '\')">';
+  html += '<span id="' + id + '-value">' + displayText + '</span>';
+  html += '</div>';
+  html += '<div class="search-dropdown-panel" id="' + id + '-panel">';
+  html += '<div class="search-dropdown-search">';
+  html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>';
+  html += '<input type="text" id="' + id + '-search" placeholder="搜索' + label + '..." oninput="filterSearchDropdownOptions(\'' + id + '\', this.value)" onclick="event.stopPropagation()">';
+  html += '</div>';
+  html += '<div class="search-dropdown-options">' + optionsHtml + '</div>';
+  html += '</div></div>';
+  return html;
+}
+
+// 构建多选下拉 HTML（无搜索框）
+function buildMultiSelectDropdown(id, label, displayText, optionsHtml) {
+  var hasValue = (filterState[id.replace('filter-','')] !== 'all');
+  var cls = 'search-dropdown-trigger' + (hasValue ? ' has-value' : '');
+  var html = '<div class="filter-item search-dropdown" id="' + id + '">';
+  html += '<label class="filter-label">' + label + '</label>';
+  html += '<div class="' + cls + '" id="' + id + '-trigger" onclick="toggleSearchDropdown(\'' + id + '\')">';
+  html += '<span id="' + id + '-value">' + displayText + '</span>';
+  html += '</div>';
+  html += '<div class="search-dropdown-panel" id="' + id + '-panel">';
+  html += '<div class="search-dropdown-options">' + optionsHtml + '</div>';
+  html += '</div></div>';
+  return html;
+}
+
+/* ===== 事件处理 ===== */
+
+// 普通下拉变化（职场/类型/总监/PM）
+function onSimpleSelectChange(key, value) {
+  setFilter(key, value);
+  renderModule(currentModule);
 }
 
 // 时间筛选变化
@@ -332,3 +345,140 @@ function applyTimeFilter() {
     renderModule(currentModule);
   }
 }
+
+// 可搜索下拉：多选切换
+function onSearchMultiSelect(el) {
+  var id = el.dataset.id;
+  var key = el.dataset.key;
+  var value = el.dataset.value;
+  if (!id || !key || value === undefined) return;
+
+  if (value === 'all') {
+    // 选中"全部"：重置为 'all'
+    setFilter(key, 'all');
+  } else {
+    // 切换多选状态
+    var current = filterState[key];
+    var arr = [];
+    if (Array.isArray(current)) {
+      arr = current.slice();
+    } else if (current !== 'all') {
+      arr = [current];
+    }
+    var idx = arr.indexOf(value);
+    if (idx !== -1) {
+      arr.splice(idx, 1);
+    } else {
+      arr.push(value);
+    }
+    // 如果全部取消了，重置为 'all'
+    setFilter(key, arr.length === 0 ? 'all' : arr);
+  }
+
+  // 更新选项选中样式（不关闭下拉）
+  refreshDropdownSelections(id, key);
+  // 更新触发按钮文字
+  refreshDropdownTriggerText(id, key);
+  // 重新渲染模块
+  renderModule(currentModule);
+}
+
+// 普通多选下拉：多选切换（状态/健康度）
+function onMultiSelectOption(el) {
+  var id = el.dataset.id;
+  var key = el.dataset.key;
+  var value = el.dataset.value;
+  if (!id || !key || value === undefined) return;
+
+  if (value === 'all') {
+    setFilter(key, 'all');
+  } else {
+    var current = filterState[key];
+    var arr = [];
+    if (Array.isArray(current)) {
+      arr = current.slice();
+    } else if (current !== 'all') {
+      arr = [current];
+    }
+    var idx = arr.indexOf(value);
+    if (idx !== -1) {
+      arr.splice(idx, 1);
+    } else {
+      arr.push(value);
+    }
+    setFilter(key, arr.length === 0 ? 'all' : arr);
+  }
+
+  refreshDropdownSelections(id, key);
+  refreshDropdownTriggerText(id, key);
+  renderModule(currentModule);
+}
+
+// 刷新下拉选项的选中样式
+function refreshDropdownSelections(id, key) {
+  var panel = document.getElementById(id + '-panel');
+  if (!panel) return;
+  var options = panel.querySelectorAll('.search-dropdown-option');
+  var val = filterState[key];
+  options.forEach(function(opt) {
+    var optVal = opt.dataset.value;
+    if (optVal === 'all') {
+      opt.classList.toggle('selected', val === 'all');
+    } else {
+      var checked = Array.isArray(val) && val.indexOf(optVal) !== -1;
+      opt.classList.toggle('selected', checked);
+    }
+  });
+}
+
+// 刷新触发按钮文字
+function refreshDropdownTriggerText(id, key) {
+  var valueEl = document.getElementById(id + '-value');
+  var trigger = document.getElementById(id + '-trigger');
+  if (!valueEl) return;
+  var defaultTexts = {brand:'全部品牌',category:'全部分类',status:'全部状态',health:'全部健康度'};
+  var txt = getFilterDisplayText(key, defaultTexts[key] || '');
+  valueEl.textContent = txt;
+  if (trigger) {
+    var val = filterState[key];
+    var isActive = (val !== 'all' && !(Array.isArray(val) && val.length === 0));
+    trigger.classList.toggle('has-value', isActive);
+  }
+}
+
+/* ===== 覆盖 applyFilters 以支持多选（数组）===== */
+
+// 在 app.js 的 applyFilters 基础上，增加对数组筛选的支持
+// 由于不能直接修改 app.js 中的函数，我们在过滤时包装一层
+// 方法：在 renderModule 调用前，确保 applyFilters 能处理数组
+// 实际上 applyFilters 在 app.js 中读取 filterState，我们只需确保过滤逻辑兼容数组
+
+// 为了确保兼容，我们直接覆盖 applyFilters（在 app.js 加载后执行）
+(function patchApplyFilters() {
+  if (typeof applyFilters !== 'function') {
+    // 如果还没加载，等待一下再试
+    setTimeout(patchApplyFilters, 200);
+    return;
+  }
+  var originalApplyFilters = applyFilters;
+  window.applyFilters = function(list) {
+    list = originalApplyFilters(list);
+    // 品牌多选
+    if (typeof filterState.brand !== 'string' && Array.isArray(filterState.brand) && filterState.brand.length > 0) {
+      list = list.filter(function(p) { return filterState.brand.indexOf(p.brand) !== -1; });
+    }
+    // 品类多选
+    if (typeof filterState.category !== 'string' && Array.isArray(filterState.category) && filterState.category.length > 0) {
+      list = list.filter(function(p) { return filterState.category.indexOf(p.category) !== -1; });
+    }
+    // 状态多选
+    if (typeof filterState.status !== 'string' && Array.isArray(filterState.status) && filterState.status.length > 0) {
+      list = list.filter(function(p) { return filterState.status.indexOf(p.status) !== -1; });
+    }
+    // 健康度多选
+    if (typeof filterState.health !== 'string' && Array.isArray(filterState.health) && filterState.health.length > 0) {
+      list = list.filter(function(p) { return filterState.health.indexOf(p.health) !== -1; });
+    }
+    return list;
+  };
+})();
