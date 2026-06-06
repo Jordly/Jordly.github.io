@@ -420,7 +420,7 @@
     <div class="nav-links">
       <a href="login.html" class="active">首页</a>
       <a href="#features">功能</a>
-      <a href="#pricing">价格</a>
+      <a href="#pricing">帮助</a>
       <a href="#docs">文档</a>
     </div>
   </nav>
@@ -442,7 +442,7 @@
         <div class="feature-card">
           <div class="feature-icon">🏢</div>
           <div class="feature-title">多职场协同</div>
-          <div class="feature-desc">济南、淄博、杭州、无锡四地团队统一管控</div>
+          <div class="feature-desc">济南/淄博/杭州/无锡团队全域管控</div>
         </div>
         <div class="feature-card">
           <div class="feature-icon">📊</div>
@@ -478,7 +478,7 @@
           <div class="password-wrap">
             <input type="password" id="password" placeholder="密码" required>
             <button type="button" class="password-toggle" onclick="togglePassword()" tabindex="-1">
-              <span id="eye-icon">👁️</span>
+              <span id="eye-icon">🙈</span>
             </button>
           </div>
         </div>
@@ -522,10 +522,10 @@
       const eye = document.getElementById('eye-icon');
       if (input.type === 'password') {
         input.type = 'text';
-        eye.textContent = '🙈';
+        eye.textContent = '👁️';
       } else {
         input.type = 'password';
-        eye.textContent = '👁️';
+        eye.textContent = '🙈';
       }
     }
 

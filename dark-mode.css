@@ -654,3 +654,510 @@ html {
 [data-theme="dark"] .toast-icon {
   opacity: 0.9 !important;
 }
+
+/* ===== 职场标签暗黑模式（确保文字清晰可见）===== */
+[data-theme="dark"] .wp-jinan {
+  background: rgba(59, 130, 246, 0.2) !important;
+  color: #93C5FD !important;
+}
+
+[data-theme="dark"] .wp-zibo {
+  background: rgba(236, 72, 153, 0.2) !important;
+  color: #F9A8D4 !important;
+}
+
+[data-theme="dark"] .wp-hangzhou {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #6EE7B7 !important;
+}
+
+[data-theme="dark"] .wp-wuxi {
+  background: rgba(245, 158, 11, 0.2) !important;
+  color: #FCD34D !important;
+}
+
+/* ===== 进度条暗黑模式 ===== */
+[data-theme="dark"] .progress-bar {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-theme="dark"] .progress-fill.green {
+  background: var(--c-green) !important;
+}
+
+[data-theme="dark"] .progress-fill.yellow {
+  background: var(--c-yellow) !important;
+}
+
+[data-theme="dark"] .progress-fill.red {
+  background: var(--c-red) !important;
+}
+
+/* ===== 卡片暗黑模式 ===== */
+[data-theme="dark"] .card {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.2) !important;
+}
+
+[data-theme="dark"] .card-title {
+  color: var(--c-text) !important;
+}
+
+/* ===== 空状态暗黑模式 ===== */
+[data-theme="dark"] .empty-state {
+  color: var(--c-text-3) !important;
+}
+
+/* ===== 标签暗黑模式 ===== */
+[data-theme="dark"] .tag {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--c-text-2) !important;
+}
+
+/* ===== 指标卡片暗黑模式 ===== */
+[data-theme="dark"] .metric-card {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .metric-card.row-service {
+  background: linear-gradient(135deg, #1E293B 0%, #1E3A5F 100%) !important;
+}
+
+[data-theme="dark"] .metric-card.row-finance {
+  background: linear-gradient(135deg, #1E293B 0%, #064E3B 100%) !important;
+}
+
+[data-theme="dark"] .metric-card.row-operation {
+  background: linear-gradient(135deg, #1E293B 0%, #4C1D95 100%) !important;
+}
+
+[data-theme="dark"] .metric-icon-wrap {
+  opacity: 0.9;
+}
+
+[data-theme="dark"] .metric-label {
+  color: var(--c-text-2) !important;
+}
+
+[data-theme="dark"] .metric-value {
+  color: var(--c-text) !important;
+}
+
+/* ===== 统计卡片暗黑模式 ===== */
+[data-theme="dark"] .stat-card {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.2) !important;
+}
+
+[data-theme="dark"] .stat-label {
+  color: var(--c-text-3) !important;
+}
+
+[data-theme="dark"] .stat-value {
+  color: var(--c-text) !important;
+}
+
+/* ===== 健康度评估暗黑模式 ===== */
+[data-theme="dark"] .health-project-card {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.2) !important;
+}
+
+[data-theme="dark"] .health-project-card:hover {
+  border-color: var(--c-primary) !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3) !important;
+}
+
+[data-theme="dark"] .hpc-header {
+  border-bottom-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .hpc-title {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .dim-pill {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: var(--c-text-2) !important;
+}
+
+[data-theme="dark"] .hpc-quick {
+  color: var(--c-text-3) !important;
+  border-top-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .health-detail-panel {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .hdp-header {
+  border-bottom-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .hdp-dim-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .hdp-dim-name {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .hdp-dim-weight {
+  color: var(--c-text-3) !important;
+}
+
+[data-theme="dark"] .hdp-dims {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+[data-theme="dark"] .hdp-table-wrap {
+  background: var(--c-surface) !important;
+}
+
+[data-theme="dark"] .health-detail-table th {
+  background: rgba(0, 0, 0, 0.2) !important;
+  color: var(--c-text-2) !important;
+}
+
+[data-theme="dark"] .health-detail-table td {
+  color: var(--c-text) !important;
+  border-bottom-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .hdp-cost-section {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-top-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .hdp-cost-item {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .hdp-cost-label {
+  color: var(--c-text-3) !important;
+}
+
+[data-theme="dark"] .hdp-cost-value {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .hdp-cost-target {
+  color: var(--c-text-2) !important;
+}
+
+/* ===== 项目满意度评估暗黑模式 ===== */
+[data-theme="dark"] .stats-grid {
+  /* 已在统计卡片中定义 */
+}
+
+[data-theme="dark"] .detail-item {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme="dark"] .detail-label {
+  color: var(--c-text-3) !important;
+}
+
+[data-theme="dark"] .detail-value {
+  color: var(--c-text) !important;
+}
+
+/* 项目方感受区域暗黑模式 */
+[data-theme="dark"] div[style*="项目方感受"] {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* 上级评定区域暗黑模式 */
+[data-theme="dark"] div[style*="上级评定"] {
+  background: rgba(245, 158, 11, 0.1) !important;
+  border-color: rgba(245, 158, 11, 0.2) !important;
+}
+
+/* ===== 登录页暗黑模式（完整支持）===== */
+[data-theme="dark"] body.login-page {
+  background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%) !important;
+}
+
+[data-theme="dark"] .login-split-box {
+  background: var(--c-surface) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5) !important;
+}
+
+[data-theme="dark"] .login-brand {
+  background: linear-gradient(135deg, #1E3A8A 0%, #1E1B4B 60%, #0F172A 100%) !important;
+}
+
+[data-theme="dark"] .brand-logo {
+  color: #fff !important;
+}
+
+[data-theme="dark"] .brand-tagline {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+[data-theme="dark"] .highlight-card {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="dark"] .highlight-card:hover {
+  background: rgba(255, 255, 255, 0.14) !important;
+}
+
+[data-theme="dark"] .highlight-title {
+  color: #fff !important;
+}
+
+[data-theme="dark"] .highlight-desc {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+[data-theme="dark"] .login-form-area {
+  background: var(--c-surface) !important;
+}
+
+[data-theme="dark"] .login-form-box .login-header h2,
+[data-theme="dark"] .login-form-box .login-logo {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .login-form-box .login-hint {
+  color: var(--c-text-3) !important;
+}
+
+[data-theme="dark"] .auth-tabs {
+  border-bottom-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .auth-tab {
+  color: var(--c-text-3) !important;
+}
+
+[data-theme="dark"] .auth-tab.active {
+  color: var(--c-primary) !important;
+  border-bottom-color: var(--c-primary) !important;
+}
+
+[data-theme="dark"] .auth-tab:hover {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .forgot-password-link a {
+  color: var(--c-primary) !important;
+}
+
+/* ===== 个人基础设置暗黑模式 ===== */
+[data-theme="dark"] .profile-card {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .profile-card-title {
+  color: var(--c-text) !important;
+  border-bottom-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .profile-avatar-preview {
+  border-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .profile-toggle-track {
+  background: var(--c-border) !important;
+}
+
+[data-theme="dark"] .profile-safe-item {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme="dark"] .profile-safe-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-theme="dark"] .profile-safe-label {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .profile-login-item {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: transparent !important;
+}
+
+[data-theme="dark"] .profile-login-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ===== 项目全景解析暗黑模式 ===== */
+[data-theme="dark"] .project-detail-header {
+  border-bottom-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .project-detail-title {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .project-detail-meta {
+  color: var(--c-text-2) !important;
+}
+
+[data-theme="dark"] .detail-tabs {
+  border-bottom-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .detail-tab {
+  color: var(--c-text-2) !important;
+}
+
+[data-theme="dark"] .detail-tab.active {
+  color: var(--c-primary) !important;
+  border-bottom-color: var(--c-primary) !important;
+}
+
+[data-theme="dark"] .detail-section h4 {
+  color: var(--c-text-2) !important;
+  border-bottom-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .detail-label {
+  color: var(--c-text-3) !important;
+}
+
+[data-theme="dark"] .detail-value {
+  color: var(--c-text) !important;
+}
+
+/* ===== 交接管理暗黑模式 ===== */
+[data-theme="dark"] .handover-timeline::before {
+  background: var(--c-border) !important;
+}
+
+[data-theme="dark"] .handover-item::before {
+  background: var(--c-primary) !important;
+  border-color: var(--c-surface) !important;
+}
+
+/* ===== 权限遮罩暗黑模式 ===== */
+[data-theme="dark"] .locked-mask::after {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: var(--c-yellow) !important;
+}
+
+/* ===== 搜索框暗黑模式 ===== */
+[data-theme="dark"] .search-box input {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .search-box input:focus {
+  border-color: var(--c-primary) !important;
+}
+
+[data-theme="dark"] .search-box input::placeholder {
+  color: var(--c-text-3) !important;
+}
+
+/* ===== 职场筛选器暗黑模式 ===== */
+[data-theme="dark"] .workplace-filter label {
+  color: var(--c-text-2) !important;
+}
+
+[data-theme="dark"] .workplace-filter select {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .workplace-filter select:focus {
+  border-color: var(--c-primary) !important;
+}
+
+/* ===== 确保图表容器暗黑模式背景 ===== */
+[data-theme="dark"] canvas {
+  /* Canvas图表通常需要手动在JS中设置暗色主题 */
+}
+
+/* ===== 滚动条优化（暗黑模式）===== */
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ===== 表格行斑马纹暗黑模式优化 ===== */
+[data-theme="dark"] .data-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+[data-theme="dark"] .data-table tbody tr:nth-child(even):hover {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.04) 100%) !important;
+}
+
+/* ===== KPI 迷你卡片暗黑模式 ===== */
+[data-theme="dark"] .kpi-mini-card {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+  box-shadow: 0 2px 15px rgba(0,0,0,0.2) !important;
+}
+
+[data-theme="dark"] .kpi-mini-card:hover {
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+}
+
+[data-theme="dark"] .kpi-number {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .kpi-label {
+  color: var(--c-text-3) !important;
+}
+
+/* ===== 确保链接颜色在暗黑模式下清晰 ===== */
+[data-theme="dark"] a {
+  color: var(--c-primary) !important;
+}
+
+[data-theme="dark"] a:hover {
+  color: #60A5FA !important;
+}
+
+/* ===== 代码块/预格式化文本暗黑模式 ===== */
+[data-theme="dark"] pre,
+[data-theme="dark"] code {
+  background: rgba(0, 0, 0, 0.3) !important;
+  color: var(--c-text) !important;
+  border-color: var(--c-border) !important;
+}
+
+/* ===== 分割线暗黑模式 ===== */
+[data-theme="dark"] hr {
+  border-color: var(--c-border) !important;
+  opacity: 0.5;
+}
+
+/* ===== 加载状态暗黑模式 ===== */
+[data-theme="dark"] .loading,
+[data-theme="dark"] .spinner {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-top-color: var(--c-primary) !important;
+}
+
+/* ===== 工具提示暗黑模式 ===== */
+[data-theme="dark"] [role="tooltip"],
+[data-theme="dark"] .tooltip {
+  background: var(--c-surface) !important;
+  color: var(--c-text) !important;
+  border-color: var(--c-border) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+}
