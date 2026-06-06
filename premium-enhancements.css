@@ -2644,3 +2644,374 @@
   font-weight: 500 !important;
 }
 
+
+/* ============================================================
+   筛选栏 v4 样式 —�?两行 + 搜索多选下�?   ============================================================ */
+.filter-bar-v4 {
+  margin-bottom: 16px !important;
+  user-select: none !important;
+}
+
+/* 已选标签行 */
+.filter-tags-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-bottom: 10px !important;
+  min-height: 26px !important;
+}
+
+.filter-tag {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  padding: 2px 8px 2px 10px !important;
+  font-size: 11px !important;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  border-radius: 12px !important;
+  border: 1px solid #bfdbfe !important;
+  line-height: 1.6 !important;
+  white-space: nowrap !important;
+}
+
+.filter-tag i {
+  cursor: pointer !important;
+  font-style: normal !important;
+  font-size: 12px !important;
+  opacity: 0.6 !important;
+  transition: opacity 0.15s !important;
+  margin-left: 2px !important;
+}
+
+.filter-tag i:hover {
+  opacity: 1 !important;
+}
+
+.filter-tags-row .filter-clear-btn {
+  background: none !important;
+  border: none !important;
+  color: #94a3b8 !important;
+  font-size: 11px !important;
+  cursor: pointer !important;
+  padding: 2px 6px !important;
+  border-radius: 8px !important;
+  transition: all 0.15s !important;
+  white-space: nowrap !important;
+}
+
+.filter-tags-row .filter-clear-btn:hover {
+  background: #f1f5f9 !important;
+  color: #ef4444 !important;
+}
+
+/* 筛选行 */
+.filter-row-v4 {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 10px 14px !important;
+  background: #fff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+  margin-bottom: 8px !important;
+  position: relative !important;
+}
+
+.filter-row-v4-second {
+  background: #fafbfc !important;
+  border-style: dashed !important;
+}
+
+.fb-divider {
+  width: 1px !important;
+  height: 20px !important;
+  background: #e2e8f0 !important;
+  margin: 0 4px !important;
+  flex-shrink: 0 !important;
+}
+
+/* 普通下�?*/
+.fb-select {
+  padding: 5px 26px 5px 10px !important;
+  font-size: 12px !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  background: #fff !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 8px center !important;
+  background-size: 10px !important;
+  transition: all 0.2s !important;
+  min-width: 80px !important;
+  max-width: 130px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.fb-select:hover {
+  border-color: #cbd5e1 !important;
+  background-color: #f8fafc !important;
+}
+
+.fb-select:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+  outline: none !important;
+}
+
+/* 日期输入 */
+.fb-date {
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  background: #fff !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+  width: 118px !important;
+}
+
+.fb-date + .fb-date {
+  margin-left: 4px !important;
+}
+
+/* 搜索下拉包裹 */
+.fb-search-wrap {
+  position: relative !important;
+  display: inline-flex !important;
+  flex-shrink: 0 !important;
+}
+
+/* 搜索触发按钮 */
+.fb-search-trigger {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 5px 26px 5px 10px !important;
+  font-size: 12px !important;
+  border-radius: 8px !important;
+  border: 1px solid #e2e8f0 !important;
+  background: #fff !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 8px center !important;
+  background-size: 10px !important;
+  min-width: 80px !important;
+  max-width: 130px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  user-select: none !important;
+}
+
+.fb-search-trigger:hover {
+  border-color: #cbd5e1 !important;
+  background-color: #f8fafc !important;
+}
+
+.fb-search-trigger.active {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+}
+
+.fb-search-trigger.has-value {
+  color: #2563eb !important;
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+.fb-search-trigger svg {
+  flex-shrink: 0 !important;
+  color: #94a3b8 !important;
+}
+
+.fb-search-label {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* 搜索下拉面板 */
+.fb-search-panel {
+  position: fixed !important;
+  width: 200px !important;
+  max-height: 290px !important;
+  background: #fff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.12) !important;
+  z-index: 99999 !important;
+  display: none !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  animation: fbPanelIn 0.2s ease !important;
+}
+
+@keyframes fbPanelIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 搜索输入�?*/
+.fb-sp-search {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 8px 10px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.fb-search-input {
+  flex: 1 !important;
+  border: none !important;
+  outline: none !important;
+  font-size: 12px !important;
+  color: #1e293b !important;
+  background: transparent !important;
+  min-width: 0 !important;
+}
+
+.fb-search-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+.fb-sp-search svg {
+  flex-shrink: 0 !important;
+  color: #94a3b8 !important;
+}
+
+/* 选项列表 */
+.fb-sp-options {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 4px !important;
+  max-height: 240px !important;
+}
+
+.fb-sp-option {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+  border-radius: 6px !important;
+  transition: background 0.15s !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.fb-sp-option:hover {
+  background: #f1f5f9 !important;
+}
+
+.fb-sp-option.selected {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  font-weight: 500 !important;
+}
+
+.fb-sp-check {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 14px !important;
+  height: 14px !important;
+  border: 1.5px solid #cbd5e1 !important;
+  border-radius: 3px !important;
+  font-size: 9px !important;
+  color: #fff !important;
+  flex-shrink: 0 !important;
+  transition: all 0.15s !important;
+}
+
+.fb-sp-option.selected .fb-sp-check {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+/* 面板底部按钮 */
+.fb-sp-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  padding: 8px 10px !important;
+  border-top: 1px solid #f1f5f9 !important;
+}
+
+.fb-sp-clear {
+  background: none !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #64748b !important;
+  font-size: 11px !important;
+  padding: 3px 10px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.15s !important;
+}
+
+.fb-sp-clear:hover {
+  background: #f1f5f9 !important;
+  color: #ef4444 !important;
+  border-color: #fca5a5 !important;
+}
+
+.fb-sp-confirm {
+  background: #2563eb !important;
+  border: none !important;
+  color: #fff !important;
+  font-size: 11px !important;
+  padding: 3px 12px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: background 0.15s !important;
+}
+
+.fb-sp-confirm:hover {
+  background: #1d4ed8 !important;
+}
+
+/* 高级筛选按�?*/
+.fb-adv-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 5px 12px !important;
+  font-size: 12px !important;
+  border-radius: 8px !important;
+  border: 1px dashed #cbd5e1 !important;
+  background: #fff !important;
+  color: #64748b !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  white-space: nowrap !important;
+  margin-left: auto !important;
+}
+
+.fb-adv-btn:hover {
+  border-color: #2563eb !important;
+  color: #2563eb !important;
+  background: #eff6ff !important;
+}
+
+.fb-adv-btn svg {
+  flex-shrink: 0 !important;
+}

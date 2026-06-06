@@ -1,498 +1,377 @@
-// filterBarNew.js - 筛选栏覆盖脚本（紧凑两行布局 + fixed 定位下拉面板）
-// 设计规范：
-//   时间/职场/类型/总监/PM → 普通下拉（无 label，更紧凑）
-//   品牌/品类 → 可搜索多选下拉（无 label）
-//   状态/健康度 → 多选下拉（无 label）
+/* ============================================================
+   filterBarNew.js  v202606061805
+   筛选栏 v4 —— 完全按用户需求实现
+   第一行：时间 | 职场 | 类型 | 状态 | 健康度（普通下拉）
+   第二行：平台 | 品类 | 品牌 | 项目PM | 客服管理（搜索多选下拉）+ 高级筛选按钮
+   ============================================================ */
 
-// ===== 工具函数 =====
-function uniqueSort(arr) {
-  var map = {};
-  for (var i = 0; i < arr.length; i++) { map[arr[i]] = true; }
-  var keys = [];
-  for (var k in map) { keys.push(k); }
-  keys.sort();
-  return keys;
+/* ---------- 全局状态 ---------- */
+if (typeof filterState === 'undefined') {
+  var filterState = {
+    timeMode: 'all', timeStart: '', timeEnd: '',
+    workplace: 'all', serviceMode: 'all',
+    status: 'all', health: 'all',
+    platforms: [], category: [], brand: [],
+    pm: 'all', director: 'all'
+  };
 }
 
-function escapeHtml(str) {
-  return (str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+/* ---------- 统一取值工具 ---------- */
+function getFilterOptions(key) {
+  if (key === 'workplace')  return [...new Set(PROJECTS.map(p => p.workplace))].sort();
+  if (key === 'serviceMode') return [...new Set(PROJECTS.map(p => p.serviceMode))].sort();
+  if (key === 'status')     return [...new Set(PROJECTS.map(p => p.status))].sort();
+  if (key === 'health')     return [...new Set(PROJECTS.map(p => p.health))].sort();
+  if (key === 'platforms')  return [...new Set(PROJECTS.flatMap(p => (p.platforms||'').split(/[,，、]/).map(s=>s.trim()).filter(Boolean)))].sort();
+  if (key === 'category')   return [...new Set(PROJECTS.map(p => p.category))].sort();
+  if (key === 'brand')      return [...new Set(PROJECTS.map(p => p.brand))].sort();
+  if (key === 'pm')         return [...new Set(PROJECTS.map(p => p.pm))].sort();
+  if (key === 'director')   return [...new Set(PROJECTS.map(p => p.director))].sort();
+  return [];
 }
 
-function getFilterDisplayText(key, defaultText) {
-  var val = filterState[key];
-  if (val === 'all') return defaultText;
-  if (Array.isArray(val)) {
-    if (val.length === 0) return defaultText;
-    if (val.length === 1) return val[0].length > 8 ? val[0].substring(0, 7) + '...' : val[0];
-    return '已选' + val.length + '项';
-  }
-  return val.length > 8 ? val.substring(0, 7) + '...' : val;
+/* ---------- 判断是否有任何筛选 ---------- */
+function hasAnyFilter() {
+  if (filterState.timeMode !== 'all') return true;
+  if (filterState.workplace !== 'all') return true;
+  if (filterState.serviceMode !== 'all') return true;
+  if (filterState.status !== 'all') return true;
+  if (filterState.health !== 'all') return true;
+  if (filterState.platforms.length > 0) return true;
+  if (filterState.category.length > 0) return true;
+  if (filterState.brand.length > 0) return true;
+  if (filterState.pm !== 'all') return true;
+  if (filterState.director !== 'all') return true;
+  return false;
 }
 
-// ===== 下拉面板管理（fixed 定位，彻底避免截断）=====
-
-function toggleSearchDropdown(id) {
-  var panel = document.getElementById(id + '-panel');
-  var trigger = document.getElementById(id + '-trigger');
-  if (!panel || !trigger) return;
-
-  var isShow = panel.style.display === 'flex';
-  closeAllSearchDropdowns(id);
-
-  if (!isShow) {
-    var rect = trigger.getBoundingClientRect();
-    panel.style.top = (rect.bottom + 4) + 'px';
-    panel.style.left = rect.left + 'px';
-    panel.style.display = 'flex';
-    trigger.classList.add('active');
-
-    var searchInput = document.getElementById(id + '-search');
-    if (searchInput) {
-      setTimeout(function() { searchInput.focus(); }, 50);
-    }
-  }
-}
-
-function closeAllSearchDropdowns(exceptId) {
-  var panels = document.querySelectorAll('.search-dropdown-panel');
-  panels.forEach(function(p) {
-    if (exceptId && p.id === exceptId + '-panel') return;
-    p.style.display = 'none';
-    var triggerId = p.id.replace('-panel', '-trigger');
-    var trigger = document.getElementById(triggerId);
-    if (trigger) trigger.classList.remove('active');
-  });
-}
-
-function filterSearchDropdownOptions(id, keyword) {
-  var panel = document.getElementById(id + '-panel');
-  if (!panel) return;
-  var options = panel.querySelectorAll('.search-dropdown-option');
-  var lowerKeyword = (keyword || '').toLowerCase();
-  options.forEach(function(opt) {
-    var text = (opt.dataset.label || opt.textContent).toLowerCase();
-    if (!lowerKeyword || text.indexOf(lowerKeyword) !== -1 || opt.dataset.value === 'all') {
-      opt.style.display = '';
-    } else {
-      opt.style.display = 'none';
-    }
-  });
-}
-
-// 点击页面其他区域关闭下拉
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.search-dropdown')) {
-    closeAllSearchDropdowns();
-  }
-});
-
-// 滚动时关闭下拉
-window.addEventListener('scroll', function() {
-  closeAllSearchDropdowns();
-}, { passive: true });
-
-// ===== 渲染筛选栏（两行紧凑布局，无 label）=====
-
-function renderFilterBar() {
-  var workplaces  = uniqueSort(PROJECTS.map(function(p) { return p.workplace; }));
-  var brands      = uniqueSort(PROJECTS.map(function(p) { return p.brand; }));
-  var categories  = uniqueSort(PROJECTS.map(function(p) { return p.category; }));
-  var statuses    = uniqueSort(PROJECTS.map(function(p) { return p.status; }));
-  var directors   = uniqueSort(PROJECTS.map(function(p) { return p.director; }));
-  var pms         = uniqueSort(PROJECTS.map(function(p) { return p.pm; }));
-
-  // 已选标签
-  var activeTags = [];
-  if (filterState.timeMode !== 'all') {
-    var timeLabels = {month:'本月', lastMonth:'上月', quarter:'本季', year:'本年', custom:'自定义'};
-    activeTags.push({key:'timeMode', label: timeLabels[filterState.timeMode] || filterState.timeMode});
-  }
-  if (filterState.workplace !== 'all')   activeTags.push({key:'workplace', label: filterState.workplace});
-  if (filterState.projectType !== 'all') activeTags.push({key:'projectType', label: filterState.projectType.replace('项目', '')});
-
-  if (filterState.brand !== 'all') {
-    if (typeof filterState.brand === 'string') {
-      activeTags.push({key:'brand', label: filterState.brand});
-    } else if (Array.isArray(filterState.brand)) {
-      filterState.brand.forEach(function(b) { activeTags.push({key:'brand', label: b}); });
-    }
-  }
-
-  if (filterState.category !== 'all') {
-    if (typeof filterState.category === 'string') {
-      activeTags.push({key:'category', label: filterState.category});
-    } else if (Array.isArray(filterState.category)) {
-      filterState.category.forEach(function(c) { activeTags.push({key:'category', label: c}); });
-    }
-  }
-
-  if (filterState.status !== 'all') {
-    if (typeof filterState.status === 'string') {
-      activeTags.push({key:'status', label: filterState.status});
-    } else if (Array.isArray(filterState.status)) {
-      filterState.status.forEach(function(s) { activeTags.push({key:'status', label: s}); });
-    }
-  }
-
-  if (filterState.health !== 'all') {
-    if (typeof filterState.health === 'string') {
-      activeTags.push({key:'health', label: filterState.health});
-    } else if (Array.isArray(filterState.health)) {
-      filterState.health.forEach(function(h) { activeTags.push({key:'health', label: h}); });
-    }
-  }
-
-  if (filterState.director !== 'all') activeTags.push({key:'director', label: filterState.director});
-  if (filterState.pm !== 'all')       activeTags.push({key:'pm', label: filterState.pm});
-
-  var showCustomTime = filterState.timeMode === 'custom';
-
-  var html = '<div class="filter-bar-wrap">';
-
-  // 已选标签行
-  if (activeTags.length > 0) {
-    html += '<div class="filter-tags-row">';
-    activeTags.forEach(function(tag) {
-      html += '<span class="filter-tag">' + escapeHtml(tag.label) + '<i onclick="setFilter(\'' + tag.key + '\',\'all\');renderModule(currentModule);" class="filter-tag-close">&times;</i></span>';
-    });
-    html += '<button onclick="resetFilters();renderModule(currentModule);" class="filter-clear-btn">清空筛选</button>';
-    html += '</div>';
-  }
-
-  // ===== 第一行：核心筛选 =====
-  html += '<div class="filter-row">';
-
-  // 时间
-  html += '<select onchange="onFilterTimeChange(this.value)" class="filter-select-compact">';
-  html += '<option value="all"'   + (filterState.timeMode === 'all' ? ' selected' : '') + '>全部时间</option>';
-  html += '<option value="month"' + (filterState.timeMode === 'month' ? ' selected' : '') + '>本月</option>';
-  html += '<option value="lastMonth"' + (filterState.timeMode === 'lastMonth' ? ' selected' : '') + '>上月</option>';
-  html += '<option value="quarter"' + (filterState.timeMode === 'quarter' ? ' selected' : '') + '>本季</option>';
-  html += '<option value="year"'  + (filterState.timeMode === 'year' ? ' selected' : '') + '>本年</option>';
-  html += '<option value="custom"'+ (filterState.timeMode === 'custom' ? ' selected' : '') + '>自定义</option>';
-  html += '</select>';
-
-  // 自定义时间
-  if (showCustomTime) {
-    html += '<input type="date" class="filter-date-compact" value="' + (filterState.timeStart || '') + '" onchange="setFilter(\'timeStart\',this.value);applyTimeFilter();" title="开始时间">';
-    html += '<span class="filter-date-sep">-</span>';
-    html += '<input type="date" class="filter-date-compact" value="' + (filterState.timeEnd || '') + '" onchange="setFilter(\'timeEnd\',this.value);applyTimeFilter();" title="结束时间">';
-  }
-
-  // 职场
-  html += '<select onchange="onSimpleSelectChange(\'workplace\',this.value)" class="filter-select-compact">';
-  html += '<option value="all">全部职场</option>';
-  workplaces.forEach(function(w) {
-    html += '<option value="' + escapeHtml(w) + '"' + (filterState.workplace === w ? ' selected' : '') + '>' + w + '</option>';
-  });
-  html += '</select>';
-
-  // 类型（TP/DP/BPO）
-  html += '<select onchange="onSimpleSelectChange(\'projectType\',this.value)" class="filter-select-compact">';
-  html += '<option value="all">全部类型</option>';
-  html += '<option value="TP项目"' + (filterState.projectType === 'TP项目' ? ' selected' : '') + '>TP模式</option>';
-  html += '<option value="DP项目"' + (filterState.projectType === 'DP项目' ? ' selected' : '') + '>DP模式</option>';
-  html += '<option value="BPO项目"' + (filterState.projectType === 'BPO项目' ? ' selected' : '') + '>BPO模式</option>';
-  html += '</select>';
-
-  // 品牌（可搜索多选下拉）
-  html += buildSearchDropdown('filter-brand', '全部品牌', brands, 'brand');
-
-  // 品类（可搜索多选下拉）
-  html += buildSearchDropdown('filter-category', '全部分类', categories, 'category');
-
-  html += '</div>'; // 第一行结束
-
-  // ===== 第二行：状态/人员筛选 =====
-  html += '<div class="filter-row">';
-
-  // 状态（多选下拉）
-  html += buildMultiSelectDropdown('filter-status', '全部状态', statuses, 'status');
-
-  // 健康度（多选下拉）
-  var healthItems = [
-    {value: '🟢', label: '🟢 健康'},
-    {value: '🟡', label: '🟡 预警'},
-    {value: '🔴', label: '🔴 风险'}
-  ];
-  html += buildMultiSelectDropdown('filter-health', '全部健康度', healthItems, 'health');
-
-  // 总监
-  html += '<select onchange="onSimpleSelectChange(\'director\',this.value)" class="filter-select-compact">';
-  html += '<option value="all">全部总监</option>';
-  directors.forEach(function(d) {
-    html += '<option value="' + escapeHtml(d) + '"' + (filterState.director === d ? ' selected' : '') + '>' + d + '</option>';
-  });
-  html += '</select>';
-
-  // PM
-  html += '<select onchange="onSimpleSelectChange(\'pm\',this.value)" class="filter-select-compact">';
-  html += '<option value="all">全部PM</option>';
-  pms.forEach(function(p) {
-    html += '<option value="' + escapeHtml(p) + '"' + (filterState.pm === p ? ' selected' : '') + '>' + p + '</option>';
-  });
-  html += '</select>';
-
-  html += '</div>'; // 第二行结束
-  html += '</div>'; // filter-bar-wrap 结束
-
-  return html;
-}
-
-// ===== 构建下拉组件 =====
-
-function buildSearchDropdown(id, placeholder, items, filterKey) {
-  var displayText = getFilterDisplayText(filterKey, placeholder);
-  var hasValue = filterState[filterKey] !== 'all';
-  var cls = 'search-dropdown-trigger-compact' + (hasValue ? ' has-value' : '');
-  var isObjArray = items.length > 0 && typeof items[0] === 'object';
-
-  var html = '<div class="search-dropdown" id="' + id + '">';
-  html += '<div class="' + cls + '" id="' + id + '-trigger" onclick="toggleSearchDropdown(\'' + id + '\')">';
-  html += '<span id="' + id + '-value">' + escapeHtml(displayText) + '</span>';
-  html += '</div>';
-  html += '<div class="search-dropdown-panel" id="' + id + '-panel">';
-
-  // 搜索框
-  html += '<div class="search-dropdown-search">';
-  html += '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>';
-  html += '<input type="text" id="' + id + '-search" placeholder="搜索..." oninput="filterSearchDropdownOptions(\'' + id + '\', this.value)" onclick="event.stopPropagation()">';
-  html += '</div>';
-
-  // 选项
-  html += '<div class="search-dropdown-options">';
-  html += '<div class="search-dropdown-option' + (filterState[filterKey] === 'all' ? ' selected' : '') + '" data-id="' + id + '" data-key="' + filterKey + '" data-value="all" onclick="onSearchMultiSelect(this)">' + placeholder + '</div>';
-
-  if (isObjArray) {
-    items.forEach(function(item) {
-      var safeVal = escapeHtml(item.value);
-      var safeLabel = escapeHtml(item.label);
-      var isSelected = false;
-      if (Array.isArray(filterState[filterKey])) {
-        isSelected = filterState[filterKey].indexOf(item.value) !== -1;
-      } else if (filterState[filterKey] === item.value) {
-        isSelected = true;
-      }
-      html += '<div class="search-dropdown-option' + (isSelected ? ' selected' : '') + '" data-id="' + id + '" data-key="' + filterKey + '" data-value="' + safeVal + '" data-label="' + safeLabel + '" onclick="onSearchMultiSelect(this)">' + safeLabel + '</div>';
-    });
-  } else {
-    items.forEach(function(item) {
-      var safe = escapeHtml(item);
-      var isSelected = false;
-      if (Array.isArray(filterState[filterKey])) {
-        isSelected = filterState[filterKey].indexOf(item) !== -1;
-      } else if (filterState[filterKey] === item) {
-        isSelected = true;
-      }
-      html += '<div class="search-dropdown-option' + (isSelected ? ' selected' : '') + '" data-id="' + id + '" data-key="' + filterKey + '" data-value="' + safe + '" data-label="' + safe + '" onclick="onSearchMultiSelect(this)">' + safe + '</div>';
-    });
-  }
-
-  html += '</div></div></div>';
-  return html;
-}
-
-function buildMultiSelectDropdown(id, placeholder, items, filterKey) {
-  var displayText = getFilterDisplayText(filterKey, placeholder);
-  var hasValue = filterState[filterKey] !== 'all';
-  var cls = 'search-dropdown-trigger-compact' + (hasValue ? ' has-value' : '');
-  var isObjArray = items.length > 0 && typeof items[0] === 'object';
-
-  var html = '<div class="search-dropdown" id="' + id + '">';
-  html += '<div class="' + cls + '" id="' + id + '-trigger" onclick="toggleSearchDropdown(\'' + id + '\')">';
-  html += '<span id="' + id + '-value">' + escapeHtml(displayText) + '</span>';
-  html += '</div>';
-  html += '<div class="search-dropdown-panel" id="' + id + '-panel">';
-  html += '<div class="search-dropdown-options">';
-
-  html += '<div class="search-dropdown-option' + (filterState[filterKey] === 'all' ? ' selected' : '') + '" data-id="' + id + '" data-key="' + filterKey + '" data-value="all" onclick="onMultiSelectOption(this)">' + placeholder + '</div>';
-
-  if (isObjArray) {
-    items.forEach(function(item) {
-      var safeVal = escapeHtml(item.value);
-      var safeLabel = escapeHtml(item.label);
-      var isSelected = false;
-      if (Array.isArray(filterState[filterKey])) {
-        isSelected = filterState[filterKey].indexOf(item.value) !== -1;
-      } else if (filterState[filterKey] === item.value) {
-        isSelected = true;
-      }
-      html += '<div class="search-dropdown-option' + (isSelected ? ' selected' : '') + '" data-id="' + id + '" data-key="' + filterKey + '" data-value="' + safeVal + '" data-label="' + safeLabel + '" onclick="onMultiSelectOption(this)">' + safeLabel + '</div>';
-    });
-  } else {
-    items.forEach(function(item) {
-      var safe = escapeHtml(item);
-      var isSelected = false;
-      if (Array.isArray(filterState[filterKey])) {
-        isSelected = filterState[filterKey].indexOf(item) !== -1;
-      } else if (filterState[filterKey] === item) {
-        isSelected = true;
-      }
-      html += '<div class="search-dropdown-option' + (isSelected ? ' selected' : '') + '" data-id="' + id + '" data-key="' + filterKey + '" data-value="' + safe + '" data-label="' + safe + '" onclick="onMultiSelectOption(this)">' + safe + '</div>';
-    });
-  }
-
-  html += '</div></div></div>';
-  return html;
-}
-
-// ===== 事件处理 =====
-
-function onSimpleSelectChange(key, value) {
-  setFilter(key, value);
+/* ---------- 清空所有筛选 ---------- */
+function resetFilters() {
+  filterState.timeMode = 'all';
+  filterState.timeStart = '';
+  filterState.timeEnd = '';
+  filterState.workplace = 'all';
+  filterState.serviceMode = 'all';
+  filterState.status = 'all';
+  filterState.health = 'all';
+  filterState.platforms = [];
+  filterState.category = [];
+  filterState.brand = [];
+  filterState.pm = 'all';
+  filterState.director = 'all';
   renderModule(currentModule);
 }
 
-function onFilterTimeChange(val) {
-  setFilter('timeMode', val);
-  if (val !== 'custom') {
-    filterState.timeStart = '';
-    filterState.timeEnd = '';
+/* ---------- 清除单个筛选 ---------- */
+function resetOneFilter(key) {
+  if (key === 'platforms' || key === 'category' || key === 'brand') {
+    filterState[key] = [];
+  } else {
+    filterState[key] = 'all';
   }
   renderModule(currentModule);
 }
 
-function applyTimeFilter() {
+/* ---------- 多选切换 ---------- */
+function toggleMultiFilter(key, val) {
+  var arr = filterState[key];
+  var idx = arr.indexOf(val);
+  if (idx >= 0) arr.splice(idx, 1); else arr.push(val);
+  renderModule(currentModule);
+}
+
+/* ---------- 单选设置 ---------- */
+function setSingleFilter(key, val) {
+  filterState[key] = val;
+  renderModule(currentModule);
+}
+
+/* ---------- 应用时间筛选 ---------- */
+function applyFilters() {
   if (filterState.timeMode === 'custom' && filterState.timeStart && filterState.timeEnd) {
+    renderModule(currentModule);
+  } else if (filterState.timeMode !== 'custom') {
     renderModule(currentModule);
   }
 }
 
-function onSearchMultiSelect(el) {
-  var id = el.dataset.id;
-  var key = el.dataset.key;
-  var value = el.dataset.value;
+/* ============================================================
+   渲染筛选栏
+   ============================================================ */
+function renderFilterBar() {
+  var timeLabel = {all:'全部时间', month:'本月', lastMonth:'上月', quarter:'本季', year:'本年', custom:'自定义'};
+  var wpLabel   = filterState.workplace === 'all' ? '全部职场' : filterState.workplace;
+  var smLabel   = filterState.serviceMode === 'all' ? '全部类型' : filterState.serviceMode;
+  var stLabel   = filterState.status === 'all' ? '全部状态' : filterState.status;
+  var hlLabel   = filterState.health === 'all' ? '全部健康度' : filterState.health;
 
-  if (value === 'all') {
-    setFilter(key, 'all');
-  } else {
-    var current = filterState[key];
-    var arr = [];
-    if (Array.isArray(current)) {
-      arr = current.slice();
-    } else if (current !== 'all') {
-      arr = [current];
-    }
-    var idx = arr.indexOf(value);
-    if (idx !== -1) {
-      arr.splice(idx, 1);
-    } else {
-      arr.push(value);
-    }
-    setFilter(key, arr.length === 0 ? 'all' : arr);
-  }
+  var pfLabel = '全部平台';
+  if (filterState.platforms.length === 1) pfLabel = filterState.platforms[0];
+  else if (filterState.platforms.length > 1) pfLabel = '已选' + filterState.platforms.length + '项';
 
-  refreshDropdownSelections(id, key);
-  refreshDropdownTriggerText(id, key);
+  var caLabel = '全部分类';
+  if (filterState.category.length === 1) caLabel = filterState.category[0];
+  else if (filterState.category.length > 1) caLabel = '已选' + filterState.category.length + '项';
+
+  var brLabel = '全部品牌';
+  if (filterState.brand.length === 1) brLabel = filterState.brand[0];
+  else if (filterState.brand.length > 1) brLabel = '已选' + filterState.brand.length + '项';
+
+  var pmLabel = filterState.pm === 'all' ? '全部PM' : filterState.pm;
+  var drLabel = filterState.director === 'all' ? '全部管理' : filterState.director;
+
+  var showCustom = filterState.timeMode === 'custom';
+
+  return `
+  <div class="filter-bar-v4">
+    <!-- 已选标签 -->
+    ${hasAnyFilter() ? `
+    <div class="filter-tags-row">
+      ${filterState.timeMode!=='all' ? `<span class="filter-tag">${timeLabel[filterState.timeMode]}<i onclick="resetOneFilter('timeMode')">×</i></span>` : ''}
+      ${filterState.workplace!=='all' ? `<span class="filter-tag">${filterState.workplace}<i onclick="resetOneFilter('workplace')">×</i></span>` : ''}
+      ${filterState.serviceMode!=='all' ? `<span class="filter-tag">${filterState.serviceMode}<i onclick="resetOneFilter('serviceMode')">×</i></span>` : ''}
+      ${filterState.status!=='all' ? `<span class="filter-tag">${filterState.status}<i onclick="resetOneFilter('status')">×</i></span>` : ''}
+      ${filterState.health!=='all' ? `<span class="filter-tag">${filterState.health}<i onclick="resetOneFilter('health')">×</i></span>` : ''}
+      ${filterState.platforms.map(function(v){ return `<span class="filter-tag">${v}<i onclick="toggleMultiFilter('platforms','${v.replace(/'/g,"\\'")}')">×</i></span>` }).join('')}
+      ${filterState.category.map(function(v){ return `<span class="filter-tag">${v}<i onclick="toggleMultiFilter('category','${v.replace(/'/g,"\\'")}')">×</i></span>` }).join('')}
+      ${filterState.brand.map(function(v){ return `<span class="filter-tag">${v}<i onclick="toggleMultiFilter('brand','${v.replace(/'/g,"\\'")}')">×</i></span>` }).join('')}
+      ${filterState.pm!=='all' ? `<span class="filter-tag">${filterState.pm}<i onclick="resetOneFilter('pm')">×</i></span>` : ''}
+      ${filterState.director!=='all' ? `<span class="filter-tag">${filterState.director}<i onclick="resetOneFilter('director')">×</i></span>` : ''}
+      <button class="filter-clear-btn" onclick="resetFilters()">清空筛选</button>
+    </div>` : ''}
+
+    <!-- 第一行 -->
+    <div class="filter-row-v4">
+      <select class="fb-select" onchange="onFilterChange('timeMode',this.value)" title="时间">
+        <option value="all">全部时间</option>
+        <option value="month">本月</option>
+        <option value="lastMonth">上月</option>
+        <option value="quarter">本季</option>
+        <option value="year">本年</option>
+        <option value="custom">自定义</option>
+      </select>
+
+      ${showCustom ? `<input type="date" class="fb-date" value="${filterState.timeStart}" onchange="filterState.timeStart=this.value;applyFilters()" title="开始时间">
+        <input type="date" class="fb-date" value="${filterState.timeEnd}" onchange="filterState.timeEnd=this.value;applyFilters()" title="结束时间">` : ''}
+
+      <div class="fb-divider"></div>
+
+      <select class="fb-select" onchange="onFilterChange('workplace',this.value)" title="职场">
+        <option value="all">全部职场</option>
+        ${getFilterOptions('workplace').map(function(w){ return '<option value="'+w+'" '+(filterState.workplace===w?'selected':'')+'>'+w+'</option>' }).join('')}
+      </select>
+
+      <select class="fb-select" onchange="onFilterChange('serviceMode',this.value)" title="类型">
+        <option value="all">全部类型</option>
+        ${getFilterOptions('serviceMode').map(function(s){ return '<option value="'+s+'" '+(filterState.serviceMode===s?'selected':'')+'>'+s+'</option>' }).join('')}
+      </select>
+
+      <select class="fb-select" onchange="onFilterChange('status',this.value)" title="状态">
+        <option value="all">全部状态</option>
+        ${getFilterOptions('status').map(function(s){ return '<option value="'+s+'" '+(filterState.status===s?'selected':'')+'>'+s+'</option>' }).join('')}
+      </select>
+
+      <select class="fb-select" onchange="onFilterChange('health',this.value)" title="健康度">
+        <option value="all">全部健康度</option>
+        ${getFilterOptions('health').map(function(h){ return '<option value="'+h+'" '+(filterState.health===h?'selected':'')+'>'+h+'</option>' }).join('')}
+      </select>
+    </div>
+
+    <!-- 第二行 -->
+    <div class="filter-row-v4 filter-row-v4-second">
+      <div class="fb-search-wrap" data-filter="platforms" title="平台（多选）">
+        <div class="fb-search-trigger" onclick="toggleSearchPanel(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span class="fb-search-label">${pfLabel}</span>
+          <svg width="10" height="10" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <div class="fb-search-panel" id="panel-platforms"></div>
+      </div>
+
+      <div class="fb-search-wrap" data-filter="category" title="品类（多选）">
+        <div class="fb-search-trigger" onclick="toggleSearchPanel(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span class="fb-search-label">${caLabel}</span>
+          <svg width="10" height="10" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <div class="fb-search-panel" id="panel-category"></div>
+      </div>
+
+      <div class="fb-search-wrap" data-filter="brand" title="品牌（多选）">
+        <div class="fb-search-trigger" onclick="toggleSearchPanel(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span class="fb-search-label">${brLabel}</span>
+          <svg width="10" height="10" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <div class="fb-search-panel" id="panel-brand"></div>
+      </div>
+
+      <div class="fb-search-wrap" data-filter="pm" title="项目PM（单选）">
+        <div class="fb-search-trigger" onclick="toggleSearchPanel(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span class="fb-search-label">${pmLabel}</span>
+          <svg width="10" height="10" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <div class="fb-search-panel" id="panel-pm"></div>
+      </div>
+
+      <div class="fb-search-wrap" data-filter="director" title="客服管理（单选）">
+        <div class="fb-search-trigger" onclick="toggleSearchPanel(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span class="fb-search-label">${drLabel}</span>
+          <svg width="10" height="10" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </div>
+        <div class="fb-search-panel" id="panel-director"></div>
+      </div>
+
+      <button class="fb-adv-btn" onclick="alert('高级筛选 - 待开发')" title="高级筛选">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        高级筛选
+      </button>
+    </div>
+  </div>`;
+}
+
+/* ---------- 普通下拉变化 ---------- */
+function onFilterChange(key, val) {
+  filterState[key] = val;
   renderModule(currentModule);
 }
 
-function onMultiSelectOption(el) {
-  var id = el.dataset.id;
-  var key = el.dataset.key;
-  var value = el.dataset.value;
+/* ============================================================
+   搜索下拉面板逻辑
+   ============================================================ */
+var activePanel = null;
 
-  if (value === 'all') {
-    setFilter(key, 'all');
-  } else {
-    var current = filterState[key];
-    var arr = [];
-    if (Array.isArray(current)) {
-      arr = current.slice();
-    } else if (current !== 'all') {
-      arr = [current];
-    }
-    var idx = arr.indexOf(value);
-    if (idx !== -1) {
-      arr.splice(idx, 1);
-    } else {
-      arr.push(value);
-    }
-    setFilter(key, arr.length === 0 ? 'all' : arr);
+function toggleSearchPanel(triggerEl) {
+  var wrap = triggerEl.parentElement;
+  var key = wrap.getAttribute('data-filter');
+  var panel = wrap.querySelector('.fb-search-panel');
+
+  if (activePanel && activePanel !== panel) {
+    activePanel.style.display = 'none';
   }
 
-  refreshDropdownSelections(id, key);
-  refreshDropdownTriggerText(id, key);
-  renderModule(currentModule);
-}
-
-function refreshDropdownSelections(id, key) {
-  var panel = document.getElementById(id + '-panel');
-  if (!panel) return;
-  var options = panel.querySelectorAll('.search-dropdown-option');
-  var val = filterState[key];
-  options.forEach(function(opt) {
-    var optVal = opt.dataset.value;
-    if (optVal === 'all') {
-      opt.classList.toggle('selected', val === 'all');
-    } else {
-      var checked = Array.isArray(val) && val.indexOf(optVal) !== -1;
-      opt.classList.toggle('selected', checked);
-    }
-  });
-}
-
-function refreshDropdownTriggerText(id, key) {
-  var valueEl = document.getElementById(id + '-value');
-  var trigger = document.getElementById(id + '-trigger');
-  if (!valueEl) return;
-
-  var defaultTexts = {brand:'全部品牌', category:'全部分类', status:'全部状态', health:'全部健康度'};
-  var txt = getFilterDisplayText(key, defaultTexts[key] || '');
-  valueEl.textContent = txt;
-
-  if (trigger) {
-    var val = filterState[key];
-    var isActive = val !== 'all' && !(Array.isArray(val) && val.length === 0);
-    trigger.classList.toggle('has-value', isActive);
-  }
-}
-
-// ===== 安全覆盖 applyFilters（支持数组多选）=====
-
-(function patchApplyFilters() {
-  if (typeof applyFilters !== 'function') {
-    setTimeout(patchApplyFilters, 200);
+  if (panel.style.display === 'block') {
+    panel.style.display = 'none';
+    activePanel = null;
     return;
   }
 
-  var originalApplyFilters = applyFilters;
-  window.applyFilters = function(list) {
-    // 保存原始数组类型的筛选值
-    var savedBrand    = filterState.brand;
-    var savedCategory = filterState.category;
-    var savedStatus   = filterState.status;
-    var savedHealth   = filterState.health;
+  renderSearchPanel(panel, key);
 
-    // 临时设为 'all'，避免 original 用数组做字符串比较导致过滤掉所有数据
-    if (Array.isArray(savedBrand))    filterState.brand    = 'all';
-    if (Array.isArray(savedCategory)) filterState.category = 'all';
-    if (Array.isArray(savedStatus))   filterState.status   = 'all';
-    if (Array.isArray(savedHealth))   filterState.health   = 'all';
+  var rect = triggerEl.getBoundingClientRect();
+  panel.style.position = 'fixed';
+  panel.style.top = (rect.bottom + 6) + 'px';
+  panel.style.left = rect.left + 'px';
+  panel.style.width = Math.max(rect.width, 180) + 'px';
+  panel.style.display = 'block';
+  activePanel = panel;
 
-    // 调用原始过滤（处理时间、职场、类型、总监、PM 等）
-    list = originalApplyFilters(list);
+  var inp = panel.querySelector('.fb-search-input');
+  if (inp) inp.focus();
+}
 
-    // 恢复原始值
-    filterState.brand    = savedBrand;
-    filterState.category = savedCategory;
-    filterState.status   = savedStatus;
-    filterState.health   = savedHealth;
+function renderSearchPanel(panel, key) {
+  var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
+  var options = getFilterOptions(key);
+  var selected = filterState[key];
+  if (!Array.isArray(selected)) selected = [selected];
 
-    // 应用多选过滤
-    if (Array.isArray(filterState.brand) && filterState.brand.length > 0) {
-      list = list.filter(function(p) { return filterState.brand.indexOf(p.brand) !== -1; });
+  var html = `
+    <div class="fb-sp-search">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input class="fb-search-input" type="text" placeholder="搜索..." oninput="filterSearchOptions(this,'${key}')">
+    </div>
+    <div class="fb-sp-options">`;
+
+  options.forEach(function(opt) {
+    var checked = selected.indexOf(opt) >= 0;
+    var escaped = opt.replace(/"/g,'&quot;');
+    html += `<div class="fb-sp-option ${checked?'selected':''}" data-value="${escaped}" onclick="onSearchOptionClick(this,'${key}')">
+      ${isMulti ? `<span class="fb-sp-check">${checked?'✓':''}</span>` : ''}
+      <span>${opt}</span>
+    </div>`;
+  });
+
+  html += `</div>`;
+  if (isMulti) {
+    html += `<div class="fb-sp-footer">
+      <button class="fb-sp-clear" onclick="clearMultiFilter('${key}')">清空</button>
+      <button class="fb-sp-confirm" onclick="closeSearchPanel(this)">确定</button>
+    </div>`;
+  }
+  panel.innerHTML = html;
+}
+
+function filterSearchOptions(inputEl, key) {
+  var q = inputEl.value.trim().toLowerCase();
+  var panel = inputEl.closest('.fb-search-panel');
+  var options = panel.querySelectorAll('.fb-sp-option');
+  options.forEach(function(opt) {
+    var txt = opt.textContent.toLowerCase();
+    opt.style.display = txt.indexOf(q) >= 0 ? '' : 'none';
+  });
+}
+
+function onSearchOptionClick(optEl, key) {
+  var val = optEl.getAttribute('data-value');
+  var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
+
+  if (isMulti) {
+    optEl.classList.toggle('selected');
+    var check = optEl.querySelector('.fb-sp-check');
+    if (check) check.textContent = optEl.classList.contains('selected') ? '✓' : '';
+  } else {
+    filterState[key] = val;
+    var panel = optEl.closest('.fb-search-panel');
+    panel.style.display = 'none';
+    activePanel = null;
+    renderModule(currentModule);
+  }
+}
+
+function clearMultiFilter(key) {
+  filterState[key] = [];
+  var panel = document.getElementById('panel-' + key);
+  if (panel) {
+    panel.querySelectorAll('.fb-sp-option').forEach(function(el) { el.classList.remove('selected'); var c = el.querySelector('.fb-sp-check'); if(c)c.textContent=''; });
+  }
+  renderModule(currentModule);
+}
+
+function closeSearchPanel(btnEl) {
+  var panel = btnEl.closest('.fb-search-panel');
+  var key = panel.parentElement.getAttribute('data-filter');
+  var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
+
+  if (isMulti) {
+    var selected = [];
+    panel.querySelectorAll('.fb-sp-option.selected').forEach(function(el) {
+      selected.push(el.getAttribute('data-value'));
+    });
+    filterState[key] = selected;
+  }
+
+  panel.style.display = 'none';
+  activePanel = null;
+  renderModule(currentModule);
+}
+
+/* 点击页面其他地方关闭面板 */
+document.addEventListener('click', function(e) {
+  if (activePanel && !activePanel.contains(e.target) && !e.target.closest('.fb-search-trigger')) {
+    var key = activePanel.parentElement.getAttribute('data-filter');
+    var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
+    if (isMulti) {
+      var selected = [];
+      activePanel.querySelectorAll('.fb-sp-option.selected').forEach(function(el) {
+        selected.push(el.getAttribute('data-value'));
+      });
+      filterState[key] = selected;
     }
-    if (Array.isArray(filterState.category) && filterState.category.length > 0) {
-      list = list.filter(function(p) { return filterState.category.indexOf(p.category) !== -1; });
-    }
-    if (Array.isArray(filterState.status) && filterState.status.length > 0) {
-      list = list.filter(function(p) { return filterState.status.indexOf(p.status) !== -1; });
-    }
-    if (Array.isArray(filterState.health) && filterState.health.length > 0) {
-      list = list.filter(function(p) { return filterState.health.indexOf(p.health) !== -1; });
-    }
-
-    return list;
-  };
-})();
+    activePanel.style.display = 'none';
+    activePanel = null;
+    renderModule(currentModule);
+  }
+});
