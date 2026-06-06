@@ -1258,44 +1258,47 @@
   overflow: hidden !important;
 }
 
-/* 表头增强 */
-.data-table thead {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
-  border-bottom: 2px solid rgba(24, 95, 165, 0.1) !important;
+/* 表头增强 - 高对比度设计 */
+.data-table thead,
+.data-table thead tr {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%) !important;
+  border-bottom: 2px solid rgba(24, 95, 165, 0.15) !important;
 }
 
 .data-table th {
   padding: 12px 14px !important;
   text-align: left !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
   font-size: 12px !important;
-  color: var(--c-text-2) !important;
+  color: #1e293b !important;
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
-  border-bottom: 2px solid rgba(24, 95, 165, 0.1) !important;
+  border-bottom: 2px solid rgba(24, 95, 165, 0.15) !important;
   position: relative !important;
   white-space: nowrap !important;
   cursor: pointer !important;
   transition: all 0.2s var(--ease-premium) !important;
   user-select: none !important;
+  background: transparent !important;
 }
 
 .data-table th:hover {
   color: var(--c-primary) !important;
-  background: rgba(24, 95, 165, 0.04) !important;
+  background: rgba(24, 95, 165, 0.06) !important;
 }
 
 .data-table th::after {
   content: '↕' !important;
   position: absolute !important;
   right: 8px !important;
-  opacity: 0.3 !important;
+  opacity: 0.4 !important;
   font-size: 10px !important;
   transition: all 0.2s !important;
+  color: #64748b !important;
 }
 
 .data-table th:hover::after {
-  opacity: 0.7 !important;
+  opacity: 0.8 !important;
 }
 
 .data-table th.sorted-asc::after {
