@@ -2012,3 +2012,88 @@
   }
 }
 
+/* ===== 高端筛选栏样式 ===== */
+.filter-bar-container {
+  animation: filterBarFadeIn 0.4s var(--ease-premium) !important;
+}
+
+@keyframes filterBarFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.filter-bar-container::-webkit-scrollbar {
+  display: none !important;
+}
+
+.filter-group-label {
+  font-size: 11px !important;
+  color: #94a3b8 !important;
+  white-space: nowrap !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+}
+
+.filter-pill {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.filter-pill::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
+  transition: left 0.5s !important;
+}
+
+.filter-pill:hover::before {
+  left: 100% !important;
+}
+
+.filter-pill.active {
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25) !important;
+}
+
+.filter-tag {
+  animation: tagPopIn 0.25s var(--ease-premium) !important;
+}
+
+@keyframes tagPopIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.filter-more-section::-webkit-scrollbar {
+  display: none !important;
+}
+
+.filter-more-btn:hover {
+  border-color: #94a3b8 !important;
+  background: #f1f5f9 !important;
+}
+
+.filter-reset-btn:hover {
+  background: #fee2e2 !important;
+}
+
+/* 移动端筛选栏适配 */
+@media (max-width: 768px) {
+  .filter-bar-container {
+    padding: 10px 12px !important;
+  }
+  
+  .filter-pill {
+    padding: 4px 10px !important;
+    font-size: 11px !important;
+  }
+  
+  .filter-group-label {
+    font-size: 10px !important;
+  }
+}
+

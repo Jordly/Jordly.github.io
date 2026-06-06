@@ -1433,7 +1433,11 @@ const filterState = {
   timeMode: "all",
   time: "all",
   timeStart: "",
-  timeEnd: ""
+  timeEnd: "",
+  brand: "all",
+  category: "all",
+  status: "all",
+  moreExpanded: false
 };
 
 function setFilter(key, value) {
@@ -1443,6 +1447,16 @@ function setFilter(key, value) {
 
 function renderFilterBar() {
   const workplaces = [...new Set(PROJECTS.map(p => p.workplace))];
+  const brands = [...new Set(PROJECTS.map(p => p.brand))].sort();
+  const categories = [...new Set(PROJECTS.map(p => p.category))].sort();
+  const statuses = [...new Set(PROJECTS.map(p => p.status))];
+  const directors = [...new Set(PROJECTS.map(p => p.director))].sort();
+  const pms = [...new Set(PROJECTS.map(p => p.pm))].sort();
+  const healthOptions = [
+    {label:'🟢 健康', value:'🟢'},
+    {label:'🟡 预警', value:'🟡'},
+    {label:'🔴 风险', value:'🔴'}
+  ];
 
   const timeOptions = [
     {label:'本月', value:'month'},
@@ -1460,38 +1474,76 @@ function renderFilterBar() {
     {label:'BPO', value:'BPO项目'}
   ];
 
+  const brandOptions = [{label:'全部品牌', value:'all'}, ...brands.map(b => ({label:b, value:b}))];
+  const categoryOptions = [{label:'全部品类', value:'all'}, ...categories.map(c => ({label:c, value:c}))];
+  const statusOptions = [{label:'全部状态', value:'all'}, ...statuses.map(s => ({label:s, value:s}))];
+  const directorOptions = [{label:'全部总监', value:'all'}, ...directors.map(d => ({label:d, value:d}))];
+  const pmOptions = [{label:'全部PM', value:'all'}, ...pms.map(p => ({label:p, value:p}))];
+
   const activeTags = [];
+  if(filterState.timeMode !== 'all') activeTags.push({key:'timeMode', label:timeOptions.find(t=>t.value===filterState.timeMode)?.label || filterState.timeMode});
   if(filterState.workplace !== 'all') activeTags.push({key:'workplace', label:filterState.workplace});
   if(filterState.projectType !== 'all') activeTags.push({key:'projectType', label:filterState.projectType.replace('项目','')});
+  if(filterState.brand !== 'all') activeTags.push({key:'brand', label:filterState.brand});
+  if(filterState.category !== 'all') activeTags.push({key:'category', label:filterState.category});
+  if(filterState.status !== 'all') activeTags.push({key:'status', label:filterState.status});
+  if(filterState.health !== 'all') activeTags.push({key:'health', label:filterState.health});
   if(filterState.director !== 'all') activeTags.push({key:'director', label:filterState.director});
   if(filterState.pm !== 'all') activeTags.push({key:'pm', label:filterState.pm});
-  if(filterState.health !== 'all') activeTags.push({key:'health', label:filterState.health});
+
+  const isActive = (key, val) => filterState[key] === val;
+  const pillBtn = (key, val, label, color) => {
+    const active = isActive(key, val);
+    const bg = active ? (color || '#2563eb') : '#fff';
+    const fg = active ? '#fff' : '#64748b';
+    const border = active ? (color || '#2563eb') : '#e2e8f0';
+    return `<button onclick="setFilter('${key}','${val}')" class="filter-pill ${active ? 'active' : ''}" style="padding:5px 14px;font-size:12px;border-radius:16px;border:1.5px solid ${border};background:${bg};color:${fg};cursor:pointer;transition:all 0.2s;white-space:nowrap;font-weight:${active ? '600' : '400'};" onmouseover="if(!${active}){this.style.borderColor='#cbd5e1';this.style.background='#f8fafc';}" onmouseout="if(!${active}){this.style.borderColor='#e2e8f0';this.style.background='#fff';}">${label}</button>`;
+  };
+
+  const pillGroup = (label, options, filterKey) => `
+    <div class="filter-group" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <span class="filter-group-label" style="font-size:11px;color:#94a3b8;white-space:nowrap;font-weight:500;letter-spacing:0.5px;text-transform:uppercase;">${label}</span>
+      <div style="display:flex;gap:5px;flex-wrap:nowrap;">${options.map(o => pillBtn(filterKey, o.value, o.label)).join('')}</div>
+    </div>
+  `;
+
+  const moreSection = filterState.moreExpanded ? `
+    <div class="filter-more-section" style="display:flex;align-items:center;gap:12px;padding-top:10px;border-top:1px dashed #e2e8f0;margin-top:8px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;">
+      ${pillGroup('品牌', brandOptions, 'brand')}
+      ${pillGroup('品类', categoryOptions, 'category')}
+      ${pillGroup('状态', statusOptions, 'status')}
+      ${pillGroup('健康', healthOptions, 'health')}
+      ${pillGroup('总监', directorOptions, 'director')}
+      ${pillGroup('PM', pmOptions, 'pm')}
+    </div>
+  ` : '';
 
   return `
-    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:12px 16px;background:#f8fafc;border-radius:10px;margin-bottom:14px;">
-      <div style="display:flex;align-items:center;gap:6px;">
-        <span style="font-size:12px;color:#94a3b8;white-space:nowrap;">时间</span>
-        <div style="display:flex;gap:4px;">
-          ${timeOptions.map(t => `<button onclick="setFilter('timeMode','${t.value}')" style="padding:4px 12px;font-size:12px;border-radius:14px;border:1px solid ${filterState.timeMode===t.value?'#2563eb':'#e2e8f0'};background:${filterState.timeMode===t.value?'#2563eb':'#fff'};color:${filterState.timeMode===t.value?'#fff':'#64748b'};cursor:pointer;transition:all 0.2s;">${t.label}</button>`).join('')}
+    <div class="filter-bar-container" style="padding:14px 18px;background:#fff;border-radius:12px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.02);border:1px solid #f1f5f9;">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;">
+        ${pillGroup('时间', timeOptions, 'timeMode')}
+        <div style="width:1px;height:20px;background:#e2e8f0;flex-shrink:0;"></div>
+        ${pillGroup('职场', wpOptions, 'workplace')}
+        <div style="width:1px;height:20px;background:#e2e8f0;flex-shrink:0;"></div>
+        ${pillGroup('类型', typeOptions, 'projectType')}
+        <div style="width:1px;height:20px;background:#e2e8f0;flex-shrink:0;"></div>
+        <button onclick="toggleMoreFilters()" class="filter-more-btn" style="display:flex;align-items:center;gap:4px;padding:5px 12px;font-size:12px;border-radius:16px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;cursor:pointer;transition:all 0.2s;white-space:nowrap;flex-shrink:0;" onmouseover="this.style.borderColor='#94a3b8';this.style.background='#f1f5f9;" onmouseout="this.style.borderColor='#cbd5e1';this.style.background='#f8fafc';">
+          <span>${filterState.moreExpanded ? '收起' : '更多'}</span>
+          <span style="font-size:10px;transition:transform 0.2s;display:inline-block;transform:rotate(${filterState.moreExpanded ? '180deg' : '0deg'});">▼</span>
+        </button>
+        <div style="flex:1;min-width:10px;"></div>
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;">
+          ${activeTags.map(tag => `<span class="filter-tag" style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;font-size:11px;background:#eff6ff;color:#2563eb;border-radius:12px;border:1px solid #bfdbfe;font-weight:500;">${tag.label} <span onclick="setFilter('${tag.key}','all')" style="cursor:pointer;font-size:13px;line-height:1;width:14px;height:14px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background 0.2s;" onmouseover="this.style.background='rgba(37,99,235,0.1)'" onmouseout="this.style.background='transparent'">×</span></span>`).join('')}
+          ${activeTags.length > 0 ? `<button onclick="resetFilters()" class="filter-reset-btn" style="padding:4px 10px;font-size:11px;color:#ef4444;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;cursor:pointer;transition:all 0.2s;font-weight:500;white-space:nowrap;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'">清空 ${activeTags.length}</button>` : ''}
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;">
-        <span style="font-size:12px;color:#94a3b8;white-space:nowrap;">职场</span>
-        <div style="display:flex;gap:4px;">
-          ${wpOptions.map(w => `<button onclick="setFilter('workplace','${w.value}')" style="padding:4px 12px;font-size:12px;border-radius:14px;border:1px solid ${filterState.workplace===w.value?'#2563eb':'#e2e8f0'};background:${filterState.workplace===w.value?'#2563eb':'#fff'};color:${filterState.workplace===w.value?'#fff':'#64748b'};cursor:pointer;transition:all 0.2s;">${w.label}</button>`).join('')}
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;">
-        <span style="font-size:12px;color:#94a3b8;white-space:nowrap;">类型</span>
-        <div style="display:flex;gap:4px;">
-          ${typeOptions.map(t => `<button onclick="setFilter('projectType','${t.value}')" style="padding:4px 12px;font-size:12px;border-radius:14px;border:1px solid ${filterState.projectType===t.value?'#2563eb':'#e2e8f0'};background:${filterState.projectType===t.value?'#2563eb':'#fff'};color:${filterState.projectType===t.value?'#fff':'#64748b'};cursor:pointer;transition:all 0.2s;">${t.label}</button>`).join('')}
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap;">
-        ${activeTags.map(tag => `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;font-size:11px;background:#eff6ff;color:#2563eb;border-radius:12px;border:1px solid #bfdbfe;">${tag.label} <span onclick="setFilter('${tag.key}','all')" style="cursor:pointer;font-size:13px;line-height:1;">×</span></span>`).join('')}
-        ${activeTags.length > 0 ? `<button onclick="resetFilters()" style="padding:3px 10px;font-size:11px;color:#94a3b8;background:transparent;border:none;cursor:pointer;">清空</button>` : ''}
-      </div>
+      ${moreSection}
     </div>`;
+}
+
+function toggleMoreFilters() {
+  filterState.moreExpanded = !filterState.moreExpanded;
+  renderModule(currentModule);
 }
 
 // ----- 项目名称搜索多选组件 -----
@@ -1573,6 +1625,10 @@ function resetFilters() {
   filterState.time = "all";
   filterState.timeStart = "";
   filterState.timeEnd = "";
+  filterState.brand = "all";
+  filterState.category = "all";
+  filterState.status = "all";
+  filterState.moreExpanded = false;
   renderModule(currentModule);
 }
 
@@ -1600,6 +1656,15 @@ function getFilteredProjects(){
   }
   if (filterState.health !== "all") {
     list = list.filter(p => p.health === filterState.health);
+  }
+  if (filterState.brand !== "all") {
+    list = list.filter(p => p.brand === filterState.brand);
+  }
+  if (filterState.category !== "all") {
+    list = list.filter(p => p.category === filterState.category);
+  }
+  if (filterState.status !== "all") {
+    list = list.filter(p => p.status === filterState.status);
   }
   if (filterState.timeMode !== "all") {
     if (filterState.timeMode === "year" && filterState.time !== "all") {
