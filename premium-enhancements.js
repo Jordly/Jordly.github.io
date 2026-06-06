@@ -208,15 +208,143 @@ function enhanceNavigation() {
       if (moduleName) {
         Toast.show(`正在加载：${item.querySelector('.nav-text').textContent}`, 'info', 1500);
       }
+      
+      // 移动端点击后自动关闭侧边栏
+      if (window.innerWidth <= 768) {
+        closeMobileSidebar();
+      }
+    });
+  });
+  
+  // 增强分组标题点击效果
+  document.querySelectorAll('.nav-section-title').forEach(title => {
+    title.addEventListener('click', () => {
+      const section = title.parentElement;
+      const navItems = section.querySelectorAll('.nav-item');
+      
+      if (title.classList.contains('active')) {
+        // 折叠
+        title.classList.remove('active');
+        navItems.forEach((item, index) => {
+          setTimeout(() => {
+            item.style.display = 'none';
+          }, index * 30);
+        });
+      } else {
+        // 展开
+        title.classList.add('active');
+        navItems.forEach((item, index) => {
+          item.style.display = 'flex';
+          item.style.opacity = '0';
+          item.style.transform = 'translateX(-10px)';
+          setTimeout(() => {
+            item.style.transition = 'all 0.3s var(--ease-premium)';
+            item.style.opacity = '1';
+            item.style.transform = 'translateX(0)';
+          }, index * 50);
+        });
+      }
     });
   });
   
   // 侧边栏折叠增强
   const sidebar = document.getElementById('sidebar');
   if (sidebar) {
-    sidebar.style.transition = 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+    sidebar.style.transition = 'all 0.4s var(--ease-premium)';
+    
+    // 添加折叠状态管理
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        toggleSidebarWithAnimation();
+      });
+    }
   }
 }
+
+/* ===== 侧边栏折叠动画增强 ===== */
+function toggleSidebarWithAnimation() {
+  const sidebar = document.getElementById('sidebar');
+  const contentArea = document.getElementById('content-area');
+  
+  if (!sidebar) return;
+  
+  const isCollapsed = sidebar.classList.contains('collapsed');
+  
+  if (isCollapsed) {
+    // 展开
+    sidebar.classList.remove('collapsed');
+    if (contentArea) {
+      contentArea.style.marginLeft = '240px';
+      contentArea.style.transition = 'margin-left 0.4s var(--ease-premium)';
+    }
+    
+    // 显示文本内容的延迟动画
+    setTimeout(() => {
+      const texts = sidebar.querySelectorAll('.nav-text, .section-text, .section-arrow, .toggle-text');
+      texts.forEach((el, index) => {
+        setTimeout(() => {
+          el.style.opacity = '1';
+          el.style.width = '';
+        }, index * 20);
+      });
+    }, 150);
+    
+    Toast.show('已展开侧边栏', 'info', 1500);
+  } else {
+    // 折叠
+    const texts = sidebar.querySelectorAll('.nav-text, .section-text, .section-arrow, .toggle-text');
+    texts.forEach((el, index) => {
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.width = '0';
+      }, index * 15);
+    });
+    
+    setTimeout(() => {
+      sidebar.classList.add('collapsed');
+      if (contentArea) {
+        contentArea.style.marginLeft = '68px';
+        contentArea.style.transition = 'margin-left 0.4s var(--ease-premium)';
+      }
+    }, 200);
+    
+    Toast.show('已折叠侧边栏', 'info', 1500);
+  }
+}
+
+/* ===== 移动端侧边栏 ===== */
+function closeMobileSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  
+  if (window.innerWidth <= 768) {
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.classList.add('hidden');
+  }
+}
+
+function toggleMobileSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  
+  if (!sidebar) return;
+  
+  const isOpen = sidebar.classList.contains('open');
+  
+  if (isOpen) {
+    sidebar.classList.remove('open');
+    if (overlay) overlay.classList.add('hidden');
+  } else {
+    sidebar.classList.add('open');
+    if (overlay) overlay.classList.remove('hidden');
+  }
+}
+
+// 导出函数供 HTML 调用
+window.toggleMobileSidebar = toggleMobileSidebar;
+window.closeMobileSidebar = closeMobileSidebar;
+window.toggleSidebarWithAnimation = toggleSidebarWithAnimation;
 
 /* ===== 性能监控 ===== */
 function initPerformanceMonitoring() {
