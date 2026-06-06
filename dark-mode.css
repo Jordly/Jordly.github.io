@@ -1352,3 +1352,83 @@ html {
   border-color: rgba(255, 255, 255, 0.2) !important;
   background-color: rgba(255, 255, 255, 0.04) !important;
 }
+
+/* ===== 可搜索下拉组件暗黑模式 ===== */
+[data-theme="dark"] .search-dropdown-trigger {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+  color: var(--c-text-2) !important;
+}
+
+[data-theme="dark"] .search-dropdown-trigger:hover {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="dark"] .search-dropdown-trigger.active {
+  border-color: var(--c-primary) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+}
+
+[data-theme="dark"] .search-dropdown-trigger.has-value {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+  color: var(--c-primary) !important;
+}
+
+[data-theme="dark"] .search-dropdown-panel {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .search-dropdown-search {
+  border-bottom-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .search-dropdown-search input {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .search-dropdown-search input::placeholder {
+  color: var(--c-text-3) !important;
+}
+
+[data-theme="dark"] .search-dropdown-search svg {
+  color: var(--c-text-3) !important;
+}
+
+[data-theme="dark"] .search-dropdown-option {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .search-dropdown-option:hover {
+  background: rgba(59, 130, 246, 0.08) !important;
+}
+
+[data-theme="dark"] .search-dropdown-option.selected {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: var(--c-primary) !important;
+}
+
+[data-theme="dark"] .search-dropdown-option.highlight {
+  background: rgba(59, 130, 246, 0.12) !important;
+}
+
+[data-theme="dark"] .search-dropdown-empty {
+  color: var(--c-text-3) !important;
+}
+
+[data-theme="dark"] .search-dropdown-tag {
+  background: rgba(59, 130, 246, 0.15) !important;
+  color: var(--c-primary) !important;
+}
+
+[data-theme="dark"] .search-dropdown-tag-remove {
+  color: var(--c-primary) !important;
+}
+
+[data-theme="dark"] .search-dropdown-tag-remove:hover {
+  opacity: 1 !important;
+  background: rgba(59, 130, 246, 0.2) !important;
+}

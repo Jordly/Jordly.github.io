@@ -1903,7 +1903,180 @@
   max-height: calc(90vh - 60px) !important;
 }
 
-/* ===== 表单 Premium 增强 ===== */
+/* ===== 可搜索下拉组件（品牌/品类筛选） ===== */
+.search-dropdown {
+  position: relative !important;
+  flex-shrink: 0 !important;
+}
+
+.search-dropdown-trigger {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 5px 24px 5px 10px !important;
+  font-size: 12px !important;
+  border-radius: 16px !important;
+  border: 1.5px solid #e2e8f0 !important;
+  background: #fff !important;
+  color: #1e293b !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 8px center !important;
+  background-size: 12px !important;
+  min-width: 90px !important;
+  max-width: 160px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.search-dropdown-trigger:hover {
+  border-color: #cbd5e1 !important;
+  background-color: #f8fafc !important;
+}
+
+.search-dropdown-trigger.active {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+}
+
+.search-dropdown-trigger.has-value {
+  color: #2563eb !important;
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+.search-dropdown-panel {
+  position: absolute !important;
+  top: calc(100% + 4px) !important;
+  left: 0 !important;
+  width: 240px !important;
+  max-height: 280px !important;
+  background: #fff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.12) !important;
+  z-index: 9999 !important;
+  display: none !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  animation: dropdownFadeIn 0.2s var(--ease-premium) !important;
+}
+
+.search-dropdown-panel.show {
+  display: flex !important;
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.search-dropdown-search {
+  padding: 8px 10px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.search-dropdown-search input {
+  flex: 1 !important;
+  border: none !important;
+  outline: none !important;
+  font-size: 12px !important;
+  color: #1e293b !important;
+  background: transparent !important;
+}
+
+.search-dropdown-search input::placeholder {
+  color: #94a3b8 !important;
+}
+
+.search-dropdown-search svg {
+  flex-shrink: 0 !important;
+  color: #94a3b8 !important;
+}
+
+.search-dropdown-options {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 4px !important;
+  max-height: 240px !important;
+}
+
+.search-dropdown-option {
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+  border-radius: 6px !important;
+  transition: background 0.15s !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.search-dropdown-option:hover {
+  background: #f1f5f9 !important;
+}
+
+.search-dropdown-option.selected {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  font-weight: 500 !important;
+}
+
+.search-dropdown-option.highlight {
+  background: #eff6ff !important;
+}
+
+.search-dropdown-empty {
+  padding: 12px 10px !important;
+  font-size: 12px !important;
+  color: #94a3b8 !important;
+  text-align: center !important;
+}
+
+.search-dropdown-tags {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 3px !important;
+  margin-left: 4px !important;
+}
+
+.search-dropdown-tag {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 2px !important;
+  padding: 1px 6px !important;
+  font-size: 11px !important;
+  background: #eff6ff !important;
+  color: #2563eb !important;
+  border-radius: 8px !important;
+  max-width: 80px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.search-dropdown-tag-remove {
+  cursor: pointer !important;
+  font-style: normal !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  opacity: 0.6 !important;
+  transition: opacity 0.15s !important;
+}
+
+.search-dropdown-tag-remove:hover {
+  opacity: 1 !important;
+}
 
 /* 表单组增强 */
 .form-group {
