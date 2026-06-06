@@ -457,3 +457,210 @@ window.Toast = Toast;
 window.showLoading = showLoading;
 window.hideLoading = hideLoading;
 window.enhancedLogin = enhancedLogin;
+
+/* ===== 数据表格增强功能 ===== */
+
+/**
+ * 表格排序功能
+ * 用法：点击表头即可排序
+ */
+class TableSorter {
+  constructor(table) {
+    this.table = table;
+    this.headers = table.querySelectorAll('thead th');
+    this.tbody = table.querySelector('tbody');
+    this.currentSort = { column: -1, ascending: true };
+    
+    this.init();
+  }
+  
+  init() {
+    this.headers.forEach((header, index) => {
+      header.addEventListener('click', () => this.sort(index));
+      header.style.cursor = 'pointer';
+    });
+  }
+  
+  sort(columnIndex) {
+    const rows = Array.from(this.tbody.querySelectorAll('tr'));
+    const ascending = this.currentSort.column === columnIndex ? !this.currentSort.ascending : true;
+    
+    // 更新排序指示器
+    this.headers.forEach((h, i) => {
+      h.classList.remove('sorted-asc', 'sorted-desc');
+      if (i === columnIndex) {
+        h.classList.add(ascending ? 'sorted-asc' : 'sorted-desc');
+      }
+    });
+    
+    // 排序
+    rows.sort((a, b) => {
+      const cellA = a.cells[columnIndex]?.textContent.trim() || '';
+      const cellB = b.cells[columnIndex]?.textContent.trim() || '';
+      
+      // 尝试数字排序
+      const numA = parseFloat(cellA);
+      const numB = parseFloat(cellB);
+      if (!isNaN(numA) && !isNaN(numB)) {
+        return ascending ? numA - numB : numB - numA;
+      }
+      
+      // 字符串排序
+      return ascending ? cellA.localeCompare(cellB, 'zh-CN') : cellB.localeCompare(cellA, 'zh-CN');
+    });
+    
+    // 添加动画
+    rows.forEach((row, index) => {
+      row.style.opacity = '0';
+      row.style.transform = 'translateY(10px)';
+      setTimeout(() => {
+        this.tbody.appendChild(row);
+        row.style.transition = 'all 0.3s var(--ease-premium)';
+        row.style.opacity = '1';
+        row.style.transform = 'translateY(0)';
+      }, index * 30);
+    });
+    
+    this.currentSort = { column: columnIndex, ascending };
+  }
+}
+
+/**
+ * 表格筛选功能
+ * 用法：传入输入框和表格，自动筛选
+ */
+class TableFilter {
+  constructor(input, table) {
+    this.input = input;
+    this.table = table;
+    this.rows = table.querySelectorAll('tbody tr');
+    
+    this.init();
+  }
+  
+  init() {
+    this.input.addEventListener('input', () => {
+      const keyword = this.input.value.toLowerCase().trim();
+      let visibleCount = 0;
+      
+      this.rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const visible = text.includes(keyword);
+        row.style.display = visible ? '' : 'none';
+        
+        if (visible) {
+          row.style.opacity = '0';
+          row.style.transform = 'translateY(5px)';
+          setTimeout(() => {
+            row.style.transition = 'all 0.2s var(--ease-premium)';
+            row.style.opacity = '1';
+            row.style.transform = 'translateY(0)';
+          }, visibleCount * 20);
+          visibleCount++;
+        }
+      });
+      
+      // 显示/隐藏空状态
+      const emptyState = this.table.querySelector('.empty-state');
+      if (emptyState) {
+        emptyState.style.display = visibleCount === 0 ? '' : 'none';
+      }
+    });
+  }
+}
+
+/**
+ * 行点击效果增强
+ */
+function enhanceTableRows(table) {
+  const rows = table.querySelectorAll('tbody tr');
+  
+  rows.forEach(row => {
+    // 添加悬停音效（可选）
+    row.addEventListener('mouseenter', () => {
+      row.style.transition = 'all 0.25s var(--ease-premium)';
+    });
+    
+    // 点击效果
+    row.addEventListener('click', () => {
+      // 移除其他行的活跃状态
+      table.querySelectorAll('tbody tr.active').forEach(r => {
+        r.classList.remove('active');
+        r.style.background = '';
+      });
+      
+      // 添加当前行的活跃状态
+      row.classList.add('active');
+      row.style.background = 'linear-gradient(135deg, rgba(24, 95, 165, 0.08) 0%, rgba(79, 70, 229, 0.04) 100%)';
+      
+      // 添加点击动画
+      row.style.transform = 'scale(1.01)';
+      setTimeout(() => {
+        row.style.transform = 'scale(1)';
+      }, 150);
+    });
+  });
+}
+
+/**
+ * 自动为页面中所有 .data-table 添加增强功能
+ */
+function initTableEnhancements() {
+  const tables = document.querySelectorAll('.data-table');
+  
+  tables.forEach(table => {
+    // 添加排序功能
+    new TableSorter(table);
+    
+    // 添加行点击效果
+    enhanceTableRows(table);
+    
+    // 添加表格容器滚动阴影效果
+    const wrapper = table.closest('.table-wrap');
+    if (wrapper) {
+      wrapper.addEventListener('scroll', () => {
+        const scrollLeft = wrapper.scrollLeft;
+        const scrollWidth = wrapper.scrollWidth - wrapper.clientWidth;
+        
+        if (scrollLeft > 0) {
+          wrapper.style.boxShadow = 'inset 10px 0 10px -10px rgba(0,0,0,0.1), 0 2px 15px rgba(0,0,0,0.06)';
+        } else if (scrollLeft < scrollWidth) {
+          wrapper.style.boxShadow = 'inset -10px 0 10px -10px rgba(0,0,0,0.1), 0 2px 15px rgba(0,0,0,0.06)';
+        } else {
+          wrapper.style.boxShadow = '0 2px 15px rgba(0,0,0,0.06)';
+        }
+      });
+    }
+  });
+  
+  console.log(`📊 已为 ${tables.length} 个数据表格添加 Premium 增强`);
+}
+
+// 导出供全局使用
+window.TableSorter = TableSorter;
+window.TableFilter = TableFilter;
+window.initTableEnhancements = initTableEnhancements;
+
+// 自动初始化：当 DOM 变化时检测新表格
+const tableObserver = new MutationObserver(() => {
+  initTableEnhancements();
+});
+
+tableObserver.observe(document.body, {
+  childList: true,
+  subtree: true
+});
+
+// 初始加载时初始化
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(initTableEnhancements, 500);
+});
+
+// 当模块内容加载后也初始化
+const moduleContent = document.getElementById('module-content');
+if (moduleContent) {
+  const moduleObserver = new MutationObserver(() => {
+    setTimeout(initTableEnhancements, 100);
+  });
+  moduleObserver.observe(moduleContent, { childList: true, subtree: true });
+}
