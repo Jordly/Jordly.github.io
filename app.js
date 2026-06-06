@@ -223,14 +223,27 @@ function checkLogin() {
         const maxAge = auth.remember ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
         if (auth.token && (Date.now() - auth.loginAt) < maxAge) {
           // login.html 登录的演示用户
+          // 先从之前保存的 session 中恢复用户自定义字段
+          var savedSession = null;
+          try {
+            var savedRaw = localStorage.getItem('chansee_current_user');
+            if (savedRaw) savedSession = JSON.parse(savedRaw);
+          } catch(e) {}
+
           currentUser = {
             id: 'demo_user',
             username: auth.user?.username || 'demo',
             name: auth.user?.name || '演示用户',
             role: '管理员',
-            avatar: '',
-            position: '客服总监',
-            brand: 'Chanseen'
+            avatar: (savedSession && savedSession.avatar) || '',
+            position: (savedSession && savedSession.position) || '客服总监',
+            brand: (savedSession && savedSession.brand) || 'Chanseen',
+            nickname: (savedSession && savedSession.nickname) || auth.user?.name || '演示用户',
+            birthday: (savedSession && savedSession.birthday) || '',
+            phone: (savedSession && savedSession.phone) || '',
+            email: (savedSession && savedSession.email) || '',
+            wechatBound: (savedSession && savedSession.wechatBound !== undefined) ? savedSession.wechatBound : true,
+            keepStatus: (savedSession && savedSession.keepStatus !== undefined) ? savedSession.keepStatus : false
           };
           currentRole = '管理员';
           hideLoginModal();
@@ -265,6 +278,14 @@ function checkLogin() {
         for (var i = 0; i < keys.length; i++) {
           if (keys[i] !== "password") {
             currentUser[keys[i]] = userInDb[keys[i]];
+          }
+        }
+        // 用 session 中保存的字段补充（确保 nickname、birthday 等自定义字段不丢失）
+        var sessionKeys = Object.keys(data);
+        for (var j = 0; j < sessionKeys.length; j++) {
+          var k = sessionKeys[j];
+          if (k !== "password" && k !== "_expiry" && data[k] !== undefined && data[k] !== null) {
+            currentUser[k] = data[k];
           }
         }
       } else {
