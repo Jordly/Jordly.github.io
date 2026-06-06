@@ -606,9 +606,19 @@ function enhanceTableRows(table) {
  * 自动为页面中所有 .data-table 添加增强功能
  */
 function initTableEnhancements() {
-  const tables = document.querySelectorAll('.data-table');
+  const tables = document.querySelectorAll('.data-table:not([data-enhanced])');
   
   tables.forEach(table => {
+    // 标记已增强，避免重复初始化
+    table.setAttribute('data-enhanced', 'true');
+    
+    // 给现有行添加动画 class
+    table.querySelectorAll('tbody tr').forEach((row, index) => {
+      if (!row.classList.contains('row-animate')) {
+        row.classList.add('row-animate');
+      }
+    });
+    
     // 添加排序功能
     new TableSorter(table);
     
@@ -633,23 +643,15 @@ function initTableEnhancements() {
     }
   });
   
-  console.log(`📊 已为 ${tables.length} 个数据表格添加 Premium 增强`);
+  if (tables.length > 0) {
+    console.log(`📊 已为 ${tables.length} 个数据表格添加 Premium 增强`);
+  }
 }
 
 // 导出供全局使用
 window.TableSorter = TableSorter;
 window.TableFilter = TableFilter;
 window.initTableEnhancements = initTableEnhancements;
-
-// 自动初始化：当 DOM 变化时检测新表格
-const tableObserver = new MutationObserver(() => {
-  initTableEnhancements();
-});
-
-tableObserver.observe(document.body, {
-  childList: true,
-  subtree: true
-});
 
 // 初始加载时初始化
 document.addEventListener('DOMContentLoaded', () => {
