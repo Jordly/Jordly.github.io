@@ -666,3 +666,286 @@ if (moduleContent) {
   });
   moduleObserver.observe(moduleContent, { childList: true, subtree: true });
 }
+
+/* ===== 弹窗动画增强 ===== */
+
+/**
+ * 增强弹窗显示动画
+ * 用法：替代原来的 modal.classList.remove('hidden')
+ */
+function showModalWithAnimation(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  
+  // 移除关闭动画类
+  modal.classList.remove('closing');
+  
+  // 显示弹窗
+  modal.classList.remove('hidden');
+  
+  // 触发重排，确保动画执行
+  modal.offsetHeight;
+  
+  // 添加显示类（如果有）
+  modal.style.opacity = '1';
+  modal.style.pointerEvents = 'auto';
+  
+  console.log(`📊 弹窗已显示：${modalId}`);
+}
+
+/**
+ * 增强弹窗隐藏动画
+ * 用法：替代原来的 modal.classList.add('hidden')
+ */
+function hideModalWithAnimation(modalId) {
+  const modal = document.getElementById(modalId);
+  if (!modal) return;
+  
+  // 添加关闭动画类
+  modal.classList.add('closing');
+  
+  // 等待动画完成后隐藏
+  setTimeout(() => {
+    modal.classList.add('hidden');
+    modal.classList.remove('closing');
+    modal.style.opacity = '';
+    modal.style.pointerEvents = '';
+  }, 350); // 与 CSS 动画时间一致
+  
+  console.log(`📊 弹窗已关闭：${modalId}`);
+}
+
+// 导出供全局使用
+window.showModalWithAnimation = showModalWithAnimation;
+window.hideModalWithAnimation = hideModalWithAnimation;
+
+/* ===== 表单增强功能 ===== */
+
+/**
+ * 表单验证器增强版
+ */
+class FormValidatorEnhanced {
+  constructor(form) {
+    this.form = form;
+    this.rules = [];
+    this.errors = new Map();
+    
+    this.init();
+  }
+  
+  init() {
+    // 为所有输入元素添加实时验证
+    const inputs = this.form.querySelectorAll('input, textarea, select');
+    inputs.forEach(input => {
+      input.addEventListener('blur', () => this.validateField(input));
+      input.addEventListener('input', () => {
+        // 输入时清除错误状态
+        if (this.errors.has(input.name || input.id)) {
+          this.clearFieldError(input);
+        }
+      });
+    });
+  }
+  
+  addRule(fieldName, rule) {
+    this.rules.push({ field: fieldName, ...rule });
+  }
+  
+  validate() {
+    let isValid = true;
+    this.errors.clear();
+    
+    this.rules.forEach(rule => {
+      const input = this.form.querySelector(`[name="${rule.field}"], #${rule.field}`);
+      if (!input) return;
+      
+      const value = input.value.trim();
+      let error = null;
+      
+      // 必填验证
+      if (rule.required && !value) {
+        error = rule.message || '此项不能为空';
+      }
+      
+      // 最小长度验证
+      if (!error && rule.minLength && value.length < rule.minLength) {
+        error = rule.message || `至少需要 ${rule.minLength} 个字符`;
+      }
+      
+      // 正则验证
+      if (!error && rule.pattern && !rule.pattern.test(value)) {
+        error = rule.message || '格式不正确';
+      }
+      
+      // 自定义验证函数
+      if (!error && rule.validator) {
+        const result = rule.validator(value, input);
+        if (result !== true) {
+          error = result || '验证失败';
+        }
+      }
+      
+      if (error) {
+        this.errors.set(rule.field, error);
+        this.showFieldError(input, error);
+        isValid = false;
+      } else {
+        this.clearFieldError(input);
+      }
+    });
+    
+    return isValid;
+  }
+  
+  validateField(input) {
+    const fieldName = input.name || input.id;
+    const rule = this.rules.find(r => r.field === fieldName);
+    if (!rule) return true;
+    
+    const value = input.value.trim();
+    let error = null;
+    
+    if (rule.required && !value) {
+      error = rule.message || '此项不能为空';
+    }
+    
+    if (!error && rule.minLength && value.length < rule.minLength) {
+      error = rule.message || `至少需要 ${rule.minLength} 个字符`;
+    }
+    
+    if (!error && rule.pattern && !rule.pattern.test(value)) {
+      error = rule.message || '格式不正确';
+    }
+    
+    if (!error && rule.validator) {
+      const result = rule.validator(value, input);
+      if (result !== true) {
+        error = result || '验证失败';
+      }
+    }
+    
+    if (error) {
+      this.errors.set(fieldName, error);
+      this.showFieldError(input, error);
+      return false;
+    } else {
+      this.clearFieldError(input);
+      this.errors.delete(fieldName);
+      return true;
+    }
+  }
+  
+  showFieldError(input, message) {
+    input.classList.add('invalid');
+    input.classList.remove('valid');
+    
+    // 查找或创建错误消息元素
+    let feedback = input.parentNode.querySelector('.form-feedback');
+    if (!feedback) {
+      feedback = document.createElement('div');
+      feedback.className = 'form-feedback invalid';
+      input.parentNode.appendChild(feedback);
+    }
+    
+    feedback.innerHTML = `<span>⚠️</span> <span>${message}</span>`;
+    feedback.style.display = 'flex';
+  }
+  
+  clearFieldError(input) {
+    input.classList.remove('invalid');
+    input.classList.add('valid');
+    
+    const feedback = input.parentNode.querySelector('.form-feedback');
+    if (feedback) {
+      feedback.style.display = 'none';
+    }
+    
+    // 延迟移除 valid 类
+    setTimeout(() => {
+      input.classList.remove('valid');
+    }, 2000);
+  }
+}
+
+/**
+ * 按钮加载状态管理
+ */
+function setButtonLoading(button, loading = true) {
+  if (loading) {
+    button.classList.add('btn-loading');
+    button.disabled = true;
+    button.dataset.originalText = button.textContent;
+  } else {
+    button.classList.remove('btn-loading');
+    button.disabled = false;
+    if (button.dataset.originalText) {
+      button.textContent = button.dataset.originalText;
+    }
+  }
+}
+
+/**
+ * 自动为页面中所有表单添加增强功能
+ */
+function initFormEnhancements() {
+  const forms = document.querySelectorAll('form:not([data-enhanced])');
+  
+  forms.forEach(form => {
+    // 标记已增强
+    form.setAttribute('data-enhanced', 'true');
+    
+    // 为表单元素添加浮动标签效果
+    const inputs = form.querySelectorAll('.form-input, .form-textarea');
+    inputs.forEach(input => {
+      // 添加焦点效果
+      input.addEventListener('focus', () => {
+        const label = input.previousElementSibling;
+        if (label && label.classList.contains('form-label')) {
+          label.style.color = 'var(--c-primary)';
+          label.style.transform = 'translateY(-2px)';
+        }
+      });
+      
+      input.addEventListener('blur', () => {
+        const label = input.previousElementSibling;
+        if (label && label.classList.contains('form-label')) {
+          label.style.color = '';
+          label.style.transform = '';
+        }
+      });
+    });
+    
+    console.log('📝 已为表单添加 Premium 增强');
+  });
+}
+
+// 导出供全局使用
+window.FormValidatorEnhanced = FormValidatorEnhanced;
+window.setButtonLoading = setButtonLoading;
+window.initFormEnhancements = initFormEnhancements;
+
+// 自动初始化：当 DOM 变化时检测新表单
+const formObserver = new MutationObserver(() => {
+  initFormEnhancements();
+});
+
+formObserver.observe(document.body, {
+  childList: true,
+  subtree: true
+});
+
+// 初始加载时初始化
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(initFormEnhancements, 500);
+});
+
+// 当模块内容加载后也初始化
+if (moduleContent) {
+  const formModuleObserver = new MutationObserver(() => {
+    setTimeout(initFormEnhancements, 100);
+  });
+  formModuleObserver.observe(moduleContent, { childList: true, subtree: true });
+}
+
+console.log('✨ Premium 弹窗和表单增强已加载');
+
