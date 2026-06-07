@@ -196,3 +196,140 @@ function confirmImport(){
   alert(msg);
   importPreviewData = null;
 }
+
+// ===== 编辑项目 =====
+function escHtml(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function editProject(projectId){
+  var p = PROJECTS.find(function(pp){return pp.id===projectId;});
+  if(!p) return;
+
+  var html = '<form id="edit-project-form" onsubmit="return false;">';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;padding:8px 0;">';
+
+  // 项目编号(readonly) + 项目名称
+  html += '<div class="form-group"><label class="form-label">项目编号</label><input class="form-input" value="'+p.id+'" readonly style="background:#f1f5f9;cursor:not-allowed;"></div>';
+  html += '<div class="form-group"><label class="form-label">项目名称 *</label><input class="form-input" id="f-edit-name" value="'+escHtml(p.name)+'" required></div>';
+
+  // 品牌 + 品类
+  html += '<div class="form-group"><label class="form-label">品牌</label><input class="form-input" id="f-edit-brand" value="'+escHtml(p.brand)+'"></div>';
+  html += '<div class="form-group"><label class="form-label">品类</label><input class="form-input" id="f-edit-category" value="'+escHtml(p.category)+'"></div>';
+
+  // 项目类型 + 所属职场
+  html += '<div class="form-group"><label class="form-label">项目类型</label><select class="form-input" id="f-edit-serviceMode">';
+  ['TP项目','DP项目','BPO项目'].forEach(function(opt){
+    html += '<option value="'+opt+'"'+(p.serviceMode===opt?' selected':'')+'>'+opt+'</option>';
+  });
+  html += '</select></div>';
+
+  html += '<div class="form-group"><label class="form-label">所属职场</label><select class="form-input" id="f-edit-workplace">';
+  ['济南','淄博','杭州','无锡'].forEach(function(opt){
+    html += '<option value="'+opt+'"'+(p.workplace===opt?' selected':'')+'>'+opt+'</option>';
+  });
+  html += '</select></div>';
+
+  // 项目经理 + 项目总监
+  html += '<div class="form-group"><label class="form-label">项目经理</label><input class="form-input" id="f-edit-pm" value="'+escHtml(p.pm)+'"></div>';
+  html += '<div class="form-group"><label class="form-label">项目总监</label><input class="form-input" id="f-edit-director" value="'+escHtml(p.director)+'"></div>';
+
+  // 项目状态 + 健康度
+  html += '<div class="form-group"><label class="form-label">项目状态</label><select class="form-input" id="f-edit-status">';
+  ['优质健康店','平稳常规店','风险预警店','高危问题店'].forEach(function(opt){
+    html += '<option value="'+opt+'"'+(p.status===opt?' selected':'')+'>'+opt+'</option>';
+  });
+  html += '</select></div>';
+
+  html += '<div class="form-group"><label class="form-label">健康度</label><select class="form-input" id="f-edit-health">';
+  ['🟢','🟡','🔴'].forEach(function(opt){
+    html += '<option value="'+opt+'"'+(p.health===opt?' selected':'')+'>'+opt+'</option>';
+  });
+  html += '</select></div>';
+
+  // 服务周期开始 + 服务周期结束
+  html += '<div class="form-group"><label class="form-label">服务周期开始</label><input class="form-input" type="date" id="f-edit-startDate" value="'+p.startDate+'"></div>';
+  html += '<div class="form-group"><label class="form-label">服务周期结束</label><input class="form-input" type="date" id="f-edit-endDate" value="'+p.endDate+'"></div>';
+
+  // 客服base + 服务渠道
+  html += '<div class="form-group"><label class="form-label">客服base</label><input class="form-input" id="f-edit-base" value="'+escHtml(p.base)+'"></div>';
+  html += '<div class="form-group"><label class="form-label">服务渠道</label><input class="form-input" id="f-edit-platforms" value="'+escHtml(p.platforms)+'" placeholder="多个用逗号分隔"></div>';
+
+  // 服务时间 + FTE目标
+  html += '<div class="form-group"><label class="form-label">服务时间</label><input class="form-input" id="f-edit-serviceHours" value="'+p.serviceHours+'"></div>';
+  html += '<div class="form-group"><label class="form-label">FTE目标</label><input class="form-input" type="number" id="f-edit-fteTarget" value="'+p.fteTarget+'"></div>';
+
+  // SLA响应 + SLA解决
+  html += '<div class="form-group"><label class="form-label">SLA响应(秒)</label><input class="form-input" type="number" id="f-edit-slaResponse" value="'+p.slaResponse+'"></div>';
+  html += '<div class="form-group"><label class="form-label">SLA解决(秒)</label><input class="form-input" type="number" id="f-edit-slaResolve" value="'+p.slaResolve+'"></div>';
+
+  // 成本预算 + 营收
+  html += '<div class="form-group"><label class="form-label">成本预算</label><input class="form-input" type="number" id="f-edit-costBudget" value="'+p.costBudget+'" oninput="calcProfitRate()"></div>';
+  html += '<div class="form-group"><label class="form-label">营收</label><input class="form-input" type="number" id="f-edit-revenue" value="'+p.revenue+'" oninput="calcProfitRate()"></div>';
+
+  // 利润率(自动计算)
+  var profitRate = p.revenue > 0 ? ((p.revenue - p.costBudget) / p.revenue * 100).toFixed(1) : 0;
+  html += '<div class="form-group"><label class="form-label">利润率(%)</label><input class="form-input" id="f-edit-profitRate" value="'+profitRate+'" readonly style="background:#f1f5f9;cursor:not-allowed;"></div>';
+
+  html += '</div>';
+
+  // 项目背景(全宽)
+  html += '<div class="form-group" style="margin-top:12px;"><label class="form-label">项目背景</label>';
+  html += '<textarea class="form-input" id="f-edit-background" rows="3" style="resize:vertical;">'+escHtml(p.background)+'</textarea></div>';
+
+  html += '</form>';
+  html += '<input type="hidden" id="f-edit-id" value="'+p.id+'">';
+
+  // 按钮
+  html += '<div class="form-actions" style="margin-top:16px;">';
+  html += '<button class="btn" onclick="document.getElementById(\'modal-overlay\').classList.add(\'hidden\')">取消</button>';
+  html += '<button class="btn btn-primary" onclick="doEditProject()">保存</button>';
+  html += '</div>';
+
+  document.getElementById('modal-title').textContent = '✏️ 编辑项目 — '+p.name;
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+
+function calcProfitRate() {
+  var cost = parseFloat(document.getElementById('f-edit-costBudget').value) || 0;
+  var revenue = parseFloat(document.getElementById('f-edit-revenue').value) || 0;
+  var rate = revenue > 0 ? ((revenue - cost) / revenue * 100).toFixed(1) : 0;
+  var el = document.getElementById('f-edit-profitRate');
+  if(el) el.value = rate;
+}
+
+function doEditProject() {
+  var id = document.getElementById('f-edit-id').value;
+  var p = PROJECTS.find(function(pp){return pp.id===id;});
+  if(!p){ alert('项目不存在'); return; }
+  var name = document.getElementById('f-edit-name').value.trim();
+  if(!name){ alert('项目名称不能为空'); return; }
+
+  p.name = name;
+  p.brand = document.getElementById('f-edit-brand').value.trim()||'未知';
+  p.category = document.getElementById('f-edit-category').value.trim()||'未分类';
+  p.serviceMode = document.getElementById('f-edit-serviceMode').value;
+  p.workplace = document.getElementById('f-edit-workplace').value;
+  p.pm = document.getElementById('f-edit-pm').value.trim()||'未分配';
+  p.director = document.getElementById('f-edit-director').value.trim()||'未分配';
+  p.status = document.getElementById('f-edit-status').value;
+  p.health = document.getElementById('f-edit-health').value;
+  p.startDate = document.getElementById('f-edit-startDate').value;
+  p.endDate = document.getElementById('f-edit-endDate').value;
+  p.base = document.getElementById('f-edit-base').value.trim();
+  p.platforms = document.getElementById('f-edit-platforms').value.trim();
+  p.serviceHours = document.getElementById('f-edit-serviceHours').value.trim();
+  p.fteTarget = Number(document.getElementById('f-edit-fteTarget').value)||0;
+  p.slaResponse = Number(document.getElementById('f-edit-slaResponse').value)||0;
+  p.slaResolve = Number(document.getElementById('f-edit-slaResolve').value)||0;
+  p.costBudget = Number(document.getElementById('f-edit-costBudget').value)||0;
+  p.revenue = Number(document.getElementById('f-edit-revenue').value)||0;
+  p.profitRate = parseFloat(document.getElementById('f-edit-profitRate').value)||0;
+  p.background = document.getElementById('f-edit-background').value.trim();
+
+  saveProjects();
+  document.getElementById('modal-overlay').classList.add('hidden');
+  renderModule(currentModule);
+  alert('保存成功');
+}
