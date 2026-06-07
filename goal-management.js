@@ -18,6 +18,8 @@ var GOALS = [];
 function saveGoals() {
   var ok = safeSetItem('chansee_goals', JSON.stringify(GOALS));
   if (!ok) { console.error('[saveGoals] 写入失败，目标数据可能丢失！'); }
+  // 同步到 CloudBase
+  if (window.CloudBaseSync) window.CloudBaseSync.saveToCloud('goals', GOALS);
 }
 
 // 当前目标Tab筛选
