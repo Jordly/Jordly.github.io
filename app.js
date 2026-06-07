@@ -175,15 +175,37 @@ var PROJECTS = [];
 
 function saveUsers() {
   var ok = safeSetItem('chansee_users', JSON.stringify(USERS));
-  if (!ok) { alert('⚠️ 用户数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); }
+  if (!ok) { alert('⚠️ 用户数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); return; }
   // 同步到 CloudBase
-  if (window.CloudBaseSync) window.CloudBaseSync.saveToCloud('users', USERS);
+  if (window.CloudBaseSync) {
+    var p = window.CloudBaseSync.saveAll();
+    if (p && typeof p.then === 'function') {
+      p.then(function(success) {
+        if (success) {
+          console.log('[saveUsers] CloudBase 同步成功');
+        } else {
+          console.warn('[saveUsers] CloudBase 同步失败，数据仅保存在本地');
+        }
+      });
+    }
+  }
 }
 function saveProjects() {
   var ok = safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
-  if (!ok) { alert('⚠️ 项目数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); }
+  if (!ok) { alert('⚠️ 项目数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); return; }
   // 同步到 CloudBase
-  if (window.CloudBaseSync) window.CloudBaseSync.saveToCloud('projects', PROJECTS);
+  if (window.CloudBaseSync) {
+    var p = window.CloudBaseSync.saveAll();
+    if (p && typeof p.then === 'function') {
+      p.then(function(success) {
+        if (success) {
+          console.log('[saveProjects] CloudBase 同步成功');
+        } else {
+          console.warn('[saveProjects] CloudBase 同步失败，数据仅保存在本地');
+        }
+      });
+    }
+  }
 }
 
 // 持久化当前用户（同步到 USERS 数组 + 更新 session）
