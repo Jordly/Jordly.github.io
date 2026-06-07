@@ -179,7 +179,7 @@
     return new Promise(function(resolve) {
       if (!API_BASE) {
         log('API_BASE 未配置，跳过保存');
-        resolve(false);
+        resolve({ ok: false, error: 'API_BASE 未配置' });
         return;
       }
 
@@ -187,18 +187,22 @@
       cloudRequest('save', name, data).then(function(res) {
         if (res.code === 0) {
           log('保存 ' + name + ' 成功');
-          resolve(true);
+          resolve({ ok: true, error: null });
         } else {
-          log('保存 ' + name + ' 失败: ' + (res.message || '未知错误'));
+          var errMsg = res.message || '未知错误';
+          log('保存 ' + name + ' 失败: ' + errMsg);
           if (retryCount < 2) {
             setTimeout(function() {
               saveOne(name, data, retryCount + 1).then(resolve);
             }, 1500);
           } else {
             log('放弃保存 ' + name + '（已重试3次）');
-            resolve(false);
+            resolve({ ok: false, error: errMsg });
           }
         }
+      }).catch(function(err) {
+        log('保存 ' + name + ' 请求异常: ' + err.message);
+        resolve({ ok: false, error: err.message });
       });
     });
   }
@@ -227,11 +231,15 @@
       saveOne('users', users),
       saveOne('goals', goals)
     ]).then(function(results) {
-      var ok = results[0] || results[1] || results[2];
+      var ok = results[0].ok && results[1].ok && results[2].ok;
       if (ok) {
         showStatus('云端同步成功 ✅', 'success');
       } else {
-        showStatus('云端同步失败 ❌', 'error');
+        var errors = [];
+        if (!results[0].ok) errors.push('projects:' + results[0].error);
+        if (!results[1].ok) errors.push('users:' + results[1].error);
+        if (!results[2].ok) errors.push('goals:' + results[2].error);
+        showStatus('同步失败: ' + errors.join('; '), 'error');
       }
       log('云端保存完成，ok=' + ok);
       callback(ok);
