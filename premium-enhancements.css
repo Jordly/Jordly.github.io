@@ -3041,3 +3041,40 @@
 .fb-adv-btn svg {
   flex-shrink: 0 !important;
 }
+
+/* ===== 导入对话框样式 ===== */
+#import-drop-zone:hover {
+  border-color: #2563eb !important;
+  background: #f0f7ff !important;
+}
+
+#import-drop-zone svg {
+  transition: transform 0.2s ease;
+}
+
+#import-drop-zone:hover svg {
+  transform: scale(1.1);
+}
+
+#import-preview-area .btn-sm {
+  margin-right: 6px;
+}
+
+/* 导入结果状态样式 */
+#import-preview-area > div {
+  animation: slideIn 0.2s ease;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 项目列表操作按钮组 */
+.actions .btn-sm {
+  margin-right: 4px;
+}
+
+.actions .btn-sm:last-child {
+  margin-right: 0;
+}

@@ -2358,6 +2358,8 @@ function renderArchive(){
 
     <div class="module-actions">
 
+      <button class="btn btn-sm" onclick="showImportDialog()" style="margin-right:4px;">📤 导入</button>
+      <button class="btn btn-sm" onclick="exportProjects()" style="margin-right:8px;">📥 导出</button>
       ${can?'<button class="btn btn-primary btn-sm" onclick="showAddProject()">＋ 新增项目</button>':''}
 
       ${currentRole==='leader'?'<span class="badge badge-gray">只读权限</span>':''}
@@ -2398,7 +2400,7 @@ function renderArchive(){
 
               <button class="btn btn-sm" onclick="showProjectDetail('${p.id}')">查看</button>
 
-              ${can?'<button class="btn btn-sm" onclick="alert(\'编辑功能开发中\')">编辑</button>':''}
+              ${can?'<button class="btn btn-sm" onclick="editProject(\'${p.id}\')">编辑</button>':''}
 
             </td>
 
@@ -3377,6 +3379,7 @@ function showProjectDetail(projectId){
 
       <div style="text-align:right;">
 
+        <button class="btn btn-sm" onclick="editProject('${p.id}')" style="font-size:12px;margin-bottom:8px;">✏️ 编辑</button>
         <div style="font-size:12px;color:var(--c-text-3);">现任负责人</div>
 
         <div style="font-size:16px;font-weight:600;color:var(--c-primary);">${p.pm}</div>
