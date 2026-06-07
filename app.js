@@ -174,10 +174,12 @@ var PROJECTS = [];
 })();
 
 function saveUsers() {
-  safeSetItem('chansee_users', JSON.stringify(USERS));
+  var ok = safeSetItem('chansee_users', JSON.stringify(USERS));
+  if (!ok) { alert('⚠️ 用户数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); }
 }
 function saveProjects() {
-  safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
+  var ok = safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
+  if (!ok) { alert('⚠️ 项目数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); }
 }
 
 // 持久化当前用户（同步到 USERS 数组 + 更新 session）
@@ -195,10 +197,10 @@ function persistCurrentUser() {
     }
   }
   saveUsers();
-  // 更新 session 中的 currentUser（不含密码）
+  // 更新 session 中的 currentUser（不含密码，使用 safeSetItem）
   var sessionData = JSON.parse(JSON.stringify(currentUser));
   delete sessionData.password;
-  try { localStorage.setItem('chansee_current_user', JSON.stringify(sessionData)); } catch(e) {}
+  safeSetItem('chansee_current_user', JSON.stringify(sessionData));
 }
 
 

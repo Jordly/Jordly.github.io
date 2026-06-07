@@ -16,11 +16,8 @@ var GOALS = [];
 })();
 
 function saveGoals() {
-  try {
-    localStorage.setItem('chansee_goals', JSON.stringify(GOALS));
-  } catch(e) {
-    console.error('[saveGoals] 写入失败:', e);
-  }
+  var ok = safeSetItem('chansee_goals', JSON.stringify(GOALS));
+  if (!ok) { console.error('[saveGoals] 写入失败，目标数据可能丢失！'); }
 }
 
 // 当前目标Tab筛选
