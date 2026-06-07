@@ -1930,11 +1930,11 @@ function renderDashboard(){
 
   const red = all.filter(p=>p.health==="🔴").length;
 
-  const totalRevenue = all.reduce((s,p)=>s+p.revenue,0);
+  const totalRevenue = all.reduce((s,p)=>s+(p.revenue||0),0);
 
-  const totalCost = all.reduce((s,p)=>s+p.costBudget,0);
+  const totalCost = all.reduce((s,p)=>s+(p.costBudget||0),0);
 
-  const avgProfit = all.length ? (all.reduce((s,p)=>s+p.profitRate,0)/all.length).toFixed(1) : 0;
+  const avgProfit = all.length ? (all.reduce((s,p)=>s+(p.profitRate||0),0)/all.length).toFixed(1) : 0;
 
   // 计算项目类型分布
   const tpCount = all.filter(p=>p.serviceMode==="TP项目").length;
@@ -1993,8 +1993,8 @@ function renderDashboard(){
 
   // KPI sparkline 数据（模拟）
   const kpiCards = [
-    {label:'月度总销售额', value:(totalRevenue/10000).toFixed(1)+'万', trend:'+12.3%', trendUp:true, areaColor:'#fbbf24', strokeColor:'#fbbf24', path:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20'},
-    {label:'月度总成本', value:(totalCost/10000).toFixed(1)+'万', trend:'+5.1%', trendUp:false, areaColor:'#f472b6', strokeColor:'#f472b6', path:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28'},
+    {label:'月度总销售额', value:isNaN(totalRevenue)?'0.0万':(totalRevenue/10000).toFixed(1)+'万', trend:'+12.3%', trendUp:true, areaColor:'#fbbf24', strokeColor:'#fbbf24', path:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20'},
+    {label:'月度总成本', value:isNaN(totalCost)?'0.0万':(totalCost/10000).toFixed(1)+'万', trend:'+5.1%', trendUp:false, areaColor:'#f472b6', strokeColor:'#f472b6', path:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28'},
     {label:'项目费效比', value:'1.19', trend:'+0.08', trendUp:true, areaColor:'#34d399', strokeColor:'#34d399', path:'M 4,42 Q 14,40 24,38 T 44,36 T 64,32 T 84,30 T 104,26 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,40 24,38 T 44,36 T 64,32 T 84,30 T 104,26'},
     {label:'目标达成率', value:'94.2%', trend:'+3.5pp', trendUp:true, areaColor:'#22d3ee', strokeColor:'#22d3ee', path:'M 4,44 Q 14,42 24,40 T 44,38 T 64,36 T 84,34 T 104,30 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,42 24,40 T 44,38 T 64,36 T 84,34 T 104,30'},
     {label:'健康项目数', value:green+'/'+all.length, trend:'查看详情 →', trendUp:true, areaColor:'#fbbf24', strokeColor:'#fbbf24', path:'M 4,42 Q 14,40 28,38 T 52,36 T 76,32 T 100,30 T 124,26 L 124,50 L 4,50 Z', strokePath:'M 4,42 Q 14,40 28,38 T 52,36 T 76,32 T 100,30 T 124,26'}
@@ -2117,7 +2117,7 @@ function renderDashboard(){
       <div style="display:flex;gap:16px;margin-bottom:10px;">
         <div style="text-align:center;flex:1;">
           <div style="font-size:10px;color:#64748b;">总成本</div>
-          <div style="font-size:20px;font-weight:700;color:#44403c;">${(totalCost/10000).toFixed(1)}万</div>
+          <div style="font-size:20px;font-weight:700;color:#44403c;">${isNaN(totalCost)?'0.0':(totalCost/10000).toFixed(1)}万</div>
         </div>
         <div style="text-align:center;flex:1;">
           <div style="font-size:10px;color:#64748b;">总预算</div>
@@ -2422,7 +2422,7 @@ function renderArchive(){
 
             <td>${p.director}</td>
 
-            <td>${p.pmHistory.length>0?`<span class="badge badge-gray" title="${p.pmHistory.map(h=>h.name+'('+h.from+'~'+h.to+')').join('; ')}">${p.pmHistory.length}次交接</span>`:'无'}</td>
+            <td>${(p.pmHistory||[]).length>0?`<span class="badge badge-gray" title="${(p.pmHistory||[]).map(h=>h.name+'('+h.from+'~'+h.to+')').join('; ')}">${(p.pmHistory||[]).length}次交接</span>`:'无'}</td>
 
             <td class="actions">
 
@@ -2497,7 +2497,7 @@ function renderTarget(){
 
             <td>≥4.5</td>
 
-            <td>¥${(p.costBudget/10000).toFixed(1)}</td>
+            <td>¥${((p.costBudget||0)/10000).toFixed(1)}</td>
 
             <td style="max-width:200px;font-size:12px;color:var(--c-text-2)">承接方负责客服服务质量；需求方负责系统稳定性与活动信息同步</td>
 
@@ -2540,7 +2540,7 @@ function renderCost(){
 
       <div class="metric-label">总营收（月度）</div>
 
-      <div class="metric-value">¥${(all.reduce((s,p)=>s+p.revenue,0)/10000).toFixed(1)}万</div>
+      <div class="metric-value">¥${(all.reduce((s,p)=>s+(p.revenue||0),0)/10000).toFixed(1)}万</div>
 
     </div>
 
@@ -2548,7 +2548,7 @@ function renderCost(){
 
       <div class="metric-label">总成本（月度）</div>
 
-      <div class="metric-value">¥${(all.reduce((s,p)=>s+p.costBudget,0)/10000).toFixed(1)}万</div>
+      <div class="metric-value">¥${(all.reduce((s,p)=>s+(p.costBudget||0),0)/10000).toFixed(1)}万</div>
 
     </div>
 
@@ -2556,7 +2556,7 @@ function renderCost(){
 
       <div class="metric-label">平均利润率</div>
 
-      <div class="metric-value" style="color:${all.length && all.reduce((s,p)=>s+p.profitRate,0)/all.length>=10?'var(--c-green)':'var(--c-yellow)'}">${all.length?(all.reduce((s,p)=>s+p.profitRate,0)/all.length).toFixed(1):0}%</div>
+      <div class="metric-value" style="color:${all.length && all.reduce((s,p)=>s+(p.profitRate||0),0)/all.length>=10?'var(--c-green)':'var(--c-yellow)'}">${all.length?(all.reduce((s,p)=>s+(p.profitRate||0),0)/all.length).toFixed(1):0}%</div>
 
     </div>
 
@@ -2564,7 +2564,7 @@ function renderCost(){
 
       <div class="metric-label">预警项目数</div>
 
-      <div class="metric-value" style="color:${all.filter(p=>p.profitRate<5).length>0?'var(--c-red)':'var(--c-green)'}">${all.filter(p=>p.profitRate<5).length}</div>
+      <div class="metric-value" style="color:${all.filter(p=>(p.profitRate||0)<5).length>0?'var(--c-red)':'var(--c-green)'}">${all.filter(p=>(p.profitRate||0)<5).length}</div>
 
     </div>
 
@@ -2580,23 +2580,23 @@ function renderCost(){
 
         ${all.map(p=>{
 
-          const actualCost = Math.round(p.costBudget * (0.9+Math.random()*0.3));
+          const actualCost = Math.round((p.costBudget||0) * (0.9+Math.random()*0.3));
 
-          const actualProfit = ((p.revenue - actualCost)/p.revenue*100).toFixed(1);
+          const actualProfit = (p.revenue && p.revenue > 0) ? ((p.revenue - actualCost)/p.revenue*100).toFixed(1) : '0.0';
 
           return `<tr>
 
-            <td>${p.name}</td>
+            <td>${p.name||'未命名'}</td>
 
-            <td>¥${(p.revenue/10000).toFixed(1)}</td>
+            <td>¥${((p.revenue||0)/10000).toFixed(1)}</td>
 
-            <td>¥${(p.costBudget/10000).toFixed(1)}</td>
+            <td>¥${((p.costBudget||0)/10000).toFixed(1)}</td>
 
             <td>¥${(actualCost/10000).toFixed(1)}</td>
 
-            <td style="color:${actualProfit>=10?'var(--c-green)':actualProfit<0?'var(--c-red)':'var(--c-yellow)'}">${actualProfit}%</td>
+            <td style="color:${parseFloat(actualProfit)>=10?'var(--c-green)':parseFloat(actualProfit)<0?'var(--c-red)':'var(--c-yellow)'}">${actualProfit}%</td>
 
-            <td>${actualProfit<5?'<span class="badge badge-red">⚠️ 利润率过低</span>':actualProfit<10?'<span class="badge badge-yellow">关注</span>':'<span class="badge badge-green">正常</span>'}</td>
+            <td>${parseFloat(actualProfit)<5?'<span class="badge badge-red">⚠️ 利润率过低</span>':parseFloat(actualProfit)<10?'<span class="badge badge-yellow">关注</span>':'<span class="badge badge-green">正常</span>'}</td>
 
           </tr>`;
 
@@ -3260,7 +3260,7 @@ function renderHandover(){
 
             <td><span class="badge badge-green">正常</span></td>
 
-            <td>${p.pmHistory.length + HANDOVERS.filter(h=>h.projectId===p.id).length}</td>
+            <td>${(p.pmHistory||[]).length + HANDOVERS.filter(h=>h.projectId===p.id).length}</td>
 
             <td>${lastH?lastH.date:'无'}</td>
 
@@ -3330,7 +3330,7 @@ function renderDirector(){
 
               <td>${p.serviceMode}</td>
 
-              <td style="color:${p.profitRate>=10?'var(--c-green)':p.profitRate<0?'var(--c-red)':'var(--c-yellow)'}">${p.profitRate}%</td>
+              <td style="color:${(p.profitRate||0)>=10?'var(--c-green)':(p.profitRate||0)<0?'var(--c-red)':'var(--c-yellow)'}">${(p.profitRate||0)}%</td>
 
               <td>${p.health}</td>
 
@@ -3346,7 +3346,7 @@ function renderDirector(){
 
             <td>合计/平均</td><td>${projs.length}个项目</td><td></td>
 
-            <td style="color:${projs.reduce((s,p)=>s+p.profitRate,0)/projs.length>=10?'var(--c-green)':'var(--c-yellow)'}">${(projs.reduce((s,p)=>s+p.profitRate,0)/projs.length).toFixed(1)}%</td>
+            <td style="color:${projs.reduce((s,p)=>s+(p.profitRate||0),0)/projs.length>=10?'var(--c-green)':'var(--c-yellow)'}">${(projs.reduce((s,p)=>s+(p.profitRate||0),0)/projs.length).toFixed(1)}%</td>
 
             <td>${projs.filter(p=>p.health==='🟢').length}🟢 ${projs.filter(p=>p.health==='🟡').length}🟡 ${projs.filter(p=>p.health==='🔴').length}🔴</td>
 
@@ -3466,7 +3466,7 @@ function showProjectDetail(projectId){
 
       </div>
 
-      ${p.pmHistory.length>0?`
+      ${(p.pmHistory||[]).length>0?`
 
         <h4 style="margin-top:16px;">历任负责人记录</h4>
 
@@ -3506,9 +3506,9 @@ function showProjectDetail(projectId){
 
         <div class="detail-item"><div class="detail-label">CSat目标</div><div class="detail-value">≥ 4.5</div></div>
 
-        <div class="detail-item"><div class="detail-label">月度成本预算</div><div class="detail-value">¥${(p.costBudget/10000).toFixed(1)}万</div></div>
+        <div class="detail-item"><div class="detail-label">月度成本预算</div><div class="detail-value">¥${((p.costBudget||0)/10000).toFixed(1)}万</div></div>
 
-        <div class="detail-item"><div class="detail-label">月度营收目标</div><div class="detail-value">¥${(p.revenue/10000).toFixed(1)}万</div></div>
+        <div class="detail-item"><div class="detail-label">月度营收目标</div><div class="detail-value">¥${((p.revenue||0)/10000).toFixed(1)}万</div></div>
 
       </div>
 
@@ -3636,7 +3636,7 @@ function showProjectDetail(projectId){
 
       `:'<div style="color:var(--c-text-3);padding:16px 0;">暂无交接记录</div>'}
 
-      ${p.pmHistory.length>0?`
+      ${(p.pmHistory||[]).length>0?`
 
         <h4 style="margin-top:16px;">历任负责人（档案记录）</h4>
 
