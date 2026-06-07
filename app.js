@@ -3917,7 +3917,7 @@ function doAddProject(){
 
   renderModule(currentModule);
 
-  alert("项目「"+name+"」已新增！");
+  showToast("项目「"+name+"」已新增！");
 
 }
 

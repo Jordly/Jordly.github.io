@@ -201,7 +201,7 @@ function doSaveGoal() {
   saveGoals();
   document.getElementById('modal-overlay').classList.add('hidden');
   renderModule('target');
-  alert(id ? '保存成功' : '新增成功');
+  showToast(id ? '保存成功' : '新增成功');
 }
 
 function viewProjectFromGoal(projectId) {

@@ -331,5 +331,5 @@ function doEditProject() {
   saveProjects();
   document.getElementById('modal-overlay').classList.add('hidden');
   renderModule(currentModule);
-  alert('保存成功');
+  showToast('保存成功');
 }
