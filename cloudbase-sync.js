@@ -68,7 +68,7 @@
   function cloudRequest(action, collection, data, retryCount) {
     retryCount = retryCount || 0;
 
-    return new Promise(function(resolve) {
+    return new Promise(function(resolve, reject) {
       if (!API_BASE) {
         log('API_BASE 未配置，跳过 HTTP 请求');
         resolve({ code: -1, message: 'API_BASE 未配置' });
@@ -82,7 +82,7 @@
         token: AUTH_TOKEN
       });
 
-      log('HTTP 请求: ' + action + ' ' + collection);
+      log('HTTP 请求: ' + action + ' ' + collection + ' (尝试 ' + (retryCount + 1) + '/3)');
 
       fetch(API_BASE, {
         method: 'POST',
@@ -92,12 +92,23 @@
         return res.json();
       }).then(function(result) {
         log('HTTP 响应:', result);
-        resolve(result);
+        if (result.code === 0) {
+          resolve(result);
+        } else {
+          // 业务错误，重试
+          if (retryCount < 2) {
+            setTimeout(function() {
+              cloudRequest(action, collection, data, retryCount + 1).then(resolve).catch(reject);
+            }, 1500);
+          } else {
+            resolve(result);  // 重试3次后返回错误
+          }
+        }
       }).catch(function(err) {
-        log('HTTP 请求失败 (' + (retryCount + 1) + '/3): ' + err.message);
+        log('HTTP 请求异常 (' + (retryCount + 1) + '/3): ' + err.message);
         if (retryCount < 2) {
           setTimeout(function() {
-            cloudRequest(action, collection, data, retryCount + 1).then(resolve);
+            cloudRequest(action, collection, data, retryCount + 1).then(resolve).catch(reject);
           }, 1500);
         } else {
           resolve({ code: -1, message: '请求失败: ' + err.message });
@@ -187,9 +198,7 @@
 
   // ===== 保存 =====
 
-  function saveOne(name, data, retryCount) {
-    retryCount = retryCount || 0;
-
+  function saveOne(name, data) {
     return new Promise(function(resolve) {
       if (!API_BASE) {
         log('API_BASE 未配置，跳过保存');
@@ -198,6 +207,8 @@
       }
 
       log('正在保存 ' + name + ' (' + data.length + ' 条)...');
+
+      // cloudRequest 内部已处理重试，这里不再重复重试
       cloudRequest('save', name, data).then(function(res) {
         if (res.code === 0) {
           log('保存 ' + name + ' 成功');
@@ -205,14 +216,7 @@
         } else {
           var errMsg = res.message || '未知错误';
           log('保存 ' + name + ' 失败: ' + errMsg);
-          if (retryCount < 2) {
-            setTimeout(function() {
-              saveOne(name, data, retryCount + 1).then(resolve);
-            }, 1500);
-          } else {
-            log('放弃保存 ' + name + '（已重试3次）');
-            resolve({ ok: false, error: errMsg });
-          }
+          resolve({ ok: false, error: errMsg });
         }
       }).catch(function(err) {
         log('保存 ' + name + ' 请求异常: ' + err.message);
@@ -247,16 +251,51 @@
     ]).then(function(results) {
       var ok = results[0].ok && results[1].ok && results[2].ok;
       if (ok) {
-        showStatus('云端同步成功 ✅', 'success');
+        // ✅ 保存成功，立即验证云端数据是否一致
+        log('保存成功，开始验证云端数据...');
+        verifyCloudData(projects, users, goals, function(verifyOk) {
+          if (verifyOk) {
+            showStatus('云端同步成功 ✅', 'success');
+            log('验证通过：云端数据与本地一致');
+          } else {
+            showStatus('同步异常：云端数据不一致，请重试', 'error');
+            log('验证失败：云端数据与本地不一致');
+          }
+          callback(ok);
+        });
       } else {
         var errors = [];
         if (!results[0].ok) errors.push('projects:' + results[0].error);
         if (!results[1].ok) errors.push('users:' + results[1].error);
         if (!results[2].ok) errors.push('goals:' + results[2].error);
         showStatus('同步失败: ' + errors.join('; '), 'error');
+        log('云端保存失败，errors=' + errors.join('; '));
+        callback(ok);
       }
-      log('云端保存完成，ok=' + ok);
-      callback(ok);
+    });
+  }
+
+  // 验证云端数据是否与本地一致
+  function verifyCloudData(localProjects, localUsers, localGoals, callback) {
+    log('正在验证云端数据...');
+    Promise.all([
+      loadOne('projects'),
+      loadOne('users'),
+      loadOne('goals')
+    ]).then(function(results) {
+      var cloudProjects = results[0] || [];
+      var cloudUsers = results[1] || [];
+      var cloudGoals = results[2] || [];
+
+      var projectsMatch = JSON.stringify(cloudProjects) === JSON.stringify(localProjects);
+      var usersMatch = JSON.stringify(cloudUsers) === JSON.stringify(localUsers);
+      var goalsMatch = JSON.stringify(cloudGoals) === JSON.stringify(localGoals);
+
+      log('验证结果: projects=' + projectsMatch + ', users=' + usersMatch + ', goals=' + goalsMatch);
+      callback(projectsMatch && usersMatch && goalsMatch);
+    }).catch(function(err) {
+      log('验证失败: ' + err.message);
+      callback(false);
     });
   }
 
