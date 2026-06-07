@@ -107,18 +107,22 @@
   // ===== 读取 =====
 
   function loadOne(name) {
-    return new Promise(function(resolve) {
-      if (!API_BASE) { resolve(null); return; }
+    return new Promise(function(resolve, reject) {
+      if (!API_BASE) { resolve([]); return; }
 
       log('正在从云端加载 ' + name + '...');
       cloudRequest('load', name).then(function(res) {
         if (res.code === 0 && Array.isArray(res.data)) {
           log('加载 ' + name + ' 成功，共 ' + res.data.length + ' 条');
           resolve(res.data);
-        } else {
-          log('加载 ' + name + '：' + (res.message || '空数据'));
+        } else if (res.code === 0) {
           resolve([]);
+        } else {
+          log('加载 ' + name + ' 失败: ' + (res.message || '未知错误'));
+          reject(new Error(res.message || '加载失败'));
         }
+      }).catch(function(err) {
+        reject(err);
       });
     });
   }
@@ -127,7 +131,7 @@
     return new Promise(function(resolve) {
       if (!API_BASE) {
         log('API_BASE 未配置，跳过云端加载');
-        resolve(false);
+        resolve('empty');
         return;
       }
 
@@ -163,10 +167,15 @@
         log('云端加载完成，loaded=' + loaded);
         if (loaded) {
           showStatus('云端数据已同步 ✅', 'success');
+          resolve('loaded');
         } else {
-          showStatus('云端无数据', 'offline');
+          showStatus('云端暂无数据', 'offline');
+          resolve('empty');
         }
-        resolve(loaded);
+      }).catch(function(err) {
+        log('云端加载异常: ' + err.message);
+        showStatus('云端同步失败，数据仅保存在本地', 'error');
+        resolve('failed');
       });
     });
   }
@@ -258,8 +267,8 @@
       return saveAll(cb);
     },
     loadFromCloud: function(callback) {
-      loadAll().then(function(ok) {
-        if (callback) callback(ok);
+      loadAll().then(function(status) {
+        if (callback) callback(status === 'loaded');
       });
     }
   };
@@ -298,17 +307,19 @@
 
     showStatus('正在连接云端...', 'loading');
 
-    loadAll().then(function(loaded) {
-      if (loaded) {
-        // ✅ 只有成功才设置标志，失败时必须重试
+    loadAll().then(function(status) {
+      if (status === 'loaded') {
+        // ✅ 成功加载数据，设置标志并刷新
         sessionStorage.setItem('cb_loaded', '1');
         showStatus('数据已同步，正在刷新...', 'loading');
         setTimeout(function() {
           location.reload();
         }, 1200);
+      } else if (status === 'empty') {
+        // 云端暂无数据，这是正常的（如新环境或清理数据后），不显示错误
+        log('云端暂无数据，跳过刷新');
       } else {
-        // ❌ 失败不设置标志，下次刷新会重新尝试
-        showStatus('云端同步失败，数据仅保存在本地', 'error');
+        // ❌ 真正的请求失败，不设置标志，下次刷新会重试
         log('云端加载失败，未设置 cb_loaded 标志，下次将重试');
       }
     });
