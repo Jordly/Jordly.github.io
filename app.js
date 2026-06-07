@@ -2400,7 +2400,7 @@ function renderArchive(){
 
               <button class="btn btn-sm" onclick="showProjectDetail('${p.id}')">查看</button>
 
-              ${can?'<button class="btn btn-sm" onclick="editProject(\'${p.id}\')">编辑</button>':''}
+              ${can?`<button class="btn btn-sm" onclick="editProject('${p.id}')">编辑</button>`:''}
 
             </td>
 
