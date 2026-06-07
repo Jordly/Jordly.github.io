@@ -6371,6 +6371,17 @@ function renderProfile(){
     </div>
   </div>`;
 
+  // 备份与恢复卡片
+  html += `<div class="card profile-card" style="margin-top:16px;">
+    <div class="profile-card-title">
+      <span class="profile-card-icon">💾</span>备份与恢复
+    </div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:12px;">定期备份数据到本地文件，清理浏览器数据前请务必备份！</div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-primary" onclick="backupAllData()" style="flex:1;">💾 一键备份</button>
+      <button class="btn" onclick="triggerRestore()" style="flex:1;">♻️ 恢复数据</button>
+    </div>
+  </div>`;
   html += `</div>`; // 左侧结束
 
   // 右侧区域
