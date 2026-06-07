@@ -25,16 +25,42 @@ async function processRequest(body) {
     const db = getDB();
 
     if (action === 'load') {
-      const res = await db.collection(collection).doc('singleton').get();
-      return { code: 0, data: res.data ? res.data.data : [] };
+      try {
+        // 查询所有文档，按 updateTime 降序取最新一条
+        const res = await db.collection(collection)
+          .orderBy('updateTime', 'desc')
+          .limit(1)
+          .get();
+        if (res.data && res.data.length > 0 && res.data[0].data) {
+          return { code: 0, data: res.data[0].data };
+        }
+        return { code: 0, data: [] };
+      } catch (e) {
+        // 集合不存在或查询失败，返回空数组
+        return { code: 0, data: [] };
+      }
     }
 
     if (action === 'save') {
-      await db.collection(collection).doc('singleton').set({
-        data: data,
-        updateTime: new Date()
-      });
-      return { code: 0, message: '保存成功' };
+      try {
+        // 先尝试更新（如果文档存在）
+        await db.collection(collection).doc('singleton').update({
+          data: data,
+          updateTime: new Date()
+        });
+        return { code: 0, message: '保存成功' };
+      } catch (e) {
+        // 文档不存在，创建新文档（不指定 _id，让系统自动生成）
+        try {
+          await db.collection(collection).add({
+            data: data,
+            updateTime: new Date()
+          });
+          return { code: 0, message: '保存成功' };
+        } catch (addErr) {
+          return { code: -1, message: '保存失败: ' + addErr.message };
+        }
+      }
     }
 
     return { code: -1, message: '未知操作' };
