@@ -291,7 +291,17 @@
       var usersMatch = JSON.stringify(cloudUsers) === JSON.stringify(localUsers);
       var goalsMatch = JSON.stringify(cloudGoals) === JSON.stringify(localGoals);
 
-      log('验证结果: projects=' + projectsMatch + ', users=' + usersMatch + ', goals=' + goalsMatch);
+      // 详细的诊断日志
+      log('=== 数据验证详情 ===');
+      log('Projects: 本地=' + localProjects.length + ' 云端=' + cloudProjects.length + ' 一致=' + projectsMatch);
+      log('Users: 本地=' + localUsers.length + ' 云端=' + cloudUsers.length + ' 一致=' + usersMatch);
+      log('Goals: 本地=' + localGoals.length + ' 云端=' + cloudGoals.length + ' 一致=' + goalsMatch);
+
+      // 如果项目数不一致，显示具体差异
+      if (localProjects.length !== cloudProjects.length) {
+        log('警告：项目数量不一致！');
+      }
+
       callback(projectsMatch && usersMatch && goalsMatch);
     }).catch(function(err) {
       log('验证失败: ' + err.message);
