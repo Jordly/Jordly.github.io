@@ -274,20 +274,25 @@
     }
 
     // 防止无限刷新：用 sessionStorage
-    if (sessionStorage.getItem('cb_loaded')) {
-      log('本会话已加载过云端数据，跳过自动加载');
-      // 后台检查云端是否有更新
+    // 但只有上次成功加载过才跳过，失败时必须重试
+    if (sessionStorage.getItem('cb_loaded') === '1') {
+      log('本会话已成功加载过云端数据，跳过自动加载');
+      // 后台检查云端是否有更新（静默检查，不刷新页面）
       loadOne('projects').then(function(data) {
         if (data && data.length > 0) {
           var local = [];
           try { local = JSON.parse(localStorage.getItem('chansee_projects') || '[]'); } catch(e) {}
           if (JSON.stringify(data) !== JSON.stringify(local)) {
-            log('检测到云端数据有更新，将刷新页面...');
-            localStorage.setItem('chansee_projects', JSON.stringify(data));
-            setTimeout(function() { location.reload(); }, 500);
+            log('检测到云端数据有更新，正在后台同步...');
+            loadAll().then(function(ok) {
+              if (ok) {
+                showStatus('云端数据已更新，正在刷新...', 'loading');
+                setTimeout(function() { location.reload(); }, 800);
+              }
+            });
           }
         }
-      });
+      }).catch(function() {});
       return;
     }
 
@@ -295,14 +300,16 @@
 
     loadAll().then(function(loaded) {
       if (loaded) {
+        // ✅ 只有成功才设置标志，失败时必须重试
         sessionStorage.setItem('cb_loaded', '1');
         showStatus('数据已同步，正在刷新...', 'loading');
         setTimeout(function() {
           location.reload();
         }, 1200);
       } else {
-        sessionStorage.setItem('cb_loaded', '1');
-        showStatus('云端无数据（首次使用）', 'offline');
+        // ❌ 失败不设置标志，下次刷新会重新尝试
+        showStatus('云端同步失败，数据仅保存在本地', 'error');
+        log('云端加载失败，未设置 cb_loaded 标志，下次将重试');
       }
     });
   }
