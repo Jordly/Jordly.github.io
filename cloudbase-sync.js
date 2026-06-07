@@ -7,7 +7,7 @@
   // ⚠️ 重要：创建云函数后，请把 HTTP 触发器地址填入这里
   // 格式类似：https://xxx.ap-shanghai.tcb.qcloud.com/csCloudHubAPI
   // ============================================================
-  var API_BASE = '';
+  var API_BASE = 'https://cscloudhub-d0g983jba5ad192ca-1440977102.ap-shanghai.apptcloudbase.com/api';
 
   var AUTH_TOKEN = 'cscloudhub-2026-secret-key';
   var statusEl = null;

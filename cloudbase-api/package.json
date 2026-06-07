@@ -1,0 +1,9 @@
+{
+  "name": "cscloudhub-api",
+  "version": "1.0.0",
+  "description": "CS CloudHub 数据同步 API",
+  "main": "index.js",
+  "dependencies": {
+    "@cloudbase/node-sdk": "^3.18.1"
+  }
+}
