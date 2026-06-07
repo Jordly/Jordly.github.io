@@ -3168,6 +3168,7 @@ function renderHandover(){
   <div class="card">
 
     <div class="card-title">交接记录</div>
+      <div class="detail-tab" onclick="switchDetailTab(this,'responsibility')">📋 责任边界</div>
 
     <table class="data-table">
 
@@ -3404,6 +3405,7 @@ function showProjectDetail(projectId){
       
       <div class="detail-tab" onclick="switchDetailTab(this,'history')">📝 交接记录</div>
 
+      <div class="detail-tab" onclick="switchDetailTab(this,'responsibility')">📋 责任边界</div>
     </div>
 
 
@@ -3626,6 +3628,7 @@ function showProjectDetail(projectId){
 
     </div>
 
+${renderResponsibilitySection(p)}
   `;
 
   modal.classList.remove("hidden");
@@ -3645,7 +3648,7 @@ function switchDetailTab(el, tabName){
 
   el.classList.add("active");
 
-  ["info","target","operation","issue","history"].forEach(n => {
+  ["info","target","operation","issue","history","responsibility"].forEach(n => {
 
     const el2 = document.getElementById("detail-tab-"+n);
 
