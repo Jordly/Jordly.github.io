@@ -11,6 +11,8 @@
 
   var AUTH_TOKEN = 'cscloudhub-2026-secret-key';
   var statusEl = null;
+  var _cb_syncing = false;  // 防止加载数据时触发保存
+  var _dirtyTimer = null;   // 防抖定时器
 
   // ===== 工具函数 =====
 
@@ -137,6 +139,7 @@
 
       showStatus('正在连接云端...', 'loading');
       log('开始从云端加载所有数据...');
+      _cb_syncing = true;  // 阻止 setItem 拦截器触发保存
 
       Promise.all([
         loadOne('projects'),
@@ -164,6 +167,7 @@
           log('已写入 localStorage: goals (' + goals.length + ' 条)');
         }
 
+        _cb_syncing = false;  // 恢复拦截器
         log('云端加载完成，loaded=' + loaded);
         if (loaded) {
           showStatus('云端数据已同步 ✅', 'success');
@@ -173,6 +177,7 @@
           resolve('empty');
         }
       }).catch(function(err) {
+        _cb_syncing = false;  // 恢复拦截器
         log('云端加载异常: ' + err.message);
         showStatus('云端同步失败，数据仅保存在本地', 'error');
         resolve('failed');
@@ -255,12 +260,43 @@
     });
   }
 
+  // ===== 自动保存：拦截 localStorage.setItem() =====
+
+  var _originalSetItem = localStorage.setItem.bind(localStorage);
+
+  // 标记数据已变更（防抖，2秒后自动保存）
+  function markDirty(key) {
+    if (!API_BASE) return;
+    log('数据已变更: ' + key + '，准备同步到云端...');
+    clearTimeout(_dirtyTimer);
+    _dirtyTimer = setTimeout(function() {
+      log('执行自动保存...');
+      saveAll(function(ok) {
+        log('自动保存完成: ' + (ok ? '成功' : '失败'));
+      });
+    }, 2000);
+  }
+
+  // 拦截 localStorage.setItem()
+  localStorage.setItem = function(key, value) {
+    _originalSetItem.call(localStorage, key, value);
+    // 如果是关键数据且不是正在从云端加载，则触发自动保存
+    if (!_cb_syncing && (
+      key === 'chansee_projects' ||
+      key === 'chansee_users' ||
+      key === 'chansee_goals'
+    )) {
+      markDirty(key);
+    }
+  };
+
   // ===== 公开 API =====
 
   window.CloudBaseSync = {
     init: function() { return Promise.resolve(!!API_BASE); },
     loadAll: loadAll,
     saveAll: saveAll,
+    markDirty: markDirty,
     isReady: function() { return !!API_BASE; },
     saveToCloud: function(name, data, cb) {
       log('saveToCloud() 已弃用，改用 saveAll()');
