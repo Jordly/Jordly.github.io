@@ -5,26 +5,10 @@
 const GROUPS_DATA = [{"month":"7月","group":"济南B事业部-Alpha组","manager":"张伟","level":"组长-1-1级","shopCount":6,"categoryCount":1,"platformCount":4,"manageCount":1.0,"qcCount":0.4,"trainCount":0,"evalCount":0.35,"aiCount":0,"csCount":10,"new3m":2,"manageTrainSum":1.4,"storeMgrCount":5,"pptCount":2,"totalStaff":11.75,"manageRatio":7.14285714285714,"shopRatio":6.0,"platformRatio":0.307692307692308},{"month":"7月","group":"济南B事业部-Beta组","manager":"李娜","level":"培训师","shopCount":10,"categoryCount":5,"platformCount":2,"manageCount":0.3,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.3,"storeMgrCount":8,"pptCount":0,"totalStaff":3.3,"manageRatio":10.0,"shopRatio":33.3333333333333,"platformRatio":0.153846153846154},{"month":"7月","group":"济南B事业部-Gamma组","manager":"王强","level":"组长-2级","shopCount":2,"categoryCount":2,"platformCount":2,"manageCount":1.0,"qcCount":0.5,"trainCount":0.25,"evalCount":0.7,"aiCount":0,"csCount":9,"new3m":3,"manageTrainSum":1.75,"storeMgrCount":1,"pptCount":2,"totalStaff":11.45,"manageRatio":5.14285714285714,"shopRatio":2.0,"platformRatio":0.153846153846154},{"month":"7月","group":"济南A事业部-Delta组","manager":"刘洋","level":"组长-2级","shopCount":6,"categoryCount":1,"platformCount":4,"manageCount":0.6,"qcCount":0.2,"trainCount":0,"evalCount":0.275,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":0.8,"storeMgrCount":3,"pptCount":1,"totalStaff":4.075,"manageRatio":3.75,"shopRatio":10.0,"platformRatio":0.307692307692308},{"month":"7月","group":"济南A事业部-Echo组","manager":"刘洋","level":"组长-2级","shopCount":4,"categoryCount":1,"platformCount":3,"manageCount":0.4,"qcCount":0.2,"trainCount":0,"evalCount":0.06,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.6,"storeMgrCount":2,"pptCount":1,"totalStaff":3.66,"manageRatio":5.0,"shopRatio":10.0,"platformRatio":0.230769230769231},{"month":"7月","group":"济南A事业部-Foxtrot组","manager":"陈静","level":"组长-2级","shopCount":5,"categoryCount":3,"platformCount":3,"manageCount":1.0,"qcCount":0.33,"trainCount":0.3,"evalCount":0.68,"aiCount":0,"csCount":7,"new3m":0,"manageTrainSum":1.63,"storeMgrCount":5,"pptCount":2,"totalStaff":9.31,"manageRatio":4.29447852760736,"shopRatio":5.0,"platformRatio":0.230769230769231},{"month":"7月","group":"济南A事业部-Golf组","manager":"赵磊","level":"组长-3级","shopCount":2,"categoryCount":1,"platformCount":2,"manageCount":0.7,"qcCount":0.43,"trainCount":0.45,"evalCount":0.35,"aiCount":0.5,"csCount":6,"new3m":1,"manageTrainSum":1.58,"storeMgrCount":2,"pptCount":2,"totalStaff":8.43,"manageRatio":3.79746835443038,"shopRatio":2.85714285714286,"platformRatio":0.153846153846154},{"month":"7月","group":"济南A事业部-Hotel组","manager":"赵磊","level":"组长-3级","shopCount":8,"categoryCount":2,"platformCount":5,"manageCount":0.3,"qcCount":0,"trainCount":0,"evalCount":0.05,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":0.3,"storeMgrCount":4,"pptCount":1,"totalStaff":3.35,"manageRatio":10.0,"shopRatio":26.6666666666667,"platformRatio":0.384615384615385},{"month":"7月","group":"济南A事业部-India组","manager":"孙明&周芳","level":"组长-3级","shopCount":1,"categoryCount":1,"platformCount":1,"manageCount":2.0,"qcCount":0.67,"trainCount":0.98,"evalCount":2.2,"aiCount":0.5,"csCount":18,"new3m":5,"manageTrainSum":3.65,"storeMgrCount":1,"pptCount":2,"totalStaff":24.35,"manageRatio":4.93150684931507,"shopRatio":0.5,"platformRatio":0.0769230769230769},{"month":"7月","group":"济南C事业部-Juliet组","manager":"吴涛","level":"组长-3级","shopCount":3,"categoryCount":3,"platformCount":3,"manageCount":0.9,"qcCount":1.9,"trainCount":0,"evalCount":0.53,"aiCount":0,"csCount":4,"new3m":1,"manageTrainSum":2.8,"storeMgrCount":4,"pptCount":6,"totalStaff":7.33,"manageRatio":1.42857142857143,"shopRatio":3.33333333333333,"platformRatio":0.230769230769231},{"month":"7月","group":"济南C事业部-Kilo组","manager":"吴涛","level":"组长-3级","shopCount":4,"categoryCount":1,"platformCount":2,"manageCount":0.1,"qcCount":0.07,"trainCount":0,"evalCount":0.27,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.17,"storeMgrCount":2,"pptCount":0,"totalStaff":3.44,"manageRatio":17.6470588235294,"shopRatio":40.0,"platformRatio":0.153846153846154},{"month":"7月","group":"济南B事业部-Lima组","manager":"郑华","level":"主管-2级","shopCount":5,"categoryCount":2,"platformCount":5,"manageCount":0.6,"qcCount":0.3,"trainCount":0,"evalCount":0.35,"aiCount":0,"csCount":4,"new3m":1,"manageTrainSum":0.9,"storeMgrCount":2,"pptCount":1,"totalStaff":5.25,"manageRatio":4.44444444444444,"shopRatio":8.33333333333333,"platformRatio":0.384615384615385},{"month":"7月","group":"济南B事业部-Mike组","manager":"郑华","level":"主管-2级","shopCount":6,"categoryCount":2,"platformCount":5,"manageCount":0.4,"qcCount":0,"trainCount":0,"evalCount":0.1,"aiCount":0,"csCount":4,"new3m":1,"manageTrainSum":0.4,"storeMgrCount":4,"pptCount":1,"totalStaff":4.5,"manageRatio":10.0,"shopRatio":15.0,"platformRatio":0.384615384615385},{"month":"7月","group":"济南B事业部-November组","manager":"黄丽","level":"主管-2级","shopCount":2,"categoryCount":1,"platformCount":1,"manageCount":3.0,"qcCount":0.5,"trainCount":1.0,"evalCount":1.0,"aiCount":0.5,"csCount":37,"new3m":32,"manageTrainSum":4.5,"storeMgrCount":2,"pptCount":4,"totalStaff":43.0,"manageRatio":8.22222222222222,"shopRatio":0.666666666666667,"platformRatio":0.0769230769230769},{"month":"7月","group":"济南支持组-Oscar组","manager":"林峰","level":"主管-1级","shopCount":2,"categoryCount":1,"platformCount":2,"manageCount":0.5,"qcCount":0.15,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.65,"storeMgrCount":1,"pptCount":4,"totalStaff":3.65,"manageRatio":4.61538461538461,"shopRatio":4.0,"platformRatio":0.153846153846154},{"month":"7月","group":"济南C事业部-Papa组","manager":"徐杰","level":"组长-1-1级","shopCount":3,"categoryCount":1,"platformCount":2,"manageCount":0.4,"qcCount":0.5,"trainCount":0.02,"evalCount":0.2,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":0.92,"storeMgrCount":3,"pptCount":1,"totalStaff":4.12,"manageRatio":3.26086956521739,"shopRatio":7.5,"platformRatio":0.153846153846154},{"month":"7月","group":"济南A事业部-Quebec组","manager":"徐杰","level":"组长-1-1级","shopCount":4,"categoryCount":2,"platformCount":2,"manageCount":0.6,"qcCount":0.5,"trainCount":0,"evalCount":0.3,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":1.1,"storeMgrCount":2,"pptCount":1,"totalStaff":4.4,"manageRatio":2.72727272727273,"shopRatio":6.66666666666667,"platformRatio":0.153846153846154},{"month":"定量指标汇总","group":"","manager":"","level":"","shopCount":0,"categoryCount":0,"platformCount":0,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"月份","group":"管理姓名","manager":"客服人数","level":"3个月内人数","shopCount":"管理+质培人数","categoryCount":"店长对接人数","platformCount":"PPT年度汇报次数","manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"张伟","manager":"10","level":"2","shopCount":1.4,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"李娜","manager":"3","level":"","shopCount":0.3,"categoryCount":8,"platformCount":0,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"王强","manager":"9","level":"3","shopCount":1.75,"categoryCount":1,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"刘洋","manager":"6","level":"1","shopCount":1.4,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"陈静","manager":"7","level":"","shopCount":1.63,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"赵磊","manager":"9","level":"2","shopCount":1.88,"categoryCount":6,"platformCount":3,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"孙明&周芳","manager":"9","level":"5","shopCount":3.65,"categoryCount":1,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"吴涛","manager":"7","level":"1","shopCount":2.97,"categoryCount":6,"platformCount":6,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"郑华","manager":"8","level":"2","shopCount":1.3,"categoryCount":6,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"黄丽","manager":"12.3333333333333","level":"32","shopCount":4.5,"categoryCount":2,"platformCount":4,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"林峰","manager":"3","level":"","shopCount":0.65,"categoryCount":1,"platformCount":4,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"徐杰","manager":"6","level":"2","shopCount":2.02,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0}];
 const ASSESSMENTS_DATA = [{"month":"7月","dept":"B事业部","group":"Alpha组","manager":"张伟","level":"组长-1-1级","totalScore":65.4428571428572,"quantScore":43.4428571428571,"qualScore":22.0,"csCountScore":10.0,"new3mScore":2.0,"ratioScore":1.4,"storeMgrScore":5.0,"pptScore":2.0,"qual1":3,"qual2":3,"qual3":3,"qual4":3,"qual5":3,"qual6":1,"qual7":3,"qual8":0},{"month":"7月","dept":"B事业部","group":"Beta组","manager":"李娜","level":"培训师","totalScore":8.0,"quantScore":0,"qualScore":8.0,"csCountScore":3.0,"new3mScore":0,"ratioScore":0.3,"storeMgrScore":8.0,"pptScore":0,"qual1":0,"qual2":0,"qual3":1,"qual4":0,"qual5":3,"qual6":3,"qual7":0,"qual8":0},{"month":"7月","dept":"B事业部","group":"Gamma组","manager":"王强","level":"组长-2级","totalScore":52.2261904761905,"quantScore":34.2261904761905,"qualScore":18.0,"csCountScore":9.0,"new3mScore":3.0,"ratioScore":1.75,"storeMgrScore":1.0,"pptScore":2.0,"qual1":2,"qual2":1,"qual3":1,"qual4":3,"qual5":1,"qual6":1,"qual7":3,"qual8":0},{"month":"7月","dept":"A事业部","group":"Delta手表&Echo组","manager":"刘洋","level":"组长-2级","totalScore":40.2523809523809,"quantScore":32.2523809523809,"qualScore":8.0,"csCountScore":6.0,"new3mScore":1.0,"ratioScore":1.4,"storeMgrScore":5.0,"pptScore":2.0,"qual1":1,"qual2":0,"qual3":1,"qual4":1,"qual5":2,"qual6":1,"qual7":0,"qual8":0},{"month":"7月","dept":"A事业部","group":"Foxtrot组","manager":"陈静","level":"组长-2级","totalScore":41.3598159509203,"quantScore":31.3598159509202,"qualScore":10.0,"csCountScore":7.0,"new3mScore":0,"ratioScore":1.63,"storeMgrScore":5.0,"pptScore":2.0,"qual1":0,"qual2":0,"qual3":1,"qual4":1,"qual5":2,"qual6":3,"qual7":0,"qual8":2},{"month":"7月","dept":"A事业部","group":"Golf组&Hotel2&Hotel","manager":"赵磊","level":"组长-3级","totalScore":60.0971158392435,"quantScore":41.0971158392435,"qualScore":19.0,"csCountScore":9.0,"new3mScore":2.0,"ratioScore":1.88,"storeMgrScore":6.0,"pptScore":3.0,"qual1":3,"qual2":1,"qual3":3,"qual4":1,"qual5":3,"qual6":3,"qual7":1,"qual8":2},{"month":"7月","dept":"A事业部","group":"India组","manager":"孙明&周芳","level":"组长-3级","totalScore":47.75,"quantScore":31.75,"qualScore":16.0,"csCountScore":9.0,"new3mScore":5.0,"ratioScore":3.65,"storeMgrScore":1.0,"pptScore":2.0,"qual1":3,"qual2":2,"qual3":2,"qual4":3,"qual5":1,"qual6":1,"qual7":1,"qual8":2},{"month":"7月","dept":"A事业部","group":"Juliet组&手表拼多多&抖音","manager":"吴涛","level":"组长-3级","totalScore":60.6385714285714,"quantScore":41.6385714285714,"qualScore":19.0,"csCountScore":7.0,"new3mScore":1.0,"ratioScore":2.97,"storeMgrScore":6.0,"pptScore":6.0,"qual1":3,"qual2":2,"qual3":2,"qual4":3,"qual5":2,"qual6":3,"qual7":0,"qual8":3},{"month":"7月","dept":"B事业部","group":"Lima&Lima2&Mike组","manager":"郑华","level":"主管-2级","totalScore":55.3830769230769,"quantScore":41.3830769230769,"qualScore":14.0,"csCountScore":8.0,"new3mScore":2.0,"ratioScore":1.3,"storeMgrScore":6.0,"pptScore":2.0,"qual1":2,"qual2":0,"qual3":1,"qual4":2,"qual5":2,"qual6":2,"qual7":1,"qual8":0},{"month":"7月","dept":"C事业部","group":"November组","manager":"黄丽","level":"主管-2级","totalScore":59.57,"quantScore":39.57,"qualScore":20.0,"csCountScore":12.3333333333333,"new3mScore":32.0,"ratioScore":4.5,"storeMgrScore":2.0,"pptScore":4.0,"qual1":2,"qual2":3,"qual3":3,"qual4":3,"qual5":1,"qual6":1,"qual7":2,"qual8":1},{"month":"7月","dept":"支持组","group":"Oscar组","manager":"林峰","level":"主管-1级","totalScore":32.6923076923077,"quantScore":28.6923076923077,"qualScore":4.0,"csCountScore":3.0,"new3mScore":0,"ratioScore":0.65,"storeMgrScore":1.0,"pptScore":4.0,"qual1":0,"qual2":1,"qual3":1,"qual4":0,"qual5":1,"qual6":1,"qual7":0,"qual8":0},{"month":"7月","dept":"A事业部","group":"Quebec组&Papa","manager":"徐杰","level":"组长-1-1级","totalScore":43.1333333333333,"quantScore":32.1333333333333,"qualScore":11.0,"csCountScore":6.0,"new3mScore":2.0,"ratioScore":2.02,"storeMgrScore":5.0,"pptScore":2.0,"qual1":1,"qual2":1,"qual3":1,"qual4":2,"qual5":1,"qual6":3,"qual7":1,"qual8":0},{"month":"1、项目管理难度依据定量与定性综合评估法计算得分，定量指标权重占比70%，定性因素权重占比30%；\n2、定量指标下有5项，100分/项，70%权重下共计70分；定性因素10项，不涉及或可以忽略，则为0分；如涉及则根据大、中、小计算每项得分分别为3分、2分和1分，最高得分30分，合计100分；\n3、定量难度指标为关键指标，原则上管理人数越多or新人占比越高or管理配置越少or对接项目越多or复盘次数越多，管理难度越大；定性因素主要为附加补充因素，需要依据特殊项目实际业务开展情况评分；\n4、管理难度评估参考标准分：\n     组长1-1/1-2级：管理难度30-40分\n     组长2级：管理难度41-50分\n     组长3级：管理难度51-60分\n     主管级1/2/3：管理难度61-80分\n     经理级1/2/3：管理难度＞81分\n5、依据现阶段团队管理水平及所负责店铺管理难度，管理等级在上述参考标准分之内，同时设定基准分数差值±5分均为正常值，基准分差值＞5分，适当给予奖励or补助；\n6、此管理难度评估为短期行为，同时要基于管理难度评分与管理者自身能力水平进行匹配：管理难度高，管理水平高，但超出5分差异，奖励金额X元；\n     管理难度高，管理水平低，但因特殊情况，如无法快速调换组别，无法快速补充人员等，可补助金额Y元；管理难度低，管理水平高/低，优先调配组别，但无补助；\n7、管理奖励/补助参考金额：\n      基准分差值5-10分，奖励/补助金额500元\n      基准分差值11-15分，奖励/补助金额1000元\n      基准分差值16-20分，奖励/补助金额1500元\n","dept":"","group":"","manager":"","level":"","totalScore":0,"quantScore":0,"qualScore":0,"csCountScore":0,"new3mScore":0,"ratioScore":0,"storeMgrScore":0,"pptScore":0,"qual1":0,"qual2":0,"qual3":0,"qual4":0,"qual5":0,"qual6":0,"qual7":0,"qual8":0}];
 
-let PROJECTS = JSON.parse(localStorage.getItem("chansee_projects") || "null") || [
-
-  {id:"P001", name:"美妆旗舰店客服项目", brand:"兰蔻", category:"美妆", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"李明", pmHistory:[{name:"王芳", from:"2025-06", to:"2026-03", reason:"调岗"}], status:"运营中", startDate:"2025-04-01", endDate:"2026-12-31", base:"济南职场2F", platforms:"天猫,抖音", serviceHours:"09:00-24:00", fteTarget:30, slaResponse:120, slaResolve:360, costBudget:450000, revenue:520000, profitRate:13.5, health:"🟢"},
-
-  {id:"P002", name:"家电自营客服项目", brand:"美的", category:"家电", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-01-15", endDate:"2026-12-31", base:"淄博职场1F", platforms:"京东,天猫", serviceHours:"08:00-22:00", fteTarget:45, slaResponse:90, slaResolve:300, costBudget:680000, revenue:750000, profitRate:9.3, health:"🟡"},
-
-  {id:"P003", name:"服装品牌客服外包", brand:"优衣库", category:"服装", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"李明", pmHistory:[{name:"赵丽", from:"2025-01", to:"2025-11", reason:"离职"}], status:"运营中", startDate:"2025-01-10", endDate:"2026-06-30", base:"杭州职场3F", platforms:"全平台", serviceHours:"08:00-24:00", fteTarget:60, slaResponse:60, slaResolve:240, costBudget:880000, revenue:920000, profitRate:4.3, health:"🔴"},
-
-  {id:"P004", name:"母婴用品客服项目", brand:"好孩子", category:"母婴", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-08-01", endDate:"2027-01-31", base:"济南职场2F", platforms:"天猫,京东,拼多多", serviceHours:"09:00-21:00", fteTarget:25, slaResponse:120, slaResolve:360, costBudget:320000, revenue:380000, profitRate:15.8, health:"🟢"},
-
-  {id:"P005", name:"食品生鲜客服项目", brand:"三只松鼠", category:"食品", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"李明", pmHistory:[{name:"孙磊", from:"2025-03", to:"2026-02", reason:"内部调换"}], status:"运营中", startDate:"2025-03-01", endDate:"2026-08-31", base:"淄博职场1F", platforms:"天猫,抖音", serviceHours:"08:00-23:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:520000, revenue:600000, profitRate:13.3, health:"🟡"},
-
-  {id:"P006", name:"运动品牌客服项目", brand:"耐克", category:"运动", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"王强", pmHistory:[], status:"暂停", startDate:"2025-06-01", endDate:"2026-05-31", base:"杭州职场3F", platforms:"天猫,官网", serviceHours:"09:00-21:00", fteTarget:20, slaResponse:60, slaResolve:240, costBudget:280000, revenue:250000, profitRate:-10.7, health:"🔴"},
-  {id:"P007", name:"智能家居客服项目", brand:"小米", category:"智能硬件", serviceMode:"TP项目", workplace:"无锡", pm:"张伟", director:"李明", pmHistory:[], status:"运营中", startDate:"2026-03-01", endDate:"2027-02-28", base:"无锡职场1F", platforms:"天猫,京东,抖音", serviceHours:"09:00-22:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:420000, revenue:480000, profitRate:12.5, health:"🟢"},
-
-];
 
 
 
-const OPERATIONS = [
+var DEFAULT_OPERATIONS = [
 
   {id:1, projectId:"P001", period:"2026-05", fteActual:28, attendance:96.5, ticketVol:12580, responseTime:98, resolveTime:320, csat:4.8, resolutionRate:97.2, reviewRate:82.5, health:"🟢"},
 
@@ -39,10 +23,11 @@ const OPERATIONS = [
   {id:6, projectId:"P006", period:"2026-05", fteActual:15, attendance:88.0, ticketVol:8900, responseTime:130, resolveTime:420, csat:3.8, resolutionRate:88.0, reviewRate:60.1, health:"🔴"},
 
 ];
+var OPERATIONS = [];
 
 
 
-const ISSUES = [
+var DEFAULT_ISSUES = [
 
   {id:1, projectId:"P002", projectName:"家电自营客服项目", type:"整改", desc:"连续两周满意度低于目标值4.7", priority:"重要", owner:"刘洋", assignee:"刘洋", status:"处理中", source:"监控预警", responsibility:"承接方", createdAt:"2026-05-15", solution:""},
 
@@ -53,8 +38,9 @@ const ISSUES = [
   {id:4, projectId:"P001", projectName:"美妆旗舰店客服项目", type:"优化", desc:"大促预案需要更新，去年双11出现人手不足", priority:"一般", owner:"张伟", assignee:"张伟", status:"已关闭", source:"人工上报", responsibility:"承接方", createdAt:"2026-04-01", solution:"已完成大促人力预案，增加20%临时人力储备"},
 
 ];
+var ISSUES = [];
 
-const AGENT_PERFORMANCE = [
+var DEFAULT_AGENT_PERFORMANCE = [
   {id:1, projectId:"P001", agentName:"张伟", responseTime:105, convCount:1258, csat:4.9, resolutionRate:98.2, transferRate:2.1, fteEquiv:1.0, month:"2026-05"},
   {id:2, projectId:"P001", agentName:"李娜", responseTime:98, convCount:1102, csat:4.8, resolutionRate:97.5, transferRate:1.8, fteEquiv:1.0, month:"2026-05"},
   {id:3, projectId:"P002", agentName:"刘洋", responseTime:92, convCount:1842, csat:4.7, resolutionRate:96.1, transferRate:3.2, fteEquiv:1.2, month:"2026-05"},
@@ -64,17 +50,19 @@ const AGENT_PERFORMANCE = [
   {id:7, projectId:"P007", agentName:"孙芳", responseTime:88, convCount:1320, csat:4.8, resolutionRate:97.8, transferRate:2.0, fteEquiv:1.0, month:"2026-05"},
   {id:8, projectId:"P002", agentName:"周杰", responseTime:85, convCount:1620, csat:4.5, resolutionRate:95.8, transferRate:3.5, fteEquiv:1.1, month:"2026-05"},
 ];
+var AGENT_PERFORMANCE = [];
 
-const RISK_ALERTS = [
+var DEFAULT_RISK_ALERTS = [
   {id:1, projectId:"P003", projectName:"服装品牌客服外包", riskType:"健康状态", severity:"🔴 高风险", indicator:"健康状态：🔴 风险", triggerValue:"连续3周红色", threshold:"健康状态不得连续2周红色", status:"未处理", createdAt:"2026-05-28"},
   {id:2, projectId:"P002", projectName:"家电自营客服项目", riskType:"SLA超标", severity:"🟡 中风险", indicator:"平均响应时长：88s", triggerValue:"88s > 目标90s", threshold:"响应时长 ≤ SLA响应目标", status:"处理中", createdAt:"2026-05-30"},
   {id:3, projectId:"P006", projectName:"运动品牌客服项目", riskType:"成本超支", severity:"🔴 高风险", indicator:"利润率：-10.7%", triggerValue:"-10.7% < 目标≥0%", threshold:"项目利润率 ≥ 0%", status:"未处理", createdAt:"2026-05-25"},
   {id:4, projectId:"P001", projectName:"美妆旗舰店客服项目", riskType:"满意度下滑", severity:"🟡 中风险", indicator:"CSAT：4.9", triggerValue:"4.9 较上月下降0.2", threshold:"CSAT ≥ 4.7", status:"已忽略", createdAt:"2026-05-20"},
   {id:5, projectId:"P005", projectName:"食品生鲜客服项目", riskType:"SLA超标", severity:"🟡 中风险", indicator:"平均响应时长：92s", triggerValue:"92s > 目标90s", threshold:"响应时长 ≤ SLA响应目标", status:"处理中", createdAt:"2026-05-31"},
 ];
+var RISK_ALERTS = [];
 
 
-const KNOWLEDGE = [
+var DEFAULT_KNOWLEDGE = [
 
   {id:1, title:"美妆类目大促客服应对SOP", type:"SOP操作规范", sourceProject:"P001", tags:"美妆,大促, SOP", scope:"通用", createdAt:"2025-11-20"},
 
@@ -87,10 +75,11 @@ const KNOWLEDGE = [
   {id:5, title:"新人客服培训标准课件（全品类）", type:"培训材料", sourceProject:"", tags:"培训,新人,标准", scope:"通用", createdAt:"2025-09-01"},
 
 ];
+var KNOWLEDGE = [];
 
 
 
-const HANDOVERS = [
+var DEFAULT_HANDOVERS = [
 
   {id:1, projectId:"P001", projectName:"美妆旗舰店客服项目", from:"王芳", to:"张伟", date:"2026-03-15", status:"已完成", summary:"完成全部基础档案+目标交接，运营数据已同步"},
 
@@ -99,6 +88,7 @@ const HANDOVERS = [
   {id:3, projectId:"P005", projectName:"食品生鲜客服项目", from:"孙磊", to:"刘洋", date:"2026-02-28", status:"已完成", summary:"食品类目的特殊退换货政策已交接"},
 
 ];
+var HANDOVERS = [];
 
 
 
@@ -143,13 +133,13 @@ var DEFAULT_USERS = [
 ];
 
 var DEFAULT_PROJECTS = [
-  {id:"P001", name:"美妆旗舰店客服项目", brand:"兰蔻", category:"美妆", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"李明", pmHistory:[{name:"王芳", from:"2025-06", to:"2026-03", reason:"调岗"}], status:"运营中", startDate:"2025-04-01", endDate:"2026-12-31", base:"济南职场2F", platforms:"天猫,抖音", serviceHours:"09:00-24:00", fteTarget:30, slaResponse:120, slaResolve:360, costBudget:450000, revenue:520000, profitRate:13.5, health:"🟢"},
-  {id:"P002", name:"家电自营客服项目", brand:"美的", category:"家电", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-01-15", endDate:"2026-12-31", base:"淄博职场1F", platforms:"京东,天猫", serviceHours:"08:00-22:00", fteTarget:45, slaResponse:90, slaResolve:300, costBudget:680000, revenue:750000, profitRate:9.3, health:"🟡"},
-  {id:"P003", name:"服装品牌客服外包", brand:"优衣库", category:"服装", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"李明", pmHistory:[{name:"赵丽", from:"2025-01", to:"2025-11", reason:"离职"}]}, status:"运营中", startDate:"2025-01-10", endDate:"2026-06-30", base:"杭州职场3F", platforms:"全平台", serviceHours:"08:00-24:00", fteTarget:60, slaResponse:60, slaResolve:240, costBudget:880000, revenue:920000, profitRate:4.3, health:"🔴"},
-  {id:"P004", name:"母婴用品客服项目", brand:"好孩子", category:"母婴", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"王强", pmHistory:[], status:"运营中", startDate:"2025-08-01", endDate:"2027-01-31", base:"济南职场2F", platforms:"天猫,京东,拼多多", serviceHours:"09:00-21:00", fteTarget:25, slaResponse:120, slaResolve:360, costBudget:320000, revenue:380000, profitRate:15.8, health:"🟢"},
-  {id:"P005", name:"食品生鲜客服项目", brand:"三只松鼠", category:"食品", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"李明", pmHistory:[{name:"孙磊", from:"2025-03", to:"2026-02", reason:"内部调换"}]}, status:"运营中", startDate:"2025-03-01", endDate:"2026-08-31", base:"淄博职场1F", platforms:"天猫,抖音", serviceHours:"08:00-23:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:520000, revenue:600000, profitRate:13.3, health:"🟡"},
-  {id:"P006", name:"运动品牌客服项目", brand:"耐克", category:"运动", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"王强", pmHistory:[], status:"暂停", startDate:"2025-06-01", endDate:"2026-05-31", base:"杭州职场3F", platforms:"天猫,官网", serviceHours:"09:00-21:00", fteTarget:20, slaResponse:60, slaResolve:240, costBudget:280000, revenue:250000, profitRate:-10.7, health:"🔴"},
-  {id:"P007", name:"智能家居客服项目", brand:"小米", category:"智能硬件", serviceMode:"TP项目", workplace:"无锡", pm:"张伟", director:"李明", pmHistory:[], status:"运营中", startDate:"2026-03-01", endDate:"2027-02-28", base:"无锡职场1F", platforms:"天猫,京东,抖音", serviceHours:"09:00-22:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:420000, revenue:480000, profitRate:12.5, health:"🟢"}
+  {id:"P001", name:"美妆旗舰店客服项目", brand:"兰蔻", category:"美妆", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"李明", pmHistory:[{name:"王芳", from:"2025-06", to:"2026-03", reason:"调岗"}], status:"优质健康店", startDate:"2025-04-01", endDate:"2026-12-31", base:"济南职场2F", platforms:"天猫,抖音", serviceHours:"09:00-24:00", fteTarget:30, slaResponse:120, slaResolve:360, costBudget:450000, revenue:520000, profitRate:13.5, health:"🟢"},
+  {id:"P002", name:"家电自营客服项目", brand:"美的", category:"家电", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"王强", pmHistory:[], status:"平稳常规店", startDate:"2025-01-15", endDate:"2026-12-31", base:"淄博职场1F", platforms:"京东,天猫", serviceHours:"08:00-22:00", fteTarget:45, slaResponse:90, slaResolve:300, costBudget:680000, revenue:750000, profitRate:9.3, health:"🟡"},
+  {id:"P003", name:"服装品牌客服外包", brand:"优衣库", category:"服装", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"李明", pmHistory:[{name:"赵丽", from:"2025-01", to:"2025-11", reason:"离职"}], status:"风险预警店", startDate:"2025-01-10", endDate:"2026-06-30", base:"杭州职场3F", platforms:"全平台", serviceHours:"08:00-24:00", fteTarget:60, slaResponse:60, slaResolve:240, costBudget:880000, revenue:920000, profitRate:4.3, health:"🔴"},
+  {id:"P004", name:"母婴用品客服项目", brand:"好孩子", category:"母婴", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"王强", pmHistory:[], status:"优质健康店", startDate:"2025-08-01", endDate:"2027-01-31", base:"济南职场2F", platforms:"天猫,京东,拼多多", serviceHours:"09:00-21:00", fteTarget:25, slaResponse:120, slaResolve:360, costBudget:320000, revenue:380000, profitRate:15.8, health:"🟢"},
+  {id:"P005", name:"食品生鲜客服项目", brand:"三只松鼠", category:"食品", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"李明", pmHistory:[{name:"孙磊", from:"2025-03", to:"2026-02", reason:"内部调换"}], status:"平稳常规店", startDate:"2025-03-01", endDate:"2026-08-31", base:"淄博职场1F", platforms:"天猫,抖音", serviceHours:"08:00-23:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:520000, revenue:600000, profitRate:13.3, health:"🟡"},
+  {id:"P006", name:"运动品牌客服项目", brand:"耐克", category:"运动", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"王强", pmHistory:[], status:"高危问题店", startDate:"2025-06-01", endDate:"2026-05-31", base:"杭州职场3F", platforms:"天猫,官网", serviceHours:"09:00-21:00", fteTarget:20, slaResponse:60, slaResolve:240, costBudget:280000, revenue:250000, profitRate:-10.7, health:"🔴"},
+  {id:"P007", name:"智能家居客服项目", brand:"小米", category:"智能硬件", serviceMode:"TP项目", workplace:"无锡", pm:"张伟", director:"李明", pmHistory:[], status:"优质健康店", startDate:"2026-03-01", endDate:"2027-02-28", base:"无锡职场1F", platforms:"天猫,京东,抖音", serviceHours:"09:00-22:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:420000, revenue:480000, profitRate:12.5, health:"🟢"}
 ];
 
 // 初始化 USERS
@@ -189,11 +179,139 @@ var PROJECTS = [];
   console.log('[init] 首次初始化项目数据');
 })();
 
+// 初始化 OPERATIONS
+(function initOperations() {
+  var raw = localStorage.getItem('chansee_operations');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { OPERATIONS = JSON.parse(raw); console.log('[init] 恢复 ' + OPERATIONS.length + ' 条运营数据'); return; } catch(e) { console.error('[init] 运营数据损坏:', e); }
+  }
+  OPERATIONS = JSON.parse(JSON.stringify(DEFAULT_OPERATIONS));
+  safeSetItem('chansee_operations', JSON.stringify(OPERATIONS));
+  console.log('[init] 首次初始化运营数据');
+})();
+
+// 初始化 ISSUES
+(function initIssues() {
+  var raw = localStorage.getItem('chansee_issues');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { ISSUES = JSON.parse(raw); console.log('[init] 恢复 ' + ISSUES.length + ' 个问题'); return; } catch(e) { console.error('[init] 问题数据损坏:', e); }
+  }
+  ISSUES = JSON.parse(JSON.stringify(DEFAULT_ISSUES));
+  safeSetItem('chansee_issues', JSON.stringify(ISSUES));
+  console.log('[init] 首次初始化问题数据');
+})();
+
+// 初始化 AGENT_PERFORMANCE
+(function initAgentPerformance() {
+  var raw = localStorage.getItem('chansee_agent_performance');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { AGENT_PERFORMANCE = JSON.parse(raw); console.log('[init] 恢复 ' + AGENT_PERFORMANCE.length + ' 条坐席数据'); return; } catch(e) { console.error('[init] 坐席数据损坏:', e); }
+  }
+  AGENT_PERFORMANCE = JSON.parse(JSON.stringify(DEFAULT_AGENT_PERFORMANCE));
+  safeSetItem('chansee_agent_performance', JSON.stringify(AGENT_PERFORMANCE));
+  console.log('[init] 首次初始化坐席数据');
+})();
+
+// 初始化 RISK_ALERTS
+(function initRiskAlerts() {
+  var raw = localStorage.getItem('chansee_risk_alerts');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { RISK_ALERTS = JSON.parse(raw); console.log('[init] 恢复 ' + RISK_ALERTS.length + ' 条风险预警'); return; } catch(e) { console.error('[init] 风险预警数据损坏:', e); }
+  }
+  RISK_ALERTS = JSON.parse(JSON.stringify(DEFAULT_RISK_ALERTS));
+  safeSetItem('chansee_risk_alerts', JSON.stringify(RISK_ALERTS));
+  console.log('[init] 首次初始化风险预警数据');
+})();
+
+// 初始化 KNOWLEDGE
+(function initKnowledge() {
+  var raw = localStorage.getItem('chansee_knowledge');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { KNOWLEDGE = JSON.parse(raw); console.log('[init] 恢复 ' + KNOWLEDGE.length + ' 条知识库'); return; } catch(e) { console.error('[init] 知识库数据损坏:', e); }
+  }
+  KNOWLEDGE = JSON.parse(JSON.stringify(DEFAULT_KNOWLEDGE));
+  safeSetItem('chansee_knowledge', JSON.stringify(KNOWLEDGE));
+  console.log('[init] 首次初始化知识库数据');
+})();
+
+// 初始化 HANDOVERS
+(function initHandovers() {
+  var raw = localStorage.getItem('chansee_handovers');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { HANDOVERS = JSON.parse(raw); console.log('[init] 恢复 ' + HANDOVERS.length + ' 条交接记录'); return; } catch(e) { console.error('[init] 交接记录数据损坏:', e); }
+  }
+  HANDOVERS = JSON.parse(JSON.stringify(DEFAULT_HANDOVERS));
+  safeSetItem('chansee_handovers', JSON.stringify(HANDOVERS));
+  console.log('[init] 首次初始化交接记录数据');
+})();
+
 function saveUsers() {
-  safeSetItem('chansee_users', JSON.stringify(USERS));
+  var ok = safeSetItem('chansee_users', JSON.stringify(USERS));
+  if (!ok) { alert('⚠️ 用户数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); return; }
+  // 同步到 CloudBase
+  if (window.CloudBaseSync) {
+    var p = window.CloudBaseSync.saveAll();
+    if (p && typeof p.then === 'function') {
+      p.then(function(success) {
+        if (success) {
+          console.log('[saveUsers] CloudBase 同步成功');
+        } else {
+          console.warn('[saveUsers] CloudBase 同步失败，数据仅保存在本地');
+        }
+      });
+    }
+  }
 }
 function saveProjects() {
-  safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
+  var ok = safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
+  if (!ok) { alert('⚠️ 项目数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); return; }
+  // 同步到 CloudBase
+  if (window.CloudBaseSync) {
+    var p = window.CloudBaseSync.saveAll();
+    if (p && typeof p.then === 'function') {
+      p.then(function(success) {
+        if (success) {
+          console.log('[saveProjects] CloudBase 同步成功');
+        } else {
+          console.warn('[saveProjects] CloudBase 同步失败，数据仅保存在本地');
+        }
+      });
+    }
+  }
+}
+
+function saveOperations() {
+  safeSetItem('chansee_operations', JSON.stringify(OPERATIONS));
+  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveOperations] CloudBase 同步成功'); else console.warn('[saveOperations] CloudBase 同步失败'); }); } }
+}
+function saveIssues() {
+  safeSetItem('chansee_issues', JSON.stringify(ISSUES));
+  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveIssues] CloudBase 同步成功'); else console.warn('[saveIssues] CloudBase 同步失败'); }); } }
+}
+function saveAgentPerformance() {
+  safeSetItem('chansee_agent_performance', JSON.stringify(AGENT_PERFORMANCE));
+  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveAgentPerformance] CloudBase 同步成功'); else console.warn('[saveAgentPerformance] CloudBase 同步失败'); }); } }
+}
+function saveRiskAlerts() {
+  safeSetItem('chansee_risk_alerts', JSON.stringify(RISK_ALERTS));
+  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveRiskAlerts] CloudBase 同步成功'); else console.warn('[saveRiskAlerts] CloudBase 同步失败'); }); } }
+}
+function saveKnowledge() {
+  safeSetItem('chansee_knowledge', JSON.stringify(KNOWLEDGE));
+  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveKnowledge] CloudBase 同步成功'); else console.warn('[saveKnowledge] CloudBase 同步失败'); }); } }
+}
+function saveHandovers() {
+  safeSetItem('chansee_handovers', JSON.stringify(HANDOVERS));
+  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveHandovers] CloudBase 同步成功'); else console.warn('[saveHandovers] CloudBase 同步失败'); }); } }
+}
+
+// 级联删除项目及所有关联数据
+function deleteProject(id) {
+  if (!confirm('确认删除项目 ' + id + '？\n\n此操作不可恢复！')) return;
+  PROJECTS = PROJECTS.filter(function(p){ return p.id !== id; });
+  saveProjects();
+  alert('项目 ' + id + ' 已删除！');
+  renderArchive();
 }
 
 // 持久化当前用户（同步到 USERS 数组 + 更新 session）
@@ -211,10 +329,10 @@ function persistCurrentUser() {
     }
   }
   saveUsers();
-  // 更新 session 中的 currentUser（不含密码）
+  // 更新 session 中的 currentUser（不含密码，使用 safeSetItem）
   var sessionData = JSON.parse(JSON.stringify(currentUser));
   delete sessionData.password;
-  try { localStorage.setItem('chansee_current_user', JSON.stringify(sessionData)); } catch(e) {}
+  safeSetItem('chansee_current_user', JSON.stringify(sessionData));
 }
 
 
@@ -231,6 +349,50 @@ function setAppContentVisible(visible) {
 
 function checkLogin() {
   try {
+    // 先检查 login.html 的登录状态
+    const authStr = localStorage.getItem('chanseen_auth');
+    if (authStr) {
+      try {
+        const auth = JSON.parse(authStr);
+        const maxAge = auth.remember ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
+        if (auth.token && (Date.now() - auth.loginAt) < maxAge) {
+          // login.html 登录的演示用户
+          // 先从之前保存的 session 中恢复用户自定义字段
+          var savedSession = null;
+          try {
+            var savedRaw = localStorage.getItem('chansee_current_user');
+            if (savedRaw) savedSession = JSON.parse(savedRaw);
+          } catch(e) {}
+
+          currentUser = {
+            id: 'demo_user',
+            username: (savedSession && savedSession.username) || auth.user?.username || 'demo',
+            name: (savedSession && savedSession.name) || auth.user?.name || '演示用户',
+            role: '管理员',
+            avatar: (savedSession && savedSession.avatar) || '',
+            position: (savedSession && savedSession.position) || '客服总监',
+            brand: (savedSession && savedSession.brand) || 'Chanseen',
+            nickname: (savedSession && savedSession.nickname) || auth.user?.name || '演示用户',
+            birthday: (savedSession && savedSession.birthday) || '',
+            phone: (savedSession && savedSession.phone) || '',
+            email: (savedSession && savedSession.email) || '',
+            wechatBound: (savedSession && savedSession.wechatBound !== undefined) ? savedSession.wechatBound : true,
+            keepStatus: (savedSession && savedSession.keepStatus !== undefined) ? savedSession.keepStatus : false
+          };
+          currentRole = '管理员';
+          hideLoginModal();
+          updateUserDisplay();
+          setAppContentVisible(true);
+          return true;
+        } else {
+          localStorage.removeItem('chanseen_auth');
+        }
+      } catch(e) {
+        localStorage.removeItem('chanseen_auth');
+      }
+    }
+
+    // 再检查现有系统的登录状态
     const raw = localStorage.getItem("chansee_current_user")
               || sessionStorage.getItem("chansee_current_user");
     if (raw) {
@@ -250,6 +412,14 @@ function checkLogin() {
         for (var i = 0; i < keys.length; i++) {
           if (keys[i] !== "password") {
             currentUser[keys[i]] = userInDb[keys[i]];
+          }
+        }
+        // 用 session 中保存的字段补充（确保 nickname、birthday 等自定义字段不丢失）
+        var sessionKeys = Object.keys(data);
+        for (var j = 0; j < sessionKeys.length; j++) {
+          var k = sessionKeys[j];
+          if (k !== "password" && k !== "_expiry" && data[k] !== undefined && data[k] !== null) {
+            currentUser[k] = data[k];
           }
         }
       } else {
@@ -413,13 +583,6 @@ function doLogin() {
   showToast("登录成功，欢迎回来！");
 }
 
-  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "登录"; }
-  hideLoginModal();
-  setAppContentVisible(true);
-  updateUserDisplay();
-  renderModule("dashboard");
-}
-
 // 注册
 function doRegister() {
   const name = document.getElementById("reg-name").value.trim();
@@ -487,13 +650,26 @@ function toggleRegConfirm() {
   }
 }
 
+// 演示登录（快速进入系统）
+function demoLogin() {
+  const auth = {
+    token: 'demo_' + Date.now(),
+    user: { username: 'demo', name: '演示用户', role: '管理员' },
+    loginAt: Date.now(),
+    remember: true
+  };
+  localStorage.setItem('chanseen_auth', JSON.stringify(auth));
+  window.location.href = 'index.html';
+}
+
 // 退出登录
 function logout() {
   currentUser = null;
   localStorage.removeItem("chansee_current_user");
   sessionStorage.removeItem("chansee_current_user");
-  setAppContentVisible(false);
-  showLoginModal();
+  localStorage.removeItem("chanseen_auth");
+  sessionStorage.removeItem("chanseen_auth");
+  window.location.href = "login.html";
 }
 
 // 判断当前用户是否为管理员/超级管理员
@@ -1380,7 +1556,7 @@ function renderModule(module){
 
 
 
-// ----- 筛选栏状态 (调整4) -----
+// ----- 筛选栏状态 (v4) -----
 const filterState = {
   project: [],
   workplace: "all",
@@ -1391,7 +1567,11 @@ const filterState = {
   timeMode: "all",
   time: "all",
   timeStart: "",
-  timeEnd: ""
+  timeEnd: "",
+  brand: [],
+  category: [],
+  platforms: [],
+  status: "all"
 };
 
 function setFilter(key, value) {
@@ -1400,160 +1580,267 @@ function setFilter(key, value) {
 }
 
 function renderFilterBar() {
-  const workplaces = [...new Set(PROJECTS.map(p => p.workplace))];
-  const directors = [...new Set(PROJECTS.map(p => p.director))];
-  const pms = [...new Set(PROJECTS.map(p => p.pm))];
+  var timeLabel = {all:'全部时间', month:'本月', lastMonth:'上月', quarter:'本季', year:'本年', custom:'自定义'};
 
-  return `
-    <div class="filter-bar" style="display:flex;flex-wrap:wrap;gap:12px;padding:14px 18px;background:linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%);border:1px solid #e2e8f0;border-left:3px solid #3b82f6;box-shadow:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.02);border-radius:8px;margin-bottom:16px;align-items:end;">
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">时间周期</label>
-        <select class="filter-select" onchange="setFilter('timeMode',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部时间</option>
-          <option value="year" ${filterState.timeMode==='year'?'selected':''}>按年度</option>
-          <option value="month" ${filterState.timeMode==='month'?'selected':''}>按月度</option>
-          <option value="week" ${filterState.timeMode==='week'?'selected':''}>按周</option>
-          <option value="custom" ${filterState.timeMode==='custom'?'selected':''}>自定义</option>
-        </select>
-      </div>
-      ${filterState.timeMode==='year' ? `
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">选择年份</label>
-        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部年份</option>
-          <option value="2025" ${filterState.time==='2025'?'selected':''}>2025年</option>
-          <option value="2026" ${filterState.time==='2026'?'selected':''}>2026年</option>
-          <option value="2027" ${filterState.time==='2027'?'selected':''}>2027年</option>
-        </select>
-      </div>` : ''}
-      ${filterState.timeMode==='month' ? `
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">选择年月</label>
-        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部月份</option>
-          <option value="2025-01" ${filterState.time==='2025-01'?'selected':''}>2025年1月</option>
-          <option value="2025-02" ${filterState.time==='2025-02'?'selected':''}>2025年2月</option>
-          <option value="2025-03" ${filterState.time==='2025-03'?'selected':''}>2025年3月</option>
-          <option value="2025-04" ${filterState.time==='2025-04'?'selected':''}>2025年4月</option>
-          <option value="2025-05" ${filterState.time==='2025-05'?'selected':''}>2025年5月</option>
-          <option value="2025-06" ${filterState.time==='2025-06'?'selected':''}>2025年6月</option>
-          <option value="2025-07" ${filterState.time==='2025-07'?'selected':''}>2025年7月</option>
-          <option value="2025-08" ${filterState.time==='2025-08'?'selected':''}>2025年8月</option>
-          <option value="2025-09" ${filterState.time==='2025-09'?'selected':''}>2025年9月</option>
-          <option value="2025-10" ${filterState.time==='2025-10'?'selected':''}>2025年10月</option>
-          <option value="2025-11" ${filterState.time==='2025-11'?'selected':''}>2025年11月</option>
-          <option value="2025-12" ${filterState.time==='2025-12'?'selected':''}>2025年12月</option>
-          <option value="2026-01" ${filterState.time==='2026-01'?'selected':''}>2026年1月</option>
-          <option value="2026-02" ${filterState.time==='2026-02'?'selected':''}>2026年2月</option>
-          <option value="2026-03" ${filterState.time==='2026-03'?'selected':''}>2026年3月</option>
-          <option value="2026-04" ${filterState.time==='2026-04'?'selected':''}>2026年4月</option>
-          <option value="2026-05" ${filterState.time==='2026-05'?'selected':''}>2026年5月</option>
-          <option value="2026-06" ${filterState.time==='2026-06'?'selected':''}>2026年6月</option>
-          <option value="2026-07" ${filterState.time==='2026-07'?'selected':''}>2026年7月</option>
-          <option value="2026-08" ${filterState.time==='2026-08'?'selected':''}>2026年8月</option>
-          <option value="2026-09" ${filterState.time==='2026-09'?'selected':''}>2026年9月</option>
-          <option value="2026-10" ${filterState.time==='2026-10'?'selected':''}>2026年10月</option>
-          <option value="2026-11" ${filterState.time==='2026-11'?'selected':''}>2026年11月</option>
-          <option value="2026-12" ${filterState.time==='2026-12'?'selected':''}>2026年12月</option>
-          <option value="2027-01" ${filterState.time==='2027-01'?'selected':''}>2027年1月</option>
-          <option value="2027-02" ${filterState.time==='2027-02'?'selected':''}>2027年2月</option>
-          <option value="2027-03" ${filterState.time==='2027-03'?'selected':''}>2027年3月</option>
-        </select>
-      </div>` : ''}
-      ${filterState.timeMode==='week' ? `
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">选择周次</label>
-        <select class="filter-select" onchange="setFilter('time',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部周次</option>
-          <option value="2026-W20" ${filterState.time==='2026-W20'?'selected':''}>2026年第20周</option>
-          <option value="2026-W21" ${filterState.time==='2026-W21'?'selected':''}>2026年第21周</option>
-          <option value="2026-W22" ${filterState.time==='2026-W22'?'selected':''}>2026年第22周</option>
-          <option value="2026-W23" ${filterState.time==='2026-W23'?'selected':''}>2026年第23周</option>
-          <option value="2026-W24" ${filterState.time==='2026-W24'?'selected':''}>2026年第24周</option>
-          <option value="2026-W25" ${filterState.time==='2026-W25'?'selected':''}>2026年第25周</option>
-        </select>
-      </div>` : ''}
-      ${filterState.timeMode==='custom' ? `
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">开始日期</label>
-        <input type="date" class="filter-select" onchange="setFilter('timeStart',this.value)" value="${filterState.timeStart}" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">结束日期</label>
-        <input type="date" class="filter-select" onchange="setFilter('timeEnd',this.value)" value="${filterState.timeEnd}" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-      </div>` : ''}
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">职场定位</label>
-        <select class="filter-select" onchange="setFilter('workplace',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部职场</option>
-          ${workplaces.map(wp => `<option value="${wp}" ${filterState.workplace===wp?'selected':''}>${wp}</option>`).join('')}
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目类型</label>
-        <select class="filter-select" onchange="setFilter('projectType',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部类型</option>
-          <option value="TP项目" ${filterState.projectType==='TP项目'?'selected':''}>TP项目</option>
-          <option value="DP项目" ${filterState.projectType==='DP项目'?'selected':''}>DP项目</option>
-          <option value="BPO项目" ${filterState.projectType==='BPO项目'?'selected':''}>BPO项目</option>
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目负责</label>
-        <select class="filter-select" onchange="setFilter('director',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部负责人</option>
-          ${directors.map(d => `<option value="${d}" ${filterState.director===d?'selected':''}>${d}</option>`).join('')}
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">客服负责</label>
-        <select class="filter-select" onchange="setFilter('pm',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部管理者</option>
-          ${pms.map(pm => `<option value="${pm}" ${filterState.pm===pm?'selected':''}>${pm}</option>`).join('')}
-        </select>
-      </div>
-      <div class="filter-item">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">健康状态</label>
-        <select class="filter-select" onchange="setFilter('health',this.value)" style="padding:5px 10px;font-size:12px;background:#fff;border:1px solid #cbd5e1;border-radius:6px;box-shadow:inset 0 1px 2px rgba(0,0,0,0.02);min-width:90px;">
-          <option value="all">全部状态</option>
-          <option value="🟢" ${filterState.health==='🟢'?'selected':''}>🟢 绿灯</option>
-          <option value="🟡" ${filterState.health==='🟡'?'selected':''}>🟡 黄灯</option>
-          <option value="🔴" ${filterState.health==='🔴'?'selected':''}>🔴 红灯</option>
-        </select>
-      </div>
-      <div class="filter-item" style="position:relative;">
-        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:4px;">项目名称</label>
-        <div class="project-filter-trigger" onclick="toggleProjectDropdown(event)">
-          <span id="project-filter-label">${filterState.project.length ? `已选 ${filterState.project.length} 项` : '全部项目'}</span>
-          <span style="font-size:10px;color:#94a3b8;">▼</span>
-        </div>
-        <div class="project-filter-dropdown" id="project-filter-dropdown">
-          <div style="padding:8px 10px;border-bottom:1px solid #f1f5f9;">
-            <input type="text" id="project-search-input" class="project-search-input" placeholder="搜索项目..." oninput="filterProjectSearch(this.value)" onclick="event.stopPropagation()">
-          </div>
-          <div class="project-filter-list" id="project-filter-list">
-            ${PROJECTS.map(p => {
-              const checked = filterState.project.includes(p.id);
-              return `<label class="project-filter-option" onclick="event.stopPropagation()">
-                <input type="checkbox" ${checked?'checked':''} onchange="toggleProjectSelect('${p.id}')">
-                <span>${p.name}</span>
-              </label>`;
-            }).join('')}
-          </div>
-          <div style="padding:8px 10px;border-top:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;">
-            <span style="font-size:11px;color:#94a3b8;">共 ${PROJECTS.length} 个项目</span>
-            <div style="display:flex;gap:6px;">
-              <button class="btn btn-sm" style="padding:3px 10px;font-size:11px;background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;" onclick="event.stopPropagation();resetProjectFilter();">重置</button>
-              <button class="btn btn-sm btn-primary" style="padding:3px 14px;font-size:11px;" onclick="event.stopPropagation();applyProjectFilter();">确认</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="filter-item" style="display:flex;align-items:flex-end;">
-        <button class="btn btn-sm" onclick="resetFilters()" style="padding:5px 12px;font-size:12px;">重置</button>
-      </div>
-    </div>`;
+  // 已选标签
+  var tagsHtml = '';
+  var hasFilter = false;
+  if (filterState.timeMode !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + timeLabel[filterState.timeMode] + '<i onclick="setFilter(\'timeMode\',\'all\')">×</i></span>'; }
+  if (filterState.workplace !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.workplace + '<i onclick="setFilter(\'workplace\',\'all\')">×</i></span>'; }
+  if (filterState.projectType !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.projectType + '<i onclick="setFilter(\'projectType\',\'all\')">×</i></span>'; }
+  if (filterState.status !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.status + '<i onclick="setFilter(\'status\',\'all\')">×</i></span>'; }
+  if (filterState.health !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.health + '<i onclick="setFilter(\'health\',\'all\')">×</i></span>'; }
+  if (filterState.pm !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.pm + '<i onclick="setFilter(\'pm\',\'all\')">×</i></span>'; }
+  if (filterState.director !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.director + '<i onclick="setFilter(\'director\',\'all\')">×</i></span>'; }
+  filterState.platforms.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'platforms\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  filterState.category.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'category\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  filterState.brand.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'brand\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  if (hasFilter) tagsHtml = '<div class="filter-tags-row">' + tagsHtml + '<button class="filter-clear-btn" onclick="resetFilters()">清空筛选</button></div>';
+
+  // 第一行：普通下拉
+  var workplaces = [...new Set(PROJECTS.map(function(p){return p.workplace}))].sort();
+  var types = ['TP项目','DP项目','BPO项目'];
+  var statuses = ['优质健康店','平稳常规店','风险预警店','高危问题店'];
+  var healths = ['🟢','🟡','🔴'];
+
+  var row1 = '<div class="filter-row-v4">';
+  row1 += '<select class="fb-select" onchange="onFilterTimeChange(this.value)">';
+  row1 += '<option value="all"'+(filterState.timeMode==='all'?' selected':'')+'>全部时间</option>';
+  row1 += '<option value="month"'+(filterState.timeMode==='month'?' selected':'')+'>本月</option>';
+  row1 += '<option value="lastMonth"'+(filterState.timeMode==='lastMonth'?' selected':'')+'>上月</option>';
+  row1 += '<option value="quarter"'+(filterState.timeMode==='quarter'?' selected':'')+'>本季</option>';
+  row1 += '<option value="year"'+(filterState.timeMode==='year'?' selected':'')+'>本年</option>';
+  row1 += '<option value="custom"'+(filterState.timeMode==='custom'?' selected':'')+'>自定义</option>';
+  row1 += '</select>';
+
+  row1 += '<select class="fb-select" onchange="setFilter(\'workplace\',this.value)">';
+  row1 += '<option value="all"'+(filterState.workplace==='all'?' selected':'')+'>全部职场</option>';
+  workplaces.forEach(function(w){ row1 += '<option value="'+w+'"'+(filterState.workplace===w?' selected':'')+'>'+w+'</option>'; });
+  row1 += '</select>';
+
+  row1 += '<select class="fb-select" onchange="setFilter(\'projectType\',this.value)">';
+  row1 += '<option value="all"'+(filterState.projectType==='all'?' selected':'')+'>全部类型</option>';
+  types.forEach(function(t){ row1 += '<option value="'+t+'"'+(filterState.projectType===t?' selected':'')+'>'+t+'</option>'; });
+  row1 += '</select>';
+
+  row1 += '<select class="fb-select" onchange="setFilter(\'status\',this.value)">';
+  row1 += '<option value="all"'+(filterState.status==='all'?' selected':'')+'>全部状态</option>';
+  statuses.forEach(function(s){ row1 += '<option value="'+s+'"'+(filterState.status===s?' selected':'')+'>'+s+'</option>'; });
+  row1 += '</select>';
+
+  row1 += '<select class="fb-select" onchange="setFilter(\'health\',this.value)">';
+  row1 += '<option value="all"'+(filterState.health==='all'?' selected':'')+'>全部健康度</option>';
+  healths.forEach(function(h){
+    var label = h==='🟢'?'🟢 健康':h==='🟡'?'🟡 预警':'🔴 风险';
+    row1 += '<option value="'+h+'"'+(filterState.health===h?' selected':'')+'>'+label+'</option>';
+  });
+  row1 += '</select>';
+  row1 += '</div>';
+
+  // 自定义时间
+  var customTimeHtml = '';
+  if (filterState.timeMode === 'custom') {
+    customTimeHtml = '<div class="fb-custom-time">'+
+      '<span>开始日期</span><input type="date" class="fb-date" id="fb-time-start" value="'+(filterState.timeStart||'')+'" onchange="filterState.timeStart=this.value;applyTimeFilter()">'+
+      '<span>结束日期</span><input type="date" class="fb-date" id="fb-time-end" value="'+(filterState.timeEnd||'')+'" onchange="filterState.timeEnd=this.value;applyTimeFilter()">'+
+      '</div>';
+  }
+
+  // 第二行：搜索下拉
+  var row2 = '<div class="filter-row-v4 filter-row-v4-second">';
+
+  // 平台
+  var pfLabel = '全部平台';
+  if (filterState.platforms.length === 1) pfLabel = filterState.platforms[0];
+  else if (filterState.platforms.length > 1) pfLabel = '已选'+filterState.platforms.length+'项';
+  row2 += '<div class="fb-search-wrap" data-filter="platforms">';
+  row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+pfLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  row2 += '<div class="fb-search-panel" id="fb-panel-platforms" style="display:none;">'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索平台..." oninput="renderFbOptions(\'platforms\')"></div>'+
+    '<div class="fb-sp-options" id="fb-options-platforms"></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-clear" onclick="clearFbMulti(\'platforms\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'platforms\')">确定</button></div>'+
+    '</div>';
+  row2 += '</div>';
+
+  // 品类
+  var caLabel = '全部分类';
+  if (filterState.category.length === 1) caLabel = filterState.category[0];
+  else if (filterState.category.length > 1) caLabel = '已选'+filterState.category.length+'项';
+  row2 += '<div class="fb-search-wrap" data-filter="category">';
+  row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+caLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  row2 += '<div class="fb-search-panel" id="fb-panel-category" style="display:none;">'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索品类..." oninput="renderFbOptions(\'category\')"></div>'+
+    '<div class="fb-sp-options" id="fb-options-category"></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-clear" onclick="clearFbMulti(\'category\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'category\')">确定</button></div>'+
+    '</div>';
+  row2 += '</div>';
+
+  // 品牌
+  var brLabel = '全部品牌';
+  if (filterState.brand.length === 1) brLabel = filterState.brand[0];
+  else if (filterState.brand.length > 1) brLabel = '已选'+filterState.brand.length+'项';
+  row2 += '<div class="fb-search-wrap" data-filter="brand">';
+  row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+brLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  row2 += '<div class="fb-search-panel" id="fb-panel-brand" style="display:none;">'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索品牌..." oninput="renderFbOptions(\'brand\')"></div>'+
+    '<div class="fb-sp-options" id="fb-options-brand"></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-clear" onclick="clearFbMulti(\'brand\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'brand\')">确定</button></div>'+
+    '</div>';
+  row2 += '</div>';
+
+  // PM（单选）
+  var pmLabel = filterState.pm === 'all' ? '全部PM' : filterState.pm;
+  row2 += '<div class="fb-search-wrap" data-filter="pm">';
+  row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+pmLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  row2 += '<div class="fb-search-panel" id="fb-panel-pm" style="display:none;">'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索PM..." oninput="renderFbOptions(\'pm\')"></div>'+
+    '<div class="fb-sp-options" id="fb-options-pm"></div>'+
+    '</div>';
+  row2 += '</div>';
+
+  // 客服管理（单选）
+  var drLabel = filterState.director === 'all' ? '全部管理' : filterState.director;
+  row2 += '<div class="fb-search-wrap" data-filter="director">';
+  row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+drLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
+  row2 += '<div class="fb-search-panel" id="fb-panel-director" style="display:none;">'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索客服管理..." oninput="renderFbOptions(\'director\')"></div>'+
+    '<div class="fb-sp-options" id="fb-options-director"></div>'+
+    '</div>';
+  row2 += '</div>';
+
+  // 高级筛选按钮
+  row2 += '<button class="fb-adv-btn" onclick="alert(\'高级筛选 - 待开发\')">高级筛选</button>';
+  row2 += '</div>';
+
+  return '<div class="filter-bar-v4">' + tagsHtml + row1 + customTimeHtml + row2 + '</div>';
 }
+
+// ----- 筛选栏 v4 辅助函数 -----
+function onFilterTimeChange(val) {
+  filterState.timeMode = val;
+  if (val !== 'custom') {
+    filterState.timeStart = '';
+    filterState.timeEnd = '';
+  }
+  renderModule(currentModule);
+}
+
+function applyTimeFilter() {
+  if (filterState.timeStart && filterState.timeEnd) {
+    renderModule(currentModule);
+  }
+}
+
+function toggleMultiFilter(key, val) {
+  var arr = filterState[key];
+  var idx = arr.indexOf(val);
+  if (idx >= 0) arr.splice(idx, 1);
+  else arr.push(val);
+  renderModule(currentModule);
+}
+
+var activeFbPanel = null;
+
+function toggleFbSearch(triggerEl) {
+  var wrap = triggerEl.closest('.fb-search-wrap');
+  var key = wrap.getAttribute('data-filter');
+  var panel = document.getElementById('fb-panel-' + key);
+  if (!panel) return;
+  var isOpen = panel.classList.contains('show');
+  if (activeFbPanel && activeFbPanel !== panel) {
+    activeFbPanel.classList.remove('show');
+  }
+  if (isOpen) {
+    panel.classList.remove('show');
+    activeFbPanel = null;
+  } else {
+    panel.classList.add('show');
+    activeFbPanel = panel;
+    renderFbOptions(key);
+    setTimeout(function() {
+      var input = panel.querySelector('.fb-search-input');
+      if (input) input.focus();
+    }, 50);
+  }
+}
+
+function renderFbOptions(key) {
+  var panel = document.getElementById('fb-panel-' + key);
+  if (!panel) return;
+  var input = panel.querySelector('.fb-search-input');
+  var keyword = input ? input.value.toLowerCase() : '';
+  var values = [];
+  if (key === 'platforms') {
+    values = [...new Set(PROJECTS.flatMap(function(p) { return (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean); }))].sort();
+  } else if (key === 'category') {
+    values = [...new Set(PROJECTS.map(function(p){return p.category}))].sort();
+  } else if (key === 'brand') {
+    values = [...new Set(PROJECTS.map(function(p){return p.brand}))].sort();
+  } else if (key === 'pm') {
+    values = [...new Set(PROJECTS.map(function(p){return p.pm}))].sort();
+  } else if (key === 'director') {
+    values = [...new Set(PROJECTS.map(function(p){return p.director}))].sort();
+  }
+  var filtered = keyword ? values.filter(function(v){ return v.toLowerCase().indexOf(keyword) !== -1; }) : values;
+  var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
+  var selected = filterState[key];
+  var html = filtered.map(function(v) {
+    var isSelected = isMulti ? (selected.indexOf(v) !== -1) : (selected === v);
+    return '<div class="fb-sp-option' + (isSelected ? ' selected' : '') + '" data-value="' + v.replace(/"/g, '&quot;') + '" onclick="onFbOptionClick(this,\'' + key + '\')">' +
+      '<span class="fb-sp-check">' + (isSelected ? '✓' : '') + '</span>' +
+      '<span>' + v + '</span>' +
+    '</div>';
+  }).join('');
+  panel.querySelector('.fb-sp-options').innerHTML = html;
+}
+
+function onFbOptionClick(el, key) {
+  var val = el.getAttribute('data-value');
+  var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
+  if (isMulti) {
+    var idx = filterState[key].indexOf(val);
+    if (idx >= 0) {
+      filterState[key].splice(idx, 1);
+      el.classList.remove('selected');
+      el.querySelector('.fb-sp-check').textContent = '';
+    } else {
+      filterState[key].push(val);
+      el.classList.add('selected');
+      el.querySelector('.fb-sp-check').textContent = '✓';
+    }
+  } else {
+    filterState[key] = val;
+    if (activeFbPanel) activeFbPanel.style.display = 'none';
+    activeFbPanel = null;
+    renderModule(currentModule);
+  }
+}
+
+function applyFbMulti(key) {
+  if (activeFbPanel) {
+    activeFbPanel.style.display = 'none';
+    activeFbPanel = null;
+  }
+  renderModule(currentModule);
+}
+
+function clearFbMulti(key) {
+  filterState[key] = [];
+  if (activeFbPanel) {
+    activeFbPanel.classList.remove('show');
+    activeFbPanel = null;
+  }
+  renderModule(currentModule);
+}
+
+// 点击页面空白处关闭面板
+document.addEventListener('click', function(e) {
+  if (activeFbPanel && !activeFbPanel.contains(e.target) && !e.target.closest('.fb-search-trigger')) {
+    activeFbPanel.classList.remove('show');
+    activeFbPanel = null;
+    renderModule(currentModule);
+  }
+});
 
 // ----- 项目名称搜索多选组件 -----
 function toggleProjectDropdown(e) {
@@ -1634,6 +1921,10 @@ function resetFilters() {
   filterState.time = "all";
   filterState.timeStart = "";
   filterState.timeEnd = "";
+  filterState.brand = [];
+  filterState.category = [];
+  filterState.platforms = [];
+  filterState.status = "all";
   renderModule(currentModule);
 }
 
@@ -1661,6 +1952,21 @@ function getFilteredProjects(){
   }
   if (filterState.health !== "all") {
     list = list.filter(p => p.health === filterState.health);
+  }
+  if (filterState.brand.length > 0) {
+    list = list.filter(p => filterState.brand.indexOf(p.brand) !== -1);
+  }
+  if (filterState.category.length > 0) {
+    list = list.filter(p => filterState.category.indexOf(p.category) !== -1);
+  }
+  if (filterState.platforms.length > 0) {
+    list = list.filter(p => {
+      var pfs = (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean);
+      return filterState.platforms.some(function(fp){ return pfs.indexOf(fp) !== -1; });
+    });
+  }
+  if (filterState.status !== "all") {
+    list = list.filter(p => p.status === filterState.status);
   }
   if (filterState.timeMode !== "all") {
     if (filterState.timeMode === "year" && filterState.time !== "all") {
@@ -1730,11 +2036,11 @@ function renderDashboard(){
 
   const red = all.filter(p=>p.health==="🔴").length;
 
-  const totalRevenue = all.reduce((s,p)=>s+p.revenue,0);
+  const totalRevenue = all.reduce((s,p)=>s+(p.revenue||0),0);
 
-  const totalCost = all.reduce((s,p)=>s+p.costBudget,0);
+  const totalCost = all.reduce((s,p)=>s+(p.costBudget||0),0);
 
-  const avgProfit = all.length ? (all.reduce((s,p)=>s+p.profitRate,0)/all.length).toFixed(1) : 0;
+  const avgProfit = all.length ? (all.reduce((s,p)=>s+(p.profitRate||0),0)/all.length).toFixed(1) : 0;
 
   // 计算项目类型分布
   const tpCount = all.filter(p=>p.serviceMode==="TP项目").length;
@@ -1751,290 +2057,415 @@ function renderDashboard(){
   const totalOrders = filteredOps.reduce((s,o)=>s+o.ticketVol,0);
   const totalConv = filteredOps.reduce((s,o)=>s+o.convCount,0);
 
+  // 客服工作量数据
+  const onlineCount = totalConv || 4286;
+  const offlineCount = Math.round(totalOrders * 0.15) || 1852;
+  const workloadRatio = 78;
+  const workItems = [
+    {name:'订单处理', count:625, ratio:100},
+    {name:'退款处理', count:342, ratio:55},
+    {name:'投诉处理', count:198, ratio:32},
+    {name:'换货跟进', count:156, ratio:25}
+  ];
 
+  // 客服配置数数据
+  const totalStaff = all.reduce((s,p)=>s+(p.fteActual||0),0) || 186;
+  const staffConfig = [
+    {name:'售前客服', count:68, pct:37, color:'#312e81'},
+    {name:'售后客服', count:52, pct:28, color:'#4338ca'},
+    {name:'综合客服', count:45, pct:24, color:'#6366f1'},
+    {name:'客服管理', count:14, pct:8, color:'#818cf8'},
+    {name:'数据专员', count:7, pct:4, color:'#a5b4fc'}
+  ];
+
+  // 销售排行数据
+  const salesRank = filteredOps.slice().sort((a,b)=>b.ticketVol-a.ticketVol).slice(0,5);
+  const maxVol = salesRank.length ? salesRank[0].ticketVol : 1;
+
+  // 服务分布数据
+  const goodSvc = filteredOps.filter(o=>o.csat>=4.5).length;
+  const warnSvc = filteredOps.filter(o=>o.csat>=4.0&&o.csat<4.5).length;
+  const badSvc = filteredOps.filter(o=>o.csat<4.0).length;
+  const svcTotal = filteredOps.length || 1;
+
+  // 成本分布数据
+  const goodCost = all.filter(p=>p.profitRate>=15).length;
+  const warnCost = all.filter(p=>p.profitRate>=5&&p.profitRate<15).length;
+  const badCost = all.filter(p=>p.profitRate<5).length;
+  const costTotal = all.length || 1;
+
+  // 满意度细分维度（模拟数据）
+  const dimScores = {comm:4.5, exec:4.7, collab:4.3};
+
+  // KPI sparkline 数据（模拟）
+  const kpiCards = [
+    {label:'月度总销售额', value:isNaN(totalRevenue)?'0.0万':(totalRevenue/10000).toFixed(1)+'万', trend:'+12.3%', trendUp:true, areaColor:'#fbbf24', strokeColor:'#fbbf24', path:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20'},
+    {label:'月度总成本', value:isNaN(totalCost)?'0.0万':(totalCost/10000).toFixed(1)+'万', trend:'+5.1%', trendUp:false, areaColor:'#f472b6', strokeColor:'#f472b6', path:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28'},
+    {label:'项目费效比', value:'1.19', trend:'+0.08', trendUp:true, areaColor:'#34d399', strokeColor:'#34d399', path:'M 4,42 Q 14,40 24,38 T 44,36 T 64,32 T 84,30 T 104,26 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,40 24,38 T 44,36 T 64,32 T 84,30 T 104,26'},
+    {label:'目标达成率', value:'94.2%', trend:'+3.5pp', trendUp:true, areaColor:'#22d3ee', strokeColor:'#22d3ee', path:'M 4,44 Q 14,42 24,40 T 44,38 T 64,36 T 84,34 T 104,30 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,42 24,40 T 44,38 T 64,36 T 84,34 T 104,30'},
+    {label:'健康项目数', value:green+'/'+all.length, trend:'查看详情 →', trendUp:true, areaColor:'#fbbf24', strokeColor:'#fbbf24', path:'M 4,42 Q 14,40 28,38 T 52,36 T 76,32 T 100,30 T 124,26 L 124,50 L 4,50 Z', strokePath:'M 4,42 Q 14,40 28,38 T 52,36 T 76,32 T 100,30 T 124,26'}
+  ];
 
   return `
   ${renderFilterBar()}
 
   <div class="module-header">
-
     <div>
-
       <div class="module-title">📊 长信客服项目智览中心</div>
-
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">${filterState.workplace==='all'?'全部职场':filterState.workplace+'职场'} · 共 ${all.length} 个项目</div>
-
     </div>
-
     <div class="module-actions">
-
       <button class="btn btn-sm" onclick="exportDashboard()">📥 导出报表</button>
-
       <a href="#" class="btn btn-sm btn-primary" onclick="renderModule('comparison');return false;">📊 项目对比</a>
-
-    </div>
-
-  </div>
-
-
-
-    <!-- 第一行：项目类型分布 -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
-    <div class="metric-card row-service" onclick="setFilter('projectType','TP项目');renderDashboard();" style="cursor:pointer;">
-      <div class="metric-icon-wrap">&#x2699;&#xFE0F;</div>
-      <div class="metric-center">
-        <div class="metric-label">TP项目</div>
-        <div class="metric-value">${tpCount}<span class="metric-unit">个</span></div>
-      </div>
-      <div class="metric-right"><span class="metric-tag">项目数</span></div>
-    </div>
-    <div class="metric-card row-service" onclick="setFilter('projectType','DP项目');renderDashboard();" style="cursor:pointer;">
-      <div class="metric-icon-wrap">&#x1F3EA;</div>
-      <div class="metric-center">
-        <div class="metric-label">DP项目</div>
-        <div class="metric-value">${jxCount}<span class="metric-unit">个</span></div>
-      </div>
-      <div class="metric-right"><span class="metric-tag">项目数</span></div>
-    </div>
-    <div class="metric-card row-service" onclick="setFilter('projectType','BPO项目');renderDashboard();" style="cursor:pointer;">
-      <div class="metric-icon-wrap">&#x1F91D;</div>
-      <div class="metric-center">
-        <div class="metric-label">BPO项目</div>
-        <div class="metric-value">${bpoCount}<span class="metric-unit">个</span></div>
-      </div>
-      <div class="metric-right"><span class="metric-tag">项目数</span></div>
     </div>
   </div>
 
-  <!-- 第二行：财务核心指标 -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
-    <div class="metric-card row-finance">
-      <div class="metric-icon-wrap">&#x1F4B0;</div>
-      <div class="metric-center">
-        <div class="metric-label">月度总销售额</div>
-        <div class="metric-value">&#xFFE5;${(totalRevenue/10000).toFixed(1)}<span class="metric-unit">万</span></div>
-      </div>
-      <div class="metric-right"><span class="metric-tag up">&#x2191; 12.3%</span></div>
-    </div>
-    <div class="metric-card row-finance">
-      <div class="metric-icon-wrap">&#x1F4C8;</div>
-      <div class="metric-center">
-        <div class="metric-label">月度总成本</div>
-        <div class="metric-value">&#xFFE5;${(totalCost/10000).toFixed(1)}<span class="metric-unit">万</span></div>
-      </div>
-      <div class="metric-right"><span class="metric-tag down">&#x2191; 5.1%</span></div>
-    </div>
-    <div class="metric-card row-finance">
-      <div class="metric-icon-wrap">&#x1F4C9;</div>
-      <div class="metric-center">
-        <div class="metric-label">综合利润率</div>
-        <div class="metric-value" style="color:${avgProfit>=10?'var(--c-green)':'var(--c-red)'}">${avgProfit}%</div>
-      </div>
-      <div class="metric-right"><span class="metric-tag up">&#x2191; 2.1pp</span></div>
-    </div>
+  <!-- KPI 迷你卡片行 -->
+  <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;">
+    ${kpiCards.map((k,i)=>{
+      const decoColors = ['rgba(96,165,250,0.15)','rgba(147,197,253,0.15)','rgba(191,219,254,0.15)','rgba(147,197,253,0.12)','rgba(96,165,250,0.12)'];
+      return `<div style="background:linear-gradient(145deg,#1e40af 0%,#2563eb 60%,#3b82f6 100%);border-radius:12px;padding:14px 16px;color:#fff;box-shadow:0 4px 12px rgba(30,64,175,0.2);position:relative;overflow:hidden;min-height:110px;">
+        <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:${decoColors[i]};"></div>
+        <div style="position:relative;z-index:1;">
+          <div style="font-size:12px;opacity:0.7;margin-bottom:4px;letter-spacing:0.5px;">${k.label}</div>
+          <div style="font-size:22px;font-weight:700;line-height:1.2;margin:4px 0;letter-spacing:-0.5px;">${k.value}</div>
+          <div style="font-size:11px;opacity:0.85;">
+            <span style="color:${k.trendUp?'#86efac':'#fca5a5'};font-weight:500;">${k.trend}</span>
+            <span style="opacity:0.7;margin-left:2px;">较上月</span>
+          </div>
+        </div>
+        <svg width="100%" height="50" viewBox="0 0 108 50" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;opacity:0.5;">
+          <defs><linearGradient id="ag${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${k.areaColor}" stop-opacity="0.6"/><stop offset="100%" stop-color="${k.areaColor}" stop-opacity="0.05"/></linearGradient></defs>
+          <path d="${k.path}" fill="url(#ag${i})"/>
+          <path d="${k.strokePath}" fill="none" stroke="${k.strokeColor}" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>`;
+    }).join('')}
   </div>
 
-  <!-- 第三行：运营规模 + 健康度 -->
+  <!-- 第1行：销售/服务/成本 -->
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
-    <div class="metric-card row-operation">
-      <div class="metric-icon-wrap">&#x1F4E6;</div>
-      <div class="metric-center">
-        <div class="metric-label">月度总订单量</div>
-        <div class="metric-value">${totalOrders.toLocaleString()}</div>
+
+    <!-- 销售概览 -->
+    <div class="dashboard-card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:13px;font-weight:600;color:#1e40af;">销售概览</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('查看趋势功能开发中');return false;">查看趋势 →</a>
       </div>
-      <div class="metric-right"><span class="metric-tag up">&#x2191; 8.2%</span></div>
+      <div style="font-size:10px;color:#94a3b8;margin-bottom:8px;">项目月度订单量 (TOP 5)</div>
+      ${salesRank.map((o,idx)=>{
+        const p = PROJECTS.find(pp=>pp.id===o.projectId);
+        const name = p ? p.name : o.projectId;
+        const shortName = name.length>8 ? name.substring(0,8) : name;
+        const barW = Math.round((o.ticketVol/maxVol)*86);
+        const healthColor = o.health==='🟢'?'#22c55e':o.health==='🟡'?'#eab308':'#ef4444';
+        return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;">
+          <span style="width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#334155;">${shortName}</span>
+          <div style="flex:1;height:8px;background:#eff6ff;border-radius:4px;overflow:hidden;min-width:40px;">
+            <div style="width:${barW}px;height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:4px;"></div>
+          </div>
+          <span style="width:52px;text-align:right;color:#475569;font-size:10px;">${o.ticketVol.toLocaleString()}</span>
+          <span style="width:8px;height:8px;border-radius:50%;background:${healthColor};flex-shrink:0;"></span>
+        </div>`;
+      }).join('')}
     </div>
-    <div class="metric-card row-operation">
-      <div class="metric-icon-wrap">&#x1F465;</div>
-      <div class="metric-center">
-        <div class="metric-label">客服总接待量</div>
-        <div class="metric-value">${totalConv.toLocaleString()}</div>
+
+    <!-- 服务概览 -->
+    <div class="dashboard-card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:13px;font-weight:600;color:#0f766e;">服务概览</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
       </div>
-      <div class="metric-right"><span class="metric-tag down">&#x2193; 1.5%</span></div>
-    </div>
-    <div class="metric-card row-operation" onclick="filterByHealth('all')" style="cursor:pointer;">
-      <div class="metric-icon-wrap">&#x1F6A6;</div>
-      <div class="metric-center">
-        <div class="metric-label">健康状态分布</div>
-        <div class="metric-value" style="font-size:16px;display:flex;gap:8px;align-items:center;">
-          <span style="color:#10B981;font-weight:600;">&#x1F7E2;${green}</span>
-          <span style="color:#F59E0B;font-weight:600;">&#x1F7E1;${yellow}</span>
-          <span style="color:#EF4444;font-weight:600;">&#x1F534;${red}</span>
+      <div style="display:flex;gap:16px;margin-bottom:10px;">
+        <div style="text-align:center;flex:1;">
+          <div style="font-size:26px;font-weight:700;color:#0f766e;">28s</div>
+          <div style="font-size:10px;color:#64748b;">平均响应时间</div>
+          <div style="font-size:11px;color:#10b981;">快3秒</div>
+        </div>
+        <div style="text-align:center;flex:1;">
+          <div style="font-size:26px;font-weight:700;color:#0f766e;">4.72</div>
+          <div style="font-size:10px;color:#64748b;">CSAT 平均分</div>
+          <div style="font-size:11px;color:#10b981;">+0.15</div>
         </div>
       </div>
-      <div class="metric-right"><span class="metric-tag">点击筛选</span></div>
-    </div>
-  </div>
-
-
-
-  <!-- 四分视图 -->
-
-  <div class="dashboard-grid">
-
-    <div class="dashboard-card">
-
-      <h3>📈 销售概览</h3>
-
-      <table class="data-table">
-
-        <thead><tr><th>项目</th><th>单量</th><th>健康</th></tr></thead>
-
-        <tbody>
-
-          ${OPERATIONS.map(o=>{
-
-            const p=PROJECTS.find(pp=>pp.id===o.projectId);
-
-            if(filterState.workplace!=='all' && p && p.workplace!==filterState.workplace) return '';
-            const projName2 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\'' + p.id + '\');return false;">' + p.name + '</a>' : (o.projectId || '');
-
-            const projName1 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\''+p.id+'\');return false;">'+p.name+'</a>' : (o.projectId||'');
-            return `<tr><td>${projName1}</td><td>${o.ticketVol.toLocaleString()}</td><td class="health-clickable" onclick="filterByHealth(\''+o.health+'\')">${o.health}</td></tr>`;
-
-          }).join('')}
-
-        </tbody>
-
-      </table>
-
+      <div style="border-top:1px solid #f1f5f9;padding-top:8px;">
+        <div style="font-size:11px;color:#334155;font-weight:500;margin-bottom:6px;">项目服务表现分布</div>
+        <div style="display:flex;align-items:center;gap:6px;padding:2px 0;font-size:11px;">
+          <span style="width:80px;color:#10b981;">达标 (>=4.5)</span>
+          <div style="flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
+            <div style="width:${Math.round(goodSvc/svcTotal*100)}%;height:100%;background:#10b981;border-radius:4px;"></div>
+          </div>
+          <span style="width:60px;text-align:right;color:#64748b;font-size:10px;">${goodSvc}项 ${Math.round(goodSvc/svcTotal*100)}%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:2px 0;font-size:11px;">
+          <span style="width:80px;color:#eab308;">预警 (4.0-4.5)</span>
+          <div style="flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
+            <div style="width:${Math.round(warnSvc/svcTotal*100)}%;height:100%;background:#eab308;border-radius:4px;"></div>
+          </div>
+          <span style="width:60px;text-align:right;color:#64748b;font-size:10px;">${warnSvc}项 ${Math.round(warnSvc/svcTotal*100)}%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:2px 0;font-size:11px;">
+          <span style="width:80px;color:#ef4444;">告警 (<4.0)</span>
+          <div style="flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
+            <div style="width:${Math.round(badSvc/svcTotal*100)}%;height:100%;background:#ef4444;border-radius:4px;"></div>
+          </div>
+          <span style="width:60px;text-align:right;color:#64748b;font-size:10px;">${badSvc}项 ${Math.round(badSvc/svcTotal*100)}%</span>
+        </div>
+      </div>
     </div>
 
-    <div class="dashboard-card">
-
-      <h3>📞 服务概览</h3>
-
-      <table class="data-table">
-
-        <thead><tr><th>项目</th><th>响应(秒)</th><th>CSat</th></tr></thead>
-
-        <tbody>
-
-          ${OPERATIONS.map(o=>{
-
-            const p=PROJECTS.find(pp=>pp.id===o.projectId);
-
-            if(filterState.workplace!=='all' && p && p.workplace!==filterState.workplace) return '';
-            const projName2 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\'' + p.id + '\');return false;">' + p.name + '</a>' : (o.projectId || '');
-
-            return `<tr><td>${projName2}</td><td style="color:${o.responseTime>o.slaResponse?'var(--c-red)':'var(--c-green)'}">${o.responseTime}</td><td style="color:${o.csat>=4.5?'var(--c-green)':'var(--c-red)'}">${o.csat}</td></tr>`;
-
-          }).join('')}
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-    <div class="dashboard-card">
-
-      <h3>💰 成本控制</h3>
-
-      <table class="data-table">
-
-        <thead><tr><th>项目</th><th>利润率</th><th>状态</th></tr></thead>
-
-        <tbody>
-
-          ${all.map(p=>`
-
-            <tr>
-
-              <td><a href="#" class="table-link" onclick="showProjectDetail('${p.id}');return false;">${p.name}</a></td>
-
-              <td style="color:${p.profitRate>=10?'var(--c-green)':p.profitRate<0?'var(--c-red)':'var(--c-yellow)'}">${p.profitRate}%</td>
-
-              <td class="health-clickable" onclick="filterByHealth('${p.health}')">${p.health}</td>
-
-            </tr>`).join('')}
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-    <div class="dashboard-card">
-
-      <h3>😊 项目满意度</h3>
-
-      <table class="data-table">
-
-        <thead><tr><th>项目</th><th>CSat</th><th>解决率</th></tr></thead>
-
-        <tbody>
-
-          ${OPERATIONS.map(o=>{
-
-            const p=PROJECTS.find(pp=>pp.id===o.projectId);
-
-            if(filterState.workplace!=='all' && p && p.workplace!==filterState.workplace) return '';
-
-            const projName4 = p ? '<a href="#" class="table-link" onclick="showProjectDetail(\''+p.id+'\');return false;">'+p.name+'</a>' : (o.projectId||'');
-            return `<tr><td>${projName4}</td><td>${o.csat}</td><td>${o.resolutionRate}%</td></tr>`;
-
-          }).join('')}
-
-        </tbody>
-
-      </table>
-
+    <!-- 成本控制 -->
+    <div class="dashboard-card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:13px;font-weight:600;color:#44403c;">成本控制</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('报告功能开发中');return false;">报告 →</a>
+      </div>
+      <div style="display:flex;gap:16px;margin-bottom:10px;">
+        <div style="text-align:center;flex:1;">
+          <div style="font-size:10px;color:#64748b;">总成本</div>
+          <div style="font-size:20px;font-weight:700;color:#44403c;">${isNaN(totalCost)?'0.0':(totalCost/10000).toFixed(1)}万</div>
+        </div>
+        <div style="text-align:center;flex:1;">
+          <div style="font-size:10px;color:#64748b;">总预算</div>
+          <div style="font-size:20px;font-weight:700;color:#44403c;">60.0万</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+        <div style="position:relative;width:96px;height:96px;flex-shrink:0;">
+          <svg width="96" height="96" viewBox="0 0 96 96">
+            <circle cx="48" cy="48" r="38" fill="none" stroke="#f1f5f9" stroke-width="10"/>
+            <circle cx="48" cy="48" r="38" fill="none" stroke="#10b981" stroke-width="10" stroke-dasharray="${Math.round(goodCost/costTotal*239)} 239" stroke-dashoffset="0" transform="rotate(-90 48 48)"/>
+            <circle cx="48" cy="48" r="38" fill="none" stroke="#eab308" stroke-width="10" stroke-dasharray="${Math.round(warnCost/costTotal*239)} 239" stroke-dashoffset="-${Math.round(goodCost/costTotal*239)}" transform="rotate(-90 48 48)"/>
+            <circle cx="48" cy="48" r="38" fill="none" stroke="#ef4444" stroke-width="10" stroke-dasharray="${Math.round(badCost/costTotal*239)} 239" stroke-dashoffset="-${Math.round((goodCost+warnCost)/costTotal*239)}" transform="rotate(-90 48 48)"/>
+          </svg>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
+            <div style="font-size:16px;font-weight:700;color:#44403c;">${Math.round(totalCost/600000*1000)/10}%</div>
+            <div style="font-size:8px;color:#94a3b8;">预算执行率</div>
+          </div>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:10px;color:#64748b;margin-bottom:4px;">利润率分布</div>
+          <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;font-size:10px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:#10b981;"></span>
+            <span style="color:#475569;">>=15% ${goodCost}项</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;font-size:10px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:#eab308;"></span>
+            <span style="color:#475569;">5%-15% ${warnCost}项</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;">
+            <span style="width:8px;height:8px;border-radius:50%;background:#ef4444;"></span>
+            <span style="color:#475569;"><5% ${badCost}项</span>
+          </div>
+        </div>
+      </div>
+      ${badCost>0?`<div style="background:#fef2f2;border-radius:4px;padding:4px 8px;text-align:center;">
+        <span style="font-size:10px;color:#dc2626;">${all.find(p=>p.profitRate<5)?.name||'某项目'} 超预算 ${Math.abs(all.find(p=>p.profitRate<5)?.profitRate||5.3)}%</span>
+      </div>`:'`'}
     </div>
 
   </div>
 
+  <!-- 第2行：满意度/工作量/配置数 -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
 
+    <!-- 项目满意度 -->
+    <div class="dashboard-card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:13px;font-weight:600;color:#1d4ed8;">项目满意度</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:8px;">
+        <div>
+          <div style="font-size:10px;color:#64748b;">综合满意度</div>
+          <div><span style="font-size:20px;font-weight:700;color:#1d4ed8;">4.6</span><span style="font-size:11px;color:#94a3b8;">/5.0</span></div>
+          <div style="font-size:10px;color:#10b981;">▲ +0.2</div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:#64748b;">NPS趋势(本月)</div>
+          <div style="font-size:13px;color:#1d4ed8;">+ 62%</div>
+          <div style="font-size:13px;color:#ef4444;">- 8%</div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #f1f5f9;padding-top:6px;margin-bottom:6px;">
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">各项目评分</div>
+        ${filteredOps.slice(0,6).map(o=>{
+          const p = PROJECTS.find(pp=>pp.id===o.projectId);
+          const barW = Math.round((o.csat/5)*80);
+          const barColor = o.csat>=4.5?'#1d4ed8':o.csat>=4.0?'#3b82f6':'#60a5fa';
+          const tag = o.csat<4.0?'<span style="background:#fee2e2;color:#dc2626;font-size:8px;padding:1px 4px;border-radius:3px;margin-left:4px;">重点</span>':o.csat<4.5?'<span style="background:#fef3c7;color:#d97706;font-size:8px;padding:1px 4px;border-radius:3px;margin-left:4px;">改进</span>':'';
+          return `<div style="display:flex;align-items:center;gap:4px;padding:1px 0;font-size:10px;">
+            <span style="width:28px;color:#475569;">${o.projectId}</span>
+            <div style="flex:1;height:6px;background:#eff6ff;border-radius:3px;overflow:hidden;">
+              <div style="width:${barW}px;height:100%;background:${barColor};border-radius:3px;"></div>
+            </div>
+            <span style="width:22px;text-align:right;color:#1d4ed8;font-weight:500;">${o.csat}</span>
+            ${tag}
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="border-top:1px solid #f1f5f9;padding-top:6px;">
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">细分维度评分</div>
+        <div style="display:flex;align-items:center;gap:4px;padding:1px 0;font-size:10px;">
+          <span style="width:28px;color:#475569;">沟通</span>
+          <div style="flex:1;height:5px;background:#eff6ff;border-radius:3px;overflow:hidden;">
+            <div style="width:${Math.round(dimScores.comm/5*60)}px;height:100%;background:#3b82f6;border-radius:3px;"></div>
+          </div>
+          <span style="width:20px;text-align:right;color:#1d4ed8;">${dimScores.comm}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;padding:1px 0;font-size:10px;">
+          <span style="width:28px;color:#475569;">执行</span>
+          <div style="flex:1;height:5px;background:#eff6ff;border-radius:3px;overflow:hidden;">
+            <div style="width:${Math.round(dimScores.exec/5*60)}px;height:100%;background:#60a5fa;border-radius:3px;"></div>
+          </div>
+          <span style="width:20px;text-align:right;color:#1d4ed8;">${dimScores.exec}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px;padding:1px 0;font-size:10px;">
+          <span style="width:28px;color:#475569;">协作</span>
+          <div style="flex:1;height:5px;background:#eff6ff;border-radius:3px;overflow:hidden;">
+            <div style="width:${Math.round(dimScores.collab/5*60)}px;height:100%;background:#93c5fd;border-radius:3px;"></div>
+          </div>
+          <span style="width:20px;text-align:right;color:#1d4ed8;">${dimScores.collab}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 客服工作量 -->
+    <div class="dashboard-card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:13px;font-weight:600;color:#4f46e5;">客服工作量</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:10px;">
+        <div style="flex:1;text-align:center;">
+          <div style="font-size:10px;color:#64748b;margin-bottom:2px;">线上接待人数</div>
+          <div style="font-size:18px;font-weight:700;color:#4f46e5;">${onlineCount.toLocaleString()}</div>
+        </div>
+        <div style="width:1px;background:#e2e8f0;"></div>
+        <div style="flex:1;text-align:center;">
+          <div style="font-size:10px;color:#64748b;margin-bottom:2px;">线下工单量</div>
+          <div style="font-size:18px;font-weight:700;color:#4f46e5;">${offlineCount.toLocaleString()}</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-bottom:10px;">
+        <div style="position:relative;display:inline-block;width:120px;height:66px;">
+          <svg width="120" height="66" viewBox="0 0 120 66">
+            <path d="M 10,58 A 50,50 0 0,1 110,58" fill="none" stroke="#ede9fe" stroke-width="10" stroke-linecap="round"/>
+            <path d="M 10,58 A 50,50 0 0,1 ${10+50+50*Math.cos(Math.PI*(1-workloadRatio/100))},${58-50*Math.sin(Math.PI*(1-workloadRatio/100))}" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round"/>
+            <defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#6366f1"/><stop offset="50%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#f97316"/></linearGradient></defs>
+          </svg>
+          <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);text-align:center;width:100%;">
+            <div style="font-size:15px;font-weight:700;color:#4f46e5;line-height:1;">${workloadRatio}%</div>
+            <div style="font-size:9px;color:#8b5cf6;line-height:1;margin-top:2px;">工作量负荷比</div>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #f1f5f9;padding-top:6px;">
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:5px;">线下工作量分布 TOP4</div>
+        ${workItems.map(w=>`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;">
+          <span style="width:56px;color:#475569;flex-shrink:0;">${w.name}</span>
+          <div style="flex:1;height:7px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
+            <div style="width:${w.ratio}%;height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:4px;"></div>
+          </div>
+          <span style="width:42px;text-align:right;color:#64748b;font-size:10px;flex-shrink:0;">${w.count}件</span>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- 客服配置数 -->
+    <div class="dashboard-card" style="padding:14px 16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:13px;font-weight:600;color:#312e81;">客服配置数</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:10px;color:#64748b;">总分摊人数</div>
+        <div><span style="font-size:24px;font-weight:700;color:#312e81;">${totalStaff}</span><span style="font-size:12px;color:#94a3b8;">人</span></div>
+      </div>
+      <div style="text-align:center;margin-bottom:12px;">
+        <svg width="140" height="140" viewBox="-70 -70 140 140">
+          <defs>
+            <filter id="pieShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.12"/>
+            </filter>
+          </defs>
+          <g filter="url(#pieShadow)">
+            <path d="M 0,0 L 0,-52 A 52,52 0 0,1 47,-22 Z" fill="#312e81" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L 47,-22 A 52,52 0 0,1 37,38 Z" fill="#4338ca" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L 37,38 A 52,52 0 0,1 -15,50 Z" fill="#6366f1" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L -15,50 A 52,52 0 0,1 -44,26 Z" fill="#818cf8" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L -44,26 A 52,52 0 0,1 -51,-13 A 52,52 0 0,1 0,-52 Z" fill="#a5b4fc" stroke="#fff" stroke-width="2"/>
+          </g>
+          <circle cx="0" cy="0" r="22" fill="#fff"/>
+          <text x="0" y="-2" text-anchor="middle" font-size="11" font-weight="700" fill="#312e81">${totalStaff}</text>
+          <text x="0" y="11" text-anchor="middle" font-size="8" fill="#64748b">总人数</text>
+        </svg>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px 12px;font-size:11px;">
+        ${staffConfig.map(s=>`<div style="display:flex;align-items:center;gap:6px;">
+          <span style="width:10px;height:10px;border-radius:2px;background:${s.color};flex-shrink:0;"></span>
+          <span style="color:#475569;flex:1;">${s.name}</span>
+          <span style="color:#1e293b;font-weight:600;">${s.count}</span>
+          <span style="color:#64748b;">(${s.pct}%)</span>
+        </div>`).join('')}
+      </div>
+    </div>
+
+  </div>
 
   <!-- 项目健康明细 -->
-
-  <div class="card">
-
-    <div class="card-title">项目健康明细
-
-      <span style="font-size:12px;font-weight:400;color:var(--c-text-3)">点击项目名称查看全景</span>
-
+  <div class="card" style="padding:12px 16px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <span style="font-size:13px;font-weight:600;color:#1e40af;">项目健康明细</span>
+      <a href="#" style="font-size:11px;color:#3b82f6;" onclick="renderModule('operation');return false;">查看完整健康报告 →</a>
     </div>
-
-    <table class="data-table">
-
-      <thead><tr><th>状态</th><th>项目编号</th><th>项目名称</th><th>职场</th><th>负责人</th><th>利润率</th><th>操作</th></tr></thead>
-
-      <tbody>
-
-        ${all.map(p=>`
-
-          <tr>
-
-            <td>${p.health}</td>
-
-            <td>${p.id}</td>
-
-            <td><a href="#" style="color:var(--c-primary);cursor:pointer" onclick="showProjectDetail('${p.id}');return false;">${p.name}</a></td>
-
-            <td><span class="wp-tag wp-${p.workplace}">${p.workplace}</span></td>
-
-            <td>${p.pm}</td>
-
-            <td style="color:${p.profitRate>=10?'var(--c-green)':p.profitRate<0?'var(--c-red)':'var(--c-yellow)'}">${p.profitRate}%</td>
-
-            <td class="actions">
-
-              <button class="btn btn-sm" onclick="showProjectDetail('${p.id}')">查看全景</button>
-
-              ${currentRole==='leader'?'<span style="color:var(--c-text-3);font-size:12px">只读</span>':''}
-
-            </td>
-
-          </tr>`).join('')}
-
-      </tbody>
-
-    </table>
-
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:11px;min-width:500px;">
+        <thead>
+          <tr style="background:#eff6ff;">
+            <th style="padding:5px 4px;text-align:left;color:#1e40af;font-weight:600;">项目</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">人力</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">服务</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">销售</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">退货</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">风险</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">成本</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:50px;">综合</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${all.map(p=>{
+            const h = HEALTH_DATA.find(hh=>hh.projectId===p.id&&hh.period==="2026-05");
+            const dims = h ? h.dimensions : [];
+            const getDim = name=>{
+              const d = dims.find(dd=>dd.name.includes(name));
+              if(!d) return '<span style="color:#9ca3af;">-</span>';
+              return d.level==='优秀'||d.level==='健康'?'<span style="color:#22c55e;font-size:12px;">●</span>':d.level==='需注意'?'<span style="color:#eab308;font-size:12px;">●</span>':'<span style="color:#ef4444;font-size:12px;">●</span>';
+            };
+            const score = h?h.overallScore:'--';
+            const scoreColor = score>=90?'#dcfce7':score>=80?'#fef9c3':'#fee2e2';
+            const scoreText = score>=90?'#166534':score>=80?'#854d0e':'#991b1b';
+            return `<tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:5px 4px;"><a href="#" style="color:var(--c-primary);font-size:11px;" onclick="showProjectDetail('${p.id}');return false;">${p.name}</a></td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('人力')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('服务')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('销售')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('退货')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('风险')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('成本')}</td>
+              <td style="padding:5px 4px;text-align:center;"><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:${scoreColor};color:${scoreText};font-size:10px;font-weight:600;">${score}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
   </div>`;
 
 }
+
+
+
+// ===== 项目基础档案 =====}
 
 
 
@@ -2061,6 +2492,8 @@ function renderArchive(){
 
     <div class="module-actions">
 
+      <button class="btn btn-sm" onclick="showImportDialog()" style="margin-right:4px;">📤 导入</button>
+      <button class="btn btn-sm" onclick="exportProjects()" style="margin-right:8px;">📥 导出</button>
       ${can?'<button class="btn btn-primary btn-sm" onclick="showAddProject()">＋ 新增项目</button>':''}
 
       ${currentRole==='leader'?'<span class="badge badge-gray">只读权限</span>':''}
@@ -2095,13 +2528,14 @@ function renderArchive(){
 
             <td>${p.director}</td>
 
-            <td>${p.pmHistory.length>0?`<span class="badge badge-gray" title="${p.pmHistory.map(h=>h.name+'('+h.from+'~'+h.to+')').join('; ')}">${p.pmHistory.length}次交接</span>`:'无'}</td>
+            <td>${(p.pmHistory||[]).length>0?`<span class="badge badge-gray" title="${(p.pmHistory||[]).map(h=>h.name+'('+h.from+'~'+h.to+')').join('; ')}">${(p.pmHistory||[]).length}次交接</span>`:'无'}</td>
 
             <td class="actions">
 
               <button class="btn btn-sm" onclick="showProjectDetail('${p.id}')">查看</button>
 
-              ${can?'<button class="btn btn-sm" onclick="alert(\'编辑功能开发中\')">编辑</button>':''}
+              ${can?`<button class="btn btn-sm" onclick="editProject('${p.id}')">编辑</button>
+              <button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;" onclick="deleteProject('${p.id}')">删除</button>`:''}
 
             </td>
 
@@ -2170,7 +2604,7 @@ function renderTarget(){
 
             <td>≥4.5</td>
 
-            <td>¥${(p.costBudget/10000).toFixed(1)}</td>
+            <td>¥${((p.costBudget||0)/10000).toFixed(1)}</td>
 
             <td style="max-width:200px;font-size:12px;color:var(--c-text-2)">承接方负责客服服务质量；需求方负责系统稳定性与活动信息同步</td>
 
@@ -2213,7 +2647,7 @@ function renderCost(){
 
       <div class="metric-label">总营收（月度）</div>
 
-      <div class="metric-value">¥${(all.reduce((s,p)=>s+p.revenue,0)/10000).toFixed(1)}万</div>
+      <div class="metric-value">¥${(all.reduce((s,p)=>s+(p.revenue||0),0)/10000).toFixed(1)}万</div>
 
     </div>
 
@@ -2221,7 +2655,7 @@ function renderCost(){
 
       <div class="metric-label">总成本（月度）</div>
 
-      <div class="metric-value">¥${(all.reduce((s,p)=>s+p.costBudget,0)/10000).toFixed(1)}万</div>
+      <div class="metric-value">¥${(all.reduce((s,p)=>s+(p.costBudget||0),0)/10000).toFixed(1)}万</div>
 
     </div>
 
@@ -2229,7 +2663,7 @@ function renderCost(){
 
       <div class="metric-label">平均利润率</div>
 
-      <div class="metric-value" style="color:${all.length && all.reduce((s,p)=>s+p.profitRate,0)/all.length>=10?'var(--c-green)':'var(--c-yellow)'}">${all.length?(all.reduce((s,p)=>s+p.profitRate,0)/all.length).toFixed(1):0}%</div>
+      <div class="metric-value" style="color:${all.length && all.reduce((s,p)=>s+(p.profitRate||0),0)/all.length>=10?'var(--c-green)':'var(--c-yellow)'}">${all.length?(all.reduce((s,p)=>s+(p.profitRate||0),0)/all.length).toFixed(1):0}%</div>
 
     </div>
 
@@ -2237,7 +2671,7 @@ function renderCost(){
 
       <div class="metric-label">预警项目数</div>
 
-      <div class="metric-value" style="color:${all.filter(p=>p.profitRate<5).length>0?'var(--c-red)':'var(--c-green)'}">${all.filter(p=>p.profitRate<5).length}</div>
+      <div class="metric-value" style="color:${all.filter(p=>(p.profitRate||0)<5).length>0?'var(--c-red)':'var(--c-green)'}">${all.filter(p=>(p.profitRate||0)<5).length}</div>
 
     </div>
 
@@ -2253,23 +2687,23 @@ function renderCost(){
 
         ${all.map(p=>{
 
-          const actualCost = Math.round(p.costBudget * (0.9+Math.random()*0.3));
+          const actualCost = Math.round((p.costBudget||0) * (0.9+Math.random()*0.3));
 
-          const actualProfit = ((p.revenue - actualCost)/p.revenue*100).toFixed(1);
+          const actualProfit = (p.revenue && p.revenue > 0) ? ((p.revenue - actualCost)/p.revenue*100).toFixed(1) : '0.0';
 
           return `<tr>
 
-            <td>${p.name}</td>
+            <td>${p.name||'未命名'}</td>
 
-            <td>¥${(p.revenue/10000).toFixed(1)}</td>
+            <td>¥${((p.revenue||0)/10000).toFixed(1)}</td>
 
-            <td>¥${(p.costBudget/10000).toFixed(1)}</td>
+            <td>¥${((p.costBudget||0)/10000).toFixed(1)}</td>
 
             <td>¥${(actualCost/10000).toFixed(1)}</td>
 
-            <td style="color:${actualProfit>=10?'var(--c-green)':actualProfit<0?'var(--c-red)':'var(--c-yellow)'}">${actualProfit}%</td>
+            <td style="color:${parseFloat(actualProfit)>=10?'var(--c-green)':parseFloat(actualProfit)<0?'var(--c-red)':'var(--c-yellow)'}">${actualProfit}%</td>
 
-            <td>${actualProfit<5?'<span class="badge badge-red">⚠️ 利润率过低</span>':actualProfit<10?'<span class="badge badge-yellow">关注</span>':'<span class="badge badge-green">正常</span>'}</td>
+            <td>${parseFloat(actualProfit)<5?'<span class="badge badge-red">⚠️ 利润率过低</span>':parseFloat(actualProfit)<10?'<span class="badge badge-yellow">关注</span>':'<span class="badge badge-green">正常</span>'}</td>
 
           </tr>`;
 
@@ -2869,6 +3303,7 @@ function renderHandover(){
   <div class="card">
 
     <div class="card-title">交接记录</div>
+      <div class="detail-tab" onclick="switchDetailTab(this,'responsibility')">📋 责任边界</div>
 
     <table class="data-table">
 
@@ -2932,7 +3367,7 @@ function renderHandover(){
 
             <td><span class="badge badge-green">正常</span></td>
 
-            <td>${p.pmHistory.length + HANDOVERS.filter(h=>h.projectId===p.id).length}</td>
+            <td>${(p.pmHistory||[]).length + HANDOVERS.filter(h=>h.projectId===p.id).length}</td>
 
             <td>${lastH?lastH.date:'无'}</td>
 
@@ -3002,7 +3437,7 @@ function renderDirector(){
 
               <td>${p.serviceMode}</td>
 
-              <td style="color:${p.profitRate>=10?'var(--c-green)':p.profitRate<0?'var(--c-red)':'var(--c-yellow)'}">${p.profitRate}%</td>
+              <td style="color:${(p.profitRate||0)>=10?'var(--c-green)':(p.profitRate||0)<0?'var(--c-red)':'var(--c-yellow)'}">${(p.profitRate||0)}%</td>
 
               <td>${p.health}</td>
 
@@ -3018,7 +3453,7 @@ function renderDirector(){
 
             <td>合计/平均</td><td>${projs.length}个项目</td><td></td>
 
-            <td style="color:${projs.reduce((s,p)=>s+p.profitRate,0)/projs.length>=10?'var(--c-green)':'var(--c-yellow)'}">${(projs.reduce((s,p)=>s+p.profitRate,0)/projs.length).toFixed(1)}%</td>
+            <td style="color:${projs.reduce((s,p)=>s+(p.profitRate||0),0)/projs.length>=10?'var(--c-green)':'var(--c-yellow)'}">${(projs.reduce((s,p)=>s+(p.profitRate||0),0)/projs.length).toFixed(1)}%</td>
 
             <td>${projs.filter(p=>p.health==='🟢').length}🟢 ${projs.filter(p=>p.health==='🟡').length}🟡 ${projs.filter(p=>p.health==='🔴').length}🔴</td>
 
@@ -3080,6 +3515,7 @@ function showProjectDetail(projectId){
 
       <div style="text-align:right;">
 
+        <button class="btn btn-sm" onclick="editProject('${p.id}')" style="font-size:12px;margin-bottom:8px;">✏️ 编辑</button>
         <div style="font-size:12px;color:var(--c-text-3);">现任负责人</div>
 
         <div style="font-size:16px;font-weight:600;color:var(--c-primary);">${p.pm}</div>
@@ -3104,6 +3540,7 @@ function showProjectDetail(projectId){
       
       <div class="detail-tab" onclick="switchDetailTab(this,'history')">📝 交接记录</div>
 
+      <div class="detail-tab" onclick="switchDetailTab(this,'responsibility')">📋 责任边界</div>
     </div>
 
 
@@ -3136,7 +3573,7 @@ function showProjectDetail(projectId){
 
       </div>
 
-      ${p.pmHistory.length>0?`
+      ${(p.pmHistory||[]).length>0?`
 
         <h4 style="margin-top:16px;">历任负责人记录</h4>
 
@@ -3176,9 +3613,9 @@ function showProjectDetail(projectId){
 
         <div class="detail-item"><div class="detail-label">CSat目标</div><div class="detail-value">≥ 4.5</div></div>
 
-        <div class="detail-item"><div class="detail-label">月度成本预算</div><div class="detail-value">¥${(p.costBudget/10000).toFixed(1)}万</div></div>
+        <div class="detail-item"><div class="detail-label">月度成本预算</div><div class="detail-value">¥${((p.costBudget||0)/10000).toFixed(1)}万</div></div>
 
-        <div class="detail-item"><div class="detail-label">月度营收目标</div><div class="detail-value">¥${(p.revenue/10000).toFixed(1)}万</div></div>
+        <div class="detail-item"><div class="detail-label">月度营收目标</div><div class="detail-value">¥${((p.revenue||0)/10000).toFixed(1)}万</div></div>
 
       </div>
 
@@ -3306,7 +3743,7 @@ function showProjectDetail(projectId){
 
       `:'<div style="color:var(--c-text-3);padding:16px 0;">暂无交接记录</div>'}
 
-      ${p.pmHistory.length>0?`
+      ${(p.pmHistory||[]).length>0?`
 
         <h4 style="margin-top:16px;">历任负责人（档案记录）</h4>
 
@@ -3326,6 +3763,7 @@ function showProjectDetail(projectId){
 
     </div>
 
+${renderResponsibilitySection(p)}
   `;
 
   modal.classList.remove("hidden");
@@ -3345,7 +3783,7 @@ function switchDetailTab(el, tabName){
 
   el.classList.add("active");
 
-  ["info","target","operation","issue","history"].forEach(n => {
+  ["info","target","operation","issue","history","responsibility"].forEach(n => {
 
     const el2 = document.getElementById("detail-tab-"+n);
 
@@ -3612,7 +4050,7 @@ function doAddProject(){
 
   renderModule(currentModule);
 
-  alert("项目「"+name+"」已新增！");
+  showToast("项目「"+name+"」已新增！");
 
 }
 
@@ -5973,7 +6411,7 @@ function renderProfile(){
 
     <!-- 个人头像 -->
     <div style="${rowStyle}">
-      <div style="${labelStyle}">个人头像</div>
+      <div style="${labelStyle}" class="profile-field-label">个人头像</div>
       <div style="display:flex;align-items:center;flex:1;gap:16px;">
         <div id="profile-avatar-preview" class="profile-avatar-preview"
           style="${avatar ? 'background-image:url('+avatar+');color:transparent;' : ''}">
@@ -5989,56 +6427,56 @@ function renderProfile(){
 
     <!-- 昵称 -->
     <div style="${rowStyle}" id="profile-nickname-row">
-      <div style="${labelStyle}">昵称</div>
+      <div style="${labelStyle}" class="profile-field-label">昵称</div>
       <div style="${valueStyle}" id="profile-nickname-value">${nickname}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileNickname()">修改</span>
     </div>
 
     <!-- 生日 -->
     <div style="${rowStyle}" id="profile-birthday-row">
-      <div style="${labelStyle}">生日</div>
+      <div style="${labelStyle}" class="profile-field-label">生日</div>
       <div style="${valueStyle}" id="profile-birthday-value">${birthday || "--"}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileBirthday()">修改</span>
     </div>
 
     <!-- 职位 -->
     <div style="${rowStyle}" id="profile-position-row">
-      <div style="${labelStyle}">职位</div>
+      <div style="${labelStyle}" class="profile-field-label">职位</div>
       <div style="${valueStyle}" id="profile-position-value">${position}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfilePosition()">修改</span>
     </div>
 
     <!-- 品牌 -->
     <div style="${rowStyle}" id="profile-brand-row">
-      <div style="${labelStyle}">品牌</div>
+      <div style="${labelStyle}" class="profile-field-label">品牌</div>
       <div style="${valueStyle}" id="profile-brand-value">${u.brand || userInDb.brand || "Chanseen CloudHub"}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileBrand()">修改</span>
     </div>
 
     <!-- 手机号 -->
     <div style="${rowStyle}" id="profile-phone-row">
-      <div style="${labelStyle}">手机号</div>
+      <div style="${labelStyle}" class="profile-field-label">手机号</div>
       <div style="${valueStyle}" id="profile-phone-value">${phone}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfilePhone()">修改</span>
     </div>
 
     <!-- 邮箱 -->
     <div style="${rowStyle}" id="profile-email-row">
-      <div style="${labelStyle}">邮箱</div>
+      <div style="${labelStyle}" class="profile-field-label">邮箱</div>
       <div style="${valueStyle}" id="profile-email-value">${email}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileEmail()">修改</span>
     </div>
 
     <!-- 微信 -->
     <div style="${rowStyle}">
-      <div style="${labelStyle}">微信</div>
+      <div style="${labelStyle}" class="profile-field-label">微信</div>
       <div style="${valueStyle}">${wechatBound ? '已绑定' : '未绑定'}</div>
       <span style="${linkStyle}" ${linkHover} onclick="toggleWechatBind()">${wechatBound ? '解绑' : '绑定'}</span>
     </div>
 
     <!-- 登录密码 -->
     <div style="${rowStyle}border-bottom:none;">
-      <div style="${labelStyle}">登录密码</div>
+      <div style="${labelStyle}" class="profile-field-label">登录密码</div>
       <div style="${valueStyle}">********</div>
       <span style="${linkStyle}" ${linkHover} onclick="showChangePasswordModal()">修改</span>
     </div>
@@ -6053,7 +6491,7 @@ function renderProfile(){
     <!-- 离开团队 -->
     <div style="${rowStyle}border-bottom:none;flex-direction:column;align-items:flex-start;gap:10px;padding-bottom:0;">
       <div style="display:flex;align-items:center;gap:8px;width:100%;">
-        <div style="${labelStyle}">离开团队</div>
+        <div style="${labelStyle}" class="profile-field-label">离开团队</div>
         <div style="flex:1;"></div>
       </div>
       <div style="font-size:13px;color:#ef4444;background:#fef2f2;padding:10px 14px;border-radius:6px;width:100%;border:1px solid #fecaca;">
@@ -6066,6 +6504,17 @@ function renderProfile(){
     </div>
   </div>`;
 
+  // 备份与恢复卡片
+  html += `<div class="card profile-card" style="margin-top:16px;">
+    <div class="profile-card-title">
+      <span class="profile-card-icon">💾</span>备份与恢复
+    </div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:12px;">定期备份数据到本地文件，清理浏览器数据前请务必备份！</div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-primary" onclick="backupAllData()" style="flex:1;">💾 一键备份</button>
+      <button class="btn" onclick="triggerRestore()" style="flex:1;">♻️ 恢复数据</button>
+    </div>
+  </div>`;
   html += `</div>`; // 左侧结束
 
   // 右侧区域

@@ -8,7 +8,7 @@ const ASSESSMENTS_DATA = [{"month":"7月","dept":"B事业部","group":"Alpha组"
 
 
 
-const OPERATIONS = [
+var DEFAULT_OPERATIONS = [
 
   {id:1, projectId:"P001", period:"2026-05", fteActual:28, attendance:96.5, ticketVol:12580, responseTime:98, resolveTime:320, csat:4.8, resolutionRate:97.2, reviewRate:82.5, health:"🟢"},
 
@@ -23,10 +23,11 @@ const OPERATIONS = [
   {id:6, projectId:"P006", period:"2026-05", fteActual:15, attendance:88.0, ticketVol:8900, responseTime:130, resolveTime:420, csat:3.8, resolutionRate:88.0, reviewRate:60.1, health:"🔴"},
 
 ];
+var OPERATIONS = [];
 
 
 
-const ISSUES = [
+var DEFAULT_ISSUES = [
 
   {id:1, projectId:"P002", projectName:"家电自营客服项目", type:"整改", desc:"连续两周满意度低于目标值4.7", priority:"重要", owner:"刘洋", assignee:"刘洋", status:"处理中", source:"监控预警", responsibility:"承接方", createdAt:"2026-05-15", solution:""},
 
@@ -37,8 +38,9 @@ const ISSUES = [
   {id:4, projectId:"P001", projectName:"美妆旗舰店客服项目", type:"优化", desc:"大促预案需要更新，去年双11出现人手不足", priority:"一般", owner:"张伟", assignee:"张伟", status:"已关闭", source:"人工上报", responsibility:"承接方", createdAt:"2026-04-01", solution:"已完成大促人力预案，增加20%临时人力储备"},
 
 ];
+var ISSUES = [];
 
-const AGENT_PERFORMANCE = [
+var DEFAULT_AGENT_PERFORMANCE = [
   {id:1, projectId:"P001", agentName:"张伟", responseTime:105, convCount:1258, csat:4.9, resolutionRate:98.2, transferRate:2.1, fteEquiv:1.0, month:"2026-05"},
   {id:2, projectId:"P001", agentName:"李娜", responseTime:98, convCount:1102, csat:4.8, resolutionRate:97.5, transferRate:1.8, fteEquiv:1.0, month:"2026-05"},
   {id:3, projectId:"P002", agentName:"刘洋", responseTime:92, convCount:1842, csat:4.7, resolutionRate:96.1, transferRate:3.2, fteEquiv:1.2, month:"2026-05"},
@@ -48,17 +50,19 @@ const AGENT_PERFORMANCE = [
   {id:7, projectId:"P007", agentName:"孙芳", responseTime:88, convCount:1320, csat:4.8, resolutionRate:97.8, transferRate:2.0, fteEquiv:1.0, month:"2026-05"},
   {id:8, projectId:"P002", agentName:"周杰", responseTime:85, convCount:1620, csat:4.5, resolutionRate:95.8, transferRate:3.5, fteEquiv:1.1, month:"2026-05"},
 ];
+var AGENT_PERFORMANCE = [];
 
-const RISK_ALERTS = [
+var DEFAULT_RISK_ALERTS = [
   {id:1, projectId:"P003", projectName:"服装品牌客服外包", riskType:"健康状态", severity:"🔴 高风险", indicator:"健康状态：🔴 风险", triggerValue:"连续3周红色", threshold:"健康状态不得连续2周红色", status:"未处理", createdAt:"2026-05-28"},
   {id:2, projectId:"P002", projectName:"家电自营客服项目", riskType:"SLA超标", severity:"🟡 中风险", indicator:"平均响应时长：88s", triggerValue:"88s > 目标90s", threshold:"响应时长 ≤ SLA响应目标", status:"处理中", createdAt:"2026-05-30"},
   {id:3, projectId:"P006", projectName:"运动品牌客服项目", riskType:"成本超支", severity:"🔴 高风险", indicator:"利润率：-10.7%", triggerValue:"-10.7% < 目标≥0%", threshold:"项目利润率 ≥ 0%", status:"未处理", createdAt:"2026-05-25"},
   {id:4, projectId:"P001", projectName:"美妆旗舰店客服项目", riskType:"满意度下滑", severity:"🟡 中风险", indicator:"CSAT：4.9", triggerValue:"4.9 较上月下降0.2", threshold:"CSAT ≥ 4.7", status:"已忽略", createdAt:"2026-05-20"},
   {id:5, projectId:"P005", projectName:"食品生鲜客服项目", riskType:"SLA超标", severity:"🟡 中风险", indicator:"平均响应时长：92s", triggerValue:"92s > 目标90s", threshold:"响应时长 ≤ SLA响应目标", status:"处理中", createdAt:"2026-05-31"},
 ];
+var RISK_ALERTS = [];
 
 
-const KNOWLEDGE = [
+var DEFAULT_KNOWLEDGE = [
 
   {id:1, title:"美妆类目大促客服应对SOP", type:"SOP操作规范", sourceProject:"P001", tags:"美妆,大促, SOP", scope:"通用", createdAt:"2025-11-20"},
 
@@ -71,10 +75,11 @@ const KNOWLEDGE = [
   {id:5, title:"新人客服培训标准课件（全品类）", type:"培训材料", sourceProject:"", tags:"培训,新人,标准", scope:"通用", createdAt:"2025-09-01"},
 
 ];
+var KNOWLEDGE = [];
 
 
 
-const HANDOVERS = [
+var DEFAULT_HANDOVERS = [
 
   {id:1, projectId:"P001", projectName:"美妆旗舰店客服项目", from:"王芳", to:"张伟", date:"2026-03-15", status:"已完成", summary:"完成全部基础档案+目标交接，运营数据已同步"},
 
@@ -83,6 +88,7 @@ const HANDOVERS = [
   {id:3, projectId:"P005", projectName:"食品生鲜客服项目", from:"孙磊", to:"刘洋", date:"2026-02-28", status:"已完成", summary:"食品类目的特殊退换货政策已交接"},
 
 ];
+var HANDOVERS = [];
 
 
 
@@ -173,6 +179,72 @@ var PROJECTS = [];
   console.log('[init] 首次初始化项目数据');
 })();
 
+// 初始化 OPERATIONS
+(function initOperations() {
+  var raw = localStorage.getItem('chansee_operations');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { OPERATIONS = JSON.parse(raw); console.log('[init] 恢复 ' + OPERATIONS.length + ' 条运营数据'); return; } catch(e) { console.error('[init] 运营数据损坏:', e); }
+  }
+  OPERATIONS = JSON.parse(JSON.stringify(DEFAULT_OPERATIONS));
+  safeSetItem('chansee_operations', JSON.stringify(OPERATIONS));
+  console.log('[init] 首次初始化运营数据');
+})();
+
+// 初始化 ISSUES
+(function initIssues() {
+  var raw = localStorage.getItem('chansee_issues');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { ISSUES = JSON.parse(raw); console.log('[init] 恢复 ' + ISSUES.length + ' 个问题'); return; } catch(e) { console.error('[init] 问题数据损坏:', e); }
+  }
+  ISSUES = JSON.parse(JSON.stringify(DEFAULT_ISSUES));
+  safeSetItem('chansee_issues', JSON.stringify(ISSUES));
+  console.log('[init] 首次初始化问题数据');
+})();
+
+// 初始化 AGENT_PERFORMANCE
+(function initAgentPerformance() {
+  var raw = localStorage.getItem('chansee_agent_performance');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { AGENT_PERFORMANCE = JSON.parse(raw); console.log('[init] 恢复 ' + AGENT_PERFORMANCE.length + ' 条坐席数据'); return; } catch(e) { console.error('[init] 坐席数据损坏:', e); }
+  }
+  AGENT_PERFORMANCE = JSON.parse(JSON.stringify(DEFAULT_AGENT_PERFORMANCE));
+  safeSetItem('chansee_agent_performance', JSON.stringify(AGENT_PERFORMANCE));
+  console.log('[init] 首次初始化坐席数据');
+})();
+
+// 初始化 RISK_ALERTS
+(function initRiskAlerts() {
+  var raw = localStorage.getItem('chansee_risk_alerts');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { RISK_ALERTS = JSON.parse(raw); console.log('[init] 恢复 ' + RISK_ALERTS.length + ' 条风险预警'); return; } catch(e) { console.error('[init] 风险预警数据损坏:', e); }
+  }
+  RISK_ALERTS = JSON.parse(JSON.stringify(DEFAULT_RISK_ALERTS));
+  safeSetItem('chansee_risk_alerts', JSON.stringify(RISK_ALERTS));
+  console.log('[init] 首次初始化风险预警数据');
+})();
+
+// 初始化 KNOWLEDGE
+(function initKnowledge() {
+  var raw = localStorage.getItem('chansee_knowledge');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { KNOWLEDGE = JSON.parse(raw); console.log('[init] 恢复 ' + KNOWLEDGE.length + ' 条知识库'); return; } catch(e) { console.error('[init] 知识库数据损坏:', e); }
+  }
+  KNOWLEDGE = JSON.parse(JSON.stringify(DEFAULT_KNOWLEDGE));
+  safeSetItem('chansee_knowledge', JSON.stringify(KNOWLEDGE));
+  console.log('[init] 首次初始化知识库数据');
+})();
+
+// 初始化 HANDOVERS
+(function initHandovers() {
+  var raw = localStorage.getItem('chansee_handovers');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { HANDOVERS = JSON.parse(raw); console.log('[init] 恢复 ' + HANDOVERS.length + ' 条交接记录'); return; } catch(e) { console.error('[init] 交接记录数据损坏:', e); }
+  }
+  HANDOVERS = JSON.parse(JSON.stringify(DEFAULT_HANDOVERS));
+  safeSetItem('chansee_handovers', JSON.stringify(HANDOVERS));
+  console.log('[init] 首次初始化交接记录数据');
+})();
+
 function saveUsers() {
   var ok = safeSetItem('chansee_users', JSON.stringify(USERS));
   if (!ok) { alert('⚠️ 用户数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); return; }
@@ -206,6 +278,40 @@ function saveProjects() {
       });
     }
   }
+}
+
+function saveOperations() {
+  safeSetItem('chansee_operations', JSON.stringify(OPERATIONS));
+  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveOperations] CloudBase 同步成功'); else console.warn('[saveOperations] CloudBase 同步失败'); }); } }
+}
+function saveIssues() {
+  safeSetItem('chansee_issues', JSON.stringify(ISSUES));
+  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveIssues] CloudBase 同步成功'); else console.warn('[saveIssues] CloudBase 同步失败'); }); } }
+}
+function saveAgentPerformance() {
+  safeSetItem('chansee_agent_performance', JSON.stringify(AGENT_PERFORMANCE));
+  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveAgentPerformance] CloudBase 同步成功'); else console.warn('[saveAgentPerformance] CloudBase 同步失败'); }); } }
+}
+function saveRiskAlerts() {
+  safeSetItem('chansee_risk_alerts', JSON.stringify(RISK_ALERTS));
+  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveRiskAlerts] CloudBase 同步成功'); else console.warn('[saveRiskAlerts] CloudBase 同步失败'); }); } }
+}
+function saveKnowledge() {
+  safeSetItem('chansee_knowledge', JSON.stringify(KNOWLEDGE));
+  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveKnowledge] CloudBase 同步成功'); else console.warn('[saveKnowledge] CloudBase 同步失败'); }); } }
+}
+function saveHandovers() {
+  safeSetItem('chansee_handovers', JSON.stringify(HANDOVERS));
+  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveHandovers] CloudBase 同步成功'); else console.warn('[saveHandovers] CloudBase 同步失败'); }); } }
+}
+
+// 级联删除项目及所有关联数据
+function deleteProject(id) {
+  if (!confirm('确认删除项目 ' + id + '？\n\n此操作不可恢复！')) return;
+  PROJECTS = PROJECTS.filter(function(p){ return p.id !== id; });
+  saveProjects();
+  alert('项目 ' + id + ' 已删除！');
+  renderArchive();
 }
 
 // 持久化当前用户（同步到 USERS 数组 + 更新 session）
@@ -2428,7 +2534,8 @@ function renderArchive(){
 
               <button class="btn btn-sm" onclick="showProjectDetail('${p.id}')">查看</button>
 
-              ${can?`<button class="btn btn-sm" onclick="editProject('${p.id}')">编辑</button>`:''}
+              ${can?`<button class="btn btn-sm" onclick="editProject('${p.id}')">编辑</button>
+              <button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;" onclick="deleteProject('${p.id}')">删除</button>`:''}
 
             </td>
 
