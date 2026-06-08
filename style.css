@@ -1213,7 +1213,7 @@ div[style*="font-size:32px"] {
 
   /* 移动端侧边栏抽屉 */
   #sidebar {
-    position: fixed;
+    position: fixed !important;
     top: 0;
     left: 0;
     height: 100vh;
@@ -1229,7 +1229,7 @@ div[style*="font-size:32px"] {
     display: block !important;
   }
   #sidebar.open {
-    transform: translateX(0);
+    transform: translateX(0) !important;
   }
 
   /* 汉堡菜单按钮 */
