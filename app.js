@@ -1476,14 +1476,11 @@ function toggleSidebar(){
 // ===== 导航折叠 =====
 function toggleSection(titleEl){
   const section = titleEl.closest('.nav-section');
-  const arrow = titleEl.querySelector('.section-arrow');
   const isCollapsed = section.classList.contains('collapsed');
   if(isCollapsed){
     section.classList.remove('collapsed');
-    if(arrow) arrow.textContent = '▼';
   }else{
     section.classList.add('collapsed');
-    if(arrow) arrow.textContent = '▶';
   }
 }
 

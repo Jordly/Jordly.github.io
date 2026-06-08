@@ -1217,15 +1217,15 @@ div[style*="font-size:32px"] {
     top: 0;
     left: 0;
     height: 100vh;
-    width: 260px;
-    min-width: 260px;
+    width: 280px;
+    min-width: 280px;
     z-index: 1001;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
     background: var(--c-surface);
     border-right: 1px solid var(--c-border);
     overflow-y: auto;
-    padding: 12px 0;
+    padding: 16px 0;
     display: block !important;
   }
   #sidebar.open {
@@ -1357,6 +1357,27 @@ div[style*="font-size:32px"] {
   }
   /* 交接管理时间线 */
   .handover-timeline { padding-left: 16px; }
+  
+  /* 手机端分组标题优化 */
+  .nav-section-title {
+    padding: 12px 16px !important;
+    margin: 4px 8px !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+  }
+  .nav-section-title:active {
+    background: var(--c-primary-light) !important;
+    transform: scale(0.98) !important;
+  }
+  .nav-section-title .section-arrow {
+    transition: transform 0.3s ease !important;
+  }
+  .nav-section.collapsed .nav-section-title .section-arrow {
+    transform: rotate(0deg) !important;
+  }
+  .nav-section:not(.collapsed) .nav-section-title .section-arrow {
+    transform: rotate(90deg) !important;
+  }
 }
 
 /* 超小屏幕（iPhone 5/SE 等 320px）*/
