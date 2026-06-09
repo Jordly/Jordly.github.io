@@ -1602,7 +1602,7 @@ function renderFilterBar() {
 
   var row1 = '<div class="filter-row-v4">';
   row1 += '<select class="fb-select" onchange="onFilterTimeChange(this.value)">';
-  row1 += '<option value="all"'+(filterState.timeMode==='all'?' selected':'')+'>全部时间</option>';
+  row1 += '<option value="all"'+(filterState.timeMode==='all'?' selected':'')+'>全部</option>';
   row1 += '<option value="month"'+(filterState.timeMode==='month'?' selected':'')+'>本月</option>';
   row1 += '<option value="lastMonth"'+(filterState.timeMode==='lastMonth'?' selected':'')+'>上月</option>';
   row1 += '<option value="quarter"'+(filterState.timeMode==='quarter'?' selected':'')+'>本季</option>';
@@ -1611,22 +1611,22 @@ function renderFilterBar() {
   row1 += '</select>';
 
   row1 += '<select class="fb-select" onchange="setFilter(\'workplace\',this.value)">';
-  row1 += '<option value="all"'+(filterState.workplace==='all'?' selected':'')+'>全部职场</option>';
+  row1 += '<option value="all"'+(filterState.workplace==='all'?' selected':'')+'>全部</option>';
   workplaces.forEach(function(w){ row1 += '<option value="'+w+'"'+(filterState.workplace===w?' selected':'')+'>'+w+'</option>'; });
   row1 += '</select>';
 
   row1 += '<select class="fb-select" onchange="setFilter(\'projectType\',this.value)">';
-  row1 += '<option value="all"'+(filterState.projectType==='all'?' selected':'')+'>全部类型</option>';
+  row1 += '<option value="all"'+(filterState.projectType==='all'?' selected':'')+'>全部</option>';
   types.forEach(function(t){ row1 += '<option value="'+t+'"'+(filterState.projectType===t?' selected':'')+'>'+t+'</option>'; });
   row1 += '</select>';
 
   row1 += '<select class="fb-select" onchange="setFilter(\'status\',this.value)">';
-  row1 += '<option value="all"'+(filterState.status==='all'?' selected':'')+'>全部状态</option>';
+  row1 += '<option value="all"'+(filterState.status==='all'?' selected':'')+'>全部</option>';
   statuses.forEach(function(s){ row1 += '<option value="'+s+'"'+(filterState.status===s?' selected':'')+'>'+s+'</option>'; });
   row1 += '</select>';
 
   row1 += '<select class="fb-select" onchange="setFilter(\'health\',this.value)">';
-  row1 += '<option value="all"'+(filterState.health==='all'?' selected':'')+'>全部健康度</option>';
+  row1 += '<option value="all"'+(filterState.health==='all'?' selected':'')+'>全部</option>';
   healths.forEach(function(h){
     var label = h==='🟢'?'🟢 健康':h==='🟡'?'🟡 预警':'🔴 风险';
     row1 += '<option value="'+h+'"'+(filterState.health===h?' selected':'')+'>'+label+'</option>';
@@ -1647,7 +1647,7 @@ function renderFilterBar() {
   var row2 = '<div class="filter-row-v4 filter-row-v4-second">';
 
   // 平台
-  var pfLabel = '全部平台';
+  var pfLabel = '— ▼';
   if (filterState.platforms.length === 1) pfLabel = filterState.platforms[0];
   else if (filterState.platforms.length > 1) pfLabel = '已选'+filterState.platforms.length+'项';
   row2 += '<div class="fb-search-wrap" data-filter="platforms">';
@@ -1655,12 +1655,12 @@ function renderFilterBar() {
   row2 += '<div class="fb-search-panel" id="fb-panel-platforms" style="display:none;">'+
     '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索平台..." oninput="renderFbOptions(\'platforms\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-platforms"></div>'+
-    '<div class="fb-sp-footer"><button class="fb-sp-clear" onclick="clearFbMulti(\'platforms\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'platforms\')">确定</button></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'platforms\',this)">全选</button><button class="fb-sp-clear" onclick="clearFbMulti(\'platforms\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'platforms\')">确定</button></div>'+
     '</div>';
   row2 += '</div>';
 
   // 品类
-  var caLabel = '全部分类';
+  var caLabel = '— ▼';
   if (filterState.category.length === 1) caLabel = filterState.category[0];
   else if (filterState.category.length > 1) caLabel = '已选'+filterState.category.length+'项';
   row2 += '<div class="fb-search-wrap" data-filter="category">';
@@ -1668,12 +1668,12 @@ function renderFilterBar() {
   row2 += '<div class="fb-search-panel" id="fb-panel-category" style="display:none;">'+
     '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索品类..." oninput="renderFbOptions(\'category\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-category"></div>'+
-    '<div class="fb-sp-footer"><button class="fb-sp-clear" onclick="clearFbMulti(\'category\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'category\')">确定</button></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'category\',this)">全选</button><button class="fb-sp-clear" onclick="clearFbMulti(\'category\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'category\')">确定</button></div>'+
     '</div>';
   row2 += '</div>';
 
   // 品牌
-  var brLabel = '全部品牌';
+  var brLabel = '— ▼';
   if (filterState.brand.length === 1) brLabel = filterState.brand[0];
   else if (filterState.brand.length > 1) brLabel = '已选'+filterState.brand.length+'项';
   row2 += '<div class="fb-search-wrap" data-filter="brand">';
@@ -1681,12 +1681,12 @@ function renderFilterBar() {
   row2 += '<div class="fb-search-panel" id="fb-panel-brand" style="display:none;">'+
     '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索品牌..." oninput="renderFbOptions(\'brand\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-brand"></div>'+
-    '<div class="fb-sp-footer"><button class="fb-sp-clear" onclick="clearFbMulti(\'brand\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'brand\')">确定</button></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'brand\',this)">全选</button><button class="fb-sp-clear" onclick="clearFbMulti(\'brand\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'brand\')">确定</button></div>'+
     '</div>';
   row2 += '</div>';
 
   // PM（单选）
-  var pmLabel = filterState.pm === 'all' ? '全部PM' : filterState.pm;
+  var pmLabel = filterState.pm === 'all' ? '— ▼' : filterState.pm;
   row2 += '<div class="fb-search-wrap" data-filter="pm">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+pmLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-pm" style="display:none;">'+
@@ -1696,7 +1696,7 @@ function renderFilterBar() {
   row2 += '</div>';
 
   // 客服管理（单选）
-  var drLabel = filterState.director === 'all' ? '全部管理' : filterState.director;
+  var drLabel = filterState.director === 'all' ? '— ▼' : filterState.director;
   row2 += '<div class="fb-search-wrap" data-filter="director">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+drLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-director" style="display:none;">'+
@@ -1781,7 +1781,14 @@ function renderFbOptions(key) {
   var filtered = keyword ? values.filter(function(v){ return v.toLowerCase().indexOf(keyword) !== -1; }) : values;
   var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
   var selected = filterState[key];
-  var html = filtered.map(function(v) {
+  var html = '';
+  // 添加"全部"选项
+  var allSelected = isMulti ? (selected.length === 0) : (selected === 'all');
+  html += '<div class="fb-sp-option fb-sp-all' + (allSelected ? ' selected' : '') + '" data-value="all" onclick="onFbOptionClick(this,\'' + key + '\')">' +
+    '<span class="fb-sp-check">' + (allSelected ? '✓' : '') + '</span>' +
+    '<span>全部</span>' +
+  '</div>';
+  html += filtered.map(function(v) {
     var isSelected = isMulti ? (selected.indexOf(v) !== -1) : (selected === v);
     return '<div class="fb-sp-option' + (isSelected ? ' selected' : '') + '" data-value="' + v.replace(/"/g, '&quot;') + '" onclick="onFbOptionClick(this,\'' + key + '\')">' +
       '<span class="fb-sp-check">' + (isSelected ? '✓' : '') + '</span>' +
@@ -1794,6 +1801,35 @@ function renderFbOptions(key) {
 function onFbOptionClick(el, key) {
   var val = el.getAttribute('data-value');
   var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
+  if (val === 'all') {
+    // 点击"全部"选项
+    if (isMulti) {
+      filterState[key] = [];
+      // 取消所有其他选项的选中状态
+      var panel = el.closest('.fb-search-panel');
+      panel.querySelectorAll('.fb-sp-option:not(.fb-sp-all)').forEach(function(opt) {
+        opt.classList.remove('selected');
+        var check = opt.querySelector('.fb-sp-check');
+        if (check) check.textContent = '';
+      });
+      // 选中"全部"选项
+      el.classList.add('selected');
+      el.querySelector('.fb-sp-check').textContent = '✓';
+    } else {
+      filterState[key] = 'all';
+      if (activeFbPanel) activeFbPanel.style.display = 'none';
+      activeFbPanel = null;
+      renderModule(currentModule);
+    }
+    return;
+  }
+  // 点击非"全部"选项，取消"全部"选项的选中状态
+  var allOpt = el.closest('.fb-sp-options').querySelector('.fb-sp-all');
+  if (allOpt) {
+    allOpt.classList.remove('selected');
+    var allCheck = allOpt.querySelector('.fb-sp-check');
+    if (allCheck) allCheck.textContent = '';
+  }
   if (isMulti) {
     var idx = filterState[key].indexOf(val);
     if (idx >= 0) {
@@ -1810,6 +1846,48 @@ function onFbOptionClick(el, key) {
     if (activeFbPanel) activeFbPanel.style.display = 'none';
     activeFbPanel = null;
     renderModule(currentModule);
+  }
+}
+
+function toggleFbSelectAll(key, btnEl) {
+  var panel = btnEl.closest('.fb-search-panel');
+  var options = panel.querySelectorAll('.fb-sp-option:not(.fb-sp-all)');
+  var allSelected = true;
+  options.forEach(function(opt) {
+    if (!opt.classList.contains('selected')) {
+      allSelected = false;
+    }
+  });
+  if (allSelected) {
+    // 取消全选
+    options.forEach(function(opt) {
+      opt.classList.remove('selected');
+      var check = opt.querySelector('.fb-sp-check');
+      if (check) check.textContent = '';
+    });
+    // 选中"全部"选项
+    var allOpt = panel.querySelector('.fb-sp-all');
+    if (allOpt) {
+      allOpt.classList.add('selected');
+      var allCheck = allOpt.querySelector('.fb-sp-check');
+      if (allCheck) allCheck.textContent = '✓';
+    }
+    btnEl.textContent = '全选';
+  } else {
+    // 全选
+    options.forEach(function(opt) {
+      opt.classList.add('selected');
+      var check = opt.querySelector('.fb-sp-check');
+      if (check) check.textContent = '✓';
+    });
+    // 取消"全部"选项的选中状态
+    var allOpt = panel.querySelector('.fb-sp-all');
+    if (allOpt) {
+      allOpt.classList.remove('selected');
+      var allCheck = allOpt.querySelector('.fb-sp-check');
+      if (allCheck) allCheck.textContent = '';
+    }
+    btnEl.textContent = '取消全选';
   }
 }
 
