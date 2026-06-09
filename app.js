@@ -1601,8 +1601,8 @@ function renderFilterBar() {
   var healths = ['🟢','🟡','🔴'];
 
   var row1 = '<div class="filter-row-v4">';
-  row1 += '<select class="fb-select" onchange="onFilterTimeChange(this.value)">';
-  row1 += '<option value="all"'+(filterState.timeMode==='all'?' selected':'')+'>全部</option>';
+  row1 += '<select class="fb-select" onchange="onFilterTimeChange(this.value)" title="时间">';
+  row1 += '<option value="" disabled '+(filterState.timeMode==='all'?' selected':'')+'>时间 ▼</option>';
   row1 += '<option value="month"'+(filterState.timeMode==='month'?' selected':'')+'>本月</option>';
   row1 += '<option value="lastMonth"'+(filterState.timeMode==='lastMonth'?' selected':'')+'>上月</option>';
   row1 += '<option value="quarter"'+(filterState.timeMode==='quarter'?' selected':'')+'>本季</option>';
@@ -1610,23 +1610,23 @@ function renderFilterBar() {
   row1 += '<option value="custom"'+(filterState.timeMode==='custom'?' selected':'')+'>自定义</option>';
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" onchange="setFilter(\'workplace\',this.value)">';
-  row1 += '<option value="all"'+(filterState.workplace==='all'?' selected':'')+'>全部</option>';
+  row1 += '<select class="fb-select" onchange="setFilter(\'workplace\',this.value)" title="职场">';
+  row1 += '<option value="" disabled '+(filterState.workplace==='all'?' selected':'')+'>职场 ▼</option>';
   workplaces.forEach(function(w){ row1 += '<option value="'+w+'"'+(filterState.workplace===w?' selected':'')+'>'+w+'</option>'; });
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" onchange="setFilter(\'projectType\',this.value)">';
-  row1 += '<option value="all"'+(filterState.projectType==='all'?' selected':'')+'>全部</option>';
+  row1 += '<select class="fb-select" onchange="setFilter(\'projectType\',this.value)" title="类型">';
+  row1 += '<option value="" disabled '+(filterState.projectType==='all'?' selected':'')+'>类型 ▼</option>';
   types.forEach(function(t){ row1 += '<option value="'+t+'"'+(filterState.projectType===t?' selected':'')+'>'+t+'</option>'; });
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" onchange="setFilter(\'status\',this.value)">';
-  row1 += '<option value="all"'+(filterState.status==='all'?' selected':'')+'>全部</option>';
+  row1 += '<select class="fb-select" onchange="setFilter(\'status\',this.value)" title="状态">';
+  row1 += '<option value="" disabled '+(filterState.status==='all'?' selected':'')+'>状态 ▼</option>';
   statuses.forEach(function(s){ row1 += '<option value="'+s+'"'+(filterState.status===s?' selected':'')+'>'+s+'</option>'; });
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" onchange="setFilter(\'health\',this.value)">';
-  row1 += '<option value="all"'+(filterState.health==='all'?' selected':'')+'>全部</option>';
+  row1 += '<select class="fb-select" onchange="setFilter(\'health\',this.value)" title="健康度">';
+  row1 += '<option value="" disabled '+(filterState.health==='all'?' selected':'')+'>健康度 ▼</option>';
   healths.forEach(function(h){
     var label = h==='🟢'?'🟢 健康':h==='🟡'?'🟡 预警':'🔴 风险';
     row1 += '<option value="'+h+'"'+(filterState.health===h?' selected':'')+'>'+label+'</option>';
@@ -1647,7 +1647,7 @@ function renderFilterBar() {
   var row2 = '<div class="filter-row-v4 filter-row-v4-second">';
 
   // 平台
-  var pfLabel = '— ▼';
+  var pfLabel = '平台 ▼';
   if (filterState.platforms.length === 1) pfLabel = filterState.platforms[0];
   else if (filterState.platforms.length > 1) pfLabel = '已选'+filterState.platforms.length+'项';
   row2 += '<div class="fb-search-wrap" data-filter="platforms">';
@@ -1660,7 +1660,7 @@ function renderFilterBar() {
   row2 += '</div>';
 
   // 品类
-  var caLabel = '— ▼';
+  var caLabel = '品类 ▼';
   if (filterState.category.length === 1) caLabel = filterState.category[0];
   else if (filterState.category.length > 1) caLabel = '已选'+filterState.category.length+'项';
   row2 += '<div class="fb-search-wrap" data-filter="category">';
@@ -1673,7 +1673,7 @@ function renderFilterBar() {
   row2 += '</div>';
 
   // 品牌
-  var brLabel = '— ▼';
+  var brLabel = '品牌 ▼';
   if (filterState.brand.length === 1) brLabel = filterState.brand[0];
   else if (filterState.brand.length > 1) brLabel = '已选'+filterState.brand.length+'项';
   row2 += '<div class="fb-search-wrap" data-filter="brand">';
@@ -1686,7 +1686,7 @@ function renderFilterBar() {
   row2 += '</div>';
 
   // PM（单选）
-  var pmLabel = filterState.pm === 'all' ? '— ▼' : filterState.pm;
+  var pmLabel = filterState.pm === 'all' ? '项目PM ▼' : filterState.pm;
   row2 += '<div class="fb-search-wrap" data-filter="pm">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+pmLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-pm" style="display:none;">'+
@@ -1696,7 +1696,7 @@ function renderFilterBar() {
   row2 += '</div>';
 
   // 客服管理（单选）
-  var drLabel = filterState.director === 'all' ? '— ▼' : filterState.director;
+  var drLabel = filterState.director === 'all' ? '客服管理 ▼' : filterState.director;
   row2 += '<div class="fb-search-wrap" data-filter="director">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+drLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-director" style="display:none;">'+
@@ -1768,7 +1768,7 @@ function renderFbOptions(key) {
   var keyword = input ? input.value.toLowerCase() : '';
   var values = [];
   if (key === 'platforms') {
-    values = [...new Set(PROJECTS.flatMap(function(p) { return (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean); }))].sort();
+    values = [...new Set(PROJECTS.flatMap(function(p) { return (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean); }))].filter(function(v){ return v !== '全平台'; }).sort();
   } else if (key === 'category') {
     values = [...new Set(PROJECTS.map(function(p){return p.category}))].sort();
   } else if (key === 'brand') {
