@@ -1885,3 +1885,122 @@ html {
 [data-theme="dark"] .fb-adv-btn svg {
   color: var(--c-text-3) !important;
 }
+
+/* 服务与进度追踪 - 暗黑模式 */
+[data-theme="dark"] .health-overview-card {
+  background: var(--c-surface) !important;
+  border-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .health-overview-card.excellent {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: #10b981 !important;
+}
+
+[data-theme="dark"] .health-overview-card.normal {
+  background: rgba(245, 158, 11, 0.15) !important;
+  border-color: #f59e0b !important;
+}
+
+[data-theme="dark"] .health-overview-card.warning {
+  background: rgba(249, 115, 22, 0.15) !important;
+  border-color: #f97316 !important;
+}
+
+[data-theme="dark"] .health-overview-card.danger {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: #ef4444 !important;
+}
+
+[data-theme="dark"] .hoc-title {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .hoc-count {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .hoc-unit {
+  color: var(--c-text-2) !important;
+}
+
+[data-theme="dark"] .hoc-stat-item {
+  color: var(--c-text-2) !important;
+}
+
+[data-theme="dark"] .hoc-footer {
+  color: var(--c-primary) !important;
+  border-top-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .hoc-empty {
+  color: var(--c-text-3) !important;
+}
+
+[data-theme="dark"] .health-detail-cards {
+  background: var(--c-surface) !important;
+}
+
+[data-theme="dark"] .health-detail-card {
+  background: var(--c-card) !important;
+  border-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .hdc-title {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .hdc-info {
+  color: var(--c-text-2) !important;
+}
+
+[data-theme="dark"] .health-warning-summary.healthy {
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #10b981 !important;
+}
+
+[data-theme="dark"] .health-warning-summary.warning {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
+}
+
+[data-theme="dark"] .hws-reason {
+  background: var(--c-surface) !important;
+}
+
+[data-theme="dark"] .hws-reason-title.健康,
+[data-theme="dark"] .hws-reason-title.优秀 {
+  color: #10b981 !important;
+}
+
+[data-theme="dark"] .hws-reason-title.需注意 {
+  color: #f59e0b !important;
+}
+
+[data-theme="dark"] .hws-reason-title.极差 {
+  color: #ef4444 !important;
+}
+
+[data-theme="dark"] .hws-reason-details {
+  color: var(--c-text-2) !important;
+}
+
+[data-theme="dark"] .health-score-table th:hover {
+  background: var(--c-surface) !important;
+}
+
+[data-theme="dark"] .health-level-definition {
+  background: var(--c-card) !important;
+}
+
+[data-theme="dark"] .hld-item {
+  background: var(--c-surface) !important;
+}
+
+[data-theme="dark"] .hld-title {
+  color: var(--c-text) !important;
+}
+
+[data-theme="dark"] .hld-desc {
+  color: var(--c-text-2) !important;
+}
