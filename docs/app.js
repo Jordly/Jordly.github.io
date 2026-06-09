@@ -1603,6 +1603,7 @@ function renderFilterBar() {
   var row1 = '<div class="filter-row-v4">';
   row1 += '<select class="fb-select" onchange="onFilterTimeChange(this.value)" title="时间">';
   row1 += '<option value="" disabled '+(filterState.timeMode==='all'?' selected':'')+'>时间 ▼</option>';
+  row1 += '<option value="all"'+(filterState.timeMode==='all'?' selected':'')+'>全部</option>';
   row1 += '<option value="month"'+(filterState.timeMode==='month'?' selected':'')+'>本月</option>';
   row1 += '<option value="lastMonth"'+(filterState.timeMode==='lastMonth'?' selected':'')+'>上月</option>';
   row1 += '<option value="quarter"'+(filterState.timeMode==='quarter'?' selected':'')+'>本季</option>';
@@ -1612,21 +1613,25 @@ function renderFilterBar() {
 
   row1 += '<select class="fb-select" onchange="setFilter(\'workplace\',this.value)" title="职场">';
   row1 += '<option value="" disabled '+(filterState.workplace==='all'?' selected':'')+'>职场 ▼</option>';
+  row1 += '<option value="all"'+(filterState.workplace==='all'?' selected':'')+'>全部</option>';
   workplaces.forEach(function(w){ row1 += '<option value="'+w+'"'+(filterState.workplace===w?' selected':'')+'>'+w+'</option>'; });
   row1 += '</select>';
 
   row1 += '<select class="fb-select" onchange="setFilter(\'projectType\',this.value)" title="类型">';
   row1 += '<option value="" disabled '+(filterState.projectType==='all'?' selected':'')+'>类型 ▼</option>';
+  row1 += '<option value="all"'+(filterState.projectType==='all'?' selected':'')+'>全部</option>';
   types.forEach(function(t){ row1 += '<option value="'+t+'"'+(filterState.projectType===t?' selected':'')+'>'+t+'</option>'; });
   row1 += '</select>';
 
   row1 += '<select class="fb-select" onchange="setFilter(\'status\',this.value)" title="状态">';
   row1 += '<option value="" disabled '+(filterState.status==='all'?' selected':'')+'>状态 ▼</option>';
+  row1 += '<option value="all"'+(filterState.status==='all'?' selected':'')+'>全部</option>';
   statuses.forEach(function(s){ row1 += '<option value="'+s+'"'+(filterState.status===s?' selected':'')+'>'+s+'</option>'; });
   row1 += '</select>';
 
   row1 += '<select class="fb-select" onchange="setFilter(\'health\',this.value)" title="健康度">';
   row1 += '<option value="" disabled '+(filterState.health==='all'?' selected':'')+'>健康度 ▼</option>';
+  row1 += '<option value="all"'+(filterState.health==='all'?' selected':'')+'>全部</option>';
   healths.forEach(function(h){
     var label = h==='🟢'?'🟢 健康':h==='🟡'?'🟡 预警':'🔴 风险';
     row1 += '<option value="'+h+'"'+(filterState.health===h?' selected':'')+'>'+label+'</option>';
@@ -1782,12 +1787,6 @@ function renderFbOptions(key) {
   var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
   var selected = filterState[key];
   var html = '';
-  // 添加"全部"选项
-  var allSelected = isMulti ? (selected.length === 0) : (selected === 'all');
-  html += '<div class="fb-sp-option fb-sp-all' + (allSelected ? ' selected' : '') + '" data-value="all" onclick="onFbOptionClick(this,\'' + key + '\')">' +
-    '<span class="fb-sp-check">' + (allSelected ? '✓' : '') + '</span>' +
-    '<span>全部</span>' +
-  '</div>';
   html += filtered.map(function(v) {
     var isSelected = isMulti ? (selected.indexOf(v) !== -1) : (selected === v);
     return '<div class="fb-sp-option' + (isSelected ? ' selected' : '') + '" data-value="' + v.replace(/"/g, '&quot;') + '" onclick="onFbOptionClick(this,\'' + key + '\')">' +
@@ -1801,35 +1800,6 @@ function renderFbOptions(key) {
 function onFbOptionClick(el, key) {
   var val = el.getAttribute('data-value');
   var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
-  if (val === 'all') {
-    // 点击"全部"选项
-    if (isMulti) {
-      filterState[key] = [];
-      // 取消所有其他选项的选中状态
-      var panel = el.closest('.fb-search-panel');
-      panel.querySelectorAll('.fb-sp-option:not(.fb-sp-all)').forEach(function(opt) {
-        opt.classList.remove('selected');
-        var check = opt.querySelector('.fb-sp-check');
-        if (check) check.textContent = '';
-      });
-      // 选中"全部"选项
-      el.classList.add('selected');
-      el.querySelector('.fb-sp-check').textContent = '✓';
-    } else {
-      filterState[key] = 'all';
-      if (activeFbPanel) activeFbPanel.style.display = 'none';
-      activeFbPanel = null;
-      renderModule(currentModule);
-    }
-    return;
-  }
-  // 点击非"全部"选项，取消"全部"选项的选中状态
-  var allOpt = el.closest('.fb-sp-options').querySelector('.fb-sp-all');
-  if (allOpt) {
-    allOpt.classList.remove('selected');
-    var allCheck = allOpt.querySelector('.fb-sp-check');
-    if (allCheck) allCheck.textContent = '';
-  }
   if (isMulti) {
     var idx = filterState[key].indexOf(val);
     if (idx >= 0) {
