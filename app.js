@@ -1556,19 +1556,19 @@ function renderModule(module){
 // ----- 筛选栏状态 (v4) -----
 const filterState = {
   project: [],
-  workplace: "all",
+  workplace: "",
   director: "all",
   pm: "all",
-  projectType: "all",
-  health: "all",
-  timeMode: "all",
+  projectType: "",
+  health: "",
+  timeMode: "",
   time: "all",
   timeStart: "",
   timeEnd: "",
   brand: [],
   category: [],
   platforms: [],
-  status: "all"
+  status: ""
 };
 
 function setFilter(key, value) {
@@ -1577,16 +1577,16 @@ function setFilter(key, value) {
 }
 
 function renderFilterBar() {
-  var timeLabel = {all:'全部时间', month:'本月', lastMonth:'上月', quarter:'本季', year:'本年', custom:'自定义'};
+  var timeLabel = {'':'全部时间', all:'全部时间', month:'本月', lastMonth:'上月', quarter:'本季', year:'本年', custom:'自定义'};
 
   // 已选标签
   var tagsHtml = '';
   var hasFilter = false;
-  if (filterState.timeMode !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + timeLabel[filterState.timeMode] + '<i onclick="setFilter(\'timeMode\',\'all\')">×</i></span>'; }
-  if (filterState.workplace !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.workplace + '<i onclick="setFilter(\'workplace\',\'all\')">×</i></span>'; }
-  if (filterState.projectType !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.projectType + '<i onclick="setFilter(\'projectType\',\'all\')">×</i></span>'; }
-  if (filterState.status !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.status + '<i onclick="setFilter(\'status\',\'all\')">×</i></span>'; }
-  if (filterState.health !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.health + '<i onclick="setFilter(\'health\',\'all\')">×</i></span>'; }
+  if (filterState.timeMode !== 'all' && filterState.timeMode !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + timeLabel[filterState.timeMode] + '<i onclick="setFilter(\'timeMode\',\'\')">×</i></span>'; }
+  if (filterState.workplace !== 'all' && filterState.workplace !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.workplace + '<i onclick="setFilter(\'workplace\',\'\')">×</i></span>'; }
+  if (filterState.projectType !== 'all' && filterState.projectType !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.projectType + '<i onclick="setFilter(\'projectType\',\'\')">×</i></span>'; }
+  if (filterState.status !== 'all' && filterState.status !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.status + '<i onclick="setFilter(\'status\',\'\')">×</i></span>'; }
+  if (filterState.health !== 'all' && filterState.health !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.health + '<i onclick="setFilter(\'health\',\'\')">×</i></span>'; }
   if (filterState.pm !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.pm + '<i onclick="setFilter(\'pm\',\'all\')">×</i></span>'; }
   if (filterState.director !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.director + '<i onclick="setFilter(\'director\',\'all\')">×</i></span>'; }
   filterState.platforms.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'platforms\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
@@ -1602,7 +1602,7 @@ function renderFilterBar() {
 
   var row1 = '<div class="filter-row-v4">';
   row1 += '<select class="fb-select" onchange="onFilterTimeChange(this.value)" title="时间">';
-  row1 += '<option value="" disabled '+(filterState.timeMode==='all'?' selected':'')+'>时间 ▼</option>';
+  row1 += '<option value="" disabled selected hidden>时间 ▼</option>';
   row1 += '<option value="all"'+(filterState.timeMode==='all'?' selected':'')+'>全部</option>';
   row1 += '<option value="month"'+(filterState.timeMode==='month'?' selected':'')+'>本月</option>';
   row1 += '<option value="lastMonth"'+(filterState.timeMode==='lastMonth'?' selected':'')+'>上月</option>';
@@ -1612,25 +1612,25 @@ function renderFilterBar() {
   row1 += '</select>';
 
   row1 += '<select class="fb-select" onchange="setFilter(\'workplace\',this.value)" title="职场">';
-  row1 += '<option value="" disabled '+(filterState.workplace==='all'?' selected':'')+'>职场 ▼</option>';
+  row1 += '<option value="" disabled selected hidden>职场 ▼</option>';
   row1 += '<option value="all"'+(filterState.workplace==='all'?' selected':'')+'>全部</option>';
   workplaces.forEach(function(w){ row1 += '<option value="'+w+'"'+(filterState.workplace===w?' selected':'')+'>'+w+'</option>'; });
   row1 += '</select>';
 
   row1 += '<select class="fb-select" onchange="setFilter(\'projectType\',this.value)" title="类型">';
-  row1 += '<option value="" disabled '+(filterState.projectType==='all'?' selected':'')+'>类型 ▼</option>';
+  row1 += '<option value="" disabled selected hidden>类型 ▼</option>';
   row1 += '<option value="all"'+(filterState.projectType==='all'?' selected':'')+'>全部</option>';
   types.forEach(function(t){ row1 += '<option value="'+t+'"'+(filterState.projectType===t?' selected':'')+'>'+t+'</option>'; });
   row1 += '</select>';
 
   row1 += '<select class="fb-select" onchange="setFilter(\'status\',this.value)" title="状态">';
-  row1 += '<option value="" disabled '+(filterState.status==='all'?' selected':'')+'>状态 ▼</option>';
+  row1 += '<option value="" disabled selected hidden>状态 ▼</option>';
   row1 += '<option value="all"'+(filterState.status==='all'?' selected':'')+'>全部</option>';
   statuses.forEach(function(s){ row1 += '<option value="'+s+'"'+(filterState.status===s?' selected':'')+'>'+s+'</option>'; });
   row1 += '</select>';
 
   row1 += '<select class="fb-select" onchange="setFilter(\'health\',this.value)" title="健康度">';
-  row1 += '<option value="" disabled '+(filterState.health==='all'?' selected':'')+'>健康度 ▼</option>';
+  row1 += '<option value="" disabled selected hidden>健康度 ▼</option>';
   row1 += '<option value="all"'+(filterState.health==='all'?' selected':'')+'>全部</option>';
   healths.forEach(function(h){
     var label = h==='🟢'?'🟢 健康':h==='🟡'?'🟡 预警':'🔴 风险';
@@ -1957,19 +1957,19 @@ function updateProjectFilterLabel() {
 
 function resetFilters() {
   filterState.project = [];
-  filterState.workplace = "all";
+  filterState.workplace = "";
   filterState.director = "all";
   filterState.pm = "all";
-  filterState.projectType = "all";
-  filterState.health = "all";
-  filterState.timeMode = "all";
+  filterState.projectType = "";
+  filterState.health = "";
+  filterState.timeMode = "";
   filterState.time = "all";
   filterState.timeStart = "";
   filterState.timeEnd = "";
   filterState.brand = [];
   filterState.category = [];
   filterState.platforms = [];
-  filterState.status = "all";
+  filterState.status = "";
   renderModule(currentModule);
 }
 
@@ -1978,7 +1978,7 @@ function getFilteredProjects(){
   let list = [...PROJECTS];
 
   // 职场筛选
-  if (filterState.workplace !== "all") {
+  if (filterState.workplace !== "all" && filterState.workplace !== "") {
     list = list.filter(p => p.workplace === filterState.workplace);
   }
 
@@ -1992,10 +1992,10 @@ function getFilteredProjects(){
   if (filterState.pm !== "all") {
     list = list.filter(p => p.pm === filterState.pm);
   }
-  if (filterState.projectType !== "all") {
+  if (filterState.projectType !== "all" && filterState.projectType !== "") {
     list = list.filter(p => p.serviceMode === filterState.projectType);
   }
-  if (filterState.health !== "all") {
+  if (filterState.health !== "all" && filterState.health !== "") {
     list = list.filter(p => p.health === filterState.health);
   }
   if (filterState.brand.length > 0) {
@@ -2010,10 +2010,10 @@ function getFilteredProjects(){
       return filterState.platforms.some(function(fp){ return pfs.indexOf(fp) !== -1; });
     });
   }
-  if (filterState.status !== "all") {
+  if (filterState.status !== "all" && filterState.status !== "") {
     list = list.filter(p => p.status === filterState.status);
   }
-  if (filterState.timeMode !== "all") {
+  if (filterState.timeMode !== "all" && filterState.timeMode !== "") {
     if (filterState.timeMode === "year" && filterState.time !== "all") {
       list = list.filter(p => {
         const year = p.startDate ? p.startDate.substring(0,4) : '';
