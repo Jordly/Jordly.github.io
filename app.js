@@ -1,4 +1,4 @@
-// VERSION: 20260605172500 - 彻底修复持久化：重写init+safeSetItem+doLogin+checkLogin
+// VERSION: 202606091530 - 服务与进度追踪页面重构：四大卡片+评分明细表+健康预警
 // ===== Mock 数据 =====
 
 // 管理难度评估数据（自动生成）
@@ -2763,383 +2763,303 @@ function renderCost(){
 
 
 
-// ===== 服务与进度追踪 =====
 
-function renderOperation(){
-
-  const projects = getFilteredProjects();
-
-  return `
-  ${renderFilterBar()}
-
-  <div class="module-header">
-
-    <div>
-
-      <div class="module-title">📈 服务与进度追踪 · 健康度评估</div>
-
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">基于6大维度综合评估项目健康状况，支持逐层下钻查看详细指标</div>
-
-    </div>
-
-    <div class="module-actions">
-
-      ${canEdit()?'<button class="btn btn-primary btn-sm">＋ 更新健康度数据</button>':''}
-
-    </div>
-
-  </div>
-
-
-
-  <!-- 项目健康度总览卡片 -->
-
-  <div class="health-overview-grid">
-
-    ${projects.map(p => {
-
-      const h = HEALTH_DATA.find(hh => hh.projectId === p.id && hh.period === "2026-05");
-
-      const op = OPERATIONS.find(oo => oo.projectId === p.id);
-
-      const levelColor = h ? (h.overallLevel==="优秀"?"var(--c-green)":h.overallLevel==="健康"?"var(--c-green)":h.overallLevel==="需注意"?"var(--c-yellow)":"var(--c-red)") : "var(--c-text-3)";
-
-      const levelBg = h ? (h.overallLevel==="优秀"?"var(--c-green-bg)":h.overallLevel==="健康"?"var(--c-green-bg)":h.overallLevel==="需注意"?"var(--c-yellow-bg)":"var(--c-red-bg)") : "var(--c-bg)";
-
-      const dimSummary = h ? h.dimensions.map(d => `<span class="dim-pill ${d.level}">${d.name.replace("健康度","")}${d.score}</span>`).join("") : "";
-
-      return `
-
-      <div class="health-project-card" onclick="toggleHealthDetail('${p.id}')">
-
-        <div class="hpc-header">
-
-          <div class="hpc-title">
-
-            <span class="wp-tag">${p.workplace}</span>
-
-            ${p.name}
-
-          </div>
-
-          <div class="hpc-score" style="background:${levelBg};color:${levelColor}">
-
-            <div class="hpc-score-num">${h?h.overallScore:"--"}</div>
-
-            <div class="hpc-score-label">${h?h.overallLevel:"未评估"}</div>
-
-          </div>
-
-        </div>
-
-        <div class="hpc-dims">${dimSummary}</div>
-
-        ${op?`<div class="hpc-quick">
-
-          <span>在岗 ${op.fteActual}人</span>
-
-          <span>单量 ${(op.ticketVol/1000).toFixed(1)}K</span>
-
-          <span>CSat ${op.csat}</span>
-
-          <span>响应 ${op.responseTime}s</span>
-
-        </div>`:''}
-
-      </div>
-
-      <div id="health-detail-${p.id}" class="health-detail-panel" style="display:none;">
-
-        ${h?renderHealthDetailPanel(h,p,op):'<div style="padding:24px;color:var(--c-text-3);">暂无健康度评估数据</div>'}
-
-      </div>`;
-
-    }).join('')}
-
-  </div>
-
-
-
-  <!-- 评分标准说明 -->
-
-  <div class="card" style="margin-top:16px;padding:14px 18px;">
-
-    <div style="font-size:13px;font-weight:500;margin-bottom:8px;">📋 健康度评分标准</div>
-
-    <div class="score-legend">
-
-      <div class="legend-item"><span class="legend-dot" style="background:var(--c-green)"></span><b>优秀</b> = 100分 &nbsp;|&nbsp; <b>健康</b> = 90分 &nbsp;|&nbsp; <b>需注意</b> = 85分 &nbsp;|&nbsp; <b>极差</b> = 80分</div>
-
-      <div class="legend-item" style="margin-top:4px;color:var(--c-text-2);">总评分 = Σ(单项评分 × 权重) &nbsp;|&nbsp; 优秀≥95 &nbsp;|&nbsp; 健康90-94 &nbsp;|&nbsp; 需注意85-89 &nbsp;|&nbsp; 极差&lt;85</div>
-
-    </div>
-
-  </div>
-
-
-
-  <!-- 运营基础数据表 -->
-
-  <div class="card" style="margin-top:16px;">
-
-    <div style="padding:14px 18px;border-bottom:1px solid var(--c-border-light);font-weight:500;font-size:14px;">📊 运营基础数据（快速参考）</div>
-
-    <table class="data-table">
-
-      <thead><tr><th>项目</th><th>周期</th><th>在岗人数</th><th>出勤率</th><th>服务单量</th><th>响应时长</th><th>CSat</th><th>解决率</th><th>回评率</th></tr></thead>
-
-      <tbody>
-
-        ${OPERATIONS.filter(o=>{
-
-          const pp=PROJECTS.find(px=>px.id===o.projectId);
-
-          return pp && (filterState.workplace==='all'||pp.workplace===filterState.workplace);
-
-        }).map(o=>{
-
-          const pp=PROJECTS.find(px=>px.id===o.projectId);
-
-          return `<tr>
-
-            <td>${pp?pp.name:o.projectId}</td>
-
-            <td>${o.period}</td>
-
-            <td>${o.fteActual}</td>
-
-            <td>${o.attendance}%</td>
-
-            <td>${o.ticketVol.toLocaleString()}</td>
-
-            <td style="color:${o.responseTime>pp.slaResponse?'var(--c-red)':'var(--c-green)'}">${o.responseTime}s</td>
-
-            <td style="color:${o.csat>=4.5?'var(--c-green)':'var(--c-red)'}">${o.csat}</td>
-
-            <td>${o.resolutionRate}%</td>
-
-            <td>${o.reviewRate}%</td>
-
-          </tr>`;
-
-        }).join('')}
-
-      </tbody>
-
-    </table>
-
-  </div>`;
-
+// ===== 服务与进度追踪（新版 2026-06-09） =====
+
+// 计算项目健康等级
+function getHealthLevel(score) {
+  if (score >= 90) return { level: "优质健康店", class: "excellent", icon: "🟢" };
+  if (score >= 75) return { level: "平稳常规店", class: "normal", icon: "🟡" };
+  if (score >= 60) return { level: "风险预警店", class: "warning", icon: "🟠" };
+  return { level: "高危问题店", class: "danger", icon: "🔴" };
 }
 
-
-
-function renderHealthDetailPanel(h, p, op){
-
-  const levelColor = h.overallLevel==="优秀"||h.overallLevel==="健康"?"var(--c-green)":h.overallLevel==="需注意"?"var(--c-yellow)":"var(--c-red)";
-
-  const levelBg = h.overallLevel==="优秀"||h.overallLevel==="健康"?"var(--c-green-bg)":h.overallLevel==="需注意"?"var(--c-yellow-bg)":"var(--c-red-bg)";
-
-  return `
-
-  <div class="hdp-inner">
-
-    <!-- 综合评分头部 -->
-
-    <div class="hdp-header" style="background:${levelBg};">
-
-      <div class="hdp-header-left">
-
-        <div style="font-size:13px;color:var(--c-text-2);">${p.name} · ${h.period}月度健康度评估</div>
-
-        <div style="font-size:12px;color:var(--c-text-3);margin-top:2px;">项目经理：${p.pm} &nbsp;|&nbsp; 职场：${p.workplace}</div>
-
-      </div>
-
-      <div class="hdp-header-right">
-
-        <div class="hdp-big-score" style="color:${levelColor}">${h.overallScore}</div>
-
-        <div class="hdp-big-label" style="color:${levelColor}">${h.overallLevel}</div>
-
-      </div>
-
-    </div>
-
-
-
-    <!-- 6维度卡片 -->
-
-    <div class="hdp-dims">
-
-      ${h.dimensions.map(d => {
-
-        const c = d.level==="优秀"||d.level==="健康"?"var(--c-green)":d.level==="需注意"?"var(--c-yellow)":"var(--c-red)";
-
-        const bg = d.level==="优秀"||d.level==="健康"?"var(--c-green-bg)":d.level==="需注意"?"var(--c-yellow-bg)":"var(--c-red-bg)";
-
-        const icon = d.key==="manpower"?"👥":d.key==="service"?"💬":d.key==="sales"?"💰":d.key==="returns"?"📦":d.key==="risk"?"⚠️":"💵";
-
-        return `
-
-        <div class="hdp-dim-card">
-
-          <div class="hdp-dim-top">
-
-            <div class="hdp-dim-icon">${icon}</div>
-
-            <div class="hdp-dim-score" style="background:${bg};color:${c}">${d.score}</div>
-
-          </div>
-
-          <div class="hdp-dim-name">${d.name}</div>
-
-          <div class="hdp-dim-level" style="color:${c}">${d.level}</div>
-
-          ${d.weight>0?`<div class="hdp-dim-weight">权重 ${(d.weight*100).toFixed(0)}%</div>`:'<div class="hdp-dim-weight">监控项</div>'}
-
-        </div>`;
-
-      }).join('')}
-
-    </div>
-
-
-
-    <!-- 详细指标表格 -->
-
-    <div class="hdp-table-wrap">
-
-      <table class="data-table health-detail-table">
-
-        <thead>
-
-          <tr>
-
-            <th style="width:140px">维度</th>
-
-            <th>评估内容</th>
-
-            <th style="width:90px">目标值</th>
-
-            <th style="width:90px">实际值</th>
-
-            <th style="width:80px">评分</th>
-
-            <th style="width:70px">等级</th>
-
-            <th style="width:30%">备注说明</th>
-
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          ${h.dimensions.map(d => {
-
-            const c = d.level==="优秀"||d.level==="健康"?"var(--c-green)":d.level==="需注意"?"var(--c-yellow)":"var(--c-red)";
-
-            return d.items.map((item, idx) => `
-
-              <tr>
-
-                ${idx===0?`<td rowspan="${d.items.length}" style="font-weight:500;background:var(--c-bg);">${d.name}<br><span style="font-size:11px;color:var(--c-text-3);">权重${(d.weight*100).toFixed(0)}%</span></td>`:''}
-
-                <td>${item.name}</td>
-
-                <td>${item.target}</td>
-
-                <td style="font-weight:500;">${item.actual}</td>
-
-                <td style="font-weight:600;color:${c}">${item.score}</td>
-
-                <td><span class="badge ${item.level==='优秀'||item.level==='健康'?'badge-green':item.level==='需注意'?'badge-yellow':'badge-red'}">${item.level}</span></td>
-
-                <td style="font-size:12px;color:var(--c-text-2);">${item.remark}</td>
-
-              </tr>
-
-            `).join('');
-
-          }).join('')}
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-
-
-    <!-- 成本专项（独立展示） -->
-
-    ${h.dimensions.find(d=>d.key==="cost")?`
-
-    <div class="hdp-cost-section">
-
-      <div style="font-size:13px;font-weight:500;margin-bottom:10px;">💵 成本把控详情</div>
-
-      <div class="hdp-cost-grid">
-
-        ${h.dimensions.find(d=>d.key==="cost").items.map(item => `
-
-          <div class="hdp-cost-item">
-
-            <div class="hdp-cost-label">${item.name}</div>
-
-            <div class="hdp-cost-value">${item.actual}</div>
-
-            <div class="hdp-cost-target">目标: ${item.target}</div>
-
-          </div>
-
-        `).join('')}
-
-      </div>
-
-    </div>
-
-    `:""}
-
-
-
-    <!-- 快速关闭 -->
-
-    <div style="text-align:center;padding:12px;border-top:1px solid var(--c-border-light);">
-
-      <button class="btn btn-sm" onclick="toggleHealthDetail('${p.id}')">收起详情 ↑</button>
-
-    </div>
-
-  </div>`;
-
-}
-
-
-
-function toggleHealthDetail(projectId){
-
-  const el = document.getElementById("health-detail-"+projectId);
-
-  if(!el) return;
-
-  const isHidden = el.style.display === "none";
-
-  // 先关闭所有其他详情面板
-
-  document.querySelectorAll(".health-detail-panel").forEach(p => p.style.display = "none");
-
-  if(isHidden){
-
-    el.style.display = "block";
-
-    el.scrollIntoView({behavior:"smooth", block:"start"});
-
+// 渲染四大卡片概览
+function renderHealthOverviewCards(projects) {
+  const projectHealth = projects.map(p => {
+    const h = HEALTH_DATA.find(hh => hh.projectId === p.id && hh.period === "2026-05");
+    const score = h ? h.overallScore : 0;
+    const healthInfo = score > 0 ? getHealthLevel(score) : { level: "未评估", class: "unrated", icon: "⚪" };
+    return { project: p, health: h, score, ...healthInfo };
+  });
+
+  const grouped = {
+    excellent: projectHealth.filter(x => x.class === "excellent"),
+    normal: projectHealth.filter(x => x.class === "normal"),
+    warning: projectHealth.filter(x => x.class === "warning"),
+    danger: projectHealth.filter(x => x.class === "danger")
+  };
+
+  function countBy(arr, key) {
+    const map = {};
+    arr.forEach(x => {
+      const val = x.project[key];
+      if (val) map[val] = (map[val] || 0) + 1;
+    });
+    return Object.entries(map).map(([k, v]) => k + "(" + v + ")").join(" · ");
   }
 
+  function renderCard(className, icon, title, items) {
+    const count = items.length;
+    const workplaces = count > 0 ? countBy(items, "workplace") : "";
+    const types = count > 0 ? countBy(items, "serviceMode") : "";
+    return `
+    <div class="health-overview-card ${className}" onclick="toggleHealthCard('${className}')">
+      <div class="hoc-header">
+        <div class="hoc-icon">${icon}</div>
+        <div class="hoc-title">${title}</div>
+      </div>
+      <div class="hoc-count">${count}<span class="hoc-unit">家</span></div>
+      ${count > 0 ? `
+        <div class="hoc-stats">
+          <div class="hoc-stat-item">📍 ${workplaces || "无"}</div>
+          <div class="hoc-stat-item">🏷️ ${types || "无"}</div>
+        </div>
+        <div class="hoc-footer">查看明细 →</div>
+      ` : '<div class="hoc-empty">暂无数据</div>'}
+    </div>`;
+  }
+
+  return `
+  <div class="health-overview-cards">
+    ${renderCard("excellent", "🟢", "优质健康店", grouped.excellent)}
+    ${renderCard("normal", "🟡", "平稳常规店", grouped.normal)}
+    ${renderCard("warning", "🟠", "风险预警店", grouped.warning)}
+    ${renderCard("danger", "🔴", "高危问题店", grouped.danger)}
+  </div>
+  <div id="health-card-detail" style="display:none;"></div>`;
 }
 
+// 渲染健康预警摘要
+function renderHealthWarningSummary(healthData) {
+  if (!healthData) return '<div style="padding:12px;color:var(--c-text-3);">暂无健康度数据</div>';
+  const badDims = healthData.dimensions.filter(d => d.score < 85).sort((a, b) => a.score - b.score);
+  if (badDims.length === 0) {
+    return `
+    <div class="health-warning-summary healthy">
+      <div class="hws-icon">✅</div>
+      <div class="hws-text">各维度表现良好，无明显风险点</div>
+    </div>`;
+  }
+  const reasons = badDims.map(d => {
+    const badItems = d.items.filter(i => i.score < 85);
+    const details = badItems.length > 0
+      ? badItems.map(i => i.name + ": 实际" + i.actual + "，目标" + i.target).join("<br>")
+      : "整体维度得分偏低";
+    return `<div class="hws-reason">
+      <div class="hws-reason-title ${d.level}">${d.name}(${d.score}分·${d.level})</div>
+      <div class="hws-reason-details">${details}</div>
+    </div>`;
+  }).join("");
+  return `
+  <div class="health-warning-summary warning">
+    <div class="hws-header">
+      <span class="hws-icon">⚠️</span>
+      <span class="hws-title">健康预警摘要</span>
+    </div>
+    ${reasons}
+  </div>`;
+}
+
+// 分数颜色
+function scoreColor(s) {
+  if (s >= 90) return "var(--c-green)";
+  if (s >= 75) return "var(--c-yellow)";
+  if (s >= 60) return "var(--c-orange)";
+  return "var(--c-red)";
+}
+function scoreBg(s) {
+  if (s >= 90) return "var(--c-green-bg)";
+  if (s >= 75) return "var(--c-yellow-bg)";
+  if (s >= 60) return "var(--c-orange-bg)";
+  return "var(--c-red-bg)";
+}
+
+// 渲染评分明细表
+function renderHealthScoreTable(projects) {
+  const sortState = window._healthSort || { key: "score", dir: "desc" };
+  function sortProjects(list, key, dir) {
+    return list.sort((a, b) => {
+      let va, vb;
+      if (key === "score") { va = a.score; vb = b.score; }
+      else if (key === "name") { va = a.project.name; vb = b.project.name; }
+      else if (key === "workplace") { va = a.project.workplace; vb = b.project.workplace; }
+      else {
+        va = a.health ? (a.health.dimensions.find(d => d.key === key) || { score: 0 }).score : 0;
+        vb = b.health ? (b.health.dimensions.find(d => d.key === key) || { score: 0 }).score : 0;
+      }
+      if (dir === "asc") return va > vb ? 1 : -1;
+      return va < vb ? 1 : -1;
+    });
+  }
+  const sorted = sortProjects([...projects], sortState.key, sortState.dir);
+  const top6 = sorted.slice(0, 6);
+  function sortArrow(key) {
+    if (sortState.key !== key) return "↕️";
+    return sortState.dir === "desc" ? "↓" : "↑";
+  }
+  return `
+  <div class="card" style="margin-top:16px;">
+    <div style="padding:14px 18px;border-bottom:1px solid var(--c-border-light);font-weight:500;font-size:14px;">📊 店铺综合评分明细（前6名）</div>
+    <div style="overflow-x:auto;">
+      <table class="data-table health-score-table">
+        <thead>
+          <tr>
+            <th style="width:50px;">排名</th>
+            <th onclick="sortHealthTable('name')" style="cursor:pointer;">店铺名称 ${sortArrow("name")}</th>
+            <th onclick="sortHealthTable('workplace')" style="cursor:pointer;">职场 ${sortArrow("workplace")}</th>
+            <th>类型</th>
+            <th onclick="sortHealthTable('score')" style="cursor:pointer;">综合 ${sortArrow("score")}</th>
+            <th onclick="sortHealthTable('manpower')" style="cursor:pointer;">人力 ${sortArrow("manpower")}</th>
+            <th onclick="sortHealthTable('service')" style="cursor:pointer;">服务 ${sortArrow("service")}</th>
+            <th onclick="sortHealthTable('sales')" style="cursor:pointer;">销售 ${sortArrow("sales")}</th>
+            <th onclick="sortHealthTable('returns')" style="cursor:pointer;">退货 ${sortArrow("returns")}</th>
+            <th onclick="sortHealthTable('risk')" style="cursor:pointer;">风险 ${sortArrow("risk")}</th>
+            <th onclick="sortHealthTable('cost')" style="cursor:pointer;">成本 ${sortArrow("cost")}</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${top6.map((x, idx) => {
+            const p = x.project;
+            const h = x.health;
+            const rankClass = idx < 3 ? "top3" : (idx >= top6.length - 3 ? "bottom3" : "");
+            const rankIcon = idx === 0 ? "🥇" : (idx === 1 ? "🥈" : (idx === 2 ? "🥉" : (idx + 1)));
+            return `<tr class="${rankClass}">
+              <td class="rank-col">${rankIcon}</td>
+              <td>${p.name}</td>
+              <td>${p.workplace}</td>
+              <td>${p.serviceMode}</td>
+              <td class="score-col" style="background:${scoreBg(x.score)};color:${scoreColor(x.score)};font-weight:600;">${x.score > 0 ? x.score : "--"}</td>
+              ${h ? h.dimensions.map(d => {
+                const c = scoreColor(d.score);
+                const bg = scoreBg(d.score);
+                return `<td class="score-col" style="background:${bg};color:${c}">${d.score}</td>`;
+              }).join("") : "<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>"}
+              <td><button class="btn btn-sm" onclick="toggleHealthDetail('${p.id}')">查看</button></td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+// 渲染健康度等级定义
+function renderHealthLevelDefinition() {
+  return `
+  <div class="card" style="margin-top:16px;padding:14px 18px;">
+    <div style="font-size:13px;font-weight:500;margin-bottom:8px;">📋 健康度等级定义</div>
+    <div class="health-level-definition">
+      <div class="hld-item excellent">
+        <div class="hld-dot"></div>
+        <div class="hld-content">
+          <div class="hld-title">🟢 优质健康店（90-100分）</div>
+          <div class="hld-desc">各维度表现优秀，无明显短板，可作为标杆案例推广</div>
+        </div>
+      </div>
+      <div class="hld-item normal">
+        <div class="hld-dot"></div>
+        <div class="hld-content">
+          <div class="hld-title">🟡 平稳常规店（75-89分）</div>
+          <div class="hld-desc">整体运营平稳，个别维度需关注，建议制定提升计划</div>
+        </div>
+      </div>
+      <div class="hld-item warning">
+        <div class="hld-dot"></div>
+        <div class="hld-content">
+          <div class="hld-title">🟠 风险预警店（60-74分）</div>
+          <div class="hld-desc">存在明显问题，需制定改善计划，PM需每周跟进</div>
+        </div>
+      </div>
+      <div class="hld-item danger">
+        <div class="hld-dot"></div>
+        <div class="hld-content">
+          <div class="hld-title">🔴 高危问题店（0-59分）</div>
+          <div class="hld-desc">多项指标不达标，需立即介入整改，建议成立专项小组</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// 切换卡片展开
+function toggleHealthCard(className) {
+  const container = document.getElementById("health-card-detail");
+  if (!container) return;
+  const isVisible = container.style.display !== "none";
+  const projects = getFilteredProjects();
+  const projectHealth = projects.map(p => {
+    const h = HEALTH_DATA.find(hh => hh.projectId === p.id && hh.period === "2026-05");
+    const score = h ? h.overallScore : 0;
+    const healthInfo = score > 0 ? getHealthLevel(score) : { level: "未评估", class: "unrated", icon: "⚪" };
+    return { project: p, health: h, score, ...healthInfo };
+  });
+  const filtered = projectHealth.filter(x => x.class === className);
+  if (isVisible && container.dataset.class === className) {
+    container.style.display = "none";
+    return;
+  }
+  container.dataset.class = className;
+  container.style.display = "block";
+  container.innerHTML = `
+    <div class="health-detail-cards">
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px;">${filtered[0]?.icon || ""} ${filtered[0]?.level || ""} - 共${filtered.length}家</div>
+      <div class="hdc-grid">
+        ${filtered.map(x => {
+          const p = x.project;
+          const h = x.health;
+          const levelColor = scoreColor(x.score);
+          const levelBg = scoreBg(x.score);
+          return `
+          <div class="health-detail-card">
+            <div class="hdc-header" style="background:${levelBg};">
+              <div class="hdc-title">${p.name}</div>
+              <div class="hdc-score" style="color:${levelColor}">${x.score > 0 ? x.score + "分" : "未评估"}</div>
+            </div>
+            <div class="hdc-body">
+              <div class="hdc-info">${p.workplace} · ${p.serviceMode}</div>
+              ${h ? renderHealthWarningSummary(h) : ""}
+            </div>
+            <div class="hdc-footer">
+              <button class="btn btn-sm btn-primary" onclick="toggleHealthDetail('${p.id}')">查看详情</button>
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`;
+  container.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// 排序表格
+function sortHealthTable(key) {
+  const dir = (window._healthSort && window._healthSort.key === key && window._healthSort.dir === "desc") ? "asc" : "desc";
+  window._healthSort = { key, dir };
+  renderModule("服务与进度追踪");
+}
+
+// 主渲染函数
+function renderOperation() {
+  const projects = getFilteredProjects();
+  const projectHealth = projects.map(p => {
+    const h = HEALTH_DATA.find(hh => hh.projectId === p.id && hh.period === "2026-05");
+    const score = h ? h.overallScore : 0;
+    const healthInfo = score > 0 ? getHealthLevel(score) : { level: "未评估", class: "unrated", icon: "⚪" };
+    return { project: p, health: h, score, ...healthInfo };
+  });
+  return `
+  ${renderFilterBar()}
+  <div class="module-header">
+    <div>
+      <div class="module-title">📈 服务与进度追踪 · 健康度评估</div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">基于6大维度综合评估项目健康状况，支持逐层下钻查看详细指标</div>
+    </div>
+  </div>
+  ${renderHealthOverviewCards(projects)}
+  ${renderHealthScoreTable(projectHealth)}
+  ${renderHealthLevelDefinition()}
+  <div id="health-detail-panels"></div>`;
+}
 
 
 // ===== 问题与课题协作 =====
