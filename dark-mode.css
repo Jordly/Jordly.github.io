@@ -1564,6 +1564,15 @@ html {
   border-color: rgba(239, 68, 68, 0.3) !important;
 }
 
+[data-theme="dark"] .fb-sp-toggle-all {
+  background: var(--c-primary) !important;
+  color: #fff !important;
+}
+
+[data-theme="dark"] .fb-sp-toggle-all:hover {
+  background: #1d4ed8 !important;
+}
+
 [data-theme="dark"] .fb-sp-confirm {
   background: var(--c-primary) !important;
   color: #fff !important;
@@ -1841,6 +1850,15 @@ html {
   background: rgba(239, 68, 68, 0.08) !important;
   color: #ef4444 !important;
   border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+[data-theme="dark"] .fb-sp-toggle-all {
+  background: var(--c-primary) !important;
+  color: #fff !important;
+}
+
+[data-theme="dark"] .fb-sp-toggle-all:hover {
+  background: #1d4ed8 !important;
 }
 
 [data-theme="dark"] .fb-sp-confirm {
