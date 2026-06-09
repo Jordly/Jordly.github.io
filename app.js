@@ -1603,7 +1603,6 @@ function renderFilterBar() {
   var row1 = '<div class="filter-row-v4">';
   row1 += '<select class="fb-select" onchange="onFilterTimeChange(this.value)" title="时间">';
   row1 += '<option value="" disabled selected hidden>时间 ▼</option>';
-  row1 += '<option value="all"'+(filterState.timeMode==='all'?' selected':'')+'>全部</option>';
   row1 += '<option value="month"'+(filterState.timeMode==='month'?' selected':'')+'>本月</option>';
   row1 += '<option value="lastMonth"'+(filterState.timeMode==='lastMonth'?' selected':'')+'>上月</option>';
   row1 += '<option value="quarter"'+(filterState.timeMode==='quarter'?' selected':'')+'>本季</option>';
