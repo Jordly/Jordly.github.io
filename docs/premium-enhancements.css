@@ -3563,3 +3563,258 @@
   border-radius: 50%;
   flex-shrink: 0;
 }
+
+/* ===== 问题与课题协作 - 页面头部 ===== */
+.issue-page-header {
+  margin-bottom: 20px;
+}
+.issue-page-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.issue-page-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--c-text-1, #1a1a1a);
+}
+.issue-page-desc {
+  font-size: 13px;
+  color: var(--c-text-3, #666);
+  margin: 0;
+}
+
+/* ===== 问题与课题协作 - 状态概览卡片 ===== */
+.issue-stat-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.issue-stat-card {
+  border-radius: 12px;
+  padding: 14px 16px;
+  border: 0.5px solid;
+}
+.issue-stat-card .issue-stat-label {
+  font-size: 12px;
+  margin: 0 0 6px 0;
+}
+.issue-stat-card .issue-stat-count {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+}
+.issue-stat-pending {
+  background: #FCEBEB;
+  border-color: #F7C1C1;
+}
+.issue-stat-pending .issue-stat-label {
+  color: #791F1F;
+}
+.issue-stat-pending .issue-stat-count {
+  color: #A32D2D;
+}
+.issue-stat-processing {
+  background: #E6F1FB;
+  border-color: #B5D4F4;
+}
+.issue-stat-processing .issue-stat-label {
+  color: #0C447C;
+}
+.issue-stat-processing .issue-stat-count {
+  color: #0C447C;
+}
+.issue-stat-verify {
+  background: #FAEEDA;
+  border-color: #FAC775;
+}
+.issue-stat-verify .issue-stat-label {
+  color: #854F0B;
+}
+.issue-stat-verify .issue-stat-count {
+  color: #854F0B;
+}
+.issue-stat-closed {
+  background: #EAF3DE;
+  border-color: #C0DD97;
+}
+.issue-stat-closed .issue-stat-label {
+  color: #3B6D11;
+}
+.issue-stat-closed .issue-stat-count {
+  color: #3B6D11;
+}
+
+/* ===== 问题与课题协作 - 工具栏 ===== */
+.issue-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.issue-filter-btns {
+  display: flex;
+  gap: 6px;
+}
+.issue-filter-btn {
+  padding: 5px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--c-bg-2, #f5f5f5);
+  color: var(--c-text-2, #666);
+  border: 0.5px solid var(--c-border-3, #e0e0e0);
+  cursor: pointer;
+}
+.issue-filter-active {
+  background: var(--c-bg-1, #fff);
+  color: var(--c-text-1, #1a1a1a);
+  border-color: var(--c-border-2, #ccc);
+}
+.issue-add-btn {
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  background: #185FA5;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+}
+
+/* ===== 问题与课题协作 - 表格 ===== */
+.issue-table-wrapper {
+  background: var(--c-bg-1, #fff);
+  border-radius: 12px;
+  border: 0.5px solid var(--c-border-3, #e0e0e0);
+  overflow: hidden;
+}
+.issue-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.issue-table th {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 500;
+  color: var(--c-text-2, #666);
+  border-bottom: 0.5px solid var(--c-border-3, #e0e0e0);
+  background: var(--c-bg-2, #f8f8f8);
+}
+.issue-table td {
+  padding: 10px 12px;
+  border-bottom: 0.5px solid var(--c-border-4, #f0f0f0);
+}
+.issue-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ===== 问题与课题协作 - 表格行背景色 ===== */
+.issue-row-danger {
+  background: #FCEBEB !important;
+}
+.issue-row-warning {
+  background: #FAEEDA !important;
+}
+
+/* ===== 问题与课题协作 - 状态标签 ===== */
+.issue-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.issue-badge-danger {
+  background: #F7C1C1;
+  color: #A32D2D;
+}
+.issue-badge-info {
+  background: #E6F1FB;
+  color: #185FA5;
+}
+.issue-badge-warning {
+  background: #FAEEDA;
+  color: #854F0B;
+}
+.issue-badge-success {
+  background: #EAF3DE;
+  color: #3B6D11;
+}
+
+/* ===== 问题与课题协作 - 优先级标签 ===== */
+.issue-priority-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.issue-priority-danger {
+  background: #F09595;
+  color: #fff;
+  font-weight: 500;
+}
+.issue-priority-warning {
+  background: #FAC775;
+  color: #854F0B;
+}
+.issue-priority-gray {
+  background: #e0e0e0;
+  color: #888;
+}
+
+/* ===== 问题与课题协作 - 操作按钮 ===== */
+.issue-action-btn {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right: 4px;
+}
+.issue-action-view {
+  background: var(--c-bg-1, #fff);
+  color: var(--c-text-1, #1a1a1a);
+  border: 0.5px solid var(--c-border-2, #ccc);
+}
+.issue-action-update {
+  background: #185FA5;
+  color: #fff;
+  border: none;
+}
+
+/* ===== 问题与课题协作 - 图例 ===== */
+.issue-legend {
+  margin-top: 12px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--c-text-3, #999);
+}
+.issue-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.issue-legend-color {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+.issue-legend-red {
+  background: #E24B4A;
+}
+.issue-legend-blue {
+  background: #378ADD;
+}
+.issue-legend-green {
+  background: #97C459;
+}

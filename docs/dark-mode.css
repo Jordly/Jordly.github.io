@@ -2108,3 +2108,139 @@ html {
 [data-theme="dark"] .profit-legend-item {
   color: var(--c-text-2) !important;
 }
+
+/* ===== 问题与课题协作 - 暗黑模式 ===== */
+body.dark .issue-page-title {
+  color: var(--c-text-1, #e0e0e0);
+}
+body.dark .issue-page-desc {
+  color: var(--c-text-3, #999);
+}
+
+/* 状态卡片 - 暗黑模式 */
+body.dark .issue-stat-pending {
+  background: #3d1a1a;
+  border-color: #5c2a2a;
+}
+body.dark .issue-stat-pending .issue-stat-label {
+  color: #f09090;
+}
+body.dark .issue-stat-pending .issue-stat-count {
+  color: #ff6b6b;
+}
+body.dark .issue-stat-processing {
+  background: #1a2a3d;
+  border-color: #2a3a5c;
+}
+body.dark .issue-stat-processing .issue-stat-label {
+  color: #90b8f0;
+}
+body.dark .issue-stat-processing .issue-stat-count {
+  color: #6ba5ff;
+}
+body.dark .issue-stat-verify {
+  background: #3d2a1a;
+  border-color: #5c4a2a;
+}
+body.dark .issue-stat-verify .issue-stat-label {
+  color: #f0b890;
+}
+body.dark .issue-stat-verify .issue-stat-count {
+  color: #ffa56b;
+}
+body.dark .issue-stat-closed {
+  background: #1a3d1a;
+  border-color: #2a5c2a;
+}
+body.dark .issue-stat-closed .issue-stat-label {
+  color: #90f090;
+}
+body.dark .issue-stat-closed .issue-stat-count {
+  color: #6bff6b;
+}
+
+/* 工具栏 - 暗黑模式 */
+body.dark .issue-filter-btn {
+  background: var(--c-bg-2, #2a2a2a);
+  color: var(--c-text-2, #999);
+  border-color: var(--c-border-3, #444);
+}
+body.dark .issue-filter-active {
+  background: var(--c-bg-1, #1a1a1a);
+  color: var(--c-text-1, #e0e0e0);
+  border-color: var(--c-border-2, #666);
+}
+body.dark .issue-add-btn {
+  background: #185FA5;
+  color: #fff;
+}
+
+/* 表格 - 暗黑模式 */
+body.dark .issue-table-wrapper {
+  background: var(--c-bg-1, #1a1a1a);
+  border-color: var(--c-border-3, #444);
+}
+body.dark .issue-table th {
+  color: var(--c-text-2, #999);
+  border-bottom-color: var(--c-border-3, #444);
+  background: var(--c-bg-2, #2a2a2a);
+}
+body.dark .issue-table td {
+  border-bottom-color: var(--c-border-4, #333);
+}
+
+/* 表格行背景色 - 暗黑模式 */
+body.dark .issue-row-danger {
+  background: #3d1a1a !important;
+}
+body.dark .issue-row-warning {
+  background: #3d2a1a !important;
+}
+
+/* 状态标签 - 暗黑模式 */
+body.dark .issue-badge-danger {
+  background: #5c2a2a;
+  color: #ff6b6b;
+}
+body.dark .issue-badge-info {
+  background: #1a2a3d;
+  color: #6ba5ff;
+}
+body.dark .issue-badge-warning {
+  background: #3d2a1a;
+  color: #ffa56b;
+}
+body.dark .issue-badge-success {
+  background: #1a3d1a;
+  color: #6bff6b;
+}
+
+/* 优先级标签 - 暗黑模式 */
+body.dark .issue-priority-danger {
+  background: #d32f2f;
+  color: #fff;
+}
+body.dark .issue-priority-warning {
+  background: #5c4a2a;
+  color: #ffa56b;
+}
+body.dark .issue-priority-gray {
+  background: #444;
+  color: #999;
+}
+
+/* 操作按钮 - 暗黑模式 */
+body.dark .issue-action-view {
+  background: var(--c-bg-1, #1a1a1a);
+  color: var(--c-text-1, #e0e0e0);
+  border-color: var(--c-border-2, #666);
+}
+body.dark .issue-action-update {
+  background: #185FA5;
+  color: #fff;
+}
+
+/* 图例 - 暗黑模式 */
+body.dark .issue-legend {
+  color: var(--c-text-3, #999);
+}
