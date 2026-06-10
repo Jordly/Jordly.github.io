@@ -64,20 +64,23 @@ var RISK_ALERTS = [];
 
 var DEFAULT_KNOWLEDGE = [
 
-  {id:1, title:"美妆类目大促客服应对SOP", type:"SOP流程优化", sourceProject:"P001", tags:"美妆,大促,SOP", scope:"通用", createdAt:"2025-11-20", updateTime:"2026-05-20", views:156, downloads:42, permission:"公开", description:"双11大促期间美妆类目的客服应对标准流程，包含快速回复话术、退换货处理、投诉升级路径等核心内容。"},
+  {id:1, title:"美妆大促客服标准话术SOP", type:"SOP流程优化", tags:"美妆,大促,SOP,话术", scope:"通用", permission:"公开", createdAt:"2025-11-20", updateTime:"2026-06-08", views:328, downloads:56, description:"双11大促期间美妆类目的客服应对标准流程，包含快速回复话术、退换货处理、投诉升级路径等核心内容。"},
 
-  {id:2, title:"BPO项目成本控制经验", type:"成本目标控制", sourceProject:"P003", tags:"BPO,成本,外包", scope:"特定品类", createdAt:"2026-03-15", updateTime:"2026-05-18", views:89, downloads:23, permission:"内部", description:"BPO项目成本核算经验总结，包含人力成本优化、外包团队管理、绩效考核指标设定等实战经验。"},
+  {id:2, title:"差评应急处理流程（含模板）", type:"风控应急预案", tags:"差评,应急,模板", scope:"通用", permission:"公开", createdAt:"2026-01-15", updateTime:"2026-06-05", views:256, downloads:43, description:"差评出现后的标准应急处理流程，包含分类型差评回复模板、内部升级机制、数据复盘等环节。"},
 
-  {id:3, title:"天猫平台回复话术规范（2026版）", type:"优秀话术萃取", sourceProject:"P001", tags:"天猫,话术,规范", scope:"特定平台", createdAt:"2026-01-10", updateTime:"2026-04-12", views:234, downloads:67, permission:"公开", description:"2026年天猫平台最新回复话术规范，涵盖售前咨询、订单处理、售后服务全流程标准话术。"},
+  {id:3, title:"AI智能回复配置指南 v2.0", type:"AI提效赋能", tags:"AI,智能回复,配置", scope:"通用", permission:"公开", createdAt:"2026-03-10", updateTime:"2026-06-03", views:198, downloads:67, description:"AI智能回复系统的配置指南v2.0，包含知识库搭建、回复规则配置、人工兜底策略等全流程指引。"},
 
-  {id:4, title:"客服系统崩溃应急处理预案", type:"风控应急预案", sourceProject:"P003", tags:"应急,系统,预案", scope:"通用", createdAt:"2026-05-12", updateTime:"2026-06-08", views:67, downloads:15, permission:"内部", description:"客服系统崩溃时的应急处理流程和预案，包含备用系统切换、人工记录、客户通知等关键环节。"},
+  {id:4, title:"成本控制目标分解表（Q2）", type:"成本目标控制", tags:"成本,目标,分解,Q2", scope:"全平台", permission:"内部", createdAt:"2026-04-01", updateTime:"2026-06-01", views:145, downloads:28, description:"2026年Q2成本控制目标分解表，包含各项目标成本率、实际执行跟踪、偏差分析等核心数据。"},
 
-  {id:5, title:"新人客服培训标准课件（全品类）", type:"培训材料", sourceProject:"", tags:"培训,新人,标准", scope:"通用", createdAt:"2025-09-01", updateTime:"2026-03-20", views:312, downloads:98, permission:"公开", description:"新人客服入职培训标准课件，包含产品知识、平台规则、话术训练、异常处理等全套培训内容。"},
+  {id:5, title:"新客服入职培训手册（2026版）", type:"培训材料", tags:"培训,新人,入职,手册", scope:"通用", permission:"公开", createdAt:"2025-09-01", updateTime:"2026-05-28", views:412, downloads:89, description:"2026版新人客服入职培训手册，涵盖平台规则、产品知识、话术基础、系统操作、异常处理五大模块。"},
+
+  {id:6, title:"高频客诉问题话术精选", type:"优秀话术萃取", tags:"客诉,话术,精选,高频", scope:"通用", permission:"公开", createdAt:"2026-02-20", updateTime:"2026-05-25", views:367, downloads:72, description:"各项目高频客诉问题的优秀回复话术精选集，覆盖物流、质量、退换货等十大类常见客诉场景。"},
+
+  {id:7, title:"BPO项目人力成本优化方案", type:"成本目标控制", tags:"BPO,人力,成本,优化", scope:"特定品类", permission:"受限", createdAt:"2026-05-10", updateTime:"2026-06-07", views:89, downloads:15, description:"BPO项目人力成本优化方案，包含排班模型优化、技能矩阵提升、多项目共享池等降本增效策略。"},
+
+  {id:8, title:"大促前系统压测操作指引", type:"风控应急预案", tags:"大促,系统,压测,操作", scope:"通用", permission:"内部", createdAt:"2026-04-15", updateTime:"2026-05-30", views:124, downloads:31, description:"大促前系统压力测试的标准操作指引文档，涵盖压测场景设计、执行步骤、问题记录及修复跟踪。"},
 
 ];
-
-
-
 var DEFAULT_HANDOVERS = [
 
   {id:1, projectId:"P001", projectName:"美妆旗舰店客服项目", from:"王芳", to:"张伟", date:"2026-03-15", status:"已完成", summary:"完成全部基础档案+目标交接，运营数据已同步"},
@@ -3189,132 +3192,176 @@ function renderKnowledge(){
     typeCounts[k.type] = (typeCounts[k.type] || 0) + 1;
   });
 
-  // 热门排行榜（按浏览量排序）
+  const typeOrder = ['SOP流程优化','风控应急预案','成本目标控制','优秀话术萃取','AI提效赋能','培训材料'];
+
   const top5 = [...KNOWLEDGE].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
+
+  const permIcon = {'公开':'🌐','内部':'🔵','受限':'🔴'};
 
   return `
   ${renderFilterBar()}
 
-  <div class="knowledge-page-header">
-    <div class="knowledge-page-title-row">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      <h1 class="knowledge-page-title">核心知识能量池</h1>
+  <div class="kyp-header">
+    <div class="kyp-header-left">
+      <div class="kyp-title-row">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <h1 class="kyp-title">核心知识能量池</h1>
+      </div>
+      <p class="kyp-desc">电商客服团队专属知识库 · 沉淀经验 · 赋能团队</p>
     </div>
-    <p class="knowledge-page-desc">电商客服团队专属知识库 · 沉淀经验 · 赋能团队</p>
-    ${can ? '<div class="knowledge-add-btn" onclick="alert(\'添加知识功能开发中\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>添加知识</div>' : ''}
+    ${can ? '<div class="kyp-add-btn" onclick="alert(\'添加知识功能开发中\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>添加知识</div>' : ''}
   </div>
 
-  <div class="knowledge-stat-cards">
-    <div class="knowledge-stat-card">
-      <div class="knowledge-stat-icon" style="background:#E6F1FB;color:#185FA5;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-      </div>
-      <div class="knowledge-stat-info">
-        <p class="knowledge-stat-count">${totalKnowledge}</p>
-        <p class="knowledge-stat-label">知识总量</p>
+  <div class="kyp-stats">
+    <div class="kyp-stat-card">
+      <div class="kyp-stat-icon kis-blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+      <div class="kyp-stat-body">
+        <span class="kyp-stat-val">${totalKnowledge}</span>
+        <span class="kyp-stat-lbl">知识总量</span>
       </div>
     </div>
-    <div class="knowledge-stat-card">
-      <div class="knowledge-stat-icon" style="background:#EAF3DE;color:#3B6D11;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      </div>
-      <div class="knowledge-stat-info">
-        <p class="knowledge-stat-count">${weekNew}<span class="knowledge-stat-new">NEW</span></p>
-        <p class="knowledge-stat-label">本周新增</p>
+    <div class="kyp-stat-card">
+      <div class="kyp-stat-icon kis-green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      <div class="kyp-stat-body">
+        <span class="kyp-stat-val">${weekNew}<span class="kyp-badge-new">NEW</span></span>
+        <span class="kyp-stat-lbl">本周新增</span>
       </div>
     </div>
-    <div class="knowledge-stat-card">
-      <div class="knowledge-stat-icon" style="background:#FAEEDA;color:#854F0B;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      </div>
-      <div class="knowledge-stat-info">
-        <p class="knowledge-stat-count">${totalViews}</p>
-        <p class="knowledge-stat-label">总浏览量</p>
+    <div class="kyp-stat-card">
+      <div class="kyp-stat-icon kis-orange"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="kyp-stat-body">
+        <span class="kyp-stat-val">${totalViews.toLocaleString()}</span>
+        <span class="kyp-stat-lbl">总浏览量</span>
       </div>
     </div>
-    <div class="knowledge-stat-card">
-      <div class="knowledge-stat-icon" style="background:#FCEBEB;color:#A32D2D;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      </div>
-      <div class="knowledge-stat-info">
-        <p class="knowledge-stat-count">${totalDownloads}</p>
-        <p class="knowledge-stat-label">总下载量</p>
+    <div class="kyp-stat-card">
+      <div class="kyp-stat-icon kis-red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+      <div class="kyp-stat-body">
+        <span class="kyp-stat-val">${totalDownloads.toLocaleString()}</span>
+        <span class="kyp-stat-lbl">总下载量</span>
       </div>
     </div>
   </div>
 
-  <div class="knowledge-main-layout">
-    <div class="knowledge-content">
-      <div class="knowledge-filter-bar">
-        <div class="knowledge-filter-tags">
-          <span class="knowledge-filter-tag knowledge-filter-active">全部 ${totalKnowledge}</span>
-          ${Object.entries(typeCounts).map(([type, count]) => `<span class="knowledge-filter-tag">${type} ${count}</span>`).join('')}
-        </div>
-        <div class="knowledge-search-box">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <input type="text" class="knowledge-search-input" placeholder="搜索知识标题、标签、内容...">
-        </div>
-      </div>
+  <div class="kyp-filters">
+    <div class="kyp-filter-tags" id="kyp-filter-tags">
+      <span class="kyp-tag kyp-tag-active" data-type="all" onclick="kypFilter('all')">全部 ${totalKnowledge}</span>
+      ${typeOrder.filter(t => typeCounts[t]).map(t => `<span class="kyp-tag" data-type="${t}" onclick="kypFilter('${t}')">${t} ${typeCounts[t]}</span>`).join('')}
+    </div>
+    <div class="kyp-search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" class="kyp-search-input" placeholder="搜索知识标题、标签、内容..." oninput="kypSearch(this.value)">
+    </div>
+  </div>
 
-      <div class="knowledge-card-list">
-        ${KNOWLEDGE.map(k => `
-          <div class="knowledge-card">
-            <div class="knowledge-card-header">
-              <div class="knowledge-card-title-row">
-                <span class="knowledge-card-title">${k.title}</span>
-                ${can ? `<span class="knowledge-card-action" onclick="alert(\'编辑功能开发中\')">✎</span><span class="knowledge-card-action" onclick="alert(\'删除功能开发中\')">✕</span>` : ''}
+  <div class="kyp-layout">
+    <div class="kyp-main">
+      <div class="kyp-grid" id="kyp-grid">
+        ${KNOWLEDGE.map(k => {
+          const perm = k.permission || '公开';
+          return `
+          <div class="kyp-card" data-type="${k.type}" data-search="${k.title}${k.description}${k.tags}" onclick="showKnowledgeDetail(${k.id})">
+            <div class="kyp-card-top">
+              <span class="kyp-card-title">${k.title}</span>
+              <div class="kyp-card-actions">
+                ${can ? '<span class="kyp-act" onclick="event.stopPropagation();alert(\'编辑功能开发中\')">✎</span>' : ''}
+                ${can ? '<span class="kyp-act kyp-act-del" onclick="event.stopPropagation();alert(\'删除功能开发中\')">✕</span>' : ''}
               </div>
-              <span class="knowledge-type-badge knowledge-type-${k.type.replace(/[\u4e00-\u9fa5]/g, (m) => encodeURIComponent(m).replace(/%/g, ''))}">${k.type}</span>
             </div>
-            <div class="knowledge-card-desc">${k.description || '暂无描述'}</div>
-            <div class="knowledge-card-tags">
-              ${(k.tags || '').split(',').filter(t => t.trim()).map(t => `<span class="knowledge-tag">${t.trim()}</span>`).join('')}
+            <div class="kyp-card-meta">
+              <span class="kyp-type-badge ktp-${k.type}">${k.type}</span>
+              <span class="kyp-scope-badge">${k.scope || '通用'}</span>
+              <span class="kyp-perm-badge">${permIcon[perm] || '🌐'} ${permLabel[perm] || ''}</span>
             </div>
-            <div class="knowledge-card-footer">
-              <span class="knowledge-card-time">更新于 ${k.updateTime || k.createdAt || '-'}</span>
-              <span class="knowledge-card-stats">
-                <span class="knowledge-card-stat"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> ${k.views || 0}</span>
-                <span class="knowledge-card-stat"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> ${k.downloads || 0}</span>
+            <div class="kyp-card-desc">${k.description || '暂无描述'}</div>
+            <div class="kyp-card-tags">
+              ${(k.tags || '').split(',').filter(t=>t.trim()).map(t => '<span class="kyp-tag-sm">' + t.trim() + '</span>').join('')}
+            </div>
+            <div class="kyp-card-footer">
+              <span class="kyp-card-time">📅 更新于 ${k.updateTime || k.createdAt || '-'}</span>
+              <span class="kyp-card-stats">
+                <span class="kyp-stat-item">👁 ${k.views || 0}</span>
+                <span class="kyp-stat-item">⬇ ${k.downloads || 0}</span>
               </span>
             </div>
-          </div>
-        `).join('')}
+          </div>`;
+        }).join('')}
       </div>
+      <div id="kyp-empty" style="display:none;text-align:center;padding:60px 0;color:var(--c-text-3,#999);font-size:14px;">没有找到匹配的知识内容</div>
     </div>
 
-    <div class="knowledge-sidebar">
-      <div class="knowledge-sidebar-section">
-        <div class="knowledge-sidebar-title">🔥 热门排行榜 TOP5</div>
+    <div class="kyp-sidebar">
+      <div class="kyp-sb-section">
+        <div class="kyp-sb-title">🔥 热门排行榜 TOP5</div>
         ${top5.map((k, i) => `
-          <div class="knowledge-rank-item">
-            <span class="knowledge-rank-num ${i < 3 ? 'knowledge-rank-top' : ''}">${i + 1}</span>
-            <span class="knowledge-rank-title">${k.title}</span>
-            <span class="knowledge-rank-views">${k.views || 0} 浏览</span>
+          <div class="kyp-rank-item" onclick="showKnowledgeDetail(${k.id})">
+            <span class="kyp-rank-num ${i < 3 ? 'kyp-rank-top' : ''}">${i + 1}</span>
+            <div class="kyp-rank-body">
+              <span class="kyp-rank-title">${k.title}</span>
+              <span class="kyp-rank-stats">👁 ${k.views || 0}  ·  ⬇ ${k.downloads || 0}</span>
+            </div>
           </div>
         `).join('')}
       </div>
-      <div class="knowledge-sidebar-section">
-        <div class="knowledge-sidebar-title">🕐 最近查阅</div>
+      <div class="kyp-sb-section">
+        <div class="kyp-sb-title">🕐 最近查阅</div>
         ${KNOWLEDGE.slice(0, 5).map(k => `
-          <div class="knowledge-recent-item">
-            <span class="knowledge-recent-title">${k.title}</span>
-            <span class="knowledge-recent-time">${k.updateTime || k.createdAt || '-'}</span>
+          <div class="kyp-recent-item" onclick="showKnowledgeDetail(${k.id})">
+            <span class="kyp-recent-title">${k.title}</span>
+            <span class="kyp-recent-time">${k.updateTime || k.createdAt || '-'}</span>
           </div>
         `).join('')}
       </div>
     </div>
   </div>
 
-  <div class="knowledge-legend">
-    <div class="knowledge-legend-item"><span class="knowledge-legend-icon knowledge-legend-public">🌐</span> 公开 — 所有人可查看/下载</div>
-    <div class="knowledge-legend-item"><span class="knowledge-legend-icon knowledge-legend-internal">🔵</span> 内部 — 仅团队成员可查看</div>
-    <div class="knowledge-legend-item"><span class="knowledge-legend-icon knowledge-legend-private">🔴</span> 受限 — 仅指定人员可查看/下载</div>
-  </div>`;
+  <div class="kyp-legend">
+    <span><span class="kyp-legend-dot" style="background:#378ADD;"></span> SOP流程优化</span>
+    <span><span class="kyp-legend-dot" style="background:#E24B4A;"></span> 风控应急预案</span>
+    <span><span class="kyp-legend-dot" style="background:#3B6D11;"></span> 成本目标控制</span>
+    <span><span class="kyp-legend-dot" style="background:#E08B1A;"></span> 优秀话术萃取</span>
+    <span><span class="kyp-legend-dot" style="background:#7C3AED;"></span> AI提效赋能</span>
+    <span><span class="kyp-legend-dot" style="background:#888;"></span> 培训材料</span>
+  </div>
 
-}
+  <script>
+  var kypCurrentType = 'all';
+  function kypFilter(type) {
+    kypCurrentType = type;
+    document.querySelectorAll('#kyp-filter-tags .kyp-tag').forEach(function(el) {
+      el.classList.toggle('kyp-tag-active', el.dataset.type === type);
+    });
+    var cards = document.querySelectorAll('#kyp-grid .kyp-card');
+    var visible = 0;
+    cards.forEach(function(c) {
+      var match = type === 'all' || c.dataset.type === type;
+      c.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    document.getElementById('kyp-empty').style.display = visible === 0 ? '' : 'none';
+  }
+  function kypSearch(val) {
+    var q = val.toLowerCase().trim();
+    var cards = document.querySelectorAll('#kyp-grid .kyp-card');
+    var visible = 0;
+    cards.forEach(function(c) {
+      var typeMatch = kypCurrentType === 'all' || c.dataset.type === kypCurrentType;
+      var searchMatch = !q || c.dataset.search.toLowerCase().indexOf(q) !== -1;
+      var show = typeMatch && searchMatch;
+      c.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    document.getElementById('kyp-empty').style.display = visible === 0 ? '' : 'none';
+  }
+  function showKnowledgeDetail(id) {
+    var k = KNOWLEDGE.find(function(item) { return item.id === id; });
+    if (!k) return;
+    var permIcon = {'\u5f53\u524d':'\ud83c\udf10','\u5185\u90e8':'\ud83d\udd35','\u53d7\u9650':'\ud83d\udd34'};
+    alert('\u3010' + k.title + '\u3011\\n\u5206\u7c7b\uff1a' + k.type + ' ' + (permIcon[k.permission||'\u5f53\u524d']||'') + '\\n\u63cf\u8ff0\uff1a' + (k.description||'\u6682\u65e0') + '\\n\u6d4f\u89c8\u91cf\uff1a' + (k.views||0) + ' \u4e0b\u8f7d\u91cf\uff1a' + (k.downloads||0) + '\\n\u66f4\u65b0\u65f6\u95f4\uff1a' + (k.updateTime||k.createdAt||'-'));
+  }
+  <\/script>`;
 
-
-// ===== 项目承接规范 =====
+}// ===== 项目承接规范 =====
 
 function renderHandover(){
 
