@@ -3197,6 +3197,7 @@ function renderKnowledge(){
   const top5 = [...KNOWLEDGE].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
 
   const permIcon = {'公开':'🌐','内部':'🔵','受限':'🔴'};
+  const permLabel = {'公开':'公开','内部':'内部','受限':'受限'};
 
   return `
   ${renderFilterBar()}
