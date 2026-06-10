@@ -64,18 +64,17 @@ var RISK_ALERTS = [];
 
 var DEFAULT_KNOWLEDGE = [
 
-  {id:1, title:"美妆类目大促客服应对SOP", type:"SOP操作规范", sourceProject:"P001", tags:"美妆,大促, SOP", scope:"通用", createdAt:"2025-11-20"},
+  {id:1, title:"美妆类目大促客服应对SOP", type:"SOP流程优化", sourceProject:"P001", tags:"美妆,大促,SOP", scope:"通用", createdAt:"2025-11-20", updateTime:"2026-05-20", views:156, downloads:42, permission:"公开", description:"双11大促期间美妆类目的客服应对标准流程，包含快速回复话术、退换货处理、投诉升级路径等核心内容。"},
 
-  {id:2, title:"BPO项目成本控制经验", type:"成本优化经验", sourceProject:"P003", tags:"BPO,成本,外包", scope:"特定品类", createdAt:"2026-03-15"},
+  {id:2, title:"BPO项目成本控制经验", type:"成本目标控制", sourceProject:"P003", tags:"BPO,成本,外包", scope:"特定品类", createdAt:"2026-03-15", updateTime:"2026-05-18", views:89, downloads:23, permission:"内部", description:"BPO项目成本核算经验总结，包含人力成本优化、外包团队管理、绩效考核指标设定等实战经验。"},
 
-  {id:3, title:"天猫平台回复话术规范（2026版）", type:"品牌特殊话术", sourceProject:"P001", tags:"天猫,话术,规范", scope:"特定平台", createdAt:"2026-01-10"},
+  {id:3, title:"天猫平台回复话术规范（2026版）", type:"优秀话术萃取", sourceProject:"P001", tags:"天猫,话术,规范", scope:"特定平台", createdAt:"2026-01-10", updateTime:"2026-04-12", views:234, downloads:67, permission:"公开", description:"2026年天猫平台最新回复话术规范，涵盖售前咨询、订单处理、售后服务全流程标准话术。"},
 
-  {id:4, title:"客服系统崩溃应急处理预案", type:"应急方案", sourceProject:"P003", tags:"应急,系统,预案", scope:"通用", createdAt:"2026-05-12"},
+  {id:4, title:"客服系统崩溃应急处理预案", type:"风控应急预案", sourceProject:"P003", tags:"应急,系统,预案", scope:"通用", createdAt:"2026-05-12", updateTime:"2026-06-08", views:67, downloads:15, permission:"内部", description:"客服系统崩溃时的应急处理流程和预案，包含备用系统切换、人工记录、客户通知等关键环节。"},
 
-  {id:5, title:"新人客服培训标准课件（全品类）", type:"培训材料", sourceProject:"", tags:"培训,新人,标准", scope:"通用", createdAt:"2025-09-01"},
+  {id:5, title:"新人客服培训标准课件（全品类）", type:"培训材料", sourceProject:"", tags:"培训,新人,标准", scope:"通用", createdAt:"2025-09-01", updateTime:"2026-03-20", views:312, downloads:98, permission:"公开", description:"新人客服入职培训标准课件，包含产品知识、平台规则、话术训练、异常处理等全套培训内容。"},
 
 ];
-var KNOWLEDGE = [];
 
 
 
@@ -3167,77 +3166,152 @@ function renderIssue(){
 }
 
 // ===== 核心知识能量池 =====
-// ===== 核心知识能量池 =====
 
 function renderKnowledge(){
+
+  const can = canEdit();
+
+  // 计算统计数据
+  const totalKnowledge = KNOWLEDGE.length;
+  const weekNew = KNOWLEDGE.filter(k => {
+    if (!k.createdAt) return false;
+    const d = new Date(k.createdAt);
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    return d >= weekAgo;
+  }).length;
+  const totalViews = KNOWLEDGE.reduce((s, k) => s + (k.views || 0), 0);
+  const totalDownloads = KNOWLEDGE.reduce((s, k) => s + (k.downloads || 0), 0);
+
+  // 分类统计
+  const typeCounts = {};
+  KNOWLEDGE.forEach(k => {
+    typeCounts[k.type] = (typeCounts[k.type] || 0) + 1;
+  });
+
+  // 热门排行榜（按浏览量排序）
+  const top5 = [...KNOWLEDGE].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
 
   return `
   ${renderFilterBar()}
 
-  <div class="module-header">
-
-    <div>
-
-      <div class="module-title">📚 核心知识能量池</div>
-
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">历史经验与最佳实践，多职场共享查阅</div>
-
+  <div class="knowledge-page-header">
+    <div class="knowledge-page-title-row">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <h1 class="knowledge-page-title">核心知识能量池</h1>
     </div>
-
-    <div class="module-actions">
-
-      ${canEdit()?'<button class="btn btn-primary btn-sm">＋ 贡献知识</button>':''}
-
-    </div>
-
+    <p class="knowledge-page-desc">电商客服团队专属知识库 · 沉淀经验 · 赋能团队</p>
+    ${can ? '<div class="knowledge-add-btn" onclick="alert(\'添加知识功能开发中\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>添加知识</div>' : ''}
   </div>
 
-  <div class="tag-list" style="margin-bottom:12px;">
-
-    <span class="tag" style="cursor:pointer;background:var(--c-primary-light);color:var(--c-primary)">全部</span>
-
-    <span class="tag" style="cursor:pointer">SOP操作规范</span>
-
-    <span class="tag" style="cursor:pointer">应急方案</span>
-
-    <span class="tag" style="cursor:pointer">成本优化经验</span>
-
-    <span class="tag" style="cursor:pointer">品牌话术</span>
-
-    <span class="tag" style="cursor:pointer">培训材料</span>
-
+  <div class="knowledge-stat-cards">
+    <div class="knowledge-stat-card">
+      <div class="knowledge-stat-icon" style="background:#E6F1FB;color:#185FA5;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      </div>
+      <div class="knowledge-stat-info">
+        <p class="knowledge-stat-count">${totalKnowledge}</p>
+        <p class="knowledge-stat-label">知识总量</p>
+      </div>
+    </div>
+    <div class="knowledge-stat-card">
+      <div class="knowledge-stat-icon" style="background:#EAF3DE;color:#3B6D11;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <div class="knowledge-stat-info">
+        <p class="knowledge-stat-count">${weekNew}<span class="knowledge-stat-new">NEW</span></p>
+        <p class="knowledge-stat-label">本周新增</p>
+      </div>
+    </div>
+    <div class="knowledge-stat-card">
+      <div class="knowledge-stat-icon" style="background:#FAEEDA;color:#854F0B;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </div>
+      <div class="knowledge-stat-info">
+        <p class="knowledge-stat-count">${totalViews}</p>
+        <p class="knowledge-stat-label">总浏览量</p>
+      </div>
+    </div>
+    <div class="knowledge-stat-card">
+      <div class="knowledge-stat-icon" style="background:#FCEBEB;color:#A32D2D;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </div>
+      <div class="knowledge-stat-info">
+        <p class="knowledge-stat-count">${totalDownloads}</p>
+        <p class="knowledge-stat-label">总下载量</p>
+      </div>
+    </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">
-
-    ${KNOWLEDGE.map(k=>`
-
-      <div class="card" style="margin-bottom:0;cursor:pointer;" onclick="alert('知识详情：${k.title}')"">
-
-        <div style="font-size:14px;font-weight:500;margin-bottom:6px;">📄 ${k.title}</div>
-
-        <div style="font-size:12px;color:var(--c-text-3);margin-bottom:8px;">
-
-          <span class="badge badge-blue" style="font-size:11px;">${k.type}</span>
-
-          &nbsp;·&nbsp;${k.scope} · ${k.createdAt}
-
+  <div class="knowledge-main-layout">
+    <div class="knowledge-content">
+      <div class="knowledge-filter-bar">
+        <div class="knowledge-filter-tags">
+          <span class="knowledge-filter-tag knowledge-filter-active">全部 ${totalKnowledge}</span>
+          ${Object.entries(typeCounts).map(([type, count]) => `<span class="knowledge-filter-tag">${type} ${count}</span>`).join('')}
         </div>
-
-        <div class="tag-list">
-
-          ${k.tags.split(',').map(t=>`<span class="tag">${t.trim()}</span>`).join('')}
-
+        <div class="knowledge-search-box">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" class="knowledge-search-input" placeholder="搜索知识标题、标签、内容...">
         </div>
+      </div>
 
-        ${k.sourceProject?'<div style="font-size:11px;color:var(--c-text-3);margin-top:8px;">来源项目：${PROJECTS.find(p=>p.id===k.sourceProject)?.name||k.sourceProject}</div>':''}
+      <div class="knowledge-card-list">
+        ${KNOWLEDGE.map(k => `
+          <div class="knowledge-card">
+            <div class="knowledge-card-header">
+              <div class="knowledge-card-title-row">
+                <span class="knowledge-card-title">${k.title}</span>
+                ${can ? `<span class="knowledge-card-action" onclick="alert(\'编辑功能开发中\')">✎</span><span class="knowledge-card-action" onclick="alert(\'删除功能开发中\')">✕</span>` : ''}
+              </div>
+              <span class="knowledge-type-badge knowledge-type-${k.type.replace(/[\u4e00-\u9fa5]/g, (m) => encodeURIComponent(m).replace(/%/g, ''))}">${k.type}</span>
+            </div>
+            <div class="knowledge-card-desc">${k.description || '暂无描述'}</div>
+            <div class="knowledge-card-tags">
+              ${(k.tags || '').split(',').filter(t => t.trim()).map(t => `<span class="knowledge-tag">${t.trim()}</span>`).join('')}
+            </div>
+            <div class="knowledge-card-footer">
+              <span class="knowledge-card-time">更新于 ${k.updateTime || k.createdAt || '-'}</span>
+              <span class="knowledge-card-stats">
+                <span class="knowledge-card-stat"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> ${k.views || 0}</span>
+                <span class="knowledge-card-stat"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> ${k.downloads || 0}</span>
+              </span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
 
-      </div>`).join('')}
+    <div class="knowledge-sidebar">
+      <div class="knowledge-sidebar-section">
+        <div class="knowledge-sidebar-title">🔥 热门排行榜 TOP5</div>
+        ${top5.map((k, i) => `
+          <div class="knowledge-rank-item">
+            <span class="knowledge-rank-num ${i < 3 ? 'knowledge-rank-top' : ''}">${i + 1}</span>
+            <span class="knowledge-rank-title">${k.title}</span>
+            <span class="knowledge-rank-views">${k.views || 0} 浏览</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="knowledge-sidebar-section">
+        <div class="knowledge-sidebar-title">🕐 最近查阅</div>
+        ${KNOWLEDGE.slice(0, 5).map(k => `
+          <div class="knowledge-recent-item">
+            <span class="knowledge-recent-title">${k.title}</span>
+            <span class="knowledge-recent-time">${k.updateTime || k.createdAt || '-'}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </div>
 
+  <div class="knowledge-legend">
+    <div class="knowledge-legend-item"><span class="knowledge-legend-icon knowledge-legend-public">🌐</span> 公开 — 所有人可查看/下载</div>
+    <div class="knowledge-legend-item"><span class="knowledge-legend-icon knowledge-legend-internal">🔵</span> 内部 — 仅团队成员可查看</div>
+    <div class="knowledge-legend-item"><span class="knowledge-legend-icon knowledge-legend-private">🔴</span> 受限 — 仅指定人员可查看/下载</div>
   </div>`;
 
 }
-
 
 
 // ===== 项目承接规范 =====

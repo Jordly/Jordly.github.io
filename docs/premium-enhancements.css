@@ -3818,3 +3818,358 @@
 .issue-legend-green {
   background: #97C459;
 }
+
+/* ===== 核心知识能量池 - 页面头部 ===== */
+.knowledge-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.knowledge-page-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.knowledge-page-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--c-text-1, #1a1a1a);
+}
+.knowledge-page-desc {
+  font-size: 13px;
+  color: var(--c-text-3, #666);
+  margin: 0;
+}
+.knowledge-add-btn {
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  background: #185FA5;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  white-space: nowrap;
+}
+
+/* ===== 核心知识能量池 - 统计卡片 ===== */
+.knowledge-stat-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.knowledge-stat-card {
+  background: var(--c-bg-1, #fff);
+  border-radius: 12px;
+  padding: 14px 16px;
+  border: 0.5px solid var(--c-border-3, #e0e0e0);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.knowledge-stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.knowledge-stat-info {
+  flex: 1;
+}
+.knowledge-stat-count {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+  color: var(--c-text-1, #1a1a1a);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.knowledge-stat-new {
+  font-size: 10px;
+  font-weight: 600;
+  background: #F09595;
+  color: #fff;
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+.knowledge-stat-label {
+  font-size: 12px;
+  color: var(--c-text-3, #666);
+  margin: 4px 0 0 0;
+}
+
+/* ===== 核心知识能量池 - 主布局 ===== */
+.knowledge-main-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.knowledge-content {
+  min-width: 0;
+}
+.knowledge-sidebar {
+  min-width: 0;
+}
+
+/* ===== 核心知识能量池 - 筛选栏 ===== */
+.knowledge-filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.knowledge-filter-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.knowledge-filter-tag {
+  padding: 5px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--c-bg-2, #f5f5f5);
+  color: var(--c-text-2, #666);
+  border: 0.5px solid var(--c-border-3, #e0e0e0);
+  cursor: pointer;
+}
+.knowledge-filter-active {
+  background: var(--c-bg-1, #fff);
+  color: var(--c-text-1, #1a1a1a);
+  border-color: var(--c-border-2, #ccc);
+}
+.knowledge-search-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 0.5px solid var(--c-border-3, #e0e0e0);
+  background: var(--c-bg-1, #fff);
+}
+.knowledge-search-input {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  width: 200px;
+  background: transparent;
+  color: var(--c-text-1, #1a1a1a);
+}
+
+/* ===== 核心知识能量池 - 知识卡片 ===== */
+.knowledge-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.knowledge-card {
+  background: var(--c-bg-1, #fff);
+  border-radius: 12px;
+  border: 0.5px solid var(--c-border-3, #e0e0e0);
+  padding: 16px;
+  transition: box-shadow 0.2s;
+}
+.knowledge-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.knowledge-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.knowledge-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+.knowledge-card-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-text-1, #1a1a1a);
+}
+.knowledge-card-action {
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--c-text-3, #999);
+  margin-left: 4px;
+}
+.knowledge-card-action:hover {
+  color: var(--c-text-1, #1a1a1a);
+}
+.knowledge-type-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.knowledge-type-SOP流程优化 {
+  background: #E6F1FB;
+  color: #185FA5;
+}
+.knowledge-type-成本目标控制 {
+  background: #EAF3DE;
+  color: #3B6D11;
+}
+.knowledge-type-优秀话术萃取 {
+  background: #FAEEDA;
+  color: #854F0B;
+}
+.knowledge-type-风控应急预案 {
+  background: #FCEBEB;
+  color: #A32D2D;
+}
+.knowledge-type-培训材料 {
+  background: #f0f0f0;
+  color: #666;
+}
+.knowledge-card-desc {
+  font-size: 13px;
+  color: var(--c-text-2, #666);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.knowledge-card-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.knowledge-tag {
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  background: var(--c-bg-2, #f5f5f5);
+  color: var(--c-text-2, #666);
+  border: 0.5px solid var(--c-border-4, #eee);
+}
+.knowledge-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--c-text-3, #999);
+}
+.knowledge-card-time {
+  flex-shrink: 0;
+}
+.knowledge-card-stats {
+  display: flex;
+  gap: 12px;
+}
+.knowledge-card-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ===== 核心知识能量池 - 侧边栏 ===== */
+.knowledge-sidebar-section {
+  background: var(--c-bg-1, #fff);
+  border-radius: 12px;
+  border: 0.5px solid var(--c-border-3, #e0e0e0);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.knowledge-sidebar-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-text-1, #1a1a1a);
+  margin-bottom: 12px;
+}
+.knowledge-rank-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  border-bottom: 0.5px solid var(--c-border-4, #f0f0f0);
+  font-size: 13px;
+}
+.knowledge-rank-item:last-child {
+  border-bottom: none;
+}
+.knowledge-rank-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--c-bg-2, #f5f5f5);
+  color: var(--c-text-2, #666);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.knowledge-rank-top {
+  background: #185FA5;
+  color: #fff;
+}
+.knowledge-rank-title {
+  flex: 1;
+  color: var(--c-text-1, #1a1a1a);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.knowledge-rank-views {
+  color: var(--c-text-3, #999);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.knowledge-recent-item {
+  padding: 6px 0;
+  border-bottom: 0.5px solid var(--c-border-4, #f0f0f0);
+  font-size: 13px;
+}
+.knowledge-recent-item:last-child {
+  border-bottom: none;
+}
+.knowledge-recent-title {
+  color: var(--c-text-1, #1a1a1a);
+  display: block;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.knowledge-recent-time {
+  color: var(--c-text-3, #999);
+  font-size: 11px;
+}
+
+/* ===== 核心知识能量池 - 图例 ===== */
+.knowledge-legend {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--c-text-3, #999);
+  flex-wrap: wrap;
+}
+.knowledge-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.knowledge-legend-icon {
+  font-size: 14px;
+}

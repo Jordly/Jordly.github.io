@@ -2244,3 +2244,141 @@ body.dark .issue-action-update {
 body.dark .issue-legend {
   color: var(--c-text-3, #999);
 }
+
+/* ===== 核心知识能量池 - 暗黑模式 ===== */
+body.dark .knowledge-page-title {
+  color: var(--c-text-1, #e0e0e0);
+}
+body.dark .knowledge-page-desc {
+  color: var(--c-text-3, #999);
+}
+body.dark .knowledge-add-btn {
+  background: #185FA5;
+  color: #fff;
+}
+
+/* 统计卡片 - 暗黑模式 */
+body.dark .knowledge-stat-card {
+  background: var(--c-bg-1, #1a1a1a);
+  border-color: var(--c-border-3, #444);
+}
+body.dark .knowledge-stat-count {
+  color: var(--c-text-1, #e0e0e0);
+}
+body.dark .knowledge-stat-label {
+  color: var(--c-text-3, #999);
+}
+body.dark .knowledge-stat-new {
+  background: #d32f2f;
+  color: #fff;
+}
+
+/* 主布局 - 暗黑模式 */
+body.dark .knowledge-card {
+  background: var(--c-bg-1, #1a1a1a);
+  border-color: var(--c-border-3, #444);
+}
+body.dark .knowledge-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+body.dark .knowledge-card-title {
+  color: var(--c-text-1, #e0e0e0);
+}
+body.dark .knowledge-card-action {
+  color: var(--c-text-3, #999);
+}
+body.dark .knowledge-card-action:hover {
+  color: var(--c-text-1, #e0e0e0);
+}
+body.dark .knowledge-card-desc {
+  color: var(--c-text-2, #999);
+}
+body.dark .knowledge-tag {
+  background: var(--c-bg-2, #2a2a2a);
+  color: var(--c-text-2, #999);
+  border-color: var(--c-border-4, #333);
+}
+body.dark .knowledge-card-footer {
+  color: var(--c-text-3, #999);
+}
+
+/* 分类标签 - 暗黑模式 */
+body.dark .knowledge-type-SOP流程优化 {
+  background: #1a2a3d;
+  color: #6ba5ff;
+}
+body.dark .knowledge-type-成本目标控制 {
+  background: #1a3d1a;
+  color: #6bff6b;
+}
+body.dark .knowledge-type-优秀话术萃取 {
+  background: #3d2a1a;
+  color: #ffa56b;
+}
+body.dark .knowledge-type-风控应急预案 {
+  background: #3d1a1a;
+  color: #ff6b6b;
+}
+body.dark .knowledge-type-培训材料 {
+  background: #2a2a2a;
+  color: #999;
+}
+
+/* 筛选栏 - 暗黑模式 */
+body.dark .knowledge-filter-tag {
+  background: var(--c-bg-2, #2a2a2a);
+  color: var(--c-text-2, #999);
+  border-color: var(--c-border-3, #444);
+}
+body.dark .knowledge-filter-active {
+  background: var(--c-bg-1, #1a1a1a);
+  color: var(--c-text-1, #e0e0e0);
+  border-color: var(--c-border-2, #666);
+}
+body.dark .knowledge-search-box {
+  background: var(--c-bg-1, #1a1a1a);
+  border-color: var(--c-border-3, #444);
+}
+body.dark .knowledge-search-input {
+  color: var(--c-text-1, #e0e0e0);
+}
+
+/* 侧边栏 - 暗黑模式 */
+body.dark .knowledge-sidebar-section {
+  background: var(--c-bg-1, #1a1a1a);
+  border-color: var(--c-border-3, #444);
+}
+body.dark .knowledge-sidebar-title {
+  color: var(--c-text-1, #e0e0e0);
+}
+body.dark .knowledge-rank-item {
+  border-bottom-color: var(--c-border-4, #333);
+}
+body.dark .knowledge-rank-num {
+  background: var(--c-bg-2, #2a2a2a);
+  color: var(--c-text-2, #999);
+}
+body.dark .knowledge-rank-top {
+  background: #185FA5;
+  color: #fff;
+}
+body.dark .knowledge-rank-title {
+  color: var(--c-text-1, #e0e0e0);
+}
+body.dark .knowledge-rank-views {
+  color: var(--c-text-3, #999);
+}
+body.dark .knowledge-recent-item {
+  border-bottom-color: var(--c-border-4, #333);
+}
+body.dark .knowledge-recent-title {
+  color: var(--c-text-1, #e0e0e0);
+}
+body.dark .knowledge-recent-time {
+  color: var(--c-text-3, #999);
+}
+
+/* 图例 - 暗黑模式 */
+body.dark .knowledge-legend {
+  color: var(--c-text-3, #999);
+}
