@@ -2004,3 +2004,107 @@ html {
 [data-theme="dark"] .hld-desc {
   color: var(--c-text-2) !important;
 }
+
+/* ===== 成本与利润管理 - 暗黑模式 ===== */
+[data-theme="dark"] .profit-metric-grid {
+  background: var(--c-surface) !important;
+}
+
+[data-theme="dark"] .profit-metric-card {
+  background: var(--c-card) !important;
+  border-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .profit-metric-card:hover {
+  background: var(--c-surface) !important;
+}
+
+[data-theme="dark"] .profit-card-blue {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border-color: #3b82f6 !important;
+}
+
+[data-theme="dark"] .profit-card-blue .pmc-label {
+  color: #93c5fd !important;
+}
+
+[data-theme="dark"] .profit-card-blue .pmc-value {
+  color: #93c5fd !important;
+}
+
+[data-theme="dark"] .profit-card-blue .pmc-sub {
+  color: #60a5fa !important;
+}
+
+[data-theme="dark"] .profit-card-green {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: #10b981 !important;
+}
+
+[data-theme="dark"] .profit-card-green .pmc-label {
+  color: #6ee7b7 !important;
+}
+
+[data-theme="dark"] .profit-card-green .pmc-value {
+  color: #6ee7b7 !important;
+}
+
+[data-theme="dark"] .profit-card-green .pmc-sub {
+  color: #34d399 !important;
+}
+
+[data-theme="dark"] .profit-card-red {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: #ef4444 !important;
+}
+
+[data-theme="dark"] .profit-card-red .pmc-label {
+  color: #fca5a5 !important;
+}
+
+[data-theme="dark"] .profit-card-red .pmc-value {
+  color: #fca5a5 !important;
+}
+
+[data-theme="dark"] .profit-card-red .pmc-sub {
+  color: #f87171 !important;
+}
+
+[data-theme="dark"] .profit-table .profit-row-normal {
+  background: rgba(16, 185, 129, 0.08) !important;
+}
+
+[data-theme="dark"] .profit-table .profit-row-warning {
+  background: rgba(245, 158, 11, 0.08) !important;
+}
+
+[data-theme="dark"] .profit-table .profit-row-danger {
+  background: rgba(239, 68, 68, 0.08) !important;
+}
+
+[data-theme="dark"] .profit-badge-green {
+  background: rgba(16, 185, 129, 0.15) !important;
+  color: #6ee7b7 !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+[data-theme="dark"] .profit-badge-yellow {
+  background: rgba(245, 158, 11, 0.15) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+[data-theme="dark"] .profit-badge-red {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+[data-theme="dark"] .profit-legend {
+  background: var(--c-card) !important;
+  border-color: var(--c-border) !important;
+}
+
+[data-theme="dark"] .profit-legend-item {
+  color: var(--c-text-2) !important;
+}

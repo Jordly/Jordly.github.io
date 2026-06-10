@@ -2669,6 +2669,27 @@ function renderTarget(){
 function renderCost(){
 
   const all = getFilteredProjects();
+  const totalRevenue = all.reduce((s,p)=>s+(p.revenue||0),0);
+  const totalBudget = all.reduce((s,p)=>s+(p.costBudget||0),0);
+  const totalActual = all.reduce((s,p)=>s+Math.round((p.costBudget||0)*(0.9+Math.random()*0.3)),0);
+  const profitRates = all.map(p=>{
+    const ac = Math.round((p.costBudget||0)*(0.9+Math.random()*0.3));
+    return (p.revenue&&p.revenue>0)?((p.revenue-ac)/p.revenue*100):0;
+  });
+  const avgProfit = all.length ? profitRates.reduce((s,v)=>s+v,0)/all.length : 0;
+  const warnCount = all.filter(p=>{
+    const ac = Math.round((p.costBudget||0)*(0.9+Math.random()*0.3));
+    const pr = (p.revenue&&p.revenue>0)?((p.revenue-ac)/p.revenue*100):0;
+    return pr < 5;
+  }).length;
+
+  // 卡片数据
+  const cards = [
+    { label:'总营收（月度）', value:'¥'+(totalRevenue/10000).toFixed(1)+'万', sub:'', cls:'normal' },
+    { label:'总成本（月度）', value:'¥'+(totalActual/10000).toFixed(1)+'万', sub:'预算内·超支率'+((totalActual-totalBudget)/totalBudget*100||0).toFixed(1)+'%', cls:'normal' },
+    { label:'平均利润率', value:avgProfit.toFixed(1)+'%', sub:'环比+1.2%', cls:'blue' },
+    { label:'预警项目数', value:warnCount+'', sub:warnCount>0?'需立即关注':'全部正常', cls:warnCount>0?'red':'green' }
+  ];
 
   return `
   ${renderFilterBar()}
@@ -2678,85 +2699,56 @@ function renderCost(){
     <div>
 
       <div class="module-title">💰 成本与利润管理</div>
-
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">跟踪项目成本结构与利润情况，利润率低于5%自动预警</div>
 
     </div>
 
   </div>
 
-  <div class="metric-grid" id="dashboard-metric-grid">
-
-    <div class="metric-card">
-
-      <div class="metric-label">总营收（月度）</div>
-
-      <div class="metric-value">¥${(all.reduce((s,p)=>s+(p.revenue||0),0)/10000).toFixed(1)}万</div>
-
-    </div>
-
-    <div class="metric-card">
-
-      <div class="metric-label">总成本（月度）</div>
-
-      <div class="metric-value">¥${(all.reduce((s,p)=>s+(p.costBudget||0),0)/10000).toFixed(1)}万</div>
-
-    </div>
-
-    <div class="metric-card">
-
-      <div class="metric-label">平均利润率</div>
-
-      <div class="metric-value" style="color:${all.length && all.reduce((s,p)=>s+(p.profitRate||0),0)/all.length>=10?'var(--c-green)':'var(--c-yellow)'}">${all.length?(all.reduce((s,p)=>s+(p.profitRate||0),0)/all.length).toFixed(1):0}%</div>
-
-    </div>
-
-    <div class="metric-card">
-
-      <div class="metric-label">预警项目数</div>
-
-      <div class="metric-value" style="color:${all.filter(p=>(p.profitRate||0)<5).length>0?'var(--c-red)':'var(--c-green)'}">${all.filter(p=>(p.profitRate||0)<5).length}</div>
-
-    </div>
-
+  <div class="profit-metric-grid">
+    ${cards.map((c,i)=>`
+    <div class="profit-metric-card profit-card-${c.cls}">
+      <div class="pmc-label">${c.label}</div>
+      <div class="pmc-value">${c.value}</div>
+      ${c.sub?'<div class="pmc-sub">'+c.sub+'</div>':''}
+    </div>`).join('')}
   </div>
 
   <div class="card">
-
-    <table class="data-table">
-
-      <thead><tr><th>项目</th><th>营收(万)</th><th>预算成本(万)</th><th>实际成本(万)</th><th>利润率</th><th>预警</th></tr></thead>
-
+    <div style="padding:14px 18px;border-bottom:1px solid var(--c-border-light);font-weight:500;font-size:14px;">📊 项目利润明细</div>
+    <div style="overflow-x:auto;">
+    <table class="data-table profit-table">
+      <thead><tr><th>项目</th><th>营收(万)</th><th>预算成本(万)</th><th>实际成本(万)</th><th>利润率</th><th>预警</th><th>趋势</th></tr></thead>
       <tbody>
-
         ${all.map(p=>{
-
           const actualCost = Math.round((p.costBudget||0) * (0.9+Math.random()*0.3));
-
           const actualProfit = (p.revenue && p.revenue > 0) ? ((p.revenue - actualCost)/p.revenue*100).toFixed(1) : '0.0';
-
-          return `<tr>
-
+          const pr = parseFloat(actualProfit);
+          let rowCls = 'profit-row-normal';
+          if (pr < 5) rowCls = 'profit-row-danger';
+          else if (pr < 10) rowCls = 'profit-row-warning';
+          let badge = '<span class="profit-badge profit-badge-green">正常</span>';
+          if (pr < 5) badge = '<span class="profit-badge profit-badge-red">利润率过低</span>';
+          else if (pr < 10) badge = '<span class="profit-badge profit-badge-yellow">关注</span>';
+          return `<tr class="${rowCls}">
             <td>${p.name||'未命名'}</td>
-
             <td>¥${((p.revenue||0)/10000).toFixed(1)}</td>
-
             <td>¥${((p.costBudget||0)/10000).toFixed(1)}</td>
-
             <td>¥${(actualCost/10000).toFixed(1)}</td>
-
-            <td style="color:${parseFloat(actualProfit)>=10?'var(--c-green)':parseFloat(actualProfit)<0?'var(--c-red)':'var(--c-yellow)'}">${actualProfit}%</td>
-
-            <td>${parseFloat(actualProfit)<5?'<span class="badge badge-red">⚠️ 利润率过低</span>':parseFloat(actualProfit)<10?'<span class="badge badge-yellow">关注</span>':'<span class="badge badge-green">正常</span>'}</td>
-
+            <td style="color:${pr>=10?'var(--c-green)':pr<0?'var(--c-red)':'var(--c-yellow)'}">${actualProfit}%</td>
+            <td>${badge}</td>
+            <td class="profit-trend-cell">--</td>
           </tr>`;
-
         }).join('')}
-
       </tbody>
-
     </table>
+    </div>
+  </div>
 
+  <div class="profit-legend">
+    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:var(--c-green)"></span>正常盈利</span>
+    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:var(--c-yellow)"></span>需关注</span>
+    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:var(--c-red)"></span>利润率为负/低于5%</span>
   </div>`;
 
 }
