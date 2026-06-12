@@ -6324,29 +6324,40 @@ function calcPerformanceScore(agent, month) {
   // 计算各项指标得分（标准化到0~1，再映射到0.8~1.2）
   var score = 0;
   var totalWeight = 0;
+  var monthAgents = AGENT_PERFORMANCE.filter(a => a.month === month);
   
   if (type === '售前' || type === '综合') {
     if (w.salesAmount && agent.salesAmount > 0) {
-      // 销售额：越高越好，按最大值归一化
-      var maxSales = Math.max(...AGENT_PERFORMANCE.filter(a => a.month === month && (a.agentType === '售前' || a.agentType === '综合')).map(a => a.salesAmount));
-      var salesScore = maxSales > 0 ? (agent.salesAmount / maxSales) * 0.4 + 0.8 : 1.0;
-      score += salesScore * (w.salesAmount / 100);
-      totalWeight += w.salesAmount;
+      var salesPool = monthAgents.filter(a => a.agentType === '售前' || a.agentType === '综合');
+      var salesValues = salesPool.map(a => a.salesAmount || 0).filter(v => v > 0);
+      if (salesValues.length > 0) {
+        var maxSales = Math.max(...salesValues);
+        var salesScore = (agent.salesAmount / maxSales) * 0.4 + 0.8;
+        score += salesScore * (w.salesAmount / 100);
+        totalWeight += w.salesAmount;
+      }
     }
     if (w.conversionRate && agent.conversionRate > 0) {
-      var maxConv = Math.max(...AGENT_PERFORMANCE.filter(a => a.month === month && (a.agentType === '售前' || a.agentType === '综合')).map(a => a.conversionRate));
-      var convScore = maxConv > 0 ? (agent.conversionRate / maxConv) * 0.4 + 0.8 : 1.0;
-      score += convScore * (w.conversionRate / 100);
-      totalWeight += w.conversionRate;
+      var convValues = monthAgents.filter(a => a.agentType === '售前' || a.agentType === '综合').map(a => a.conversionRate || 0).filter(v => v > 0);
+      if (convValues.length > 0) {
+        var maxConv = Math.max(...convValues);
+        var convScore = (agent.conversionRate / maxConv) * 0.4 + 0.8;
+        score += convScore * (w.conversionRate / 100);
+        totalWeight += w.conversionRate;
+      }
     }
   }
   
   if (type === '售后' || type === '综合') {
     if (w.workVolume && agent.workVolume > 0) {
-      var maxWork = Math.max(...AGENT_PERFORMANCE.filter(a => a.month === month && (a.agentType === '售后' || a.agentType === '综合')).map(a => a.workVolume));
-      var workScore = maxWork > 0 ? (agent.workVolume / maxWork) * 0.4 + 0.8 : 1.0;
-      score += workScore * (w.workVolume / 100);
-      totalWeight += w.workVolume;
+      var workPool = monthAgents.filter(a => a.agentType === '售后' || a.agentType === '综合');
+      var workValues = workPool.map(a => a.workVolume || 0).filter(v => v > 0);
+      if (workValues.length > 0) {
+        var maxWork = Math.max(...workValues);
+        var workScore = (agent.workVolume / maxWork) * 0.4 + 0.8;
+        score += workScore * (w.workVolume / 100);
+        totalWeight += w.workVolume;
+      }
     }
     if (w.firstResolveRate && agent.firstResolveRate > 0) {
       var resolveScore = (agent.firstResolveRate / 100) * 0.4 + 0.8;
@@ -6357,11 +6368,14 @@ function calcPerformanceScore(agent, month) {
   
   // 通用指标
   if (w.responseTime && agent.responseTime > 0) {
-    var minResp = Math.min(...AGENT_PERFORMANCE.filter(a => a.month === month).map(a => a.responseTime));
-    var maxResp = Math.max(...AGENT_PERFORMANCE.filter(a => a.month === month).map(a => a.responseTime));
-    var respScore = maxResp > minResp ? 1.2 - ((agent.responseTime - minResp) / (maxResp - minResp)) * 0.4 : 1.0;
-    score += respScore * (w.responseTime / 100);
-    totalWeight += w.responseTime;
+    var respValues = monthAgents.map(a => a.responseTime || 9999).filter(v => v > 0);
+    if (respValues.length > 1) {
+      var minResp = Math.min(...respValues);
+      var maxResp = Math.max(...respValues);
+      var respScore = maxResp > minResp ? 1.2 - ((agent.responseTime - minResp) / (maxResp - minResp)) * 0.4 : 1.0;
+      score += respScore * (w.responseTime / 100);
+      totalWeight += w.responseTime;
+    }
   }
   if (w.csat && agent.csat > 0) {
     var csatScore = (agent.csat / 5) * 0.4 + 0.8;
@@ -6380,9 +6394,9 @@ function calcPerformanceScore(agent, month) {
 
 // 计算瓜分金额
 function calcShareAmount(agent, month) {
-  var group = agent.group;
+  var group = agent.group || '';
   var loadData = GROUP_LOAD_RATIO.find(g => g.group === group && g.month === month);
-  var loadRatio = loadData ? loadData.loadRatio : 1.0;
+  var loadRatio = loadData ? (parseFloat(loadData.loadRatio) || 1.0) : 1.0;
   
   // 计算组总基数
   var groupAgents = AGENT_PERFORMANCE.filter(a => a.group === group && a.month === month);
@@ -6467,8 +6481,9 @@ function renderPerformance() {
   html += `<div class="metric-card metric-card-kpi"><div class="metric-value">¥${totalPool.toLocaleString()}</div><div class="metric-label">绩效总池</div></div>`;
   html += `</div>`;
   
-  // 组别负荷比配置
-  html += `<div class="card"><div class="card-title">组别负荷比配置</div><div style="display:flex;gap:12px;flex-wrap:wrap;">`;
+  // 组别负荷比配置（可折叠）
+  html += `<div class="card"><div class="card-title" style="cursor:pointer;" onclick="toggleLoadRatioConfig()">📊 组别负荷比配置（点击展开/收起）</div>`;
+  html += `<div id="load-ratio-config" style="display:none;margin-top:12px;">`;
   Object.keys(groups).forEach(g => {
     html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--c-bg);border-radius:6px;">`;
     html += `<span style="font-size:13px;color:var(--c-text);">${g}：</span>`;
@@ -6514,23 +6529,24 @@ function renderPerformance() {
     var final = calcFinalPerformance(a, monthFilter);
     
     html += `<tr>`;
-    html += `<td>${a.group}</td>`;
-    html += `<td>${p?p.name:a.projectId}</td>`;
-    html += `<td>${a.agentName}</td>`;
-    html += `<td><select value="${a.agentType}" onchange="updateAgentType(${a.id},this.value)" style="padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;"><option value="售前" ${a.agentType==='售前'?'selected':''}>售前</option><option value="售后" ${a.agentType==='售后'?'selected':''}>售后</option><option value="综合" ${a.agentType==='综合'?'selected':''}>综合</option></select></td>`;
-    html += `<td>${a.status}</td>`;
+    html += `<td>${a.group || '-'}</td>`;
+    html += `<td>${p?p.name:a.projectId || '-'}</td>`;
+    html += `<td>${a.agentName || '-'}</td>`;
+    html += `<td><select value="${a.agentType || '售前'}" onchange="updateAgentType(${a.id},this.value)" style="padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;"><option value="售前" ${a.agentType==='售前'?'selected':''}>售前</option><option value="售后" ${a.agentType==='售后'?'selected':''}>售后</option><option value="综合" ${a.agentType==='综合'?'selected':''}>综合</option></select></td>`;
+    html += `<td>${a.status || '转正'}</td>`;
     html += `<td>¥${base}</td>`;
-    html += `<td>${a.salesAmount>0? '¥'+a.salesAmount.toLocaleString():'-'}</td>`;
-    html += `<td>${a.conversionRate>0? a.conversionRate+'%':'-'}</td>`;
-    html += `<td>${a.workVolume>0? a.workVolume:'-'}</td>`;
-    html += `<td>${a.firstResolveRate>0? a.firstResolveRate+'%':'-'}</td>`;
-    html += `<td style="color:${a.responseTime>120?'var(--c-red)':'var(--c-green)'}">${a.responseTime}s</td>`;
-    html += `<td style="color:${a.csat>=4.5?'var(--c-green)':'var(--c-red)'}">${a.csat}</td>`;
-    html += `<td style="color:${score>=1.0?'var(--c-green)':'var(--c-red)'}">${(score*100).toFixed(0)}%</td>`;
-    html += `<td>¥${share.toFixed(0)}</td>`;
-    html += `<td><input type="number" value="${a.reward}" style="width:60px;" onchange="updateAgentReward(${a.id},this.value)"></td>`;
-    html += `<td><input type="number" value="${a.penalty}" style="width:60px;" onchange="updateAgentPenalty(${a.id},this.value)"></td>`;
-    html += `<td style="font-weight:600;color:var(--c-primary);">¥${final.toFixed(0)}</td>`;
+    html += `<td>${a.salesAmount > 0 ? '¥'+a.salesAmount.toLocaleString():'-'}</td>`;
+    html += `<td>${a.conversionRate > 0 ? a.conversionRate+'%':'-'}</td>`;
+    html += `<td>${a.workVolume > 0 ? a.workVolume:'-'}</td>`;
+    html += `<td>${a.firstResolveRate > 0 ? a.firstResolveRate+'%':'-'}</td>`;
+    html += `<td style="color:${a.responseTime > 120 ? 'var(--c-red)':'var(--c-green)'}">${a.responseTime || '-'}s</td>`;
+    html += `<td style="color:${a.csat >= 4.5 ? 'var(--c-green)':'var(--c-red)'}">${a.csat || '-'}</td>`;
+    var scorePct = (score * 100).toFixed(0);
+    html += `<td style="color:${score >= 1.0 ? 'var(--c-green)':'var(--c-red)'}">${scorePct}%</td>`;
+    html += `<td>¥${isNaN(share) ? '0' : share.toFixed(0)}</td>`;
+    html += `<td><input type="number" value="${a.reward || 0}" style="width:60px;" onchange="updateAgentReward(${a.id},this.value)"></td>`;
+    html += `<td><input type="number" value="${a.penalty || 0}" style="width:60px;" onchange="updateAgentPenalty(${a.id},this.value)"></td>`;
+    html += `<td style="font-weight:600;color:var(--c-primary);">¥${(isNaN(finalPerf) ? '0' : finalPerf.toFixed(0))}</td>`;
     html += `<td><button class="btn btn-sm" onclick="editAgentPerformance(${a.id})">编辑</button> <button class="btn btn-sm btn-danger" onclick="deleteAgentPerformance(${a.id})">删除</button></td>`;
     html += `</tr>`;
   });
@@ -6548,6 +6564,14 @@ function renderPerformance() {
   html += `</div>`;
   
   return html;
+}
+
+// 切换负荷比配置显示/隐藏
+function toggleLoadRatioConfig() {
+  var el = document.getElementById('load-ratio-config');
+  if (el) {
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
 }
 
 // 更新组别负荷比
