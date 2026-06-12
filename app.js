@@ -6546,7 +6546,7 @@ function renderPerformance() {
     html += `<td>¥${isNaN(share) ? '0' : share.toFixed(0)}</td>`;
     html += `<td><input type="number" value="${a.reward || 0}" style="width:60px;" onchange="updateAgentReward(${a.id},this.value)"></td>`;
     html += `<td><input type="number" value="${a.penalty || 0}" style="width:60px;" onchange="updateAgentPenalty(${a.id},this.value)"></td>`;
-    html += `<td style="font-weight:600;color:var(--c-primary);">¥${(isNaN(finalPerf) ? '0' : finalPerf.toFixed(0))}</td>`;
+    html += `<td style="font-weight:600;color:var(--c-primary);">¥${(isNaN(final) ? '0' : final.toFixed(0))}</td>`;
     html += `<td><button class="btn btn-sm" onclick="editAgentPerformance(${a.id})">编辑</button> <button class="btn btn-sm btn-danger" onclick="deleteAgentPerformance(${a.id})">删除</button></td>`;
     html += `</tr>`;
   });
