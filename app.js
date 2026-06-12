@@ -1353,19 +1353,19 @@ const ROLES = [
 
 // 默认权限配置：每个角色对各模块的权限（read=只读, write=读写, hidden=隐藏）
 // 全局模块 key 列表（供 batchSetPermission 等函数使用）
-const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","permissions","notifications","performance","risk","profile"];
+const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","director","permissions","notifications","performance","risk","profile"];
 
 const DEFAULT_PERMISSIONS = {
-  "管理候选": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
-  "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"hidden", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"hidden", permissions:"hidden", notifications:"hidden", performance:"read", risk:"read", profile:"write" },
-  "客服主管": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", permissions:"hidden", notifications:"read", performance:"write", risk:"read", profile:"write" },
-  "客服经理": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"hidden", notifications:"read", performance:"write", risk:"write", profile:"write" },
-  "客服总监": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"hidden", notifications:"read", performance:"read", risk:"read", profile:"write" },
-  "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
-  "项目伙伴": { dashboard:"read", archive:"read", target:"hidden", cost:"hidden", operation:"read", issue:"read", knowledge:"read", handover:"hidden", satisfaction:"hidden", permissions:"hidden", notifications:"hidden", performance:"hidden", risk:"hidden", profile:"write" },
-  "技术伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"hidden", operation:"read", issue:"write", knowledge:"read", handover:"hidden", satisfaction:"hidden", permissions:"hidden", notifications:"hidden", performance:"read", risk:"hidden", profile:"write" },
-  "风控伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"read", operation:"read", issue:"write", knowledge:"hidden", handover:"hidden", satisfaction:"hidden", permissions:"hidden", notifications:"hidden", performance:"hidden", risk:"read", profile:"write" },
-  "新用户": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" }
+  "管理候选": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
+  "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"hidden", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"hidden", director:"hidden", permissions:"hidden", notifications:"hidden", performance:"read", risk:"read", profile:"write" },
+  "客服主管": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", director:"hidden", permissions:"hidden", notifications:"read", performance:"write", risk:"read", profile:"write" },
+  "客服经理": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"read", permissions:"hidden", notifications:"read", performance:"write", risk:"write", profile:"write" },
+  "客服总监": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", director:"write", permissions:"hidden", notifications:"read", performance:"read", risk:"read", profile:"write" },
+  "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", director:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
+  "项目伙伴": { dashboard:"read", archive:"read", target:"hidden", cost:"hidden", operation:"read", issue:"read", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", notifications:"hidden", performance:"hidden", risk:"hidden", profile:"write" },
+  "技术伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"hidden", operation:"read", issue:"write", knowledge:"read", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", notifications:"hidden", performance:"read", risk:"hidden", profile:"write" },
+  "风控伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"read", operation:"read", issue:"write", knowledge:"hidden", handover:"hidden", satisfaction:"hidden", director:"hidden", permissions:"hidden", notifications:"hidden", performance:"hidden", risk:"read", profile:"write" },
+  "新用户": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", director:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" }
 };
 
 // 当前角色（默认：管理候选）
@@ -1541,7 +1541,7 @@ function renderModule(module){
     currentModule = module;
     const area = document.getElementById("module-content");
     if (!area) { console.error("module-content not found"); return; }
-    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
+    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, director:renderDirector, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
     area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
     bindEvents();
   } catch(e) {
@@ -3487,6 +3487,49 @@ function renderHandover(){
 
 
 
+// ===== 项目全景解析 =====
+
+function renderDirector(){
+
+  // 按总监聚合
+
+  const directors = {};
+
+  PROJECTS.forEach(p => {
+
+    if(!directors[p.director]) directors[p.director] = [];
+
+    directors[p.director].push(p);
+
+  });
+
+  return `
+
+  <div class="module-header">
+
+    <div>
+
+      <div class="module-title">👁️ 项目全景解析</div>
+
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">同一项目总监名下所有项目聚合对比，支持跨职场查看</div>
+
+    </div>
+
+  </div>
+
+  ${Object.entries(directors).map(([dir, projs])=>`
+
+    <div class="card">
+
+      <div class="card-title">📁 项目总监：${dir}（${projs.length}个项目 · ${[...new Set(projs.map(p=>p.workplace))].join(' / ')}）</div>
+
+      <table class="data-table">
+
+        <thead><tr><th>项目</th><th>职场</th><th>项目类型</th><th>利润率</th><th>健康</th><th>负责人</th></tr></thead>
+
+        <tbody>
+
+          ${projs.map(p=>`
 
             <tr>
 
@@ -5984,6 +6027,7 @@ function renderPermissions(){
     {key:"knowledge", name:"核心知识能量池"},
     {key:"handover", name:"项目承接规范"},
     {key:"satisfaction", name:"项目运维调研"},
+    {key:"director", name:"项目全景解析"},
     {key:"permissions", name:"系统权限管理"}
   ];
 
