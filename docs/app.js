@@ -6446,18 +6446,41 @@ function renderPerformance() {
   });
   
   var html = `<div class="page-header"><h2>📈 客服绩效看板</h2></div>`;
-  
-  // 筛选栏
-  html += `<div class="card"><div class="card-title">筛选条件</div><form class="filter-form" onsubmit="return false;">`;
-  html += `<select id="pf-project"><option value="all">全部项目</option>${PROJECTS.map(p=>`<option value="${p.id}" ${projectFilter===p.id?'selected':''}>${p.name}</option>`).join('')}</select>`;
-  html += `<select id="pf-month"><option value="2026-05" ${monthFilter==='2026-05'?'selected':''}>2026-05</option><option value="2026-04" ${monthFilter==='2026-04'?'selected':''}>2026-04</option></select>`;
-  html += `<select id="pf-type"><option value="all">全部类型</option><option value="售前" ${typeFilter==='售前'?'selected':''}>售前</option><option value="售后" ${typeFilter==='售后'?'selected':''}>售后</option><option value="综合" ${typeFilter==='综合'?'selected':''}>综合</option></select>`;
-  html += `<select id="pf-group"><option value="all">全部组别</option>${[...new Set(AGENT_PERFORMANCE.map(a=>a.group))].map(g=>`<option value="${g}" ${groupFilter===g?'selected':''}>${g}</option>`).join('')}</select>`;
-  html += `<button class="btn btn-primary" onclick="renderModule('performance')">查询</button>`;
-  html += `<button class="btn" onclick="importPerformance()">📥 导入</button>`;
-  html += `<button class="btn" onclick="exportPerformance()">📤 导出</button>`;
-  html += `<button class="btn btn-primary" onclick="addAgentPerformance()">➕ 新增数据</button>`;
-  html += `</form></div>`;
+
+  // 筛选栏（使用系统统一的 filter-bar-v4 规范）
+  html += `<div class="filter-bar-v4">`;
+  html += `<div class="filter-row-v4">`;
+
+  // 筛选项 + 标签
+  html += `<div style="display:flex;align-items:center;gap:6px;">`;
+  html += `<span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">项目</span>`;
+  html += `<select id="pf-project" class="fb-select"><option value="all">全部项目</option>${PROJECTS.map(p=>`<option value="${p.id}" ${projectFilter===p.id?'selected':''}>${p.name}</option>`).join('')}</select>`;
+  html += `</div>`;
+
+  html += `<div style="display:flex;align-items:center;gap:6px;">`;
+  html += `<span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">月份</span>`;
+  html += `<select id="pf-month" class="fb-select"><option value="2026-05" ${monthFilter==='2026-05'?'selected':''}>2026-05</option><option value="2026-04" ${monthFilter==='2026-04'?'selected':''}>2026-04</option></select>`;
+  html += `</div>`;
+
+  html += `<div style="display:flex;align-items:center;gap:6px;">`;
+  html += `<span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">类型</span>`;
+  html += `<select id="pf-type" class="fb-select"><option value="all">全部类型</option><option value="售前" ${typeFilter==='售前'?'selected':''}>售前</option><option value="售后" ${typeFilter==='售后'?'selected':''}>售后</option><option value="综合" ${typeFilter==='综合'?'selected':''}>综合</option></select>`;
+  html += `</div>`;
+
+  html += `<div style="display:flex;align-items:center;gap:6px;">`;
+  html += `<span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">组别</span>`;
+  html += `<select id="pf-group" class="fb-select"><option value="all">全部组别</option>${[...new Set(AGENT_PERFORMANCE.map(a=>a.group))].map(g=>`<option value="${g}" ${groupFilter===g?'selected':''}>${g}</option>`).join('')}</select>`;
+  html += `</div>`;
+
+  // 操作按钮（右侧对齐）
+  html += `<div style="margin-left:auto;display:flex;gap:8px;align-items:center;">`;
+  html += `<button class="btn btn-sm btn-primary" onclick="renderModule('performance')">🔍 查询</button>`;
+  html += `<button class="btn btn-sm" onclick="importPerformance()">📥 导入</button>`;
+  html += `<button class="btn btn-sm" onclick="exportPerformance()">📤 导出</button>`;
+  html += `<button class="btn btn-sm btn-primary" onclick="addAgentPerformance()">➕ 新增</button>`;
+  html += `</div>`;
+
+  html += `</div></div>`;
   
   // 绩效总池概览
   var groups = {};
@@ -6519,7 +6542,7 @@ function renderPerformance() {
   
   // 坐席绩效明细表
   html += `<div class="card"><div class="card-title">坐席绩效明细（${data.length}人）</div><table class="data-table">`;
-  html += `<thead><tr><th>组别</th><th>项目</th><th>坐席</th><th>类型</th><th>状态</th><th>基数</th><th>销售额</th><th>转化率</th><th>工作量</th><th>解决率</th><th>响应时长</th><th>CSAT</th><th>绩效分数</th><th>瓜分金额</th><th>奖励</th><th>惩罚</th><th>最终绩效</th><th>操作</th></tr></thead><tbody>`;
+  html += `<thead><tr><th>组别</th><th>项目</th><th>坐席</th><th>类型</th><th>状态</th><th>基数</th><th>销售额</th><th>转化率</th><th>工作量</th><th>解决率</th><th>响应时长</th><th>CSAT</th><th>绩效分数</th><th>瓜分金额</th><th>奖/惩</th><th>最终绩效</th><th>操作</th></tr></thead><tbody>`;
   
   data.forEach(a => {
     var p = PROJECTS.find(pp => pp.id === a.projectId);
@@ -6530,7 +6553,7 @@ function renderPerformance() {
     
     html += `<tr>`;
     html += `<td>${a.group || '-'}</td>`;
-    html += `<td>${p?p.name:a.projectId || '-'}</td>`;
+    html += `<td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${p?p.name:''}">${p?p.name:a.projectId || '-'}</td>`;
     html += `<td>${a.agentName || '-'}</td>`;
     html += `<td><select value="${a.agentType || '售前'}" onchange="updateAgentType(${a.id},this.value)" style="padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;"><option value="售前" ${a.agentType==='售前'?'selected':''}>售前</option><option value="售后" ${a.agentType==='售后'?'selected':''}>售后</option><option value="综合" ${a.agentType==='综合'?'selected':''}>综合</option></select></td>`;
     html += `<td>${a.status || '转正'}</td>`;
@@ -6544,8 +6567,7 @@ function renderPerformance() {
     var scorePct = (score * 100).toFixed(0);
     html += `<td style="color:${score >= 1.0 ? 'var(--c-green)':'var(--c-red)'}">${scorePct}%</td>`;
     html += `<td>¥${isNaN(share) ? '0' : share.toFixed(0)}</td>`;
-    html += `<td><input type="number" value="${a.reward || 0}" style="width:60px;" onchange="updateAgentReward(${a.id},this.value)"></td>`;
-    html += `<td><input type="number" value="${a.penalty || 0}" style="width:60px;" onchange="updateAgentPenalty(${a.id},this.value)"></td>`;
+    html += `<td><div style="display:flex;gap:4px;align-items:center;"><input type="number" value="${a.reward || 0}" style="width:56px;padding:3px 6px;border:1px solid var(--c-border);border-radius:4px;font-size:13px;" onchange="updateAgentReward(${a.id},this.value)"><span style="color:var(--c-text-3);font-size:12px;">/</span><input type="number" value="${a.penalty || 0}" style="width:56px;padding:3px 6px;border:1px solid var(--c-border);border-radius:4px;font-size:13px;" onchange="updateAgentPenalty(${a.id},this.value)"></div></td>`;
     html += `<td style="font-weight:600;color:var(--c-primary);">¥${(isNaN(final) ? '0' : final.toFixed(0))}</td>`;
     html += `<td><button class="btn btn-sm" onclick="editAgentPerformance(${a.id})">编辑</button> <button class="btn btn-sm btn-danger" onclick="deleteAgentPerformance(${a.id})">删除</button></td>`;
     html += `</tr>`;
