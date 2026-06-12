@@ -41,15 +41,30 @@ var DEFAULT_ISSUES = [
 var ISSUES = [];
 
 var DEFAULT_AGENT_PERFORMANCE = [
-  {id:1, projectId:"P001", agentName:"张伟", responseTime:105, convCount:1258, csat:4.9, resolutionRate:98.2, transferRate:2.1, fteEquiv:1.0, month:"2026-05"},
-  {id:2, projectId:"P001", agentName:"李娜", responseTime:98, convCount:1102, csat:4.8, resolutionRate:97.5, transferRate:1.8, fteEquiv:1.0, month:"2026-05"},
-  {id:3, projectId:"P002", agentName:"刘洋", responseTime:92, convCount:1842, csat:4.7, resolutionRate:96.1, transferRate:3.2, fteEquiv:1.2, month:"2026-05"},
-  {id:4, projectId:"P003", agentName:"陈静", responseTime:78, convCount:2210, csat:4.3, resolutionRate:91.8, transferRate:5.1, fteEquiv:1.5, month:"2026-05"},
-  {id:5, projectId:"P004", agentName:"王强", responseTime:110, convCount:980, csat:4.9, resolutionRate:98.5, transferRate:1.5, fteEquiv:0.8, month:"2026-05"},
-  {id:6, projectId:"P005", agentName:"赵磊", responseTime:95, convCount:1560, csat:4.6, resolutionRate:95.2, transferRate:3.8, fteEquiv:1.0, month:"2026-05"},
-  {id:7, projectId:"P007", agentName:"孙芳", responseTime:88, convCount:1320, csat:4.8, resolutionRate:97.8, transferRate:2.0, fteEquiv:1.0, month:"2026-05"},
-  {id:8, projectId:"P002", agentName:"周杰", responseTime:85, convCount:1620, csat:4.5, resolutionRate:95.8, transferRate:3.5, fteEquiv:1.1, month:"2026-05"},
+  {id:1, projectId:"P001", agentName:"张伟", group:"A组", status:"转正", agentType:"售前", month:"2026-05", salesAmount:52000, conversionRate:3.8, workVolume:0, firstResolveRate:0, responseTime:105, csat:4.9, serviceVolume:1258, reward:0, penalty:0},
+  {id:2, projectId:"P001", agentName:"李娜", group:"A组", status:"转正", agentType:"售前", month:"2026-05", salesAmount:48000, conversionRate:3.5, workVolume:0, firstResolveRate:0, responseTime:98, csat:4.8, serviceVolume:1102, reward:200, penalty:0},
+  {id:3, projectId:"P002", agentName:"刘洋", group:"B组", status:"转正", agentType:"售后", month:"2026-05", salesAmount:0, conversionRate:0, workVolume:1842, firstResolveRate:96.1, responseTime:92, csat:4.7, serviceVolume:1842, reward:0, penalty:0},
+  {id:4, projectId:"P003", agentName:"陈静", group:"B组", status:"试用期", agentType:"售后", month:"2026-05", salesAmount:0, conversionRate:0, workVolume:2210, firstResolveRate:91.8, responseTime:78, csat:4.3, serviceVolume:2210, reward:0, penalty:100},
+  {id:5, projectId:"P004", agentName:"王强", group:"A组", status:"转正", agentType:"综合", month:"2026-05", salesAmount:25000, conversionRate:2.1, workVolume:980, firstResolveRate:98.5, responseTime:110, csat:4.9, serviceVolume:980, reward:0, penalty:0},
+  {id:6, projectId:"P005", agentName:"赵磊", group:"B组", status:"转正", agentType:"售后", month:"2026-05", salesAmount:0, conversionRate:0, workVolume:1560, firstResolveRate:95.2, responseTime:95, csat:4.6, serviceVolume:1560, reward:0, penalty:0},
+  {id:7, projectId:"P007", agentName:"孙芳", group:"A组", status:"试用期", agentType:"售前", month:"2026-05", salesAmount:38000, conversionRate:3.2, workVolume:0, firstResolveRate:0, responseTime:88, csat:4.8, serviceVolume:1320, reward:0, penalty:0},
+  {id:8, projectId:"P002", agentName:"周杰", group:"B组", status:"转正", agentType:"综合", month:"2026-05", salesAmount:18000, conversionRate:1.8, workVolume:1620, firstResolveRate:95.8, responseTime:85, csat:4.5, serviceVolume:1620, reward:0, penalty:50},
 ];
+// 组别负荷比默认值
+var DEFAULT_GROUP_LOAD_RATIO = [
+  {group:"A组", month:"2026-05", loadRatio:1.50},
+  {group:"B组", month:"2026-05", loadRatio:1.35},
+];
+var GROUP_LOAD_RATIO = [];
+// 指标权重配置默认值
+var DEFAULT_PERFORMANCE_WEIGHTS = {
+  "2026-05": {
+    "售前": {salesAmount:40, conversionRate:30, responseTime:15, csat:15},
+    "售后": {workVolume:40, firstResolveRate:30, responseTime:15, csat:15},
+    "综合": {salesAmount:20, conversionRate:15, workVolume:20, firstResolveRate:15, responseTime:15, csat:15},
+  }
+};
+var PERFORMANCE_WEIGHTS = {};
 var AGENT_PERFORMANCE = [];
 
 var DEFAULT_RISK_ALERTS = [
@@ -214,6 +229,28 @@ var PROJECTS = [];
   console.log('[init] 首次初始化坐席数据');
 })();
 
+// 初始化 GROUP_LOAD_RATIO
+(function initGroupLoadRatio() {
+  var raw = localStorage.getItem('chansee_group_load_ratio');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { GROUP_LOAD_RATIO = JSON.parse(raw); console.log('[init] 恢复 ' + GROUP_LOAD_RATIO.length + ' 条组别负荷比'); return; } catch(e) { console.error('[init] 组别负荷比损坏:', e); }
+  }
+  GROUP_LOAD_RATIO = JSON.parse(JSON.stringify(DEFAULT_GROUP_LOAD_RATIO || []));
+  safeSetItem('chansee_group_load_ratio', JSON.stringify(GROUP_LOAD_RATIO));
+  console.log('[init] 首次初始化组别负荷比');
+})();
+
+// 初始化 PERFORMANCE_WEIGHTS
+(function initPerformanceWeights() {
+  var raw = localStorage.getItem('chansee_performance_weights');
+  if (raw && raw !== 'null' && raw !== '{}') {
+    try { PERFORMANCE_WEIGHTS = JSON.parse(raw); console.log('[init] 恢复绩效权重配置'); return; } catch(e) { console.error('[init] 绩效权重损坏:', e); }
+  }
+  PERFORMANCE_WEIGHTS = JSON.parse(JSON.stringify(DEFAULT_PERFORMANCE_WEIGHTS || {}));
+  safeSetItem('chansee_performance_weights', JSON.stringify(PERFORMANCE_WEIGHTS));
+  console.log('[init] 首次初始化绩效权重');
+})();
+
 // 初始化 RISK_ALERTS
 (function initRiskAlerts() {
   var raw = localStorage.getItem('chansee_risk_alerts');
@@ -292,6 +329,8 @@ function saveIssues() {
 }
 function saveAgentPerformance() {
   safeSetItem('chansee_agent_performance', JSON.stringify(AGENT_PERFORMANCE));
+  safeSetItem('chansee_group_load_ratio', JSON.stringify(GROUP_LOAD_RATIO));
+  safeSetItem('chansee_performance_weights', JSON.stringify(PERFORMANCE_WEIGHTS));
   if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveAgentPerformance] CloudBase 同步成功'); else console.warn('[saveAgentPerformance] CloudBase 同步失败'); }); } }
 }
 function saveRiskAlerts() {
@@ -6267,60 +6306,471 @@ function exportPermissions() {
   URL.revokeObjectURL(url);
 }
 // ===== 客服绩效看板 =====
-function renderPerformance(){
-  let html = `<div class="page-header"><h2>📈 客服绩效看板</h2></div>`;
-  html += `<div class="card"><div class="card-title">筛选条件</div><form class="filter-form" onsubmit="return false;">
-    <select id="pf-project"><option value="all">全部项目</option>${PROJECTS.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')}</select>
-    <select id="pf-month"><option value="2026-05">2026-05</option><option value="2026-04">2026-04</option></select>
-    <button class="btn btn-primary" onclick="renderModule('performance')">查询</button>
-    <button class="btn" onclick="exportPerformance()">导出CSV</button>
-  </form></div>`;
+// ===== 绩效计算辅助函数 =====
 
-  // 统计汇总
-  const data = AGENT_PERFORMANCE.filter(a=>true);
-  const avgResp = (data.reduce((s,a)=>s+a.responseTime,0)/data.length).toFixed(1);
-  const avgCsat = (data.reduce((s,a)=>s+a.csat,0)/data.length).toFixed(1);
-  const totalConv = data.reduce((s,a)=>s+a.convCount,0);
-  html += `<div class="metrics-grid">
-    <div class="metric-card metric-card-kpi"><div class="metric-value">${data.length}</div><div class="metric-label">参评坐席数</div></div>
-    <div class="metric-card metric-card-kpi"><div class="metric-value">${avgResp}<span style="font-size:16px;font-weight:500;margin-left:2px;">s</span></div><div class="metric-label">平均响应时长</div></div>
-    <div class="metric-card metric-card-kpi"><div class="metric-value">${avgCsat}</div><div class="metric-label">平均CSAT</div></div>
-    <div class="metric-card metric-card-kpi"><div class="metric-value">${totalConv.toLocaleString()}</div><div class="metric-label">总服务量</div></div>
-  </div>`;
+// 计算绩效基数（试用期1400，转正1700）
+function getBaseSalary(status) {
+  return status === '试用期' ? 1400 : 1700;
+}
 
-  html += `<div class="card"><div class="card-title">坐席绩效明细</div><table class="data-table">
-    <thead><tr><th>项目</th><th>坐席姓名</th><th>响应时长(s)</th><th>服务量</th><th>CSAT</th><th>解决率(%)</th><th>转接率(%)</th><th>FTE当量</th></tr></thead><tbody>`;
-  AGENT_PERFORMANCE.forEach(a=>{
-    const p = PROJECTS.find(pp=>pp.id===a.projectId);
-    html += `<tr>
-      <td>${p?p.name:a.projectId}</td>
-      <td>${a.agentName}</td>
-      <td style="color:${a.responseTime>120?'var(--c-red)':'var(--c-green)'}">${a.responseTime}</td>
-      <td>${a.convCount.toLocaleString()}</td>
-      <td style="color:${a.csat>=4.5?'var(--c-green)':'var(--c-red)'}">${a.csat}</td>
-      <td>${a.resolutionRate}</td>
-      <td style="color:${a.transferRate>5?'var(--c-red)':'var(--c-green)'}">${a.transferRate}</td>
-      <td>${a.fteEquiv}</td>
-    </tr>`;
+// 计算绩效分数（基于权重配置，80%~120%）
+function calcPerformanceScore(agent, month) {
+  var weights = PERFORMANCE_WEIGHTS[month];
+  if (!weights) return 1.0;
+  var type = agent.agentType;
+  var w = weights[type];
+  if (!w) return 1.0;
+  
+  // 计算各项指标得分（标准化到0~1，再映射到0.8~1.2）
+  var score = 0;
+  var totalWeight = 0;
+  
+  if (type === '售前' || type === '综合') {
+    if (w.salesAmount && agent.salesAmount > 0) {
+      // 销售额：越高越好，按最大值归一化
+      var maxSales = Math.max(...AGENT_PERFORMANCE.filter(a => a.month === month && (a.agentType === '售前' || a.agentType === '综合')).map(a => a.salesAmount));
+      var salesScore = maxSales > 0 ? (agent.salesAmount / maxSales) * 0.4 + 0.8 : 1.0;
+      score += salesScore * (w.salesAmount / 100);
+      totalWeight += w.salesAmount;
+    }
+    if (w.conversionRate && agent.conversionRate > 0) {
+      var maxConv = Math.max(...AGENT_PERFORMANCE.filter(a => a.month === month && (a.agentType === '售前' || a.agentType === '综合')).map(a => a.conversionRate));
+      var convScore = maxConv > 0 ? (agent.conversionRate / maxConv) * 0.4 + 0.8 : 1.0;
+      score += convScore * (w.conversionRate / 100);
+      totalWeight += w.conversionRate;
+    }
+  }
+  
+  if (type === '售后' || type === '综合') {
+    if (w.workVolume && agent.workVolume > 0) {
+      var maxWork = Math.max(...AGENT_PERFORMANCE.filter(a => a.month === month && (a.agentType === '售后' || a.agentType === '综合')).map(a => a.workVolume));
+      var workScore = maxWork > 0 ? (agent.workVolume / maxWork) * 0.4 + 0.8 : 1.0;
+      score += workScore * (w.workVolume / 100);
+      totalWeight += w.workVolume;
+    }
+    if (w.firstResolveRate && agent.firstResolveRate > 0) {
+      var resolveScore = (agent.firstResolveRate / 100) * 0.4 + 0.8;
+      score += resolveScore * (w.firstResolveRate / 100);
+      totalWeight += w.firstResolveRate;
+    }
+  }
+  
+  // 通用指标
+  if (w.responseTime && agent.responseTime > 0) {
+    var minResp = Math.min(...AGENT_PERFORMANCE.filter(a => a.month === month).map(a => a.responseTime));
+    var maxResp = Math.max(...AGENT_PERFORMANCE.filter(a => a.month === month).map(a => a.responseTime));
+    var respScore = maxResp > minResp ? 1.2 - ((agent.responseTime - minResp) / (maxResp - minResp)) * 0.4 : 1.0;
+    score += respScore * (w.responseTime / 100);
+    totalWeight += w.responseTime;
+  }
+  if (w.csat && agent.csat > 0) {
+    var csatScore = (agent.csat / 5) * 0.4 + 0.8;
+    score += csatScore * (w.csat / 100);
+    totalWeight += w.csat;
+  }
+  
+  // 归一化
+  if (totalWeight > 0) {
+    score = score / (totalWeight / 100);
+  }
+  
+  // 限制80%~120%
+  return Math.max(0.8, Math.min(1.2, score));
+}
+
+// 计算瓜分金额
+function calcShareAmount(agent, month) {
+  var group = agent.group;
+  var loadData = GROUP_LOAD_RATIO.find(g => g.group === group && g.month === month);
+  var loadRatio = loadData ? loadData.loadRatio : 1.0;
+  
+  // 计算组总基数
+  var groupAgents = AGENT_PERFORMANCE.filter(a => a.group === group && a.month === month);
+  var totalBase = groupAgents.reduce((s, a) => s + getBaseSalary(a.status), 0);
+  var totalPool = totalBase * loadRatio;
+  
+  // 按类型分配
+  if (agent.agentType === '售前') {
+    var totalSales = groupAgents.filter(a => a.agentType === '售前').reduce((s, a) => s + a.salesAmount, 0);
+    if (totalSales === 0) return 0;
+    return (agent.salesAmount / totalSales) * (totalPool * 0.6);  // 售前分60%池子
+  } else if (agent.agentType === '售后') {
+    var totalWork = groupAgents.filter(a => a.agentType === '售后').reduce((s, a) => s + a.workVolume, 0);
+    if (totalWork === 0) return 0;
+    return (agent.workVolume / totalWork) * (totalPool * 0.6);  // 售后分60%池子
+  } else {
+    // 综合：按销售额+工作量综合占比
+    var totalSalesAll = groupAgents.reduce((s, a) => s + a.salesAmount, 0);
+    var totalWorkAll = groupAgents.reduce((s, a) => s + a.workVolume, 0);
+    var share = 0;
+    if (totalSalesAll > 0) share += (agent.salesAmount / totalSalesAll) * (totalPool * 0.3);
+    if (totalWorkAll > 0) share += (agent.workVolume / totalWorkAll) * (totalPool * 0.3);
+    return share;
+  }
+}
+
+// 计算最终绩效
+function calcFinalPerformance(agent, month) {
+  var score = calcPerformanceScore(agent, month);
+  var share = calcShareAmount(agent, month);
+  return share * score + agent.reward - agent.penalty;
+}
+
+// ===== 客服绩效看板（重写）=====
+function renderPerformance() {
+  var monthFilter = document.getElementById('pf-month')?.value || '2026-05';
+  var projectFilter = document.getElementById('pf-project')?.value || 'all';
+  var typeFilter = document.getElementById('pf-type')?.value || 'all';
+  var groupFilter = document.getElementById('pf-group')?.value || 'all';
+  
+  var data = AGENT_PERFORMANCE.filter(a => {
+    if (a.month !== monthFilter) return false;
+    if (projectFilter !== 'all' && a.projectId !== projectFilter) return false;
+    if (typeFilter !== 'all' && a.agentType !== typeFilter) return false;
+    if (groupFilter !== 'all' && a.group !== groupFilter) return false;
+    return true;
   });
+  
+  var html = `<div class="page-header"><h2>📈 客服绩效看板</h2></div>`;
+  
+  // 筛选栏
+  html += `<div class="card"><div class="card-title">筛选条件</div><form class="filter-form" onsubmit="return false;">`;
+  html += `<select id="pf-project"><option value="all">全部项目</option>${PROJECTS.map(p=>`<option value="${p.id}" ${projectFilter===p.id?'selected':''}>${p.name}</option>`).join('')}</select>`;
+  html += `<select id="pf-month"><option value="2026-05" ${monthFilter==='2026-05'?'selected':''}>2026-05</option><option value="2026-04" ${monthFilter==='2026-04'?'selected':''}>2026-04</option></select>`;
+  html += `<select id="pf-type"><option value="all">全部类型</option><option value="售前" ${typeFilter==='售前'?'selected':''}>售前</option><option value="售后" ${typeFilter==='售后'?'selected':''}>售后</option><option value="综合" ${typeFilter==='综合'?'selected':''}>综合</option></select>`;
+  html += `<select id="pf-group"><option value="all">全部组别</option>${[...new Set(AGENT_PERFORMANCE.map(a=>a.group))].map(g=>`<option value="${g}" ${groupFilter===g?'selected':''}>${g}</option>`).join('')}</select>`;
+  html += `<button class="btn btn-primary" onclick="renderModule('performance')">查询</button>`;
+  html += `<button class="btn" onclick="importPerformance()">📥 导入</button>`;
+  html += `<button class="btn" onclick="exportPerformance()">📤 导出</button>`;
+  html += `<button class="btn btn-primary" onclick="addAgentPerformance()">➕ 新增数据</button>`;
+  html += `</form></div>`;
+  
+  // 绩效总池概览
+  var groups = {};
+  data.forEach(a => {
+    if (!groups[a.group]) groups[a.group] = {agents: [], baseTotal: 0, loadRatio: 1.0, pool: 0};
+    groups[a.group].agents.push(a);
+    groups[a.group].baseTotal += getBaseSalary(a.status);
+  });
+  Object.keys(groups).forEach(g => {
+    var lr = GROUP_LOAD_RATIO.find(x => x.group === g && x.month === monthFilter);
+    groups[g].loadRatio = lr ? lr.loadRatio : 1.0;
+    groups[g].pool = groups[g].baseTotal * groups[g].loadRatio;
+  });
+  var totalPool = Object.values(groups).reduce((s, g) => s + g.pool, 0);
+  var totalBase = Object.values(groups).reduce((s, g) => s + g.baseTotal, 0);
+  
+  html += `<div class="metrics-grid">`;
+  html += `<div class="metric-card metric-card-kpi"><div class="metric-value">${data.length}</div><div class="metric-label">参评坐席数</div></div>`;
+  html += `<div class="metric-card metric-card-kpi"><div class="metric-value">¥${totalBase.toLocaleString()}</div><div class="metric-label">绩效基数总和</div></div>`;
+  html += `<div class="metric-card metric-card-kpi"><div class="metric-value">${(totalBase>0? (totalPool/totalBase*100).toFixed(0)+'%':'-')}</div><div class="metric-label">平均负荷比</div></div>`;
+  html += `<div class="metric-card metric-card-kpi"><div class="metric-value">¥${totalPool.toLocaleString()}</div><div class="metric-label">绩效总池</div></div>`;
+  html += `</div>`;
+  
+  // 组别负荷比配置
+  html += `<div class="card"><div class="card-title">组别负荷比配置</div><div style="display:flex;gap:12px;flex-wrap:wrap;">`;
+  Object.keys(groups).forEach(g => {
+    html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--c-bg);border-radius:6px;">`;
+    html += `<span style="font-size:13px;color:var(--c-text);">${g}：</span>`;
+    html += `<input type="number" step="0.01" value="${groups[g].loadRatio}" style="width:60px;padding:4px 6px;border:1px solid var(--c-border);border-radius:4px;" onchange="updateGroupLoadRatio('${g}','${monthFilter}',this.value)">`;
+    html += `<span style="font-size:12px;color:var(--c-text-3);">倍</span>`;
+    html += `</div>`;
+  });
+  html += `</div></div>`;
+  
+  // 指标权重配置
+  var weights = PERFORMANCE_WEIGHTS[monthFilter] || {};
+  html += `<div class="card"><div class="card-title" style="cursor:pointer;" onclick="toggleWeightConfig()">📊 指标权重配置（点击展开/收起）</div>`;
+  html += `<div id="weight-config" style="display:none;margin-top:12px;">`;
+  ['售前','售后','综合'].forEach(type => {
+    var w = weights[type] || {};
+    html += `<div style="margin-bottom:12px;padding:10px;background:var(--c-bg);border-radius:6px;">`;
+    html += `<div style="font-size:13px;font-weight:600;color:var(--c-text);margin-bottom:8px;">${type}客服</div>`;
+    html += `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">`;
+    if (type === '售前' || type === '综合') {
+      html += `销售额权重：<input type="number" value="${w.salesAmount||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','salesAmount',this.value)">% `;
+      html += `转化率权重：<input type="number" value="${w.conversionRate||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','conversionRate',this.value)">% `;
+    }
+    if (type === '售后' || type === '综合') {
+      html += `工作量权重：<input type="number" value="${w.workVolume||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','workVolume',this.value)">% `;
+      html += `解决率权重：<input type="number" value="${w.firstResolveRate||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','firstResolveRate',this.value)">% `;
+    }
+    html += `响应时间权重：<input type="number" value="${w.responseTime||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','responseTime',this.value)">% `;
+    html += `满意度权重：<input type="number" value="${w.csat||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','csat',this.value)">%`;
+    html += `</div></div>`;
+  });
+  html += `<button class="btn btn-primary" onclick="savePerformanceWeights()" style="margin-top:8px;">保存权重配置</button>`;
+  html += `</div></div>`;
+  
+  // 坐席绩效明细表
+  html += `<div class="card"><div class="card-title">坐席绩效明细（${data.length}人）</div><table class="data-table">`;
+  html += `<thead><tr><th>组别</th><th>项目</th><th>坐席</th><th>类型</th><th>状态</th><th>基数</th><th>销售额</th><th>转化率</th><th>工作量</th><th>解决率</th><th>响应时长</th><th>CSAT</th><th>绩效分数</th><th>瓜分金额</th><th>奖励</th><th>惩罚</th><th>最终绩效</th><th>操作</th></tr></thead><tbody>`;
+  
+  data.forEach(a => {
+    var p = PROJECTS.find(pp => pp.id === a.projectId);
+    var base = getBaseSalary(a.status);
+    var score = calcPerformanceScore(a, monthFilter);
+    var share = calcShareAmount(a, monthFilter);
+    var final = calcFinalPerformance(a, monthFilter);
+    
+    html += `<tr>`;
+    html += `<td>${a.group}</td>`;
+    html += `<td>${p?p.name:a.projectId}</td>`;
+    html += `<td>${a.agentName}</td>`;
+    html += `<td><select value="${a.agentType}" onchange="updateAgentType(${a.id},this.value)" style="padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;"><option value="售前" ${a.agentType==='售前'?'selected':''}>售前</option><option value="售后" ${a.agentType==='售后'?'selected':''}>售后</option><option value="综合" ${a.agentType==='综合'?'selected':''}>综合</option></select></td>`;
+    html += `<td>${a.status}</td>`;
+    html += `<td>¥${base}</td>`;
+    html += `<td>${a.salesAmount>0? '¥'+a.salesAmount.toLocaleString():'-'}</td>`;
+    html += `<td>${a.conversionRate>0? a.conversionRate+'%':'-'}</td>`;
+    html += `<td>${a.workVolume>0? a.workVolume:'-'}</td>`;
+    html += `<td>${a.firstResolveRate>0? a.firstResolveRate+'%':'-'}</td>`;
+    html += `<td style="color:${a.responseTime>120?'var(--c-red)':'var(--c-green)'}">${a.responseTime}s</td>`;
+    html += `<td style="color:${a.csat>=4.5?'var(--c-green)':'var(--c-red)'}">${a.csat}</td>`;
+    html += `<td style="color:${score>=1.0?'var(--c-green)':'var(--c-red)'}">${(score*100).toFixed(0)}%</td>`;
+    html += `<td>¥${share.toFixed(0)}</td>`;
+    html += `<td><input type="number" value="${a.reward}" style="width:60px;" onchange="updateAgentReward(${a.id},this.value)"></td>`;
+    html += `<td><input type="number" value="${a.penalty}" style="width:60px;" onchange="updateAgentPenalty(${a.id},this.value)"></td>`;
+    html += `<td style="font-weight:600;color:var(--c-primary);">¥${final.toFixed(0)}</td>`;
+    html += `<td><button class="btn btn-sm" onclick="editAgentPerformance(${a.id})">编辑</button> <button class="btn btn-sm btn-danger" onclick="deleteAgentPerformance(${a.id})">删除</button></td>`;
+    html += `</tr>`;
+  });
+  
   html += `</tbody></table></div>`;
+  
+  // 计算说明
+  html += `<div style="margin-top:16px;padding:12px;background:var(--c-bg);border-radius:8px;font-size:12px;color:var(--c-text-3);line-height:1.8;">`;
+  html += `<div style="font-weight:600;margin-bottom:6px;">📋 计算逻辑说明：</div>`;
+  html += `<div>1. 绩效基数：试用期¥1400，转正¥1700</div>`;
+  html += `<div>2. 绩效总池 = 组别所有人基数总和 × 组别负荷比</div>`;
+  html += `<div>3. 绩效分数：按指标权重计算，范围80%~120%</div>`;
+  html += `<div>4. 售前瓜分：按销售额占比；售后瓜分：按工作量占比；综合：按销售+工作量综合占比</div>`;
+  html += `<div>5. 最终绩效 = 瓜分金额 × 绩效分数 + 奖励 - 惩罚</div>`;
+  html += `</div>`;
+  
   return html;
 }
 
-function exportPerformance(){
-  let csv = '\uFEFF项目,坐席姓名,响应时长(s),服务量,CSAT,解决率(%),转接率(%),FTE当量\n';
-  AGENT_PERFORMANCE.forEach(a=>{
-    const p = PROJECTS.find(pp=>pp.id===a.projectId);
-    csv += `${p?p.name:a.projectId},${a.agentName},${a.responseTime},${a.convCount},${a.csat},${a.resolutionRate},${a.transferRate},${a.fteEquiv}\n`;
+// 更新组别负荷比
+function updateGroupLoadRatio(group, month, value) {
+  var ratio = parseFloat(value);
+  if (isNaN(ratio) || ratio < 0) { alert('负荷比必须是正数'); return; }
+  var idx = GROUP_LOAD_RATIO.findIndex(g => g.group === group && g.month === month);
+  if (idx >= 0) {
+    GROUP_LOAD_RATIO[idx].loadRatio = ratio;
+  } else {
+    GROUP_LOAD_RATIO.push({group:group, month:month, loadRatio:ratio});
+  }
+  saveAgentPerformance();
+  renderModule('performance');
+}
+
+// 更新指标权重
+function updateWeight(month, type, indicator, value) {
+  if (!PERFORMANCE_WEIGHTS[month]) PERFORMANCE_WEIGHTS[month] = {};
+  if (!PERFORMANCE_WEIGHTS[month][type]) PERFORMANCE_WEIGHTS[month][type] = {};
+  PERFORMANCE_WEIGHTS[month][type][indicator] = parseInt(value) || 0;
+}
+
+// 保存权重配置
+function savePerformanceWeights() {
+  saveAgentPerformance();
+  alert('✅ 权重配置已保存');
+  renderModule('performance');
+}
+
+// 切换权重配置显示/隐藏
+function toggleWeightConfig() {
+  var el = document.getElementById('weight-config');
+  if (el) {
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  }
+}
+
+// 更新客服类型
+function updateAgentType(id, newType) {
+  var agent = AGENT_PERFORMANCE.find(a => a.id === id);
+  if (agent) {
+    agent.agentType = newType;
+    saveAgentPerformance();
+    renderModule('performance');
+  }
+}
+
+// 更新奖励
+function updateAgentReward(id, value) {
+  var agent = AGENT_PERFORMANCE.find(a => a.id === id);
+  if (agent) {
+    agent.reward = parseFloat(value) || 0;
+    saveAgentPerformance();
+  }
+}
+
+// 更新惩罚
+function updateAgentPenalty(id, value) {
+  var agent = AGENT_PERFORMANCE.find(a => a.id === id);
+  if (agent) {
+    agent.penalty = parseFloat(value) || 0;
+    saveAgentPerformance();
+  }
+}
+
+// 新增坐席绩效数据
+function addAgentPerformance() {
+  var month = document.getElementById('pf-month')?.value || '2026-05';
+  var newId = AGENT_PERFORMANCE.length > 0 ? Math.max(...AGENT_PERFORMANCE.map(a => a.id)) + 1 : 1;
+  var newAgent = {
+    id: newId,
+    projectId: PROJECTS.length > 0 ? PROJECTS[0].id : '',
+    agentName: '新坐席',
+    group: 'A组',
+    status: '转正',
+    agentType: '售前',
+    month: month,
+    salesAmount: 0,
+    conversionRate: 0,
+    workVolume: 0,
+    firstResolveRate: 0,
+    responseTime: 100,
+    csat: 4.5,
+    serviceVolume: 0,
+    reward: 0,
+    penalty: 0
+  };
+  AGENT_PERFORMANCE.push(newAgent);
+  saveAgentPerformance();
+  renderModule('performance');
+}
+
+// 编辑坐席绩效数据
+function editAgentPerformance(id) {
+  var agent = AGENT_PERFORMANCE.find(a => a.id === id);
+  if (!agent) return;
+  
+  var html = `<div style="padding:16px;">`;
+  html += `<div style="margin-bottom:12px;"><label>坐席姓名：</label><input type="text" id="edit-agent-name" value="${agent.agentName}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>组别：</label><input type="text" id="edit-agent-group" value="${agent.group}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>状态：</label><select id="edit-agent-status" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"><option value="试用期" ${agent.status==='试用期'?'selected':''}>试用期</option><option value="转正" ${agent.status==='转正'?'selected':''}>转正</option></select></div>`;
+  html += `<div style="margin-bottom:12px;"><label>客服类型：</label><select id="edit-agent-type" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"><option value="售前" ${agent.agentType==='售前'?'selected':''}>售前</option><option value="售后" ${agent.agentType==='售后'?'selected':''}>售后</option><option value="综合" ${agent.agentType==='综合'?'selected':''}>综合</option></select></div>`;
+  html += `<div style="margin-bottom:12px;"><label>销售额：</label><input type="number" id="edit-agent-sales" value="${agent.salesAmount}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>转化率(%)：</label><input type="number" step="0.1" id="edit-agent-conv" value="${agent.conversionRate}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>工作量：</label><input type="number" id="edit-agent-work" value="${agent.workVolume}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>一次性解决率(%)：</label><input type="number" step="0.1" id="edit-agent-resolve" value="${agent.firstResolveRate}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>平均响应时长(s)：</label><input type="number" id="edit-agent-resp" value="${agent.responseTime}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>CSAT：</label><input type="number" step="0.1" id="edit-agent-csat" value="${agent.csat}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>服务量：</label><input type="number" id="edit-agent-sv" value="${agent.serviceVolume}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>奖励(¥)：</label><input type="number" id="edit-agent-reward" value="${agent.reward}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>惩罚(¥)：</label><input type="number" id="edit-agent-penalty" value="${agent.penalty}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="display:flex;gap:8px;justify-content:flex-end;">`;
+  html += `<button class="btn" onclick="closeModal()">取消</button>`;
+  html += `<button class="btn btn-primary" onclick="saveAgentEdit(${agent.id})">保存</button>`;
+  html += `</div></div>`;
+  
+  showModal('编辑坐席绩效', html);
+}
+
+// 保存编辑
+function saveAgentEdit(id) {
+  var agent = AGENT_PERFORMANCE.find(a => a.id === id);
+  if (!agent) return;
+  agent.agentName = document.getElementById('edit-agent-name').value;
+  agent.group = document.getElementById('edit-agent-group').value;
+  agent.status = document.getElementById('edit-agent-status').value;
+  agent.agentType = document.getElementById('edit-agent-type').value;
+  agent.salesAmount = parseFloat(document.getElementById('edit-agent-sales').value) || 0;
+  agent.conversionRate = parseFloat(document.getElementById('edit-agent-conv').value) || 0;
+  agent.workVolume = parseFloat(document.getElementById('edit-agent-work').value) || 0;
+  agent.firstResolveRate = parseFloat(document.getElementById('edit-agent-resolve').value) || 0;
+  agent.responseTime = parseFloat(document.getElementById('edit-agent-resp').value) || 0;
+  agent.csat = parseFloat(document.getElementById('edit-agent-csat').value) || 0;
+  agent.serviceVolume = parseFloat(document.getElementById('edit-agent-sv').value) || 0;
+  agent.reward = parseFloat(document.getElementById('edit-agent-reward').value) || 0;
+  agent.penalty = parseFloat(document.getElementById('edit-agent-penalty').value) || 0;
+  saveAgentPerformance();
+  closeModal();
+  renderModule('performance');
+}
+
+// 删除坐席绩效数据
+function deleteAgentPerformance(id) {
+  if (!confirm('确定删除该坐席的绩效数据？')) return;
+  var idx = AGENT_PERFORMANCE.findIndex(a => a.id === id);
+  if (idx >= 0) {
+    AGENT_PERFORMANCE.splice(idx, 1);
+    saveAgentPerformance();
+    renderModule('performance');
+  }
+}
+
+// 导入绩效数据
+function importPerformance() {
+  var input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.csv,.xlsx,.xls';
+  input.onchange = function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var text = ev.target.result;
+      // 简单CSV解析
+      var lines = text.split('\n');
+      var headers = lines[0].split(',').map(h => h.trim());
+      for (var i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        var vals = lines[i].split(',').map(v => v.trim());
+        var newId = AGENT_PERFORMANCE.length > 0 ? Math.max(...AGENT_PERFORMANCE.map(a => a.id)) + 1 : 1;
+        var month = document.getElementById('pf-month')?.value || '2026-05';
+        var agent = {
+          id: newId + i,
+          projectId: vals[0] || '',
+          agentName: vals[1] || '',
+          group: vals[2] || 'A组',
+          status: vals[3] || '转正',
+          agentType: vals[4] || '售前',
+          month: month,
+          salesAmount: parseFloat(vals[5]) || 0,
+          conversionRate: parseFloat(vals[6]) || 0,
+          workVolume: parseFloat(vals[7]) || 0,
+          firstResolveRate: parseFloat(vals[8]) || 0,
+          responseTime: parseFloat(vals[9]) || 100,
+          csat: parseFloat(vals[10]) || 4.5,
+          serviceVolume: parseFloat(vals[11]) || 0,
+          reward: parseFloat(vals[12]) || 0,
+          penalty: parseFloat(vals[13]) || 0
+        };
+        AGENT_PERFORMANCE.push(agent);
+      }
+      saveAgentPerformance();
+      renderModule('performance');
+      alert('✅ 导入成功！共导入 ' + (lines.length - 1) + ' 条数据');
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+// 导出绩效数据（重写）
+function exportPerformance() {
+  var monthFilter = document.getElementById('pf-month')?.value || '2026-05';
+  var data = AGENT_PERFORMANCE.filter(a => a.month === monthFilter);
+  var csv = '\uFEFF组别,项目,坐席姓名,客服类型,状态,绩效基数,销售额,转化率(%),工作量,解决率(%),响应时长(s),CSAT,服务量,绩效分数,瓜分金额,奖励,惩罚,最终绩效\n';
+  data.forEach(a => {
+    var p = PROJECTS.find(pp => pp.id === a.projectId);
+    var base = getBaseSalary(a.status);
+    var score = calcPerformanceScore(a, monthFilter);
+    var share = calcShareAmount(a, monthFilter);
+    var final = calcFinalPerformance(a, monthFilter);
+    csv += `${a.group},${p?p.name:a.projectId},${a.agentName},${a.agentType},${a.status},¥${base},${a.salesAmount},${a.conversionRate},${a.workVolume},${a.firstResolveRate},${a.responseTime},${a.csat},${a.serviceVolume},${(score*100).toFixed(0)}%,¥${share.toFixed(0)},¥${a.reward},¥${a.penalty},¥${final.toFixed(0)}\n`;
   });
-  const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = '客服绩效_2026-05.csv';
+  var blob = new Blob([csv], {type: 'text/csv;charset=utf-8'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = `客服绩效_${monthFilter}.csv`;
   a.click(); URL.revokeObjectURL(url);
 }
 
-// ===== 项目风险预警池 =====
+
+// ===== 项目风险预警池 =====// ===== 项目风险预警池 =====
 function renderRisk(){
   let html = `<div class="page-header"><h2>⚠️ 项目风险预警池</h2>
     <button class="btn btn-primary" onclick="exportRisk()">导出CSV</button>
