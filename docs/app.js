@@ -6161,22 +6161,31 @@ function renderAssessment(){
   </div>`;
   html += `<div style="margin:12px 0 8px;color:#888;font-size:13px;">数据来源：组别基础信息 + 管理难度评估表（2026年7月）</div>`;
 
-  // 筛选栏
-  html += `<div class="filter-bar" style="margin-bottom:16px;display:flex;align-items:center;gap:12px;">`;
-  html += `  <label style="display:flex;align-items:center;gap:4px;">筛选项目：<select id="asmt-dept-filter">`;
-  html += `    <option value="">全部</option>`;
+  // 筛选栏（使用系统统一的 filter-bar-v4 规范）
+  html += `<div class="filter-bar-v4">`;
+  html += `<div class="filter-row-v4">`;
+  html += `  <div style="display:flex;align-items:center;gap:6px;">`;
+  html += `    <span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">筛选项目</span>`;
+  html += `    <select id="asmt-dept-filter" class="fb-select">`;
+  html += `      <option value="">全部</option>`;
   [...new Set(assessments.map(a => a.dept))].filter(Boolean).forEach(d => {
-    html += `    <option value="${d}">${d}</option>`;
+    html += `      <option value="${d}">${d}</option>`;
   });
-  html += `  </select></label>`;
-  html += `  <label style="display:flex;align-items:center;gap:4px;">筛选管理人：<select id="asmt-mgr-filter">`;
-  html += `    <option value="">全部</option>`;
+  html += `    </select>`;
+  html += `  </div>`;
+  html += `  <div style="display:flex;align-items:center;gap:6px;">`;
+  html += `    <span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">筛选管理人</span>`;
+  html += `    <select id="asmt-mgr-filter" class="fb-select">`;
+  html += `      <option value="">全部</option>`;
   assessments.map(a => a.manager).filter((v,i, a) => v && a.indexOf(v) === i).forEach(m => {
-    html += `    <option value="${m}">${m}</option>`;
+    html += `      <option value="${m}">${m}</option>`;
   });
-  html += `  </select></label>`;
-  html += `  <button class="btn btn-sm btn-primary" onclick="renderAssessment()">🔍 确定</button>`;
-  html += `</div>`;
+  html += `    </select>`;
+  html += `  </div>`;
+  html += `  <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">`;
+  html += `    <button class="btn btn-sm btn-primary" onclick="renderAssessment()">🔍 确定</button>`;
+  html += `  </div>`;
+  html += `</div></div>`;
 
   // ===== 卡片区 =====
   html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">`;
