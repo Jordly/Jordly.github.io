@@ -6084,102 +6084,381 @@ function renderPermissions(){
   return html;
 }
 
-// ===== 项目难度评估 =====
-function renderAssessment(){
-  // 组别基础信息表
-  let html = `<div class="page-header"><h2>📊 项目难度评估</h2>
-    <div class="page-actions">
-      <button class="btn btn-sm" onclick="exportAssessment()">📥 导出评估报告</button>
-    </div>
-  </div>
-  <div style="margin:12px 0 8px;color:#888;font-size:13px;">数据来源：组别基础信息 + 管理难度评估表（2026年7月）</div>
-  <div class="filter-bar" style="margin-bottom:12px;">
-    <label>筛选部门：<select id="asmt-dept-filter" onchange="renderAssessment()">
-      <option value="">全部</option>
-      <option value="A事业部">A事业部</option>
-      <option value="B事业部">B事业部</option>
-      <option value="C事业部">C事业部</option>
-      <option value="支持组">支持组</option>
-    </select></label>
-    <label style="margin-left:12px;">筛选管理人：<select id="asmt-mgr-filter" onchange="renderAssessment()">
-      <option value="">全部</option>
-    </select></label>
-  </div>`;
+// ===== 项目难度评估（优化版）=====
+// 计算管理基准分（根据管理等级）
+function getManagementBenchmark(level) {
+  if (!level) return 35;
+  if (level.includes('组长-1')) return 35;
+  if (level.includes('组长-2')) return 45;
+  if (level.includes('组长-3')) return 55;
+  if (level.includes('主管')) return 70;
+  if (level.includes('经理')) return 90;
+  if (level.includes('培训师')) return 30;
+  return 35;
+}
 
-  // 筛选逻辑
-  const deptFilter = document.getElementById('asmt-dept-filter') ? document.getElementById('asmt-dept-filter').value : '';
-  const mgrFilter = document.getElementById('asmt-mgr-filter') ? document.getElementById('asmt-mgr-filter').value : '';
+// 计算适配度（百分比）
+function calcCompatibility(projectScore, managementBenchmark) {
+  const diff = Math.abs(projectScore - managementBenchmark);
+  const compatibility = Math.max(0, Math.min(100, 100 - diff * 1.25));
+  return Math.round(compatibility);
+}
+
+// 获取适配度档位
+function getCompatibilityBand(pct) {
+  if (pct < 60) return { label: '<60% 不匹配', color: '#f5222d', bg: '#fff1f0' };
+  if (pct < 80) return { label: '60%-80% 基本匹配', color: '#fa8c16', bg: '#fff7e6' };
+  return { label: '80%-100% 高度匹配', color: '#52c41a', bg: '#f6ffed' };
+}
+
+// 获取难度等级
+function getDifficultyLevel(score) {
+  if (score <= 40) return { label: '低难度', color: '#52c41a', cls: 'low' };
+  if (score <= 50) return { label: '中低难度', color: '#1890ff', cls: 'mid-low' };
+  if (score <= 60) return { label: '中高难度', color: '#faad14', cls: 'mid-high' };
+  if (score <= 80) return { label: '高难度', color: '#fa8c16', cls: 'high' };
+  return { label: '超高难度', color: '#f5222d', cls: 'extreme' };
+}
+
+// 渲染项目难度评估页面（优化版）
+function renderAssessment(){
+  // 数据准备
   let groups = GROUPS_DATA.filter(g => g.month === '7月' && g.group && !g.group.includes('定量指标'));
   let assessments = ASSESSMENTS_DATA.filter(a => a.month === '7月' && a.group && !a.month.includes('依据'));
-  if(deptFilter) assessments = assessments.filter(a => a.dept === deptFilter);
-  if(mgrFilter) assessments = assessments.filter(a => a.manager === mgrFilter);
+  const deptFilter = document.getElementById('asmt-dept-filter') ? document.getElementById('asmt-dept-filter').value : '';
+  const mgrFilter = document.getElementById('asmt-mgr-filter') ? document.getElementById('asmt-mgr-filter').value : '';
+  if (deptFilter) assessments = assessments.filter(a => a.dept === deptFilter);
+  if (mgrFilter) assessments = assessments.filter(a => a.manager === mgrFilter);
 
-  // 合并数据
-  const asmtMap = {};
-  assessments.forEach(a => { asmtMap[a.group] = a; });
-
-  // 难度评估总览表
-  html += `<div class="card" style="margin-bottom:16px;"><div class="card-header">管理难度评估总览</div><div class="table-wrap"><table class="data-table">
-    <thead><tr>
-      <th>序号</th><th>部门</th><th>组别</th><th>管理人</th><th>管理等级</th>
-      <th>总分</th><th>定量得分</th><th>定性得分</th><th>难度评级</th><th>参考标准</th>
-    </tr></thead><tbody>`;
-  let idx = 0;
+  // 统计卡片数据
+  let highDiff = 0, midDiff = 0, lowDiff = 0;
+  let highMgr = 0, midMgr = 0, lowMgr = 0;
+  let totalCompat = 0, compatCount = 0;
   assessments.forEach(a => {
-    idx++;
     const score = a.totalScore || 0;
-    let rating = '', std = '';
-    if(score <= 40) { rating = '★ 低难度'; std = '组长1-1/1-2级'; }
-    else if(score <= 50) { rating = '★★ 中低难度'; std = '组长2级'; }
-    else if(score <= 60) { rating = '★★★ 中高难度'; std = '组长3级'; }
-    else if(score <= 80) { rating = '★★★★ 高难度'; std = '主管1/2/3级'; }
-    else { rating = '★★★★★ 超高难度'; std = '经理级'; }
-    const color = score <= 40 ? '#52c41a' : score <= 50 ? '#1890ff' : score <= 60 ? '#faad14' : score <= 80 ? '#fa8c16' : '#f5222d';
-    html += `<tr>
-      <td>${idx}</td><td>${a.dept||''}</td><td><a href="#" onclick="showGroupDetail('${a.group}');return false;">${a.group}</a></td>
-      <td>${a.manager||''}</td><td>${a.level||''}</td>
-      <td style="font-weight:700;color:${color};">${score.toFixed(1)}</td>
-      <td>${a.quantScore?a.quantScore.toFixed(1):'0.0'}</td>
-      <td>${a.qualScore?a.qualScore.toFixed(1):'0.0'}</td>
-      <td style="color:${color};font-weight:600;">${rating}</td>
-      <td>${std}</td>
-    </tr>`;
+    const bench = getManagementBenchmark(a.level);
+    const compat = calcCompatibility(score, bench);
+    totalCompat += compat;
+    compatCount++;
+    const dl = getDifficultyLevel(score);
+    if (dl.cls === 'high' || dl.cls === 'extreme') highDiff++;
+    else if (dl.cls === 'mid-high' || dl.cls === 'mid-low') midDiff++;
+    else lowDiff++;
+    if (bench >= 70) highMgr++;
+    else if (bench >= 50) midMgr++;
+    else lowMgr++;
   });
-  html += `</tbody></table></div></div>`;
+  const avgCompat = compatCount > 0 ? Math.round(totalCompat / compatCount) : 0;
+  const compatBand = getCompatibilityBand(avgCompat);
 
-  // 组别基础信息明细表
-  html += `<div class="card" style="margin-bottom:16px;"><div class="card-header">组别基础信息明细</div><div class="table-wrap"><table class="data-table">
-    <thead><tr>
-      <th>组别</th><th>管理人</th><th>管理等级</th><th>客服人数</th><th>管理+质培</th>
-      <th>店铺数</th><th>品类数</th><th>平台数</th><th>新员工(3月内)</th>
-      <th>管理配比</th><th>管理半径</th>
-    </tr></thead><tbody>`;
-  groups.forEach(g => {
-    const mRatio = g.manageRatio ? g.manageRatio.toFixed(2) + ':1' : '-';
-    const sRatio = g.shopRatio ? g.shopRatio.toFixed(1) : '-';
-    html += `<tr>
-      <td>${g.group||''}</td><td>${g.manager||''}</td><td>${g.level||''}</td>
-      <td>${g.totalStaff||0}</td><td>${g.manageTrainSum||0}</td>
-      <td>${g.shopCount||0}</td><td>${g.categoryCount||0}</td><td>${g.platformCount||0}</td>
-      <td>${g.new3m||0}</td><td>${mRatio}</td><td>${sRatio}</td>
-    </tr>`;
+  // ===== 开始渲染 =====
+  let html = `<div class="page-header"><h2>📊 项目难度评估</h2>
+    <div class="page-actions">
+      <button class="btn btn-sm" onclick="importAssessment()">📥 导入</button>
+      <button class="btn btn-sm" onclick="exportAssessment()">📤 导出</button>
+      <button class="btn btn-sm btn-primary" onclick="showCompareModal()">🔄 自由对比</button>
+    </div>
+  </div>`;
+  html += `<div style="margin:12px 0 8px;color:#888;font-size:13px;">数据来源：组别基础信息 + 管理难度评估表（2026年7月）</div>`;
+
+  // 筛选栏
+  html += `<div class="filter-bar" style="margin-bottom:16px;">`;
+  html += `  <label>筛选部门：<select id="asmt-dept-filter" onchange="renderAssessment()">`;
+  html += `    <option value="">全部</option>`;
+  html += `    <option value="A事业部">A事业部</option>`;
+  html += `    <option value="B事业部">B事业部</option>`;
+  html += `    <option value="C事业部">C事业部</option>`;
+  html += `    <option value="支持组">支持组</option>`;
+  html += `  </select></label>`;
+  html += `  <label style="margin-left:12px;">筛选管理人：<select id="asmt-mgr-filter" onchange="renderAssessment()">`;
+  html += `    <option value="">全部</option>`;
+  assessments.map(a => a.manager).filter((v,i, a) => v && a.indexOf(v) === i).forEach(m => {
+    html += `    <option value="${m}">${m}</option>`;
   });
-  html += `</tbody></table></div></div>`;
+  html += `  </select></label>`;
+  html += `</div>`;
 
-  // 难度评分说明
-  html += `<div class="card" style="margin-bottom:16px;"><div class="card-header">📋 管理难度评估说明</div><div style="padding:12px;font-size:13px;line-height:2;">
-    <p><b>评估方法：</b>定量指标权重70% + 定性因素权重30%，合计100分。</p>
-    <p><b>定量指标（共70分）：</b>管理半径(${''}客服人数/管理配比)、新员工占比、管理配比、项目对接数量、店铺复盘频次、品牌介入深度、汇报频次</p>
-    <p><b>定性因素（共30分，每项最高3分）：</b>业务复杂度、跨平台管理、品牌授权等级、客服流动性、技能培训需求、系统/工具复杂度、客诉处理难度、突发事件响应</p>
-    <p><b>难度评级参考：</b>
-      ≤40分=组长1级 | 41-50分=组长2级 | 51-60分=组长3级 | 61-80分=主管级 | ＞80分=经理级</p>
-    <p><b>差异奖励：</b>基准分差值5-10分→500元 | 11-15分→1000元 | 16-20分→1500元</p>
-  </div></div>`;
+  // ===== 卡片区 =====
+  html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">`;
+  // 卡片1：高难度项目
+  html += `  <div class="stat-card" style="background:#fff1f0;border:1px solid #ffa39e;border-radius:10px;padding:16px;">`;
+  html += `    <div style="font-size:12px;color:#f5222d;margin-bottom:4px;">🔴 高难度项目</div>`;
+  html += `    <div style="font-size:24px;font-weight:700;color:#f5222d;">${highDiff}</div>`;
+  html += `    <div style="font-size:12px;color:#888;">占比 ${assessments.length>0?Math.round(highDiff/assessments.length*100):0}%</div>`;
+  html += `  </div>`;
+  // 卡片2：中难度项目
+  html += `  <div class="stat-card" style="background:#fff7e6;border:1px solid #ffd591;border-radius:10px;padding:16px;">`;
+  html += `    <div style="font-size:12px;color:#fa8c16;margin-bottom:4px;">🟡 中难度项目</div>`;
+  html += `    <div style="font-size:24px;font-weight:700;color:#fa8c16;">${midDiff}</div>`;
+  html += `    <div style="font-size:12px;color:#888;">占比 ${assessments.length>0?Math.round(midDiff/assessments.length*100):0}%</div>`;
+  html += `  </div>`;
+  // 卡片3：低难度项目
+  html += `  <div class="stat-card" style="background:#f6ffed;border:1px solid #b7eb8f;border-radius:10px;padding:16px;">`;
+  html += `    <div style="font-size:12px;color:#52c41a;margin-bottom:4px;">🟢 低难度项目</div>`;
+  html += `    <div style="font-size:24px;font-weight:700;color:#52c41a;">${lowDiff}</div>`;
+  html += `    <div style="font-size:12px;color:#888;">占比 ${assessments.length>0?Math.round(lowDiff/assessments.length*100):0}%</div>`;
+  html += `  </div>`;
+  html += `</div>`;
+
+  // 第二排卡片：管理能力分布
+  html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">`;
+  // 卡片4：管理能力高
+  html += `  <div class="stat-card" style="background:#e6f7ff;border:1px solid #91d5ff;border-radius:10px;padding:16px;">`;
+  html += `    <div style="font-size:12px;color:#1890ff;margin-bottom:4px;">🔵 管理能力高</div>`;
+  html += `    <div style="font-size:24px;font-weight:700;color:#1890ff;">${highMgr}</div>`;
+  html += `    <div style="font-size:12px;color:#888;">主管/经理级</div>`;
+  html += `  </div>`;
+  // 卡片5：管理能力中
+  html += `  <div class="stat-card" style="background:#fff7e6;border:1px solid #ffd591;border-radius:10px;padding:16px;">`;
+  html += `    <div style="font-size:12px;color:#fa8c16;margin-bottom:4px;">🟡 管理能力中</div>`;
+  html += `    <div style="font-size:24px;font-weight:700;color:#fa8c16;">${midMgr}</div>`;
+  html += `    <div style="font-size:12px;color:#888;">组长2/3级</div>`;
+  html += `  </div>`;
+  // 卡片6：管理能力低
+  html += `  <div class="stat-card" style="background:#fff1f0;border:1px solid #ffa39e;border-radius:10px;padding:16px;">`;
+  html += `    <div style="font-size:12px;color:#f5222d;margin-bottom:4px;">🔴 管理能力低</div>`;
+  html += `    <div style="font-size:24px;font-weight:700;color:#f5222d;">${lowMgr}</div>`;
+  html += `    <div style="font-size:12px;color:#888;">组长1级/培训师</div>`;
+  html += `  </div>`;
+  html += `</div>`;
+
+  // 综合适配度大卡片
+  html += `<div style="background:${compatBand.bg};border:2px solid ${compatBand.color};border-radius:12px;padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:24px;">`;
+  html += `  <div style="font-size:48px;font-weight:800;color:${compatBand.color};">${avgCompat}%</div>`;
+  html += `  <div>`;
+  html += `    <div style="font-size:16px;font-weight:600;color:${compatBand.color};">综合适配度 · ${compatBand.label}</div>`;
+  html += `    <div style="font-size:12px;color:#888;margin-top:4px;">基于${compatCount}个组别的管理难度与管理能力匹配度评估</div>`;
+  html += `  </div>`;
+  html += `</div>`;
+
+  // ===== Tab切换区 =====
+  html += `<div style="display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid #e8e8e8;">`;
+  html += `  <div id="tab-match" onclick="switchAssessTab('match')" style="padding:10px 20px;cursor:pointer;font-size:14px;font-weight:600;color:#1a73e8;border-bottom:2px solid #1a73e8;margin-bottom:-2px;">📊 匹配度明细</div>`;
+  html += `  <div id="tab-project" onclick="switchAssessTab('project')" style="padding:10px 20px;cursor:pointer;font-size:14px;color:#888;">📋 项目得分明细</div>`;
+  html += `  <div id="tab-management" onclick="switchAssessTab('management')" style="padding:10px 20px;cursor:pointer;font-size:14px;color:#888;">👤 管理能力评定明细</div>`;
+  html += `</div>`;
+
+  // Tab内容区
+  html += `<div id="assess-tab-content">`;
+  // 默认显示匹配度明细
+  html += renderMatchDetail(assessments);
+  html += `</div>`;
+
+  // 原有说明区块（保留）
+  html += `<div class="card" style="margin-top:20px;"><div class="card-header">📋 管理难度评估说明</div><div style="padding:12px;font-size:13px;line-height:2;">`;
+  html += `  <p><b>评估方法：</b>定量指标权重70% + 定性因素权重30%，合计100分。</p>`;
+  html += `  <p><b>定量指标（共70分）：</b>管理半径(客服人数/管理配比)、新员工占比、管理配比、项目对接数量、店铺复盘频次、品牌介入深度、汇报频次</p>`;
+  html += `  <p><b>定性因素（共30分，每项最高3分）：</b>业务复杂度、跨平台管理、品牌授权等级、客服流动性、技能培训需求、系统/工具复杂度、客诉处理难度、突发事件响应</p>`;
+  html += `  <p><b>难度评级参考：</b>≤40分=组长1级 | 41-50分=组长2级 | 51-60分=组长3级 | 61-80分=主管级 | ＞80分=经理级</p>`;
+  html += `  <p><b>差异奖励：</b>基准分差值5-10分→500元 | 11-15分→1000元 | 16-20分→1500元</p>`;
+  html += `  <p><b>适配度计算：</b>根据项目难度得分与管理等级基准分差值计算匹配度，＜60%不匹配 | 60%-80%基本匹配 | 80%-100%高度匹配</p>`;
+  html += `</div></div>`;
 
   return html;
 }
 
-// 查看组别详情
+// Tab切换
+function switchAssessTab(tab) {
+  ['tab-match','tab-project','tab-management'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.color = '#888';
+      el.style.borderBottom = '2px solid transparent';
+      el.style.fontWeight = '400';
+    }
+  });
+  const activeEl = document.getElementById('tab-' + tab);
+  if (activeEl) {
+    activeEl.style.color = '#1a73e8';
+    activeEl.style.borderBottom = '2px solid #1a73e8';
+    activeEl.style.fontWeight = '600';
+  }
+  const assessments = ASSESSMENTS_DATA.filter(a => a.month === '7月' && a.group && !a.month.includes('依据'));
+  const content = document.getElementById('assess-tab-content');
+  if (!content) return;
+  if (tab === 'match') content.innerHTML = renderMatchDetail(assessments);
+  else if (tab === 'project') content.innerHTML = renderProjectDetail(assessments);
+  else if (tab === 'management') content.innerHTML = renderManagementDetail(assessments);
+}
+
+// 匹配度明细表
+function renderMatchDetail(assessments) {
+  let html = `<div class="card"><div class="card-header">📊 项目-管理匹配度明细</div><div class="table-wrap"><table class="data-table">`;
+  html += `  <thead><tr>`;
+  html += `    <th>序号</th><th>组别</th><th>管理人</th><th>项目难度分</th><th>管理基准分</th>`;
+  html += `    <th>匹配度</th><th>档位</th><th>操作</th>`;
+  html += `  </tr></thead><tbody>`;
+  let idx = 0;
+  assessments.forEach(a => {
+    idx++;
+    const score = a.totalScore || 0;
+    const bench = getManagementBenchmark(a.level);
+    const compat = calcCompatibility(score, bench);
+    const band = getCompatibilityBand(compat);
+    html += `<tr>`;
+    html += `  <td>${idx}</td>`;
+    html += `  <td><a href="#" onclick="showGroupDetail('${a.group}');return false;">${a.group}</a></td>`;
+    html += `  <td>${a.manager||''}</td>`;
+    html += `  <td style="font-weight:600;">${score.toFixed(1)}</td>`;
+    html += `  <td>${bench}</td>`;
+    html += `  <td style="font-weight:700;color:${band.color};">${compat}%</td>`;
+    html += `  <td style="background:${band.bg};color:${band.color};padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500;">${band.label}</td>`;
+    html += `  <td><button class="btn btn-sm" onclick="showGroupDetail('${a.group}')">查看明细</button></td>`;
+    html += `</tr>`;
+  });
+  html += `  </tbody></table></div></div>`;
+  return html;
+}
+
+// 项目得分明细（维度拆解）
+function renderProjectDetail(assessments) {
+  let html = `<div class="card"><div class="card-header">📋 项目难度得分明细（定量+定性）</div><div class="table-wrap"><table class="data-table">`;
+  html += `  <thead><tr>`;
+  html += `    <th>组别</th><th>管理人</th><th>定量得分</th><th>定性得分</th><th>总分</th>`;
+  html += `    <th>业务复杂度</th><th>跨平台</th><th>品牌授权</th><th>流动性</th>`;
+  html += `    <th>技能培训</th><th>系统复杂度</th><th>客诉难度</th><th>突发事件</th>`;
+  html += `  </tr></thead><tbody>`;
+  assessments.forEach(a => {
+    const score = a.totalScore || 0;
+    const dl = getDifficultyLevel(score);
+    html += `<tr>`;
+    html += `  <td><a href="#" onclick="showGroupDetail('${a.group}');return false;">${a.group}</a></td>`;
+    html += `  <td>${a.manager||''}</td>`;
+    html += `  <td>${a.quantScore?a.quantScore.toFixed(1):'0.0'}</td>`;
+    html += `  <td>${a.qualScore?a.qualScore.toFixed(1):'0.0'}</td>`;
+    html += `  <td style="font-weight:700;color:${dl.color};">${score.toFixed(1)}</td>`;
+    html += `  <td>${a.qual1||0}</td><td>${a.qual2||0}</td><td>${a.qual3||0}</td><td>${a.qual4||0}</td>`;
+    html += `  <td>${a.qual5||0}</td><td>${a.qual6||0}</td><td>${a.qual7||0}</td><td>${a.qual8||0}</td>`;
+    html += `</tr>`;
+  });
+  html += `  </tbody></table></div></div>`;
+  return html;
+}
+
+// 管理能力评定明细
+function renderManagementDetail(assessments) {
+  let html = `<div class="card"><div class="card-header">👤 管理能力评定明细</div><div class="table-wrap"><table class="data-table">`;
+  html += `  <thead><tr>`;
+  html += `    <th>管理人</th><th>管理等级</th><th>基准分</th><th>适配度</th><th>档位</th>`;
+  html += `    <th>负责组别数</th><th>操作</th>`;
+  html += `  </tr></thead><tbody>`;
+  // 按管理人聚合
+  const mgrMap = {};
+  assessments.forEach(a => {
+    const mgr = a.manager || '未分配';
+    if (!mgrMap[mgr]) mgrMap[mgr] = { level: a.level, groups: [], bench: getManagementBenchmark(a.level) };
+    mgrMap[mgr].groups.push(a);
+  });
+  Object.keys(mgrMap).forEach(mgr => {
+    const info = mgrMap[mgr];
+    const avgScore = info.groups.reduce((s,a) => s + (a.totalScore||0), 0) / info.groups.length;
+    const compat = calcCompatibility(avgScore, info.bench);
+    const band = getCompatibilityBand(compat);
+    html += `<tr>`;
+    html += `  <td>${mgr}</td>`;
+    html += `  <td>${info.level||''}</td>`;
+    html += `  <td>${info.bench}</td>`;
+    html += `  <td style="font-weight:700;color:${band.color};">${compat}%</td>`;
+    html += `  <td style="background:${band.bg};color:${band.color};padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500;">${band.label}</td>`;
+    html += `  <td>${info.groups.length}个组别</td>`;
+    html += `  <td><button class="btn btn-sm" onclick="alert('管理人详情功能开发中')">查看详情</button></td>`;
+    html += `</tr>`;
+  });
+  html += `  </tbody></table></div></div>`;
+  return html;
+}
+
+// 导入评估报告
+function importAssessment() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.csv,.xlsx,.xls';
+  input.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      const text = ev.target.result;
+      const lines = text.split('\n');
+      let importCount = 0;
+      for (let i = 1; i < lines.length; i++) {
+        if (!lines[i].trim()) continue;
+        const vals = lines[i].split(',');
+        const groupName = vals[0]?.trim();
+        if (!groupName) continue;
+        let target = ASSESSMENTS_DATA.find(a => a.group === groupName && a.month === '7月');
+        if (!target) {
+          target = { month:'7月', dept:vals[1]?.trim()||'', group:groupName, manager:vals[2]?.trim()||'', level:vals[3]?.trim()||'', totalScore:0, quantScore:0, qualScore:0 };
+          ASSESSMENTS_DATA.push(target);
+        }
+        target.totalScore = parseFloat(vals[4]) || 0;
+        target.quantScore = parseFloat(vals[5]) || 0;
+        target.qualScore = parseFloat(vals[6]) || 0;
+        importCount++;
+      }
+      saveAssessmentsData();
+      renderModule('assessment');
+      alert(`✅ 导入完成！共成功导入 ${importCount} 条评估记录。`);
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+// 自由对比弹窗
+function showCompareModal() {
+  let body = `<div style="font-size:13px;line-height:2;">`;
+  body += `<p>请选择要对比的组别（可多选）：</p>`;
+  body += `<div id="compare-checkboxes" style="display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;">`;
+  const groups = ASSESSMENTS_DATA.filter(a => a.month === '7月' && a.group && !a.month.includes('依据'));
+  groups.forEach(a => {
+    body += `<label style="cursor:pointer;font-size:13px;"><input type="checkbox" class="compare-cb" value="${a.group}" style="margin-right:4px;">${a.group}</label>`;
+  });
+  body += `</div>`;
+  body += `<div id="compare-result" style="margin-top:12px;"></div>`;
+  body += `<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">`;
+  body += `  <button class="btn" onclick="closeModal()">取消</button>`;
+  body += `  <button class="btn btn-primary" onclick="runAssessmentCompare()">开始对比</button>`;
+  body += `</div>`;
+  body += `</div>`;
+  showModal('🔄 自由对比模拟', body);
+}
+
+// 执行对比
+function runAssessmentCompare() {
+  const cbs = document.querySelectorAll('.compare-cb:checked');
+  if (cbs.length < 2) { alert('请至少选择2个组别进行对比'); return; }
+  const groups = Array.from(cbs).map(cb => cb.value);
+  let html = `<div>`;
+  html += `<div style="font-size:14px;font-weight:600;margin-bottom:12px;">对比结果（共${groups.length}个组别）</div>`;
+  html += `<table class="data-table" style="font-size:12px;">`;
+  html += `<thead><tr><th>指标</th>${groups.map(g=>`<th>${g}</th>`).join('')}</tr></thead>`;
+  html += `<tbody>`;
+  const headers = ['总分','定量得分','定性得分','适配度'];
+  const keys = ['totalScore','quantScore','qualScore','compat'];
+  headers.forEach((h,i) => {
+    html += `<tr><td><b>${h}</b></td>`;
+    groups.forEach(gName => {
+      const a = ASSESSMENTS_DATA.find(x => x.group === gName && x.month === '7月');
+      if (!a) { html += `<td>-</td>`; return; }
+      if (keys[i] === 'compat') {
+        const bench = getManagementBenchmark(a.level);
+        const compat = calcCompatibility(a.totalScore||0, bench);
+        const band = getCompatibilityBand(compat);
+        html += `<td style="color:${band.color};font-weight:600;">${compat}%</td>`;
+      } else {
+        const v = a[keys[i]] || 0;
+        html += `<td>${v.toFixed(1)}</td>`;
+      }
+    });
+    html += `</tr>`;
+  });
+  html += `  </tbody></table>`;
+  html += `</div>`;
+  document.getElementById('compare-result').innerHTML = html;
+}
+
+
 function showGroupDetail(groupName){
   const g = GROUPS_DATA.find(x => x.group === groupName);
   const a = ASSESSMENTS_DATA.find(x => x.group === groupName);
@@ -6187,16 +6466,24 @@ function showGroupDetail(groupName){
   let body = `<div style="font-size:13px;line-height:2;">`;
   if(g){
     body += `<p><b>组别：</b>${g.group}｜<b>管理人：</b>${g.manager}｜<b>等级：</b>${g.level}</p>`;
-    body += `<p><b>客服人数：</b>${g.totalStaff}｜<b>管理+质培：</b>${g.manageTrainSum}｜<b>管理配比：</b>${g.manageRatio?g.manageRatio.toFixed(2):0}:1</p>`;
+    body += `<p><b>客服人数：</b>${g.totalStaff}｜<b>管理+质培：</b>${g.managTrainSum}｜<b>管理配比：</b>${g.managRatio?g.managRatio.toFixed(2):0}:1</p>`;
     body += `<p><b>店铺数：</b>${g.shopCount}｜<b>品类：</b>${g.categoryCount}｜<b>平台：</b>${g.platformCount}｜<b>新员工(3月内)：</b>${g.new3m}</p>`;
   }
   if(a){
+    const bench = getManagementBenchmark(a.level);
+    const compat = calcCompatibility(a.totalScore||0, bench);
+    const band = getCompatibilityBand(compat);
     body += `<hr><p><b>总分：</b>${a.totalScore?a.totalScore.toFixed(1):0}｜<b>定量：</b>${a.quantScore?a.quantScore.toFixed(1):0}｜<b>定性：</b>${a.qualScore?a.qualScore.toFixed(1):0}</p>`;
+    body += `<p><b>管理基准分：</b>${bench}｜<b>适配度：</b><span style="color:${band.color};font-weight:700;">${compat}%</span> <span style="background:${band.bg};color:${band.color};padding:2px 8px;border-radius:4px;font-size:12px;">${band.label}</span></p>`;
     body += `<p><b>定性分项（每项0-3分）：</b>业务复杂度${a.qual1}｜跨平台${a.qual2}｜品牌授权${a.qual3}｜流动性${a.qual4}｜培训需求${a.qual5}｜系统复杂度${a.qual6}｜客诉难度${a.qual7}｜突发事件${a.qual8}</p>`;
   }
-  body += `</div>`;
+  body += `<hr><div style="display:flex;gap:8px;justify-content:flex-end;">`;
+  body += `  <button class="btn btn-sm" onclick="alert('编辑功能开发中')">✏️ 编辑</button>`;
+  body += `  <button class="btn btn-sm" style="color:#f5222d;border-color:#f5222d;" onclick="if(confirm('确定删除该组别的评估记录？')){alert('删除功能开发中');}">🗑️ 删除</button>`;
+  body += `</div></div>`;
   showModal(groupName + ' - 难度评估详情', body);
 }
+
 
 // 导出评估报告
 function exportAssessment(){
@@ -7567,4 +7854,10 @@ function exportComparison(){
   const a = document.createElement('a');
   a.href = url; a.download = '项目对比报告_'+new Date().toISOString().slice(0,10)+'.csv';
   a.click(); URL.revokeObjectURL(url);
+}
+
+// ===== 项目难度评估数据持久化 =====
+function saveAssessmentsData() {
+  try { localStorage.setItem('chansee_assessments', JSON.stringify(ASSESSMENTS_DATA)); } catch(e) {}
+  if (typeof syncToCloud === 'function') syncToCloud('assessments', ASSESSMENTS_DATA);
 }
