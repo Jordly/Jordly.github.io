@@ -6162,20 +6162,20 @@ function renderAssessment(){
   html += `<div style="margin:12px 0 8px;color:#888;font-size:13px;">数据来源：组别基础信息 + 管理难度评估表（2026年7月）</div>`;
 
   // 筛选栏
-  html += `<div class="filter-bar" style="margin-bottom:16px;">`;
-  html += `  <label>筛选部门：<select id="asmt-dept-filter" onchange="renderAssessment()">`;
+  html += `<div class="filter-bar" style="margin-bottom:16px;display:flex;align-items:center;gap:12px;">`;
+  html += `  <label style="display:flex;align-items:center;gap:4px;">筛选项目：<select id="asmt-dept-filter">`;
   html += `    <option value="">全部</option>`;
-  html += `    <option value="A事业部">A事业部</option>`;
-  html += `    <option value="B事业部">B事业部</option>`;
-  html += `    <option value="C事业部">C事业部</option>`;
-  html += `    <option value="支持组">支持组</option>`;
+  [...new Set(assessments.map(a => a.dept))].filter(Boolean).forEach(d => {
+    html += `    <option value="${d}">${d}</option>`;
+  });
   html += `  </select></label>`;
-  html += `  <label style="margin-left:12px;">筛选管理人：<select id="asmt-mgr-filter" onchange="renderAssessment()">`;
+  html += `  <label style="display:flex;align-items:center;gap:4px;">筛选管理人：<select id="asmt-mgr-filter">`;
   html += `    <option value="">全部</option>`;
   assessments.map(a => a.manager).filter((v,i, a) => v && a.indexOf(v) === i).forEach(m => {
     html += `    <option value="${m}">${m}</option>`;
   });
   html += `  </select></label>`;
+  html += `  <button class="btn btn-sm btn-primary" onclick="renderAssessment()">🔍 确定</button>`;
   html += `</div>`;
 
   // ===== 卡片区 =====
