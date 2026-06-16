@@ -289,13 +289,17 @@ function saveUsers() {
   if (!ok) { alert('⚠️ 用户数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); return; }
   // 同步到 CloudBase
   if (window.CloudBaseSync) {
+    // 添加日志：显示正在保存的数据
+    console.log('[saveUsers] 正在保存用户数据到云端，共 ' + USERS.length + ' 条');
+    console.log('[saveUsers] 当前用户数据:', JSON.stringify(USERS.find(u => u.id === currentUser?.id)));
+    
     var p = window.CloudBaseSync.saveAll();
     if (p && typeof p.then === 'function') {
       p.then(function(success) {
         if (success) {
-          console.log('[saveUsers] CloudBase 同步成功');
+          console.log('[saveUsers] ✅ CloudBase 同步成功');
         } else {
-          console.warn('[saveUsers] CloudBase 同步失败，数据仅保存在本地');
+          console.warn('[saveUsers] ❌ CloudBase 同步失败，数据仅保存在本地');
         }
       });
     }
@@ -439,21 +443,30 @@ async function checkLogin() {
     // 尝试从云端加载最新数据
     if (window.CloudBaseSync) {
       try {
+        console.log('[checkLogin] 开始从云端加载数据...');
         await window.CloudBaseSync.loadAll();
-        console.log('[checkLogin] 云端数据加载成功');
+        console.log('[checkLogin] ✅ 云端数据加载成功');
         // 从 localStorage 重新读取 USERS 数组（已被云端数据更新）
         var savedUsers = localStorage.getItem('chansee_users');
         if (savedUsers) {
           try {
             USERS = JSON.parse(savedUsers);
             console.log('[checkLogin] 已从云端更新 USERS 数组，共 ' + USERS.length + ' 条');
+            // 显示当前用户的数据
+            var currentUserId = JSON.parse(raw)?.id;
+            var currentUserData = USERS.find(u => u.id === currentUserId);
+            console.log('[checkLogin] 当前用户云端数据:', currentUserData);
           } catch(e) {
             console.warn('[checkLogin] 解析 chansee_users 失败: ' + e.message);
           }
+        } else {
+          console.warn('[checkLogin] localStorage 中没有 chansee_users 数据');
         }
       } catch(e) {
-        console.warn('[checkLogin] 云端数据加载失败，将使用本地数据: ' + e.message);
+        console.warn('[checkLogin] ❌ 云端数据加载失败，将使用本地数据: ' + e.message);
       }
+    } else {
+      console.warn('[checkLogin] CloudBaseSync 未配置，无法从云端加载数据');
     }
     if (raw) {
       const data = JSON.parse(raw);
