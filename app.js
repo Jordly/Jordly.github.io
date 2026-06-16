@@ -7219,12 +7219,12 @@ async function renderProfile(){
   // 每次打开"个人基础设置"时，主动从云端拉取最新用户数据
   if (window.CloudBaseSync && currentUser) {
     try {
-      var cloudUsers = await window.CloudBaseSync.loadOne('users');
-      if (cloudUsers && cloudUsers.length > 0) {
-        localStorage.setItem('chansee_users', JSON.stringify(cloudUsers));
-        USERS = cloudUsers;
-        // 用云端数据更新当前用户
-        var updated = cloudUsers.find(function(u) { return u.id === currentUser.id; });
+      await window.CloudBaseSync.loadAll();
+      // loadAll 会把数据写入 localStorage，重新读取
+      var saved = localStorage.getItem('chansee_users');
+      if (saved) {
+        USERS = JSON.parse(saved);
+        var updated = USERS.find(function(u) { return u.id === currentUser.id; });
         if (updated) {
           var keys = Object.keys(updated);
           for (var i = 0; i < keys.length; i++) {
@@ -7232,11 +7232,10 @@ async function renderProfile(){
               currentUser[keys[i]] = updated[keys[i]];
             }
           }
-          // 同步更新 session 和右上角显示
           var sess = JSON.parse(JSON.stringify(currentUser)); delete sess.password;
           safeSetItem('chansee_current_user', JSON.stringify(sess));
           updateUserDisplay();
-          console.log('[renderProfile] 已从云端恢复用户数据:', Object.keys(currentUser).join(','));
+          console.log('[renderProfile] 已从云端恢复用户数据');
         }
       }
     } catch(e) {
