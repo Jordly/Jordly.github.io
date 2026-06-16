@@ -388,7 +388,7 @@ function setAppContentVisible(visible) {
   if (mc) mc.style.display = visible ? "" : "none";
 }
 
-function checkLogin() {
+async function checkLogin() {
   try {
     // 先检查 login.html 的登录状态
     const authStr = localStorage.getItem('chanseen_auth');
@@ -436,6 +436,25 @@ function checkLogin() {
     // 再检查现有系统的登录状态
     const raw = localStorage.getItem("chansee_current_user")
               || sessionStorage.getItem("chansee_current_user");
+    // 尝试从云端加载最新数据
+    if (window.CloudBaseSync) {
+      try {
+        await window.CloudBaseSync.loadAll();
+        console.log('[checkLogin] 云端数据加载成功');
+        // 从 localStorage 重新读取 USERS 数组（已被云端数据更新）
+        var savedUsers = localStorage.getItem('chansee_users');
+        if (savedUsers) {
+          try {
+            USERS = JSON.parse(savedUsers);
+            console.log('[checkLogin] 已从云端更新 USERS 数组，共 ' + USERS.length + ' 条');
+          } catch(e) {
+            console.warn('[checkLogin] 解析 chansee_users 失败: ' + e.message);
+          }
+        }
+      } catch(e) {
+        console.warn('[checkLogin] 云端数据加载失败，将使用本地数据: ' + e.message);
+      }
+    }
     if (raw) {
       const data = JSON.parse(raw);
       // 校验是否过期
