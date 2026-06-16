@@ -358,22 +358,36 @@
     // 但只有上次成功加载过才跳过，失败时必须重试
     if (sessionStorage.getItem('cb_loaded') === '1') {
       log('本会话已成功加载过云端数据，跳过自动加载');
-      // 后台检查云端是否有更新（静默检查，不刷新页面）
-      loadOne('projects').then(function(data) {
-        if (data && data.length > 0) {
-          var local = [];
-          try { local = JSON.parse(localStorage.getItem('chansee_projects') || '[]'); } catch(e) {}
-          if (JSON.stringify(data) !== JSON.stringify(local)) {
-            log('检测到云端数据有更新，正在后台同步...');
-            loadAll().then(function(ok) {
-              if (ok) {
-                showStatus('云端数据已更新，正在刷新...', 'loading');
-                setTimeout(function() { location.reload(); }, 800);
-              }
-            });
+      // 检查 localStorage 中的关键数据是否还在
+      // （用户可能按 Ctrl+Shift+Del 清除了 Cookie 和 localStorage）
+      var hasUsers = false, hasProjects = false;
+      try { hasUsers = !!(JSON.parse(localStorage.getItem('chansee_users') || '[]')).length; } catch(e) {}
+      try { hasProjects = !!(JSON.parse(localStorage.getItem('chansee_projects') || '[]')).length; } catch(e) {}
+
+      if (!hasUsers || !hasProjects) {
+        log('检测到本地数据丢失（users:' + hasUsers + ', projects:' + hasProjects + '），从云端恢复...');
+        loadAll().then(function() {
+          log('数据恢复完成');
+          showStatus('数据已从云端恢复 ✅', 'success');
+        });
+      } else {
+        // 后台检查云端是否有更新（静默检查，不刷新页面）
+        loadOne('projects').then(function(data) {
+          if (data && data.length > 0) {
+            var local = [];
+            try { local = JSON.parse(localStorage.getItem('chansee_projects') || '[]'); } catch(e) {}
+            if (JSON.stringify(data) !== JSON.stringify(local)) {
+              log('检测到云端数据有更新，正在后台同步...');
+              loadAll().then(function(ok) {
+                if (ok) {
+                  showStatus('云端数据已更新，正在刷新...', 'loading');
+                  setTimeout(function() { location.reload(); }, 800);
+                }
+              });
+            }
           }
-        }
-      }).catch(function() {});
+        }).catch(function() {});
+      }
       return;
     }
 
