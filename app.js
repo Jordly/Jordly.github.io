@@ -480,6 +480,7 @@ async function checkLogin() {
       const userInDb = USERS.find(u => u.id === data.id);
       if (userInDb) {
         // 构造 currentUser（不含密码）
+        // 注意：以 USERS 数组（云端最新数据）为准，不再用旧的 session 数据覆盖
         currentUser = {};
         var keys = Object.keys(userInDb);
         for (var i = 0; i < keys.length; i++) {
@@ -487,14 +488,11 @@ async function checkLogin() {
             currentUser[keys[i]] = userInDb[keys[i]];
           }
         }
-        // 用 session 中保存的字段补充（确保 nickname、birthday 等自定义字段不丢失）
-        var sessionKeys = Object.keys(data);
-        for (var j = 0; j < sessionKeys.length; j++) {
-          var k = sessionKeys[j];
-          if (k !== "password" && k !== "_expiry" && data[k] !== undefined && data[k] !== null) {
-            currentUser[k] = data[k];
-          }
-        }
+        // 同步更新 chansee_current_user（确保下次登录时用的是最新数据）
+        var updatedSession = JSON.parse(JSON.stringify(currentUser));
+        delete updatedSession.password;
+        safeSetItem('chansee_current_user', JSON.stringify(updatedSession));
+        console.log('[checkLogin] ✅ 已从 USERS 数组恢复用户数据:', Object.keys(currentUser).join(','));
       } else {
         // 用户已被删除，清除 session
         currentUser = null;
