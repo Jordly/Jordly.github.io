@@ -433,7 +433,7 @@ async function checkLogin() {
             id: (cloudUser && cloudUser.id) || 'U001',
             username: (cloudUser && cloudUser.username) || auth.user?.username || 'admin',
             name: (cloudUser && cloudUser.name) || (cloudUser && cloudUser.nickname) || '系统创建者',
-            role: (cloudUser && cloudUser.role) || '超级管理员',
+            role: (cloudUser && cloudUser.role) || auth.user?.role || '超级管理员',
             avatar: (cloudUser && cloudUser.avatar) || '',
             position: (cloudUser && cloudUser.position) || '客服总监',
             brand: (cloudUser && cloudUser.brand) || 'Chanseen',
@@ -444,6 +444,23 @@ async function checkLogin() {
             wechatBound: cloudUser ? (cloudUser.wechatBound !== undefined ? cloudUser.wechatBound : true) : true,
             keepStatus: cloudUser ? (cloudUser.keepStatus !== undefined ? cloudUser.keepStatus : false) : false
           };
+
+          // 兜底保护：如果匹配到的用户缺少自定义字段，遍历USERS找一个数据最完整的来补全
+          if (currentUser && (!currentUser.nickname || currentUser.nickname === '系统创建者')) {
+            for (var fi = 0; fi < USERS.length; fi++) {
+              var fu = USERS[fi];
+              if (fu && fu.nickname && fu.nickname !== '系统创建者' && fu.nickname !== '未设置') {
+                // 找到了有自定义昵称的用户，用它来补全当前用户的个人信息
+                if (!currentUser.nickname || currentUser.nickname === '系统创建者') currentUser.nickname = fu.nickname;
+                if (!currentUser.birthday) currentUser.birthday = fu.birthday || '';
+                if (!currentUser.position || currentUser.position === '客服总监') currentUser.position = fu.position || '';
+                if (!currentUser.phone) currentUser.phone = fu.phone || '';
+                if (!currentUser.email) currentUser.email = fu.email || '';
+                console.log('[checkLogin] 兜底：从USERS['+fu.id+']补全个人信息');
+                break;
+              }
+            }
+          }
 
           // 把最新数据写回 chansee_current_user，确保下次能用
           var sess = JSON.parse(JSON.stringify(currentUser));
