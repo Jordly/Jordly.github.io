@@ -7244,31 +7244,6 @@ function toggleRiskCard(el){
 
 // ===== 个人基础设置 =====
 function renderProfile(){
-  // 每次打开"个人基础设置"时，主动从云端拉取最新用户数据
-  if (window.CloudBaseSync && currentUser) {
-    window.CloudBaseSync.loadAll().then(function() {
-      var saved = localStorage.getItem('chansee_users');
-      if (saved) {
-        USERS = JSON.parse(saved);
-        var updated = USERS.find(function(u) { return u.id === currentUser.id; });
-        if (updated) {
-          var keys = Object.keys(updated);
-          for (var i = 0; i < keys.length; i++) {
-            if (keys[i] !== 'password') { currentUser[keys[i]] = updated[keys[i]]; }
-          }
-          var sess = JSON.parse(JSON.stringify(currentUser)); delete sess.password;
-          safeSetItem('chansee_current_user', JSON.stringify(sess));
-          updateUserDisplay();
-          console.log('[renderProfile] 已从云端恢复用户数据');
-          // 数据恢复后自动刷新页面显示
-          renderModule('profile');
-        }
-      }
-    }).catch(function(e) {
-      console.warn('[renderProfile] 云端拉取失败:', e.message);
-    });
-  }
-
   const rowStyle = 'display:flex;align-items:center;padding:14px 0;border-bottom:1px solid #f1f5f9;';
   const labelStyle = 'width:90px;font-size:14px;color:#334155;flex-shrink:0;';
   const valueStyle = 'flex:1;font-size:14px;color:#1e293b;';
