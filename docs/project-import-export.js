@@ -1,35 +1,42 @@
 // ===== 导出项目（支持CSV和XLSX） =====
 function exportProjects(){
-  var headers = ['项目编号','项目名称','品牌','品类','项目类型','所属职场','项目经理','项目总监','项目状态','健康度','服务周期开始','服务周期结束','客服base','服务渠道','服务时间','FTE目标','SLA响应(秒)','SLA解决(秒)','成本预算','营收','利润率','项目背景'];
-  var rows = PROJECTS.map(function(p){
-    return [
-      p.id,
-      p.name||'',
-      p.brand||'',
-      p.category||'',
-      p.serviceMode||'',
-      p.workplace||'',
-      p.pm||'',
-      p.director||'',
-      p.status||'',
-      p.health||'',
-      p.startDate||'',
-      p.endDate||'',
-      p.base||'',
-      (p.platforms||[]).join(',')||'',
-      p.serviceHours||'',
-      p.fteTarget||0,
-      p.slaResponse||0,
-      p.slaResolve||0,
-      p.costBudget||0,
-      p.revenue||0,
-      p.profitRate||0,
-      p.background||''
-    ];
-  });
-  var d = new Date();
-  var ds = d.getFullYear()+''+String(d.getMonth()+1).padStart(2,'0')+''+String(d.getDate()).padStart(2,'0');
-  showExportDialog(headers, rows, '项目基础档案_'+ds, '项目基础档案');
+  console.log('[exportProjects] 开始执行，PROJECTS数量=' + (window.PROJECTS ? PROJECTS.length : 'undefined'));
+  try {
+    var headers = ['项目编号','项目名称','品牌','品类','项目类型','所属职场','项目经理','项目总监','项目状态','健康度','服务周期开始','服务周期结束','客服base','服务渠道','服务时间','FTE目标','SLA响应(秒)','SLA解决(秒)','成本预算','营收','利润率','项目背景'];
+    var rows = PROJECTS.map(function(p){
+      return [
+        p.id,
+        p.name||'',
+        p.brand||'',
+        p.category||'',
+        p.serviceMode||'',
+        p.workplace||'',
+        p.pm||'',
+        p.director||'',
+        p.status||'',
+        p.health||'',
+        p.startDate||'',
+        p.endDate||'',
+        p.base||'',
+        (p.platforms||[]).join(',')||'',
+        p.serviceHours||'',
+        p.fteTarget||0,
+        p.slaResponse||0,
+        p.slaResolve||0,
+        p.costBudget||0,
+        p.revenue||0,
+        p.profitRate||0,
+        p.background||''
+      ];
+    });
+    console.log('[exportProjects] 数据准备完成，rows=' + rows.length);
+    var d = new Date();
+    var ds = d.getFullYear()+''+String(d.getMonth()+1).padStart(2,'0')+''+String(d.getDate()).padStart(2,'0');
+    showExportDialog(headers, rows, '项目基础档案_'+ds, '项目基础档案');
+  } catch(e) {
+    console.error('[exportProjects] 异常:', e);
+    alert('导出失败：' + e.message);
+  }
 }
 
 // ===== 导入项目CSV =====

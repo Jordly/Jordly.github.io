@@ -4753,13 +4753,16 @@ function exportToCSV(filename, headers, rows) {
 }
 
 function showExportDialog(headers, rows, baseFilename, title) {
+  console.log('[showExportDialog] 开始，title=' + (title||'') + ', rows=' + rows.length);
   window.__expHeaders = headers;
   window.__expData = rows;
   window.__expFile = baseFilename;
-  var overlay = document.getElementById('modal-overlay') || document.getElementById('modal-overlay');
+  var overlay = document.getElementById('modal-overlay');
   var titleEl = document.getElementById('modal-title');
   var body = document.getElementById('modal-body');
+  console.log('[showExportDialog] 查找DOM: overlay=' + !!overlay + ', title=' + !!titleEl + ', body=' + !!body);
   if (!overlay || !titleEl || !body) {
+    console.warn('[showExportDialog] DOM元素缺失，fallback直接导出CSV');
     // fallback：直接导出 CSV
     exportToCSV(baseFilename + '.csv', headers, rows);
     return;
@@ -4774,6 +4777,7 @@ function showExportDialog(headers, rows, baseFilename, title) {
     '<div style="font-size:12px;color:#94a3b8;">CSV 兼容更多软件 | Excel 支持格式美化</div>' +
   '</div>';
   overlay.classList.remove('hidden');
+  console.log('[showExportDialog] 弹窗已显示');
 }
 
 window.doExportCSV = function() {
@@ -6705,16 +6709,23 @@ function showGroupDetail(groupName){
 
 // 导出评估报告
 function exportAssessment(){
-  const headers = ['项目编号','项目名称','评估周期','难度评分','业务复杂度','时间压力','沟通能力','技能匹配','风险等级','评估人','评估日期','备注'];
-  const rows = ASSESSMENT_DATA.map(a => {
-    const p = PROJECTS.find(pp => pp.id === a.projectId);
-    return [
-      a.projectId, p ? p.name : '', a.period||'', a.score||'', 
-      a.busiComplexity||'', a.timePressure||'', a.commAbility||'', 
-      a.skillMatch||'', a.riskLevel||'', a.evaluator||'', a.date||'', a.notes||''
-    ];
-  });
-  showExportDialog(headers, rows, `项目难度评估_${new Date().toISOString().slice(0,10)}`, '项目难度评估');
+  console.log('[exportAssessment] 开始执行，ASSESSMENT_DATA数量=' + (window.ASSESSMENT_DATA ? ASSESSMENT_DATA.length : 'undefined'));
+  try {
+    const headers = ['项目编号','项目名称','评估周期','难度评分','业务复杂度','时间压力','沟通能力','技能匹配','风险等级','评估人','评估日期','备注'];
+    const rows = ASSESSMENT_DATA.map(a => {
+      const p = PROJECTS.find(pp => pp.id === a.projectId);
+      return [
+        a.projectId, p ? p.name : '', a.period||'', a.score||'', 
+        a.busiComplexity||'', a.timePressure||'', a.commAbility||'', 
+        a.skillMatch||'', a.riskLevel||'', a.evaluator||'', a.date||'', a.notes||''
+      ];
+    });
+    console.log('[exportAssessment] 数据准备完成，rows=' + rows.length);
+    showExportDialog(headers, rows, `项目难度评估_${new Date().toISOString().slice(0,10)}`, '项目难度评估');
+  } catch(e) {
+    console.error('[exportAssessment] 异常:', e);
+    alert('导出失败：' + e.message);
+  }
 }
 function cyclePermission(tdEl) {
   const role = tdEl.dataset.role;
