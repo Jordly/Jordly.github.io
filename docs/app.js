@@ -6709,10 +6709,10 @@ function showGroupDetail(groupName){
 
 // 导出评估报告
 function exportAssessment(){
-  console.log('[exportAssessment] 开始执行，ASSESSMENT_DATA数量=' + (window.ASSESSMENT_DATA ? ASSESSMENT_DATA.length : 'undefined'));
+  console.log('[exportAssessment] 开始执行，ASSESSMENTS_DATA数量=' + (window.ASSESSMENTS_DATA ? ASSESSMENTS_DATA.length : 'undefined'));
   try {
     const headers = ['项目编号','项目名称','评估周期','难度评分','业务复杂度','时间压力','沟通能力','技能匹配','风险等级','评估人','评估日期','备注'];
-    const rows = ASSESSMENT_DATA.map(a => {
+    const rows = ASSESSMENTS_DATA.map(a => {
       const p = PROJECTS.find(pp => pp.id === a.projectId);
       return [
         a.projectId, p ? p.name : '', a.period||'', a.score||'', 
