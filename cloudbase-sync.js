@@ -155,11 +155,17 @@
       Promise.all([
         loadOne('projects'),
         loadOne('users'),
-        loadOne('goals')
+        loadOne('goals'),
+        loadOne('assessments'),
+        loadOne('knowledge'),
+        loadOne('risk_alerts')
       ]).then(function(results) {
         var projects = results[0];
         var users = results[1];
         var goals = results[2];
+        var assess = results[3];
+        var knowledge = results[4];
+        var risks = results[5];
         var loaded = false;
 
         if (projects && projects.length > 0) {
@@ -176,6 +182,21 @@
           localStorage.setItem('chansee_goals', JSON.stringify(goals));
           loaded = true;
           log('已写入 localStorage: goals (' + goals.length + ' 条)');
+        }
+        if (assess && assess.length > 0) {
+          localStorage.setItem('chansee_assessments', JSON.stringify(assess));
+          loaded = true;
+          log('已写入 localStorage: assess (' + assess.length + ' 条)');
+        }
+        if (knowledge && knowledge.length > 0) {
+          localStorage.setItem('chansee_knowledge', JSON.stringify(knowledge));
+          loaded = true;
+          log('已写入 localStorage: knowledge (' + knowledge.length + ' 条)');
+        }
+        if (risks && risks.length > 0) {
+          localStorage.setItem('chansee_risk_alerts', JSON.stringify(risks));
+          loaded = true;
+          log('已写入 localStorage: risk_alerts (' + risks.length + ' 条)');
         }
 
         _cb_syncing = false;  // 恢复拦截器
@@ -239,17 +260,26 @@
     var projects = [];
     var users = [];
     var goals = [];
+    var assess = [];
+    var knowledge = [];
+    var risks = [];
 
     try { projects = JSON.parse(localStorage.getItem('chansee_projects') || '[]'); } catch(e) {}
     try { users = JSON.parse(localStorage.getItem('chansee_users') || '[]'); } catch(e) {}
     try { goals = JSON.parse(localStorage.getItem('chansee_goals') || '[]'); } catch(e) {}
+    try { assess = JSON.parse(localStorage.getItem('chansee_assessments') || '[]'); } catch(e) {}
+    try { knowledge = JSON.parse(localStorage.getItem('chansee_knowledge') || '[]'); } catch(e) {}
+    try { risks = JSON.parse(localStorage.getItem('chansee_risk_alerts') || '[]'); } catch(e) {}
 
     Promise.all([
       saveOne('projects', projects),
       saveOne('users', users),
-      saveOne('goals', goals)
+      saveOne('goals', goals),
+      saveOne('assessments', assess),
+      saveOne('knowledge', knowledge),
+      saveOne('risk_alerts', risks)
     ]).then(function(results) {
-      var ok = results[0].ok && results[1].ok && results[2].ok;
+      var ok = results[0].ok && results[1].ok && results[2].ok && results[3].ok && results[4].ok && results[5].ok;
       if (ok) {
         showStatus('云端同步成功 ✅', 'success');
         log('云端保存完成，三个集合全部保存成功');
