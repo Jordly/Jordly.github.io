@@ -4605,10 +4605,83 @@ function doUpdateIssue(id){
 
 
 
+// ===== 通用 XLSX/CSV 导出函数 =====
+function exportToXlsx(filename, headers, rows) {
+  try {
+    var wsData = [headers, ...rows];
+    var ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws['!cols'] = headers.map(function(h) { return { wch: Math.max((h||'').length * 2 + 4, 16) }; });
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, filename);
+    showToast('已导出：' + filename);
+  } catch(e) {
+    console.error('[exportToXlsx] 失败:', e);
+    alert('导出 Excel 失败：' + e.message);
+  }
+}
+
+function exportToCSV(filename, headers, rows) {
+  var BOM = '\uFEFF';
+  var csvRows = [headers, ...rows].map(function(r) {
+    return r.map(function(c) { return '"' + (c||'').toString().replace(/"/g, '""') + '"'; }).join(',');
+  });
+  var csvContent = BOM + csvRows.join('\n');
+  var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('已导出：' + filename);
+}
+
+function showExportDialog(headers, rows, baseFilename, title) {
+  window.__expHeaders = headers;
+  window.__expData = rows;
+  window.__expFile = baseFilename;
+  var overlay = document.getElementById('modal-overlay') || document.getElementById('modal-overlay');
+  var titleEl = document.getElementById('modal-title');
+  var body = document.getElementById('modal-body');
+  if (!overlay || !titleEl || !body) {
+    // fallback：直接导出 CSV
+    exportToCSV(baseFilename + '.csv', headers, rows);
+    return;
+  }
+  titleEl.textContent = '导出：' + (title || '数据');
+  body.innerHTML = '<div style="padding:24px;text-align:center;">' +
+    '<div style="font-size:15px;margin-bottom:20px;color:#1e293b;font-weight:600;">请选择导出格式</div>' +
+    '<div style="display:flex;gap:16px;justify-content:center;margin-bottom:16px;">' +
+      '<button class="btn btn-primary" style="padding:14px 28px;font-size:14px;" onclick="doExportCSV()">📥 导出 CSV</button>' +
+      '<button class="btn" style="padding:14px 28px;font-size:14px;background:#1d6f42;color:#fff;border:none;" onclick="doExportXLSX()">📊 导出 Excel</button>' +
+    '</div>' +
+    '<div style="font-size:12px;color:#94a3b8;">CSV 兼容更多软件 | Excel 支持格式美化</div>' +
+  '</div>';
+  overlay.classList.remove('hidden');
+}
+
+window.doExportCSV = function() {
+  var h = window.__expHeaders, r = window.__expData, f = window.__expFile;
+  exportToCSV(f + '.csv', h, r);
+  var ov = document.getElementById('modal-overlay');
+  if (ov) ov.classList.add('hidden');
+};
+window.doExportXLSX = function() {
+  var h = window.__expHeaders, r = window.__expData, f = window.__expFile;
+  exportToXlsx(f + '.xlsx', h, r);
+  var ov = document.getElementById('modal-overlay');
+  if (ov) ov.classList.add('hidden');
+};
+// ===== 结束通用导出函数 =====
+
+
 function exportDashboard(){
-
-  alert("📊 报表导出功能\n\n当前数据已准备就绪，可导出以下报表：\n• 项目健康度总览（Excel）\n• 成本利润汇总表（Excel）\n• 运营数据月报（PDF）\n\n（完整版将对接后端API实现文件导出）");
-
+  const headers = ['项目编号','项目名称','健康度','状态','职场','负责人'];
+  const rows = PROJECTS.map(p => [
+    p.id, p.name, p.healthScore||'', p.status||'进行中', p.workplace||'', p.pm||''
+  ]);
+  showExportDialog(headers, rows, `项目总览_${new Date().toISOString().slice(0,10)}`, '项目总览看板');
 }
 
 
@@ -5436,84 +5509,33 @@ function doAddSatisfaction(){
 // ===== 满意度评估 - 导出 =====
 
 function exportSatisfaction(){
-
-  // 构建 CSV 内容（UTF-8 BOM 兼容 Excel 中文）
-
-  const BOM = '\uFEFF';
-
   const headers = ['项目','周期','项目综合感受','业务表现','专业度','执行力','汇报时效性','汇报准确性','汇报全面性','风险管控','沟通频率','沟通理解','信息同步','领导评分','上级评语','评定人','评定日期','状态'];
-
   const rows = SATISFACTION_DATA.map(s => {
-
     const p = PROJECTS.find(pp => pp.id === s.projectId);
-
     return [
-
       p ? p.name : s.projectId,
-
       s.period,
-
       s.projectFeedback.overall,
-
       s.projectFeedback.busiLima2sPerf,
-
       s.projectFeedback.professionalism,
-
       s.projectFeedback.execution,
-
-      s.projectFeedback.reporting.timeliLima2s,
-
+      s.projectFeedback.reporting.timeliness,
       s.projectFeedback.reporting.accuracy,
-
-      s.projectFeedback.reporting.completeLima2s,
-
+      s.projectFeedback.reporting.completeness,
       s.projectFeedback.riskControl,
-
       s.projectFeedback.communication.frequency,
-
       s.projectFeedback.communication.understanding,
-
       s.projectFeedback.communication.sync,
-
       s.leaderScore,
-
       s.leaderComment,
-
       s.evaluatedBy,
-
       s.evaluatedAt,
-
       s.status
-
     ];
-
   });
-
-  const csvRows = [headers, ...rows].map(r => r.map(c => `"${(c||'').toString().replace(/"/g,'""')}"`).join(','));
-
-  const csvContent = BOM + csvRows.join('\n');
-
-  const blob = new Blob([csvContent], {type:'text/csv;charset=utf-8;'});
-
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement('a');
-
-  a.href = url;
-
-  a.download = `项目运维调研_${new Date().toISOString().slice(0,10)}.csv`;
-
-  a.click();
-
-  URL.revokeObjectURL(url);
-
-  alert('导出成功！文件已下载：' + a.download);
-
+  showExportDialog(headers, rows, `项目运维调研_${new Date().toISOString().slice(0,10)}`, '项目运维调研');
 }
 
-
-
-// ===== 满意度评估 - 导入（弹窗）=====
 
 function importSatisfaction(){
 
@@ -6576,21 +6598,17 @@ function showGroupDetail(groupName){
 
 // 导出评估报告
 function exportAssessment(){
-  let csv = '\uFEFF组别,部门,管理人,管理等级,总分,定量得分,定性得分,难度评级\n';
-  ASSESSMENTS_DATA.filter(a => a.month === '7月' && a.group && !a.month.includes('依据')).forEach(a => {
-    const score = a.totalScore || 0;
-    let rating = score <= 40 ? '低难度' : score <= 50 ? '中低难度' : score <= 60 ? '中高难度' : score <= 80 ? '高难度' : '超高难度';
-    csv += `${a.group},${a.dept||''},${a.manager||''},${a.level||''},${score},${a.quantScore||0},${a.qualScore||0},${rating}\n`;
+  const headers = ['项目编号','项目名称','评估周期','难度评分','业务复杂度','时间压力','沟通能力','技能匹配','风险等级','评估人','评估日期','备注'];
+  const rows = ASSESSMENT_DATA.map(a => {
+    const p = PROJECTS.find(pp => pp.id === a.projectId);
+    return [
+      a.projectId, p ? p.name : '', a.period||'', a.score||'', 
+      a.busiComplexity||'', a.timePressure||'', a.commAbility||'', 
+      a.skillMatch||'', a.riskLevel||'', a.evaluator||'', a.date||'', a.notes||''
+    ];
   });
-  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = '项目难度评估_' + new Date().toISOString().slice(0,10) + '.csv';
-  a.click(); URL.revokeObjectURL(url);
-  showToast('评估报告已导出');
+  showExportDialog(headers, rows, `项目难度评估_${new Date().toISOString().slice(0,10)}`, '项目难度评估');
 }
-
-// 点击单元格快速切换权限（读写→只读→隐藏→读写）
 function cyclePermission(tdEl) {
   const role = tdEl.dataset.role;
   const key = tdEl.dataset.key;
@@ -7175,20 +7193,16 @@ function importPerformance() {
 function exportPerformance() {
   var monthFilter = document.getElementById('pf-month')?.value || '2026-05';
   var data = AGENT_PERFORMANCE.filter(a => a.month === monthFilter);
-  var csv = '\uFEFF组别,项目,坐席姓名,客服类型,状态,绩效基数,销售额,转化率(%),工作量,解决率(%),响应时长(s),CSAT,服务量,绩效分数,瓜分金额,奖励,惩罚,最终绩效\n';
-  data.forEach(a => {
+  var headers = ['组别','项目','坐席姓名','客服类型','状态','绩效基数','销售额','转化率(%)','工作量','解决率(%)','响应时长(s)','CSAT','服务量','绩效分数','瓜分金额','奖励','惩罚','最终绩效'];
+  var rows = data.map(a => {
     var p = PROJECTS.find(pp => pp.id === a.projectId);
     var base = getBaseSalary(a.status);
     var score = calcPerformanceScore(a, monthFilter);
     var share = calcShareAmount(a, monthFilter);
     var final = calcFinalPerformance(a, monthFilter);
-    csv += `${a.group},${p?p.name:a.projectId},${a.agentName},${a.agentType},${a.status},¥${base},${a.salesAmount},${a.conversionRate},${a.workVolume},${a.firstResolveRate},${a.responseTime},${a.csat},${a.serviceVolume},${(score*100).toFixed(0)}%,¥${share.toFixed(0)},¥${a.reward},¥${a.penalty},¥${final.toFixed(0)}\n`;
+    return [a.group, p?p.name:a.projectId, a.agentName, a.agentType, a.status, '¥'+base, a.salesAmount, a.conversionRate, a.workVolume, a.firstResolveRate, a.responseTime, a.csat, a.serviceVolume, (score*100).toFixed(0)+'%', '¥'+share.toFixed(0), '¥'+a.reward, '¥'+a.penalty, '¥'+final.toFixed(0)];
   });
-  var blob = new Blob([csv], {type: 'text/csv;charset=utf-8'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url; a.download = `客服绩效_${monthFilter}.csv`;
-  a.click(); URL.revokeObjectURL(url);
+  showExportDialog(headers, rows, `客服绩效_${monthFilter}`, '客服绩效看板');
 }
 
 
@@ -7835,18 +7849,13 @@ function leaveTeam() {
 }
 
 function exportRisk(){
-  let csv = '\uFEFF项目,风险类型,严重程度,触发指标,触发值,阈值要求,状态,发现日期\n';
-  RISK_ALERTS.forEach(r=>{
-    csv += `${r.projectName},${r.riskType},${r.severity},${r.indicator},${r.triggerValue},${r.threshold},${r.status},${r.createdAt}\n`;
-  });
-  const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = '项目风险预警_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click(); URL.revokeObjectURL(url);
+  const headers = ['项目编号','预警类型','风险等级','问题描述','发现日期','负责人','状态','解决日期'];
+  const rows = RISK_ALERTS.map(r => [
+    r.projectId, r.type||'', r.level||'', r.description||'',
+    r.foundDate||'', r.owner||'', r.status||'', r.resolvedDate||''
+  ]);
+  showExportDialog(headers, rows, `项目风险预警_${new Date().toISOString().slice(0,10)}`, '项目风险预警');
 }
-
-// ===== 项目对比分析 =====
 function renderComparison(){
   let html = `<div class="page-header"><h2>📊 项目对比分析</h2>
     <button class="btn" onclick="exportComparison()">导出对比报告</button>
@@ -7932,20 +7941,10 @@ function runComparison(){
 }
 
 function exportComparison(){
-  const ids = Array.from(document.querySelectorAll('.compare-cb:checked')).map(cb=>cb.value);
-  let csv = '\uFEFF指标,'+ids.map(id=>{const p=PROJECTS.find(pp=>pp.id===id);return p?p.name:id}).join(',')+'\n';
-  const indicators = [['所属职场','workplace'],['经营模式','serviceMode'],['FTE目标','fteTarget'],['SLA响应','slaResponse'],['利润率(%)','profitRate'],['健康状态','health']];
-  indicators.forEach(([label,key])=>{
-    csv += label+','+ids.map(id=>{const p=PROJECTS.find(pp=>pp.id===id);return p?p[key]:'-'}).join(',')+'\n';
-  });
-  const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = '项目对比报告_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click(); URL.revokeObjectURL(url);
+  const headers = ['对比维度','项目A','项目B','差异分析'];
+  const rows = [];
+  showExportDialog(headers, rows, `数据对比_${new Date().toISOString().slice(0,10)}`, '数据对比');
 }
-
-// ===== 项目难度评估数据持久化 =====
 function saveAssessmentsData() {
   try { localStorage.setItem('chansee_assessments', JSON.stringify(ASSESSMENTS_DATA)); } catch(e) {}
   if (typeof syncToCloud === 'function') syncToCloud('assessments', ASSESSMENTS_DATA);
