@@ -401,38 +401,65 @@ async function checkLogin() {
         const auth = JSON.parse(authStr);
         const maxAge = auth.remember ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
         if (auth.token && (Date.now() - auth.loginAt) < maxAge) {
-          // login.html 登录的演示用户
-          // 先从之前保存的 session 中恢复用户自定义字段
-          var savedSession = null;
-          try {
-            var savedRaw = localStorage.getItem('chansee_current_user');
-            if (savedRaw) savedSession = JSON.parse(savedRaw);
-          } catch(e) {}
+          // login.html 登录：先从云端加载最新用户数据，再用云端数据构建 currentUser
+          if (window.CloudBaseSync) {
+            try {
+              console.log('[checkLogin] login.html路径：开始从云端加载用户数据...');
+              await window.CloudBaseSync.loadAll();
+              var savedUsers = localStorage.getItem('chansee_users');
+              if (savedUsers) {
+                USERS = JSON.parse(savedUsers);
+                console.log('[checkLogin] login.html路径：已从云端恢复USERS，共 ' + USERS.length + ' 条');
+              }
+            } catch(e) {
+              console.warn('[checkLogin] login.html路径：云端加载失败，使用本地数据');
+            }
+          }
+
+          // 从 USERS 数组（云端最新）中查找当前用户
+          var cloudUser = null;
+          if (auth.user && auth.user.username) {
+            cloudUser = USERS.find(u => u.username === auth.user.username);
+          }
+          if (!cloudUser && auth.user && auth.user.id) {
+            cloudUser = USERS.find(u => u.id === auth.user.id);
+          }
+          if (!cloudUser) {
+            cloudUser = USERS.find(u => u.id === 'U001') || USERS[0];
+          }
 
           currentUser = {
-            id: 'demo_user',
-            username: (savedSession && savedSession.username) || auth.user?.username || 'demo',
-            name: (savedSession && savedSession.name) || auth.user?.name || '演示用户',
-            role: '管理员',
-            avatar: (savedSession && savedSession.avatar) || '',
-            position: (savedSession && savedSession.position) || '客服总监',
-            brand: (savedSession && savedSession.brand) || 'Chanseen',
-            nickname: (savedSession && savedSession.nickname) || auth.user?.name || '演示用户',
-            birthday: (savedSession && savedSession.birthday) || '',
-            phone: (savedSession && savedSession.phone) || '',
-            email: (savedSession && savedSession.email) || '',
-            wechatBound: (savedSession && savedSession.wechatBound !== undefined) ? savedSession.wechatBound : true,
-            keepStatus: (savedSession && savedSession.keepStatus !== undefined) ? savedSession.keepStatus : false
+            id: (cloudUser && cloudUser.id) || 'U001',
+            username: (cloudUser && cloudUser.username) || auth.user?.username || 'admin',
+            name: (cloudUser && cloudUser.name) || (cloudUser && cloudUser.nickname) || '系统创建者',
+            role: (cloudUser && cloudUser.role) || '超级管理员',
+            avatar: (cloudUser && cloudUser.avatar) || '',
+            position: (cloudUser && cloudUser.position) || '客服总监',
+            brand: (cloudUser && cloudUser.brand) || 'Chanseen',
+            nickname: (cloudUser && cloudUser.nickname) || (cloudUser && cloudUser.name) || '系统创建者',
+            birthday: (cloudUser && cloudUser.birthday) || '',
+            phone: (cloudUser && cloudUser.phone) || '',
+            email: (cloudUser && cloudUser.email) || '',
+            wechatBound: cloudUser ? (cloudUser.wechatBound !== undefined ? cloudUser.wechatBound : true) : true,
+            keepStatus: cloudUser ? (cloudUser.keepStatus !== undefined ? cloudUser.keepStatus : false) : false
           };
-          currentRole = '管理员';
+
+          // 把最新数据写回 chansee_current_user，确保下次能用
+          var sess = JSON.parse(JSON.stringify(currentUser));
+          delete sess.password;
+          safeSetItem('chansee_current_user', JSON.stringify(sess));
+
+          currentRole = currentUser.role || '超级管理员';
           hideLoginModal();
           updateUserDisplay();
           setAppContentVisible(true);
+          console.log('[checkLogin] login.html路径：登录成功，currentUser=', currentUser);
           return true;
         } else {
           localStorage.removeItem('chanseen_auth');
         }
       } catch(e) {
+        console.error('[checkLogin] login.html路径异常:', e);
         localStorage.removeItem('chanseen_auth');
       }
     }
