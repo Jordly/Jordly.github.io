@@ -18,7 +18,7 @@ function exportProjects(){
         p.startDate||'',
         p.endDate||'',
         p.base||'',
-        (p.platforms||[]).join(',')||'',
+        (Array.isArray(p.platforms) ? p.platforms : []).join(',')||'',
         p.serviceHours||'',
         p.fteTarget||0,
         p.slaResponse||0,
