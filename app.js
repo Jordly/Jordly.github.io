@@ -110,6 +110,24 @@ var HANDOVERS = [];
 
 
 
+// ===== Toast 提示函数（主界面版，补上 login.html 里有的函数）=====
+function showToast(msg, type) {
+  try {
+    var el = document.getElementById('toast-msg');
+    if (el) {
+      el.textContent = msg;
+      el.className = 'toast-msg' + (type ? ' toast-' + type : '');
+      el.classList.add('show');
+      setTimeout(function() { el.classList.remove('show'); }, 2500);
+    } else {
+      // fallback：用 alert 代替
+      console.log('[Toast] ' + msg);
+    }
+  } catch(e) {
+    console.log('[Toast] ' + msg);
+  }
+}
+
 // ===== 数据持久化（彻底修复版）=====
 // 安全写入 localStorage（带 quota 处理和用户提示）
 function safeSetItem(key, value) {
@@ -4704,7 +4722,8 @@ function exportToXlsx(filename, headers, rows) {
     var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, filename);
-    showToast('已导出：' + filename);
+    if (typeof showToast === 'function') showToast('已导出：' + filename);
+    else console.log('[export] 已导出：' + filename);
   } catch(e) {
     console.error('[exportToXlsx] 失败:', e);
     alert('导出 Excel 失败：' + e.message);
@@ -4712,19 +4731,25 @@ function exportToXlsx(filename, headers, rows) {
 }
 
 function exportToCSV(filename, headers, rows) {
-  var BOM = '\uFEFF';
-  var csvRows = [headers, ...rows].map(function(r) {
-    return r.map(function(c) { return '"' + (c||'').toString().replace(/"/g, '""') + '"'; }).join(',');
-  });
-  var csvContent = BOM + csvRows.join('\n');
-  var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('已导出：' + filename);
+  try {
+    var BOM = '\uFEFF';
+    var csvRows = [headers, ...rows].map(function(r) {
+      return r.map(function(c) { return '"' + (c||'').toString().replace(/"/g, '""') + '"'; }).join(',');
+    });
+    var csvContent = BOM + csvRows.join('\n');
+    var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    if (typeof showToast === 'function') showToast('已导出：' + filename);
+    else console.log('[export] 已导出：' + filename);
+  } catch(e) {
+    console.error('[exportToCSV] 失败:', e);
+    alert('导出 CSV 失败：' + e.message);
+  }
 }
 
 function showExportDialog(headers, rows, baseFilename, title) {
