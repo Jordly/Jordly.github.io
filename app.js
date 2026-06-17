@@ -1457,7 +1457,7 @@ const DEFAULT_PERMISSIONS = {
   "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"hidden", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"hidden", permissions:"hidden", notifications:"hidden", performance:"read", risk:"read", profile:"write" },
   "客服主管": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", permissions:"hidden", notifications:"read", performance:"write", risk:"read", profile:"write" },
   "客服经理": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"hidden", notifications:"read", performance:"write", risk:"write", profile:"write" },
-  "客服总监": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"hidden", notifications:"read", performance:"read", risk:"read", profile:"write" },
+  "客服总监": { dashboard:"read", archive:"write", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"hidden", notifications:"read", performance:"read", risk:"read", profile:"write" },
   "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
   "项目伙伴": { dashboard:"read", archive:"read", target:"hidden", cost:"hidden", operation:"read", issue:"read", knowledge:"read", handover:"hidden", satisfaction:"hidden", permissions:"hidden", notifications:"hidden", performance:"hidden", risk:"hidden", profile:"write" },
   "技术伙伴": { dashboard:"read", archive:"hidden", target:"hidden", cost:"hidden", operation:"read", issue:"write", knowledge:"read", handover:"hidden", satisfaction:"hidden", permissions:"hidden", notifications:"hidden", performance:"read", risk:"hidden", profile:"write" },
@@ -2633,11 +2633,18 @@ function renderArchive(){
 
     </div>
 
-    <div class="module-actions">
+    <div class="module-actions" style="flex-wrap:wrap;gap:6px;align-items:center;">
+
+      <!-- 搜索框 -->
+      <input type="text" id="archive-search" placeholder="🔍 搜索项目编号/名称/品牌..." 
+        style="padding:5px 10px;border-radius:6px;border:1px solid var(--c-border);font-size:13px;width:220px;"
+        oninput="filterArchiveTable(this.value)">
 
       <button class="btn btn-sm" onclick="showImportDialog()" style="margin-right:4px;">📤 导入</button>
       <button class="btn btn-sm" onclick="exportProjects()" style="margin-right:8px;">📥 导出</button>
       ${can?'<button class="btn btn-primary btn-sm" onclick="showAddProject()">＋ 新增项目</button>':''}
+
+      ${can?'<button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;margin-left:4px;" onclick="batchDeleteProjects()">🗑 批量删除</button>':''}
 
       ${currentRole==='leader'?'<span class="badge badge-gray">只读权限</span>':''}
 
@@ -2649,13 +2656,17 @@ function renderArchive(){
 
     <table class="data-table">
 
-      <thead><tr><th>项目编号</th><th>项目名称</th><th>品牌/品类</th><th>项目类型</th><th>所属职场</th><th>负责人</th><th>项目总监</th><th>交接历史</th><th>操作</th></tr></thead>
+      <thead><tr>
+        ${can?'<th style="width:36px;"><input type="checkbox" id="archive-select-all" onclick="toggleArchiveSelectAll(this.checked)" title="全选/取消"></th>':''}
+        <th>项目编号</th><th>项目名称</th><th>品牌/品类</th><th>项目类型</th><th>所属职场</th><th>负责人</th><th>项目总监</th><th>交接历史</th><th>操作</th></tr></thead>
 
-      <tbody>
+      <tbody id="archive-tbody">
 
-        ${all.map(p=>`
+        ${all.map((p, idx)=>`
 
-          <tr>
+          <tr data-id="${p.id}" data-name="${p.name}" data-brand="${p.brand}" data-pm="${p.pm}">
+
+            ${can?`<td><input type="checkbox" class="archive-row-check" value="${p.id}" onchange="updateBatchDeleteBtn()"></td>`:''}
 
             <td>${p.id}</td>
 
@@ -2674,11 +2685,9 @@ function renderArchive(){
             <td>${(p.pmHistory||[]).length>0?`<span class="badge badge-gray" title="${(p.pmHistory||[]).map(h=>h.name+'('+h.from+'~'+h.to+')').join('; ')}">${(p.pmHistory||[]).length}次交接</span>`:'无'}</td>
 
             <td class="actions">
-
               <button class="btn btn-sm" onclick="showProjectDetail('${p.id}')">查看</button>
-
-              ${can?`<button class="btn btn-sm" onclick="editProject('${p.id}')">编辑</button>
-              <button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;" onclick="deleteProject('${p.id}')">删除</button>`:''}
+              ${can?`&nbsp;<button class="btn btn-sm" onclick="editProject('${p.id}')">编辑</button>&nbsp;
+              <button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;" onclick="deleteProjectConfirm('${p.id}','${p.name}')">删除</button>`:''}
 
             </td>
 
@@ -2688,11 +2697,23 @@ function renderArchive(){
 
     </table>
 
+    <div id="archive-empty-hint" style="display:none;padding:20px;text-align:center;color:var(--c-text-3);font-size:14px;">
+      未找到匹配的项目，请尝试其他搜索关键词
+    </div>
+
   </div>`;
 
 }
 
 
+
+
+function filterArchiveTable(kw){kw=(kw||'').toLowerCase().trim();var r=document.querySelectorAll('#archive-tbody tr'),c=0;r.forEach(function(row){if(!kw){row.style.display='';c++;return;}var t=(row.dataset.id+' '+row.dataset.name+' '+row.dataset.brand+' '+row.dataset.pm).toLowerCase();var m=t.indexOf(kw)!==-1;row.style.display=m?'':'none';if(m)c++});var h=document.getElementById('archive-empty-hint');if(h)h.style.display=c===0?'':'none'}
+function toggleArchiveSelectAll(c){var cb=document.querySelectorAll('.archive-row-check');for(var i=0;i<cb.length;i++)cb[i].checked=c;updateBatchDeleteBtn()}
+function updateBatchDeleteBtn(){var c=document.querySelectorAll('.archive-row-check:checked'),b=document.querySelectorAll("[onclick='batchDeleteProjects()']");for(var i=0;i<b.length;i++){b[i].disabled=c.length===0;b[i].style.opacity=c.length>0?1:0.5}}
+function batchDeleteProjects(){var c=document.querySelectorAll('.archive-row-check:checked');if(!c.length){alert('请先勾选要删除的项目');return}var ids=[];for(var i=0;i<c.length;i++)ids.push(c[i].value);if(!confirm('确定删除选中的'+ids.length+'个项目？此操作不可恢复！'))return;ids.forEach(function(id){deleteProjectDirectly(id)});showToast('已删除'+ids.length+'个项目');renderModule('archive')}
+function deleteProjectConfirm(id,name){if(confirm('确定删除「'+name+'」？仅删此条，不影响其他模块'))deleteProject(id)}
+function deleteProjectDirectly(id){PROJECTS=PROJECTS.filter(function(p){return p.id!==id});safeSetItem('chansee_projects',JSON.stringify(PROJECTS));if(window.CloudBaseSync)window.CloudBaseSync.saveAll()}
 
 // ===== 目标与权责管理 =====
 
