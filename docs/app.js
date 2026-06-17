@@ -298,9 +298,25 @@ function saveUsers() {
       p.then(function(success) {
         if (success) {
           console.log('[saveUsers] ✅ CloudBase 同步成功');
+          // 云端保存成功时，记录成功标记
+          try { localStorage.setItem('chansee_users_cloud_saved', 'true'); } catch(e) {}
         } else {
           console.warn('[saveUsers] ❌ CloudBase 同步失败，数据仅保存在本地');
+          // 云端保存失败，给用户提示
+          if (typeof showToast === 'function') {
+            showToast('⚠️ 云端保存失败，数据仅保存在本地浏览器');
+          } else {
+            console.warn('⚠️ 云端保存失败，数据仅保存在本地浏览器。切换设备或清除浏览器数据后会丢失！');
+          }
+          // 标记云端保存失败
+          try { localStorage.setItem('chansee_users_cloud_saved', 'false'); } catch(e) {}
         }
+      }).catch(function(err) {
+        console.error('[saveUsers] ❌ CloudBase 同步异常:', err);
+        if (typeof showToast === 'function') {
+          showToast('⚠️ 云端保存异常，数据仅保存在本地浏览器');
+        }
+        try { localStorage.setItem('chansee_users_cloud_saved', 'false'); } catch(e) {}
       });
     }
   }
@@ -401,6 +417,18 @@ async function checkLogin() {
         const auth = JSON.parse(authStr);
         const maxAge = auth.remember ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
         if (auth.token && (Date.now() - auth.loginAt) < maxAge) {
+          // 【防重置修复】加载云端数据前，先备份本地的用户数据
+          var localUsersBackup = null;
+          try {
+            var localUsersStr = localStorage.getItem('chansee_users');
+            if (localUsersStr) {
+              localUsersBackup = JSON.parse(localUsersStr);
+              console.log('[checkLogin] 已备份本地用户数据，共 ' + localUsersBackup.length + ' 条');
+            }
+          } catch(e) {
+            console.warn('[checkLogin] 备份本地用户数据失败:', e);
+          }
+
           // login.html 登录：先从云端加载最新用户数据，再用云端数据构建 currentUser
           if (window.CloudBaseSync) {
             try {
@@ -413,6 +441,51 @@ async function checkLogin() {
               }
             } catch(e) {
               console.warn('[checkLogin] login.html路径：云端加载失败，使用本地数据');
+            }
+          }
+
+          // 【防重置修复】检查云端加载的数据是否导致数据丢失，如果是，用本地备份恢复
+          if (localUsersBackup && Array.isArray(localUsersBackup)) {
+            var currentUsername = auth.user?.username || auth.user?.name || 'admin';
+            var cloudUser = USERS.find(u => u.username === currentUsername);
+            var localUser = localUsersBackup.find(u => u.username === currentUsername);
+            
+            // 如果云端用户缺少昵称或昵称是默认的，而本地备份里有正确的昵称，就用本地备份恢复
+            if (localUser && localUser.nickname && localUser.nickname !== '系统创建者' && localUser.nickname !== '未设置') {
+              if (!cloudUser || !cloudUser.nickname || cloudUser.nickname === '系统创建者' || cloudUser.nickname === '未设置') {
+                console.warn('[checkLogin] 检测到云端数据缺少昵称，正在从本地备份恢复...');
+                // 用本地备份的数据更新 USERS 数组
+                for (var bi = 0; bi < localUsersBackup.length; bi++) {
+                  var bu = localUsersBackup[bi];
+                  var found = false;
+                  for (var ui = 0; ui < USERS.length; ui++) {
+                    if (USERS[ui].id === bu.id || USERS[ui].username === bu.username) {
+                      // 保留云端数据，但如果云端数据缺少昵称等字段，就用本地备份的补全
+                      if (!USERS[ui].nickname || USERS[ui].nickname === '系统创建者' || USERS[ui].nickname === '未设置') {
+                        USERS[ui].nickname = bu.nickname;
+                        USERS[ui].name = bu.nickname;
+                      }
+                      if (!USERS[ui].birthday && bu.birthday) USERS[ui].birthday = bu.birthday;
+                      if (!USERS[ui].phone && bu.phone) USERS[ui].phone = bu.phone;
+                      if (!USERS[ui].email && bu.email) USERS[ui].email = bu.email;
+                      if (!USERS[ui].position && bu.position) USERS[ui].position = bu.position;
+                      found = true;
+                      break;
+                    }
+                  }
+                  // 如果云端没有这个用户，就把本地备份的用户加进去
+                  if (!found) {
+                    USERS.push(bu);
+                  }
+                }
+                // 保存恢复后的数据到 localStorage
+                safeSetItem('chansee_users', JSON.stringify(USERS));
+                console.log('[checkLogin] ✅ 已从本地备份恢复用户数据');
+                // 尝试再次同步到云端
+                if (window.CloudBaseSync) {
+                  window.CloudBaseSync.saveAll();
+                }
+              }
             }
           }
 
