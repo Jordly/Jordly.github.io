@@ -119,7 +119,7 @@
 
   // ===== 读取 =====
 
-  function loadOne(name) {
+  function loadOne(name, isOptional) {
     return new Promise(function(resolve, reject) {
       if (!API_BASE) { resolve([]); return; }
 
@@ -131,11 +131,23 @@
         } else if (res.code === 0) {
           resolve([]);
         } else {
-          log('加载 ' + name + ' 失败: ' + (res.message || '未知错误'));
-          reject(new Error(res.message || '加载失败'));
+          var errMsg = res.message || '未知错误';
+          log('加载 ' + name + ' 失败: ' + errMsg);
+          // 可选集合（assessments/knowledge/risk_alerts）加载失败不中断
+          if (isOptional) {
+            log('  ↳ 可选集合，跳过: ' + name);
+            resolve([]);
+          } else {
+            reject(new Error(errMsg));
+          }
         }
       }).catch(function(err) {
-        reject(err);
+        if (isOptional) {
+          log('加载 ' + name + ' 异常（可选集合，跳过）: ' + err.message);
+          resolve([]);
+        } else {
+          reject(err);
+        }
       });
     });
   }
@@ -152,13 +164,15 @@
       log('开始从云端加载所有数据...');
       _cb_syncing = true;  // 阻止 setItem 拦截器触发保存
 
+      // assessments、knowledge、risk_alerts 为可选集合：
+      // 如果云数据库里还没有这些集合，加载失败不阻止整体流程
       Promise.all([
-        loadOne('projects'),
-        loadOne('users'),
-        loadOne('goals'),
-        loadOne('assessments'),
-        loadOne('knowledge'),
-        loadOne('risk_alerts')
+        loadOne('projects', false),
+        loadOne('users', false),
+        loadOne('goals', false),
+        loadOne('assessments', true),
+        loadOne('knowledge', true),
+        loadOne('risk_alerts', true)
       ]).then(function(results) {
         var projects = results[0];
         var users = results[1];
@@ -271,6 +285,8 @@
     try { knowledge = JSON.parse(localStorage.getItem('chansee_knowledge') || '[]'); } catch(e) {}
     try { risks = JSON.parse(localStorage.getItem('chansee_risk_alerts') || '[]'); } catch(e) {}
 
+    // assessments、knowledge、risk_alerts 为可选集合：
+    // 如果云数据库里还没有创建这些集合，保存失败也不影响整体结果
     Promise.all([
       saveOne('projects', projects),
       saveOne('users', users),
@@ -279,12 +295,20 @@
       saveOne('knowledge', knowledge),
       saveOne('risk_alerts', risks)
     ]).then(function(results) {
-      var ok = results[0].ok && results[1].ok && results[2].ok && results[3].ok && results[4].ok && results[5].ok;
-      if (ok) {
+      var coreOk = results[0].ok && results[1].ok && results[2].ok;
+      var optionalErrors = [];
+      if (!results[3].ok) optionalErrors.push('assessments:' + results[3].error);
+      if (!results[4].ok) optionalErrors.push('knowledge:' + results[4].error);
+      if (!results[5].ok) optionalErrors.push('risk_alerts:' + results[5].error);
+
+      if (coreOk) {
+        if (optionalErrors.length > 0) {
+          log('可选集合保存失败（已忽略）: ' + optionalErrors.join('; '));
+        }
         showStatus('云端同步成功 ✅', 'success');
-        log('云端保存完成，三个集合全部保存成功');
-        // 后台验证（只记录日志，不影响提示）
+        log('云端保存完成');
         verifyCloudData(projects, users, goals);
+        callback(true);
       } else {
         var errors = [];
         if (!results[0].ok) errors.push('projects:' + results[0].error);
@@ -292,8 +316,8 @@
         if (!results[2].ok) errors.push('goals:' + results[2].error);
         showStatus('同步失败: ' + errors.join('; '), 'error');
         log('云端保存失败，errors=' + errors.join('; '));
+        callback(false);
       }
-      callback(ok);
     });
   }
 
@@ -350,7 +374,10 @@
     if (!_cb_syncing && (
       key === 'chansee_projects' ||
       key === 'chansee_users' ||
-      key === 'chansee_goals'
+      key === 'chansee_goals' ||
+      key === 'chansee_assessments' ||
+      key === 'chansee_knowledge' ||
+      key === 'chansee_risk_alerts'
     )) {
       markDirty(key);
     }
