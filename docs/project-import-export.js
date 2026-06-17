@@ -47,7 +47,7 @@ function showImportDialog(){
     + ' onclick="document.getElementById(\'import-file-input\').click()">'
     + '<div style="font-size:32px;margin-bottom:10px;opacity:0.6;">📂</div>'
     + '<div>点击或拖拽CSV文件到此区域</div>'
-    + '<div style="font-size:11px;margin-top:6px;color:var(--c-text-3);">仅支持 .csv 文件（UTF-8 编码）</div>'
+    + '<div style="font-size:11px;margin-top:6px;color:var(--c-text-3);">支持 .csv / .xlsx / .xls 文件</div>'
     + '</div>'
     + '<input type="file" id="import-file-input" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleImportFile(this)">'
     + '<div id="import-preview-area" style="margin-top:16px;"></div>'

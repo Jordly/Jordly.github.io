@@ -5549,7 +5549,7 @@ function importSatisfaction(){
 
       <div>📋 <b>导入说明：</b></div>
 
-      <div>支持 CSV 格式（UTF-8 编码），文件需包含以下字段（顺序不限）：</div>
+      <div>支持 CSV / XLSX 格式，文件字段顺序不限，参考导出文件。</div>
 
       <div style="background:var(--c-bg);padding:8px 12px;border-radius:6px;margin-top:6px;font-size:12px;">
 
@@ -5565,7 +5565,7 @@ function importSatisfaction(){
 
       <label class="form-label">选择文件（.csv）</label>
 
-      <input type="file" id="sat-import-file" accept=".csv" class="form-input" style="padding:6px 10px;">
+      <input type="file" id="sat-import-file" accept=".csv,.xlsx,.xls" class="form-input" style="padding:6px 10px;">
 
     </div>
 
@@ -5590,111 +5590,83 @@ function doImportSatisfaction(){
   if(!fileInput || !fileInput.files.length){ alert("请先选择文件"); return; }
 
   const file = fileInput.files[0];
+  const ext = (file.name || '').split('.').pop().toLowerCase();
 
-  const reader = new FileReader();
-
-  reader.onload = function(e){
-
-    try {
-
-      const text = e.target.result;
-
-      const liLima2 = text.replace(/^\uFEFF/,'').split('\n').map(l => l.trim()).filter(Boolean);
-
-      if(liLima2.length < 2){ alert("文件内容为空或仅有表头"); return; }
-
-      const headers = liLima2[0].split(',').map(h => h.replace(/^"|"$/g,'').trim());
-
-      let importCount = 0;
-
-      for(let i=1;i<liLima2.length;i++){
-
-        const vals = liLima2[i].split(',').map(v => v.replace(/^"|"$/g,'').trim());
-
-        if(vals.length < 3) continue;
-
-        const period = vals[headers.indexOf('周期')] || vals[1] || '';
-
-        const projectName = vals[headers.indexOf('项目')] || vals[0] || '';
-
-        const p = PROJECTS.find(pp => pp.name === projectName);
-
-        if(!p) continue;
-
-        SATISFACTION_DATA.push({
-
-          id: SATISFACTION_DATA.length + 1,
-
-          projectId: p.id,
-
-          period: period,
-
-          projectFeedback: {
-
-            overall: vals[headers.indexOf('项目综合感受')] || '满意',
-
-            busiLima2sPerf: vals[headers.indexOf('业务表现')] || '待填写',
-
-            professionalism: vals[headers.indexOf('专业度')] || '待填写',
-
-            execution: vals[headers.indexOf('执行力')] || '待填写',
-
-            reporting: {
-
-              timeliLima2s: vals[headers.indexOf('汇报时效性')] || '待填写',
-
-              accuracy: vals[headers.indexOf('汇报准确性')] || '待填写',
-
-              completeLima2s: vals[headers.indexOf('汇报全面性')] || '待填写'
-
-            },
-
-            riskControl: vals[headers.indexOf('风险管控')] || '待填写',
-
-            communication: {
-
-              frequency: vals[headers.indexOf('沟通频率')] || '待填写',
-
-              understanding: vals[headers.indexOf('沟通理解')] || '待填写',
-
-              sync: vals[headers.indexOf('信息同步')] || '待填写'
-
-            }
-
-          },
-
-          leaderScore: parseInt(vals[headers.indexOf('领导评分')]) || 0,
-
-          leaderComment: vals[headers.indexOf('上级评语')] || '',
-
-          evaluatedBy: vals[headers.indexOf('评定人')] || currentRole,
-
-          evaluatedAt: vals[headers.indexOf('评定日期')] || new Date().toISOString().slice(0,10),
-
-          status: vals[headers.indexOf('状态')] || '待评定'
-
+  if (ext === 'xlsx' || ext === 'xls') {
+    // Excel 格式：用 SheetJS 解析
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const wb = XLSX.read(e.target.result, { type: 'array' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+        if (!rows || rows.length < 2) { alert("文件内容为空或仅有表头"); return; }
+        processSatisfactionRows(rows);
+      } catch(err) { alert("解析Excel失败：" + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    // CSV 格式：原有逻辑
+    const reader = new FileReader();
+    reader.onload = function(e){
+      try {
+        const text = e.target.result;
+        const lines = text.replace(/^\uFEFF/,'').split('\n').map(l => l.trim()).filter(Boolean);
+        if(lines.length < 2){ alert("文件内容为空或仅有表头"); return; }
+        // CSV 转成二维数组格式，跟 Excel 统一
+        const rows = lines.map(function(line) {
+          return line.split(',').map(v => v.replace(/^"|"$/g,'').trim());
         });
+        processSatisfactionRows(rows);
+      } catch(err){ alert("导入失败：" + err.message); }
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
 
-        importCount++;
+}
 
-      }
-
-      document.getElementById("modal-overlay").classList.add("hidden");
-
-      renderModule("satisfaction");
-
-      alert(`导入完成！共成功导入 ${importCount} 条评估记录。`);
-
-    } catch(err){
-
-      alert("导入失败：" + err.message);
-
-    }
-
-  };
-
-  reader.readAsText(file, 'UTF-8');
-
+function processSatisfactionRows(rows) {
+  const headers = rows[0];
+  let importCount = 0;
+  for(let i=1;i<rows.length;i++){
+    const vals = rows[i];
+    if(vals.length < 3) continue;
+    const period = vals[headers.indexOf('周期')] || vals[1] || '';
+    const projectName = vals[headers.indexOf('项目')] || vals[0] || '';
+    const p = PROJECTS.find(pp => pp.name === projectName);
+    if(!p) continue;
+    SATISFACTION_DATA.push({
+      id: SATISFACTION_DATA.length + 1,
+      projectId: p.id,
+      period: period,
+      projectFeedback: {
+        overall: vals[headers.indexOf('项目综合感受')] || '满意',
+        busiLima2sPerf: vals[headers.indexOf('业务表现')] || '待填写',
+        professionalism: vals[headers.indexOf('专业度')] || '待填写',
+        execution: vals[headers.indexOf('执行力')] || '待填写',
+        reporting: {
+          timeliLima2s: vals[headers.indexOf('汇报时效性')] || '待填写',
+          accuracy: vals[headers.indexOf('汇报准确性')] || '待填写',
+          completeLima2s: vals[headers.indexOf('汇报全面性')] || '待填写'
+        },
+        riskControl: vals[headers.indexOf('风险管控')] || '待填写',
+        communication: {
+          frequency: vals[headers.indexOf('沟通频率')] || '待填写',
+          understanding: vals[headers.indexOf('沟通理解')] || '待填写',
+          sync: vals[headers.indexOf('信息同步')] || '待填写'
+        }
+      },
+      leaderScore: parseInt(vals[headers.indexOf('领导评分')]) || 0,
+      leaderComment: vals[headers.indexOf('上级评语')] || '',
+      evaluatedBy: vals[headers.indexOf('评定人')] || currentRole,
+      evaluatedAt: vals[headers.indexOf('评定日期')] || new Date().toISOString().slice(0,10),
+      status: vals[headers.indexOf('状态')] || '待评定'
+    });
+    importCount++;
+  }
+  document.getElementById("modal-overlay").classList.add("hidden");
+  renderModule("satisfaction");
+  alert(`导入完成！共成功导入 ${importCount} 条评估记录。`);
 }
 
 
@@ -6487,33 +6459,53 @@ function importAssessment() {
   input.onchange = function(e) {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      const text = ev.target.result;
-      const lines = text.split('\n');
-      let importCount = 0;
-      for (let i = 1; i < lines.length; i++) {
-        if (!lines[i].trim()) continue;
-        const vals = lines[i].split(',');
-        const groupName = vals[0]?.trim();
-        if (!groupName) continue;
-        let target = ASSESSMENTS_DATA.find(a => a.group === groupName && a.month === '7月');
-        if (!target) {
-          target = { month:'7月', dept:vals[1]?.trim()||'', group:groupName, manager:vals[2]?.trim()||'', level:vals[3]?.trim()||'', totalScore:0, quantScore:0, qualScore:0 };
-          ASSESSMENTS_DATA.push(target);
-        }
-        target.totalScore = parseFloat(vals[4]) || 0;
-        target.quantScore = parseFloat(vals[5]) || 0;
-        target.qualScore = parseFloat(vals[6]) || 0;
-        importCount++;
-      }
-      saveAssessmentsData();
-      renderModule('assessment');
-      alert(`✅ 导入完成！共成功导入 ${importCount} 条评估记录。`);
-    };
-    reader.readAsText(file);
+    const ext = (file.name || '').split('.').pop().toLowerCase();
+    if (ext === 'xlsx' || ext === 'xls') {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          const wb = XLSX.read(ev.target.result, { type: 'array' });
+          const ws = wb.Sheets[wb.SheetNames[0]];
+          var rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+          processAssessmentRows(rows);
+        } catch(err) { alert("解析Excel失败：" + err.message); }
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        var text = ev.target.result;
+        var lines = text.split('\n');
+        var rows = lines.map(function(line){ return line.split(','); });
+        processAssessmentRows(rows);
+      };
+      reader.readAsText(file);
+    }
   };
   input.click();
+}
+
+function processAssessmentRows(rows) {
+  if (!rows || rows.length < 2) return;
+  let importCount = 0;
+  for (let i = 1; i < rows.length; i++) {
+    if (!rows[i] || rows[i].length < 1) continue;
+    var vals = rows[i];
+    var groupName = (vals[0]||'').toString().trim();
+    if (!groupName) continue;
+    let target = ASSESSMENTS_DATA.find(a => a.group === groupName && a.month === '7月');
+    if (!target) {
+      target = { month:'7月', dept:(vals[1]||'').toString().trim(), group:groupName, manager:(vals[2]||'').toString().trim(), level:(vals[3]||'').toString().trim(), totalScore:0, quantScore:0, qualScore:0 };
+      ASSESSMENTS_DATA.push(target);
+    }
+    target.totalScore = parseFloat(vals[4]) || 0;
+    target.quantScore = parseFloat(vals[5]) || 0;
+    target.qualScore = parseFloat(vals[6]) || 0;
+    importCount++;
+  }
+  saveAssessmentsData();
+  renderModule('assessment');
+  alert("导入完成！共成功导入 " + importCount + " 条评估记录。");
 }
 
 // 自由对比弹窗
@@ -7149,44 +7141,62 @@ function importPerformance() {
   input.onchange = function(e) {
     var file = e.target.files[0];
     if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function(ev) {
-      var text = ev.target.result;
-      // 简单CSV解析
-      var lines = text.split('\n');
-      var headers = lines[0].split(',').map(h => h.trim());
-      for (var i = 1; i < lines.length; i++) {
-        if (!lines[i].trim()) continue;
-        var vals = lines[i].split(',').map(v => v.trim());
-        var newId = AGENT_PERFORMANCE.length > 0 ? Math.max(...AGENT_PERFORMANCE.map(a => a.id)) + 1 : 1;
-        var month = document.getElementById('pf-month')?.value || '2026-05';
-        var agent = {
-          id: newId + i,
-          projectId: vals[0] || '',
-          agentName: vals[1] || '',
-          group: vals[2] || 'A组',
-          status: vals[3] || '转正',
-          agentType: vals[4] || '售前',
-          month: month,
-          salesAmount: parseFloat(vals[5]) || 0,
-          conversionRate: parseFloat(vals[6]) || 0,
-          workVolume: parseFloat(vals[7]) || 0,
-          firstResolveRate: parseFloat(vals[8]) || 0,
-          responseTime: parseFloat(vals[9]) || 100,
-          csat: parseFloat(vals[10]) || 4.5,
-          serviceVolume: parseFloat(vals[11]) || 0,
-          reward: parseFloat(vals[12]) || 0,
-          penalty: parseFloat(vals[13]) || 0
-        };
-        AGENT_PERFORMANCE.push(agent);
-      }
-      saveAgentPerformance();
-      renderModule('performance');
-      alert('✅ 导入成功！共导入 ' + (lines.length - 1) + ' 条数据');
-    };
-    reader.readAsText(file);
+    var ext = (file.name || '').split('.').pop().toLowerCase();
+    if (ext === 'xlsx' || ext === 'xls') {
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        try {
+          var wb = XLSX.read(ev.target.result, { type: 'array' });
+          var ws = wb.Sheets[wb.SheetNames[0]];
+          var rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+          processPerformanceRows(rows);
+        } catch(err) { alert("解析Excel失败：" + err.message); }
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var text = ev.target.result;
+        var lines = text.split('\n');
+        var rows = lines.map(function(line){ return line.split(','); });
+        processPerformanceRows(rows);
+      };
+      reader.readAsText(file);
+    }
   };
   input.click();
+}
+
+function processPerformanceRows(rows) {
+  if (!rows || rows.length < 2) { alert("文件内容为空或仅有表头"); return; }
+  for (var i = 1; i < rows.length; i++) {
+    if (!rows[i] || rows[i].length < 2) continue;
+    var vals = rows[i];
+    var newId = AGENT_PERFORMANCE.length > 0 ? Math.max(...AGENT_PERFORMANCE.map(function(a){return a.id;})) + 1 : 1;
+    var month = document.getElementById('pf-month') ? document.getElementById('pf-month').value : '2026-05';
+    var agent = {
+      id: newId + i,
+      projectId: String(vals[0] || ''),
+      agentName: String(vals[1] || ''),
+      group: String(vals[2] || 'A组'),
+      status: String(vals[3] || '转正'),
+      agentType: String(vals[4] || '售前'),
+      month: month,
+      salesAmount: parseFloat(vals[5]) || 0,
+      conversionRate: parseFloat(vals[6]) || 0,
+      workVolume: parseFloat(vals[7]) || 0,
+      firstResolveRate: parseFloat(vals[8]) || 0,
+      responseTime: parseFloat(vals[9]) || 100,
+      csat: parseFloat(vals[10]) || 4.5,
+      serviceVolume: parseFloat(vals[11]) || 0,
+      reward: parseFloat(vals[12]) || 0,
+      penalty: parseFloat(vals[13]) || 0
+    };
+    AGENT_PERFORMANCE.push(agent);
+  }
+  saveAgentPerformance();
+  renderModule('performance');
+  alert("导入成功！共导入 " + (rows.length - 1) + " 条数据");
 }
 
 // 导出绩效数据（重写）
@@ -7209,7 +7219,7 @@ function exportPerformance() {
 // ===== 项目风险预警池 =====// ===== 项目风险预警池 =====
 function renderRisk(){
   let html = `<div class="page-header"><h2>⚠️ 项目风险预警池</h2>
-    <button class="btn btn-primary" onclick="exportRisk()">导出CSV</button>
+    <button class="btn btn-primary" onclick="exportRisk()">📤 导出</button>
   </div>`;
 
   const groups = [
