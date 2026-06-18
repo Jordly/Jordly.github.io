@@ -1669,16 +1669,27 @@ function closeMobileSidebar(){
 
 // ===== 侧边栏折叠/展开 =====
 function toggleSidebar(){
-  const sidebar = document.getElementById('sidebar');
-  const btn = document.getElementById('sidebar-toggle');
+  var sidebar = document.getElementById('sidebar');
+  var btn = document.getElementById('sidebar-toggle');
   if(!sidebar) return;
-  const isCollapsed = sidebar.classList.contains('collapsed');
-  if(isCollapsed){
-    sidebar.classList.remove('collapsed');
-    if(btn) btn.querySelector('.toggle-text').textContent = '收起导航';
+
+  // 用 inline style 记录和切换状态（不依赖CSS collapsed 规则）
+  var isNarrow = sidebar.style.width === '56px';
+
+  if(isNarrow){
+    // ===== 展开：恢复原宽度，显示文字 =====
+    sidebar.style.width = '';
+    var texts = sidebar.querySelectorAll('.nav-text');
+    for(var i=0;i<texts.length;i++) texts[i].style.display = '';
+    if(btn){ var t=btn.querySelector('.toggle-text'); if(t) t.textContent='收起导航'; t.style.display=''; }
   }else{
-    sidebar.classList.add('collapsed');
-    if(btn) btn.querySelector('.toggle-text').textContent = '展开导航';
+    // ===== 收起：缩窄到56px，隐藏文字 =====
+    sidebar.style.width = '56px';
+    sidebar.style.minWidth = '56px';
+    sidebar.style.overflowX = 'hidden';
+    var texts2 = sidebar.querySelectorAll('.nav-text');
+    for(var j=0;j<texts2.length;j++) texts2[j].style.display = 'none';
+    if(btn){ var t2=btn.querySelector('.toggle-text'); if(t2) t2.textContent='展开导航'; }
   }
 }
 
