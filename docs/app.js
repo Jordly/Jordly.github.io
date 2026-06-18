@@ -133,7 +133,6 @@ function safeSetItem(key, value) {
     localStorage.setItem(key, value);
     return true;
   } catch(e) {
-    console.error('[safeSetItem]', key, '写入失败:', e);
     if (e.name === 'QuotaExceededError' || e.code === 22) {
       // 尝试清理超大头像
       try {
@@ -183,7 +182,6 @@ var USERS = [];
       USERS = JSON.parse(raw);
       return;
     } catch(e) {
-      console.error('[init] 用户数据损坏，重置:', e);
     }
   }
   // 首次初始化
@@ -200,7 +198,6 @@ var PROJECTS = [];
       PROJECTS = JSON.parse(raw);
       return;
     } catch(e) {
-      console.error('[init] 项目数据损坏，重置:', e);
     }
   }
   PROJECTS = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
@@ -211,7 +208,6 @@ var PROJECTS = [];
 (function initOperations() {
   var raw = localStorage.getItem('chansee_operations');
   if (raw && raw !== 'null' && raw !== '[]') {
-    try { OPERATIONS = JSON.parse(raw); console.log('[init] 恢复 ' + OPERATIONS.length + ' 条运营数据'); return; } catch(e) { console.error('[init] 运营数据损坏:', e); }
   }
   OPERATIONS = JSON.parse(JSON.stringify(DEFAULT_OPERATIONS));
   safeSetItem('chansee_operations', JSON.stringify(OPERATIONS));
@@ -221,7 +217,6 @@ var PROJECTS = [];
 (function initIssues() {
   var raw = localStorage.getItem('chansee_issues');
   if (raw && raw !== 'null' && raw !== '[]') {
-    try { ISSUES = JSON.parse(raw); console.log('[init] 恢复 ' + ISSUES.length + ' 个问题'); return; } catch(e) { console.error('[init] 问题数据损坏:', e); }
   }
   ISSUES = JSON.parse(JSON.stringify(DEFAULT_ISSUES));
   safeSetItem('chansee_issues', JSON.stringify(ISSUES));
@@ -231,7 +226,6 @@ var PROJECTS = [];
 (function initAgentPerformance() {
   var raw = localStorage.getItem('chansee_agent_performance');
   if (raw && raw !== 'null' && raw !== '[]') {
-    try { AGENT_PERFORMANCE = JSON.parse(raw); console.log('[init] 恢复 ' + AGENT_PERFORMANCE.length + ' 条坐席数据'); return; } catch(e) { console.error('[init] 坐席数据损坏:', e); }
   }
   AGENT_PERFORMANCE = JSON.parse(JSON.stringify(DEFAULT_AGENT_PERFORMANCE));
   safeSetItem('chansee_agent_performance', JSON.stringify(AGENT_PERFORMANCE));
@@ -241,7 +235,6 @@ var PROJECTS = [];
 (function initGroupLoadRatio() {
   var raw = localStorage.getItem('chansee_group_load_ratio');
   if (raw && raw !== 'null' && raw !== '[]') {
-    try { GROUP_LOAD_RATIO = JSON.parse(raw); console.log('[init] 恢复 ' + GROUP_LOAD_RATIO.length + ' 条组别负荷比'); return; } catch(e) { console.error('[init] 组别负荷比损坏:', e); }
   }
   GROUP_LOAD_RATIO = JSON.parse(JSON.stringify(DEFAULT_GROUP_LOAD_RATIO || []));
   safeSetItem('chansee_group_load_ratio', JSON.stringify(GROUP_LOAD_RATIO));
@@ -251,7 +244,6 @@ var PROJECTS = [];
 (function initPerformanceWeights() {
   var raw = localStorage.getItem('chansee_performance_weights');
   if (raw && raw !== 'null' && raw !== '{}') {
-    try { PERFORMANCE_WEIGHTS = JSON.parse(raw); console.log('[init] 恢复绩效权重配置'); return; } catch(e) { console.error('[init] 绩效权重损坏:', e); }
   }
   PERFORMANCE_WEIGHTS = JSON.parse(JSON.stringify(DEFAULT_PERFORMANCE_WEIGHTS || {}));
   safeSetItem('chansee_performance_weights', JSON.stringify(PERFORMANCE_WEIGHTS));
@@ -261,7 +253,6 @@ var PROJECTS = [];
 (function initRiskAlerts() {
   var raw = localStorage.getItem('chansee_risk_alerts');
   if (raw && raw !== 'null' && raw !== '[]') {
-    try { RISK_ALERTS = JSON.parse(raw); console.log('[init] 恢复 ' + RISK_ALERTS.length + ' 条风险预警'); return; } catch(e) { console.error('[init] 风险预警数据损坏:', e); }
   }
   RISK_ALERTS = JSON.parse(JSON.stringify(DEFAULT_RISK_ALERTS));
   safeSetItem('chansee_risk_alerts', JSON.stringify(RISK_ALERTS));
@@ -271,7 +262,6 @@ var PROJECTS = [];
 (function initKnowledge() {
   var raw = localStorage.getItem('chansee_knowledge');
   if (raw && raw !== 'null' && raw !== '[]') {
-    try { KNOWLEDGE = JSON.parse(raw); console.log('[init] 恢复 ' + KNOWLEDGE.length + ' 条知识库'); return; } catch(e) { console.error('[init] 知识库数据损坏:', e); }
   }
   KNOWLEDGE = JSON.parse(JSON.stringify(DEFAULT_KNOWLEDGE));
   safeSetItem('chansee_knowledge', JSON.stringify(KNOWLEDGE));
@@ -281,7 +271,6 @@ var PROJECTS = [];
 (function initHandovers() {
   var raw = localStorage.getItem('chansee_handovers');
   if (raw && raw !== 'null' && raw !== '[]') {
-    try { HANDOVERS = JSON.parse(raw); console.log('[init] 恢复 ' + HANDOVERS.length + ' 条交接记录'); return; } catch(e) { console.error('[init] 交接记录数据损坏:', e); }
   }
   HANDOVERS = JSON.parse(JSON.stringify(DEFAULT_HANDOVERS));
   safeSetItem('chansee_handovers', JSON.stringify(HANDOVERS));
@@ -310,7 +299,6 @@ function saveUsers() {
           try { localStorage.setItem('chansee_users_cloud_saved', 'false'); } catch(e) {}
         }
       }).catch(function(err) {
-        console.error('[saveUsers] ❌ CloudBase 同步异常:', err);
         if (typeof showToast === 'function') {
           showToast('⚠️ 云端保存异常，数据仅保存在本地浏览器');
         }
@@ -337,29 +325,23 @@ function saveProjects() {
 
 function saveOperations() {
   safeSetItem('chansee_operations', JSON.stringify(OPERATIONS));
-  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveOperations] CloudBase 同步成功'); else console.warn('[saveOperations] CloudBase 同步失败'); }); } }
 }
 function saveIssues() {
   safeSetItem('chansee_issues', JSON.stringify(ISSUES));
-  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveIssues] CloudBase 同步成功'); else console.warn('[saveIssues] CloudBase 同步失败'); }); } }
 }
 function saveAgentPerformance() {
   safeSetItem('chansee_agent_performance', JSON.stringify(AGENT_PERFORMANCE));
   safeSetItem('chansee_group_load_ratio', JSON.stringify(GROUP_LOAD_RATIO));
   safeSetItem('chansee_performance_weights', JSON.stringify(PERFORMANCE_WEIGHTS));
-  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveAgentPerformance] CloudBase 同步成功'); else console.warn('[saveAgentPerformance] CloudBase 同步失败'); }); } }
 }
 function saveRiskAlerts() {
   safeSetItem('chansee_risk_alerts', JSON.stringify(RISK_ALERTS));
-  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveRiskAlerts] CloudBase 同步成功'); else console.warn('[saveRiskAlerts] CloudBase 同步失败'); }); } }
 }
 function saveKnowledge() {
   safeSetItem('chansee_knowledge', JSON.stringify(KNOWLEDGE));
-  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveKnowledge] CloudBase 同步成功'); else console.warn('[saveKnowledge] CloudBase 同步失败'); }); } }
 }
 function saveHandovers() {
   safeSetItem('chansee_handovers', JSON.stringify(HANDOVERS));
-  if (window.CloudBaseSync) { var p = window.CloudBaseSync.saveAll(); if (p && typeof p.then === 'function') { p.then(function(s){ if(s) console.log('[saveHandovers] CloudBase 同步成功'); else console.warn('[saveHandovers] CloudBase 同步失败'); }); } }
 }
 
 // 级联删除项目及所有关联数据
@@ -537,7 +519,6 @@ async function checkLogin() {
           localStorage.removeItem('chanseen_auth');
         }
       } catch(e) {
-        console.error('[checkLogin] login.html路径异常:', e);
         localStorage.removeItem('chanseen_auth');
       }
     }
@@ -603,7 +584,6 @@ async function checkLogin() {
       return true;
     }
   } catch(e) {
-    console.error("checkLogin error:", e);
   }
   currentUser = null;
   setAppContentVisible(false);
@@ -1593,7 +1573,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     renderModule("dashboard");
   } catch(e) {
-    console.error("CS CloudHub init error:", e);
     document.getElementById("module-content").innerHTML =
       '<div style="padding:40px;text-align:center;color:red;">' +
       '<h3>初始化错误</h3><p>' + e.message + '</p></div>';
@@ -1821,12 +1800,10 @@ function renderModule(module){
   try {
     currentModule = module;
     const area = document.getElementById("module-content");
-    if (!area) { console.error("module-content not found"); return; }
     const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
     area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
     bindEvents();
   } catch(e) {
-    console.error("renderModule error:", e);
     document.getElementById("module-content").innerHTML =
       '<div style="padding:40px;text-align:center;color:red;">' +
       '<h3>模块加载错误</h3><p>' + e.message + '</p></div>';
@@ -4798,9 +4775,7 @@ function exportToXlsx(filename, headers, rows) {
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, filename);
     if (typeof showToast === 'function') showToast('已导出：' + filename);
-    else console.log('[export] 已导出：' + filename);
   } catch(e) {
-    console.error('[exportToXlsx] 失败:', e);
     alert('导出 Excel 失败：' + e.message);
   }
 }
@@ -4820,9 +4795,7 @@ function exportToCSV(filename, headers, rows) {
     a.click();
     URL.revokeObjectURL(url);
     if (typeof showToast === 'function') showToast('已导出：' + filename);
-    else console.log('[export] 已导出：' + filename);
   } catch(e) {
-    console.error('[exportToCSV] 失败:', e);
     alert('导出 CSV 失败：' + e.message);
   }
 }
@@ -6792,7 +6765,6 @@ function exportAssessment(){
     });
     showExportDialog(headers, rows, `项目难度评估_${new Date().toISOString().slice(0,10)}`, '项目难度评估');
   } catch(e) {
-    console.error('[exportAssessment] 异常:', e);
     alert('导出失败：' + e.message);
   }
 }
