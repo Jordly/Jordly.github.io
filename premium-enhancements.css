@@ -32,12 +32,25 @@
   background: linear-gradient(135deg, #F8FBFE 0%, #F0F7F6 50%, #EDF5F2 100%) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border-bottom: 2px solid rgba(11,155,150,0.12) !important;
+  border-bottom: none !important;
   box-shadow: 0 1px 20px rgba(11,155,150,0.04) !important;
   position: sticky !important;
   top: 0 !important;
   z-index: 100 !important;
   animation: slideDown 0.5s var(--ease-premium) !important;
+  overflow: visible !important;
+}
+
+/* 底部金色+青色渐变装饰线 */
+#top-header::after {
+  content: '' !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, rgba(212,175,55,0.0) 0%, rgba(212,175,55,0.45) 25%, rgba(11,155,150,0.35) 75%, rgba(11,155,150,0.0) 100%) !important;
+  pointer-events: none !important;
 }
 
 @keyframes slideDown {
@@ -52,7 +65,7 @@
 }
 
 .header-left h1 {
-  background: var(--gradient-primary) !important;
+  background: linear-gradient(135deg, #D4AF37 0%, #C9A227 40%, #0B9B96 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   background-clip: text !important;
