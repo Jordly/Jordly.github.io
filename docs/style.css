@@ -171,8 +171,9 @@ body {
   font-size: 10px;
   color: var(--c-text-3);
 }
-.nav-section.collapsed .nav-item {
-  display: none;
+/* 用 data-sub-collapsed 属性控制二级菜单显隐，!important 覆盖其他规则 */
+.nav-section[data-sub-collapsed="true"] .nav-item {
+  display: none !important;
 }
 .nav-item {
   display: flex;
@@ -286,6 +287,7 @@ body {
 #sidebar.collapsed .section-icon {
   font-size: 18px;
 }
+/* 折叠状态下：二级菜单图标始终显示（作为图标容器），但文字隐藏 */
 #sidebar.collapsed .nav-item {
   padding: 8px 0;
   justify-content: center;
@@ -309,13 +311,7 @@ body {
 #sidebar.collapsed .nav-item .nav-text {
   display: none;
 }
-#sidebar.collapsed .nav-section.collapsed .nav-item {
-  display: flex !important;
-}
-/* 折叠状态下所有二级菜单图标都显示 */
-#sidebar.collapsed .nav-item {
-  display: flex !important;
-}
+/* 折叠状态下所有二级菜单图标都显示（作为图标容器） */
 #sidebar.collapsed .sidebar-toggle-btn {
   padding: 10px 0;
   justify-content: center;
