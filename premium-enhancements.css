@@ -6,34 +6,34 @@
 
 /* ===== 高级色彩系统扩展 ===== */
 :root {
-  /* 新增渐变色彩 */
-  --gradient-primary: linear-gradient(135deg, #185FA5 0%, #4F46E5 50%, #7C3AED 100%);
-  --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* 新增渐变色彩 - 调整为蒂芙尼蓝+金色系，与登录页呼应 */
+  --gradient-primary: linear-gradient(135deg, #0B9B96 0%, #0ABAB5 50%, #D4AF37 100%);
+  --gradient-hero: linear-gradient(135deg, #0ABAB5 0%, #6C5CE7 100%);
   --gradient-success: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  --gradient-bg: linear-gradient(135deg, #f8f9fa 0%, #e8f4fd 100%);
+  --gradient-bg: linear-gradient(135deg, #F0F4F8 0%, #E8F4FD 100%);
   
   /* 毛玻璃效果 */
-  --glass-bg: rgba(255, 255, 255, 0.95);
-  --glass-border: rgba(255, 255, 255, 0.3);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(11, 155, 150, 0.12);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
   
   /* 高级阴影 */
-  --shadow-soft: 0 2px 15px rgba(0, 0, 0, 0.08);
-  --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
-  --shadow-glow: 0 0 20px rgba(24, 95, 165, 0.3);
+  --shadow-soft: 0 2px 15px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.10);
+  --shadow-glow: 0 0 20px rgba(11, 155, 150, 0.2);
   
   /* 动画曲线 */
   --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* ===== 顶部导航栏增强 ===== */
+/* ===== 顶部导航栏增强（与登录页颜色呼应） ===== */
 #top-header {
-  background: var(--glass-bg) !important;
+  background: linear-gradient(135deg, #F8FBFE 0%, #F0F7F6 50%, #EDF5F2 100%) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border-bottom: 1px solid var(--glass-border) !important;
-  box-shadow: 0 1px 20px rgba(0, 0, 0, 0.05) !important;
+  border-bottom: 2px solid rgba(11,155,150,0.12) !important;
+  box-shadow: 0 1px 20px rgba(11,155,150,0.04) !important;
   position: sticky !important;
   top: 0 !important;
   z-index: 100 !important;
@@ -60,11 +60,11 @@
   letter-spacing: -0.5px !important;
 }
 
-/* ===== 侧边栏增强 ===== */
+/* ===== 侧边栏增强（与登录页颜色呼应） ===== */
 #sidebar {
-  background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%) !important;
-  border-right: 1px solid rgba(0, 0, 0, 0.06) !important;
-  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.03) !important;
+  background: linear-gradient(180deg, #F0F7F6 0%, #F5FAF8 50%, #F8FBFE 100%) !important;
+  border-right: 1px solid rgba(11,155,150,0.08) !important;
+  box-shadow: 2px 0 20px rgba(11,155,150,0.03) !important;
   transition: all 0.4s var(--ease-premium) !important;
   position: relative !important;
   overflow-x: hidden !important;
