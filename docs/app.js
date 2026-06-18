@@ -121,10 +121,8 @@ function showToast(msg, type) {
       setTimeout(function() { el.classList.remove('show'); }, 2500);
     } else {
       // fallback：用 alert 代替
-      console.log('[Toast] ' + msg);
     }
   } catch(e) {
-    console.log('[Toast] ' + msg);
   }
 }
 
@@ -146,7 +144,6 @@ function safeSetItem(key, value) {
         });
         if (cleaned > 0) {
           localStorage.setItem('chansee_users', JSON.stringify(users));
-          console.log('[safeSetItem] 已清理 ' + cleaned + ' 个大头像，重试写入');
           localStorage.setItem(key, value);
           return true;
         }
@@ -184,7 +181,6 @@ var USERS = [];
   if (raw && raw !== 'null' && raw !== '[]') {
     try {
       USERS = JSON.parse(raw);
-      console.log('[init] 从 localStorage 恢复 ' + USERS.length + ' 个用户');
       return;
     } catch(e) {
       console.error('[init] 用户数据损坏，重置:', e);
@@ -193,7 +189,6 @@ var USERS = [];
   // 首次初始化
   USERS = JSON.parse(JSON.stringify(DEFAULT_USERS));
   safeSetItem('chansee_users', JSON.stringify(USERS));
-  console.log('[init] 首次初始化用户数据');
 })();
 
 // 初始化 PROJECTS
@@ -203,7 +198,6 @@ var PROJECTS = [];
   if (raw && raw !== 'null' && raw !== '[]') {
     try {
       PROJECTS = JSON.parse(raw);
-      console.log('[init] 从 localStorage 恢复 ' + PROJECTS.length + ' 个项目');
       return;
     } catch(e) {
       console.error('[init] 项目数据损坏，重置:', e);
@@ -211,7 +205,6 @@ var PROJECTS = [];
   }
   PROJECTS = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
   safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
-  console.log('[init] 首次初始化项目数据');
 })();
 
 // 初始化 OPERATIONS
@@ -222,7 +215,6 @@ var PROJECTS = [];
   }
   OPERATIONS = JSON.parse(JSON.stringify(DEFAULT_OPERATIONS));
   safeSetItem('chansee_operations', JSON.stringify(OPERATIONS));
-  console.log('[init] 首次初始化运营数据');
 })();
 
 // 初始化 ISSUES
@@ -233,7 +225,6 @@ var PROJECTS = [];
   }
   ISSUES = JSON.parse(JSON.stringify(DEFAULT_ISSUES));
   safeSetItem('chansee_issues', JSON.stringify(ISSUES));
-  console.log('[init] 首次初始化问题数据');
 })();
 
 // 初始化 AGENT_PERFORMANCE
@@ -244,7 +235,6 @@ var PROJECTS = [];
   }
   AGENT_PERFORMANCE = JSON.parse(JSON.stringify(DEFAULT_AGENT_PERFORMANCE));
   safeSetItem('chansee_agent_performance', JSON.stringify(AGENT_PERFORMANCE));
-  console.log('[init] 首次初始化坐席数据');
 })();
 
 // 初始化 GROUP_LOAD_RATIO
@@ -255,7 +245,6 @@ var PROJECTS = [];
   }
   GROUP_LOAD_RATIO = JSON.parse(JSON.stringify(DEFAULT_GROUP_LOAD_RATIO || []));
   safeSetItem('chansee_group_load_ratio', JSON.stringify(GROUP_LOAD_RATIO));
-  console.log('[init] 首次初始化组别负荷比');
 })();
 
 // 初始化 PERFORMANCE_WEIGHTS
@@ -266,7 +255,6 @@ var PROJECTS = [];
   }
   PERFORMANCE_WEIGHTS = JSON.parse(JSON.stringify(DEFAULT_PERFORMANCE_WEIGHTS || {}));
   safeSetItem('chansee_performance_weights', JSON.stringify(PERFORMANCE_WEIGHTS));
-  console.log('[init] 首次初始化绩效权重');
 })();
 
 // 初始化 RISK_ALERTS
@@ -277,7 +265,6 @@ var PROJECTS = [];
   }
   RISK_ALERTS = JSON.parse(JSON.stringify(DEFAULT_RISK_ALERTS));
   safeSetItem('chansee_risk_alerts', JSON.stringify(RISK_ALERTS));
-  console.log('[init] 首次初始化风险预警数据');
 })();
 
 // 初始化 KNOWLEDGE
@@ -288,7 +275,6 @@ var PROJECTS = [];
   }
   KNOWLEDGE = JSON.parse(JSON.stringify(DEFAULT_KNOWLEDGE));
   safeSetItem('chansee_knowledge', JSON.stringify(KNOWLEDGE));
-  console.log('[init] 首次初始化知识库数据');
 })();
 
 // 初始化 HANDOVERS
@@ -299,7 +285,6 @@ var PROJECTS = [];
   }
   HANDOVERS = JSON.parse(JSON.stringify(DEFAULT_HANDOVERS));
   safeSetItem('chansee_handovers', JSON.stringify(HANDOVERS));
-  console.log('[init] 首次初始化交接记录数据');
 })();
 
 function saveUsers() {
@@ -308,23 +293,18 @@ function saveUsers() {
   // 同步到 CloudBase
   if (window.CloudBaseSync) {
     // 添加日志：显示正在保存的数据
-    console.log('[saveUsers] 正在保存用户数据到云端，共 ' + USERS.length + ' 条');
-    console.log('[saveUsers] 当前用户数据:', JSON.stringify(USERS.find(u => u.id === currentUser?.id)));
     
     var p = window.CloudBaseSync.saveAll();
     if (p && typeof p.then === 'function') {
       p.then(function(success) {
         if (success) {
-          console.log('[saveUsers] ✅ CloudBase 同步成功');
           // 云端保存成功时，记录成功标记
           try { localStorage.setItem('chansee_users_cloud_saved', 'true'); } catch(e) {}
         } else {
-          console.warn('[saveUsers] ❌ CloudBase 同步失败，数据仅保存在本地');
           // 云端保存失败，给用户提示
           if (typeof showToast === 'function') {
             showToast('⚠️ 云端保存失败，数据仅保存在本地浏览器');
           } else {
-            console.warn('⚠️ 云端保存失败，数据仅保存在本地浏览器。切换设备或清除浏览器数据后会丢失！');
           }
           // 标记云端保存失败
           try { localStorage.setItem('chansee_users_cloud_saved', 'false'); } catch(e) {}
@@ -348,9 +328,7 @@ function saveProjects() {
     if (p && typeof p.then === 'function') {
       p.then(function(success) {
         if (success) {
-          console.log('[saveProjects] CloudBase 同步成功');
         } else {
-          console.warn('[saveProjects] CloudBase 同步失败，数据仅保存在本地');
         }
       });
     }
@@ -441,24 +419,19 @@ async function checkLogin() {
             var localUsersStr = localStorage.getItem('chansee_users');
             if (localUsersStr) {
               localUsersBackup = JSON.parse(localUsersStr);
-              console.log('[checkLogin] 已备份本地用户数据，共 ' + localUsersBackup.length + ' 条');
             }
           } catch(e) {
-            console.warn('[checkLogin] 备份本地用户数据失败:', e);
           }
 
           // login.html 登录：先从云端加载最新用户数据，再用云端数据构建 currentUser
           if (window.CloudBaseSync) {
             try {
-              console.log('[checkLogin] login.html路径：开始从云端加载用户数据...');
               await window.CloudBaseSync.loadAll();
               var savedUsers = localStorage.getItem('chansee_users');
               if (savedUsers) {
                 USERS = JSON.parse(savedUsers);
-                console.log('[checkLogin] login.html路径：已从云端恢复USERS，共 ' + USERS.length + ' 条');
               }
             } catch(e) {
-              console.warn('[checkLogin] login.html路径：云端加载失败，使用本地数据');
             }
           }
 
@@ -471,7 +444,6 @@ async function checkLogin() {
             // 如果云端用户缺少昵称或昵称是默认的，而本地备份里有正确的昵称，就用本地备份恢复
             if (localUser && localUser.nickname && localUser.nickname !== '系统创建者' && localUser.nickname !== '未设置') {
               if (!cloudUser || !cloudUser.nickname || cloudUser.nickname === '系统创建者' || cloudUser.nickname === '未设置') {
-                console.warn('[checkLogin] 检测到云端数据缺少昵称，正在从本地备份恢复...');
                 // 用本地备份的数据更新 USERS 数组
                 for (var bi = 0; bi < localUsersBackup.length; bi++) {
                   var bu = localUsersBackup[bi];
@@ -498,7 +470,6 @@ async function checkLogin() {
                 }
                 // 保存恢复后的数据到 localStorage
                 safeSetItem('chansee_users', JSON.stringify(USERS));
-                console.log('[checkLogin] ✅ 已从本地备份恢复用户数据');
                 // 尝试再次同步到云端
                 if (window.CloudBaseSync) {
                   window.CloudBaseSync.saveAll();
@@ -547,7 +518,6 @@ async function checkLogin() {
                 if (!currentUser.position || currentUser.position === '客服总监') currentUser.position = fu.position || '';
                 if (!currentUser.phone) currentUser.phone = fu.phone || '';
                 if (!currentUser.email) currentUser.email = fu.email || '';
-                console.log('[checkLogin] 兜底：从USERS['+fu.id+']补全个人信息');
                 break;
               }
             }
@@ -562,7 +532,6 @@ async function checkLogin() {
           hideLoginModal();
           updateUserDisplay();
           setAppContentVisible(true);
-          console.log('[checkLogin] login.html路径：登录成功，currentUser=', currentUser);
           return true;
         } else {
           localStorage.removeItem('chanseen_auth');
@@ -579,30 +548,22 @@ async function checkLogin() {
     // 尝试从云端加载最新数据
     if (window.CloudBaseSync) {
       try {
-        console.log('[checkLogin] 开始从云端加载数据...');
         await window.CloudBaseSync.loadAll();
-        console.log('[checkLogin] ✅ 云端数据加载成功');
         // 从 localStorage 重新读取 USERS 数组（已被云端数据更新）
         var savedUsers = localStorage.getItem('chansee_users');
         if (savedUsers) {
           try {
             USERS = JSON.parse(savedUsers);
-            console.log('[checkLogin] 已从云端更新 USERS 数组，共 ' + USERS.length + ' 条');
             // 显示当前用户的数据
             var currentUserId = JSON.parse(raw)?.id;
             var currentUserData = USERS.find(u => u.id === currentUserId);
-            console.log('[checkLogin] 当前用户云端数据:', currentUserData);
           } catch(e) {
-            console.warn('[checkLogin] 解析 chansee_users 失败: ' + e.message);
           }
         } else {
-          console.warn('[checkLogin] localStorage 中没有 chansee_users 数据');
         }
       } catch(e) {
-        console.warn('[checkLogin] ❌ 云端数据加载失败，将使用本地数据: ' + e.message);
       }
     } else {
-      console.warn('[checkLogin] CloudBaseSync 未配置，无法从云端加载数据');
     }
     if (raw) {
       const data = JSON.parse(raw);
@@ -628,7 +589,6 @@ async function checkLogin() {
         var updatedSession = JSON.parse(JSON.stringify(currentUser));
         delete updatedSession.password;
         safeSetItem('chansee_current_user', JSON.stringify(updatedSession));
-        console.log('[checkLogin] ✅ 已从 USERS 数组恢复用户数据:', Object.keys(currentUser).join(','));
       } else {
         // 用户已被删除，清除 session
         currentUser = null;
@@ -1632,7 +1592,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
     renderModule("dashboard");
-    console.log("CS CloudHub initialized successfully");
   } catch(e) {
     console.error("CS CloudHub init error:", e);
     document.getElementById("module-content").innerHTML =
@@ -1686,7 +1645,6 @@ function toggleSidebar(e){
   var btn = document.getElementById('sidebar-toggle');
   if(!sidebar) return;
 
-  console.log('[toggleSidebar] 当前状态 _sidebarCollapsed=' + _sidebarCollapsed);
 
   if(_sidebarCollapsed){
     // ===== 展开 =====
@@ -1926,7 +1884,7 @@ function renderFilterBar() {
   var healths = ['🟢','🟡','🔴'];
 
   var row1 = '<div class="filter-row-v4">';
-  row1 += '<select class="fb-select" onchange="onFilterTimeChange(this.value)" title="时间">';
+  row1 += '<select class="fb-select" id="filter-time" onchange="onFilterTimeChange(this.value)" title="时间">';
   row1 += '<option value="" disabled selected hidden>时间 ▼</option>';
   row1 += '<option value="month"'+(filterState.timeMode==='month'?' selected':'')+'>本月</option>';
   row1 += '<option value="lastMonth"'+(filterState.timeMode==='lastMonth'?' selected':'')+'>上月</option>';
@@ -1935,25 +1893,25 @@ function renderFilterBar() {
   row1 += '<option value="custom"'+(filterState.timeMode==='custom'?' selected':'')+'>自定义</option>';
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" onchange="setFilter(\'workplace\',this.value)" title="职场">';
+  row1 += '<select class="fb-select" id="filter-workplace" onchange="setFilter(\'workplace\',this.value)" title="职场">';
   row1 += '<option value="" disabled selected hidden>职场 ▼</option>';
   row1 += '<option value="all"'+(filterState.workplace==='all'?' selected':'')+'>全部</option>';
   workplaces.forEach(function(w){ row1 += '<option value="'+w+'"'+(filterState.workplace===w?' selected':'')+'>'+w+'</option>'; });
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" onchange="setFilter(\'projectType\',this.value)" title="类型">';
+  row1 += '<select class="fb-select" id="filter-projectType" onchange="setFilter(\'projectType\',this.value)" title="类型">';
   row1 += '<option value="" disabled selected hidden>类型 ▼</option>';
   row1 += '<option value="all"'+(filterState.projectType==='all'?' selected':'')+'>全部</option>';
   types.forEach(function(t){ row1 += '<option value="'+t+'"'+(filterState.projectType===t?' selected':'')+'>'+t+'</option>'; });
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" onchange="setFilter(\'status\',this.value)" title="状态">';
+  row1 += '<select class="fb-select" id="filter-status" onchange="setFilter(\'status\',this.value)" title="状态">';
   row1 += '<option value="" disabled selected hidden>状态 ▼</option>';
   row1 += '<option value="all"'+(filterState.status==='all'?' selected':'')+'>全部</option>';
   statuses.forEach(function(s){ row1 += '<option value="'+s+'"'+(filterState.status===s?' selected':'')+'>'+s+'</option>'; });
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" onchange="setFilter(\'health\',this.value)" title="健康度">';
+  row1 += '<select class="fb-select" id="filter-health" onchange="setFilter(\'health\',this.value)" title="健康度">';
   row1 += '<option value="" disabled selected hidden>健康度 ▼</option>';
   row1 += '<option value="all"'+(filterState.health==='all'?' selected':'')+'>全部</option>';
   healths.forEach(function(h){
@@ -1982,7 +1940,7 @@ function renderFilterBar() {
   row2 += '<div class="fb-search-wrap" data-filter="platforms">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+pfLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-platforms" style="display:none;">'+
-    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索平台..." oninput="renderFbOptions(\'platforms\')"></div>'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-platforms" placeholder="搜索平台..." oninput="renderFbOptions(\'platforms\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-platforms"></div>'+
     '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'platforms\',this)">全选</button><button class="fb-sp-clear" onclick="clearFbMulti(\'platforms\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'platforms\')">确定</button></div>'+
     '</div>';
@@ -1995,7 +1953,7 @@ function renderFilterBar() {
   row2 += '<div class="fb-search-wrap" data-filter="category">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+caLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-category" style="display:none;">'+
-    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索品类..." oninput="renderFbOptions(\'category\')"></div>'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-category" placeholder="搜索品类..." oninput="renderFbOptions(\'category\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-category"></div>'+
     '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'category\',this)">全选</button><button class="fb-sp-clear" onclick="clearFbMulti(\'category\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'category\')">确定</button></div>'+
     '</div>';
@@ -2008,7 +1966,7 @@ function renderFilterBar() {
   row2 += '<div class="fb-search-wrap" data-filter="brand">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+brLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-brand" style="display:none;">'+
-    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索品牌..." oninput="renderFbOptions(\'brand\')"></div>'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-brand" placeholder="搜索品牌..." oninput="renderFbOptions(\'brand\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-brand"></div>'+
     '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'brand\',this)">全选</button><button class="fb-sp-clear" onclick="clearFbMulti(\'brand\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'brand\')">确定</button></div>'+
     '</div>';
@@ -2019,7 +1977,7 @@ function renderFilterBar() {
   row2 += '<div class="fb-search-wrap" data-filter="pm">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+pmLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-pm" style="display:none;">'+
-    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索PM..." oninput="renderFbOptions(\'pm\')"></div>'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-pm" placeholder="搜索PM..." oninput="renderFbOptions(\'pm\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-pm"></div>'+
     '</div>';
   row2 += '</div>';
@@ -2029,7 +1987,7 @@ function renderFilterBar() {
   row2 += '<div class="fb-search-wrap" data-filter="director">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+drLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-director" style="display:none;">'+
-    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" placeholder="搜索客服管理..." oninput="renderFbOptions(\'director\')"></div>'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-director" placeholder="搜索客服管理..." oninput="renderFbOptions(\'director\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-director"></div>'+
     '</div>';
   row2 += '</div>';
@@ -4870,16 +4828,13 @@ function exportToCSV(filename, headers, rows) {
 }
 
 function showExportDialog(headers, rows, baseFilename, title) {
-  console.log('[showExportDialog] 开始，title=' + (title||'') + ', rows=' + rows.length);
   window.__expHeaders = headers;
   window.__expData = rows;
   window.__expFile = baseFilename;
   var overlay = document.getElementById('modal-overlay');
   var titleEl = document.getElementById('modal-title');
   var body = document.getElementById('modal-body');
-  console.log('[showExportDialog] 查找DOM: overlay=' + !!overlay + ', title=' + !!titleEl + ', body=' + !!body);
   if (!overlay || !titleEl || !body) {
-    console.warn('[showExportDialog] DOM元素缺失，fallback直接导出CSV');
     // fallback：直接导出 CSV
     exportToCSV(baseFilename + '.csv', headers, rows);
     return;
@@ -4894,7 +4849,6 @@ function showExportDialog(headers, rows, baseFilename, title) {
     '<div style="font-size:12px;color:#94a3b8;">CSV 兼容更多软件 | Excel 支持格式美化</div>' +
   '</div>';
   overlay.classList.remove('hidden');
-  console.log('[showExportDialog] 弹窗已显示');
 }
 
 window.doExportCSV = function() {
@@ -6826,7 +6780,6 @@ function showGroupDetail(groupName){
 
 // 导出评估报告
 function exportAssessment(){
-  console.log('[exportAssessment] 开始执行，ASSESSMENTS_DATA数量=' + (window.ASSESSMENTS_DATA ? ASSESSMENTS_DATA.length : 'undefined'));
   try {
     const headers = ['项目编号','项目名称','评估周期','难度评分','业务复杂度','时间压力','沟通能力','技能匹配','风险等级','评估人','评估日期','备注'];
     const rows = ASSESSMENTS_DATA.map(a => {
@@ -6837,7 +6790,6 @@ function exportAssessment(){
         a.skillMatch||'', a.riskLevel||'', a.evaluator||'', a.date||'', a.notes||''
       ];
     });
-    console.log('[exportAssessment] 数据准备完成，rows=' + rows.length);
     showExportDialog(headers, rows, `项目难度评估_${new Date().toISOString().slice(0,10)}`, '项目难度评估');
   } catch(e) {
     console.error('[exportAssessment] 异常:', e);
