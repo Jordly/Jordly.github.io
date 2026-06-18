@@ -6029,7 +6029,7 @@ function renderNotifications(){
       <tbody>
         ${filtered.map(u => `
           <tr>
-            <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--c-primary-light);color:var(--c-primary);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;">${u.name.charAt(0)}</div><span style="font-weight:500;">${u.name}</span></div></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--c-primary-light);color:var(--c-primary);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;">${u.name ? u.name.charAt(0) : '?'}</div><span style="font-weight:500;">${u.name || '未命名'}</span></div></td>
             <td>${u.username}</td>
             <td><span class="badge ${roleBadge[u.role]||'badge-gray'}">${u.role}</span></td>
             <td><span class="badge ${statusBadge[u.status]||'badge-gray'}">${u.status}</span></td>
