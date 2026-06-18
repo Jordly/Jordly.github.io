@@ -212,22 +212,50 @@
     .shooting-star:nth-child(1) {
       top: -20px;
       left: 110%;
-      animation-duration: 3s;
+      animation-duration: 4s;
       animation-delay: 0s;
     }
 
     .shooting-star:nth-child(2) {
       top: -20px;
       left: 110%;
-      animation-duration: 3s;
-      animation-delay: 1.5s;
+      animation-duration: 4s;
+      animation-delay: 2s;
     }
 
     .shooting-star:nth-child(3) {
       top: -20px;
       left: 110%;
-      animation-duration: 3s;
-      animation-delay: 3s;
+      animation-duration: 4s;
+      animation-delay: 4s;
+    }
+
+    /* ===== 流星2（从正上方中间到左下方） ===== */
+    .shooting-star2 {
+      position: fixed;
+      width: 100px;
+      height: 1.5px;
+      background: linear-gradient(90deg, white, rgba(255,255,255,0.5), transparent);
+      border-radius: 1px;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      transform: rotate(-65deg);
+      animation: shoot2 linear infinite;
+    }
+
+    .shooting-star2:nth-child(1) {
+      top: -20px;
+      left: 50%;
+      animation-duration: 2s;
+      animation-delay: 0s;
+    }
+
+    .shooting-star2:nth-child(2) {
+      top: -20px;
+      left: 50%;
+      animation-duration: 2s;
+      animation-delay: 2s;
     }
 
     @keyframes shoot {
@@ -235,6 +263,14 @@
       10%  { opacity: 1; }
       30%  { opacity: 1; }
       40%  { opacity: 0;   top: 120vh; left: -20px; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes shoot2 {
+      0%   { opacity: 0;   top: -20px; left: 50%; }
+      10%  { opacity: 1; }
+      30%  { opacity: 1; }
+      40%  { opacity: 0;   top: 120vh; left: -30%; }
       100% { opacity: 0; }
     }
     body::after {
@@ -852,6 +888,10 @@
   <div class="shooting-star"></div>
   <div class="shooting-star"></div>
   <div class="shooting-star"></div>
+
+  <!-- 流星2（从正上方中间划到左下方） -->
+  <div class="shooting-star2"></div>
+  <div class="shooting-star2"></div>
 
   <!-- 背景粒子 -->
   <div class="bg-particles">
