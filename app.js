@@ -1687,9 +1687,23 @@ function toggleSidebar(){
       allTexts[i].style.width = '';
       allTexts[i].style.opacity = '';
     }
-    // 恢复二级菜单显示（去掉 nav-section 的 collapsed class）
-    var allSections = sidebar.querySelectorAll('.nav-section.collapsed');
-    for(var s=0;s<allSections.length;s++) allSections[s].classList.remove('collapsed');
+    // 恢复二级菜单显示：根据 data-sub-collapsed 状态决定
+    var allSections = sidebar.querySelectorAll('.nav-section');
+    for(var s=0;s<allSections.length;s++){
+      var sec = allSections[s];
+      // 去掉可能残留的 collapsed class
+      sec.classList.remove('collapsed');
+      // 根据 data-sub-collapsed 决定是否显示二级菜单
+      var isCollapsed = sec.getAttribute('data-sub-collapsed') === 'true';
+      var items = sec.querySelectorAll('.nav-item');
+      if(isCollapsed){
+        // 用户之前收起了这个菜单，保持隐藏
+        for(var ii=0;ii<items.length;ii++) items[ii].style.display = 'none';
+      }else{
+        // 用户之前是展开的，恢复显示
+        for(var jj=0;jj<items.length;jj++) items[jj].style.display = '';
+      }
+    }
     // 恢复图标样式：去掉收起时的特殊样式
     var allIcons = sidebar.querySelectorAll('.nav-icon, .section-icon');
     for(var k=0;k<allIcons.length;k++){
@@ -1724,10 +1738,9 @@ function toggleSidebar(){
       allTexts2[j].style.width = '0';
       allTexts2[j].style.opacity = '0';
     }
-    // 隐藏二级菜单（用 data 属性，不依赖 CSS class）
+    // 隐藏二级菜单（侧边栏窄，显示不了；但不改变 data-sub-collapsed，保留用户选择）
     var allSections = sidebar.querySelectorAll('.nav-section');
     for(var m=0;m<allSections.length;m++){
-      allSections[m].setAttribute('data-sub-collapsed', 'true');
       var subItems = allSections[m].querySelectorAll('.nav-item');
       for(var n=0;n<subItems.length;n++) subItems[n].style.display = 'none';
     }
@@ -1848,6 +1861,16 @@ function initNav(){
 
     });
 
+  });
+
+  // 初始化一级菜单箭头状态（确保箭头方向和实际状态一致）
+  document.querySelectorAll('.nav-section').forEach(sec => {
+    var arrow = sec.querySelector('.section-arrow');
+    if(!arrow) return;
+    // data-sub-collapsed 不存在或为 'false' → 展开 → 箭头 ▼
+    // data-sub-collapsed 为 'true' → 收起 → 箭头 ▶
+    var isCollapsed = sec.getAttribute('data-sub-collapsed') === 'true';
+    arrow.textContent = isCollapsed ? '▶' : '▼';
   });
 
 }
