@@ -104,6 +104,33 @@
       right: -100px;
       pointer-events: none;
       z-index: 0;
+      animation: orbFloat1 12s ease-in-out infinite;
+    }
+
+    @keyframes orbFloat1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(-80px, 60px) scale(1.05); }
+      66% { transform: translate(40px, -40px) scale(0.95); }
+    }
+
+    /* 第二个光晕 */
+    .bg-orb-2 {
+      content: '';
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+      bottom: -100px;
+      left: -50px;
+      pointer-events: none;
+      z-index: 0;
+      animation: orbFloat2 15s ease-in-out infinite;
+    }
+
+    @keyframes orbFloat2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(60px, -80px) scale(1.08); }
     }
 
     /* ===== 顶部导航 ===== */
@@ -231,6 +258,18 @@
       padding: 20px;
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       cursor: default;
+      animation: cardBreath 4s ease-in-out infinite;
+      animation-delay: calc(var(--i, 0) * 0.5s);
+    }
+
+    .feature-card:nth-child(1) { --i: 0; }
+    .feature-card:nth-child(2) { --i: 1; }
+    .feature-card:nth-child(3) { --i: 2; }
+    .feature-card:nth-child(4) { --i: 3; }
+
+    @keyframes cardBreath {
+      0%, 100% { box-shadow: 0 0 0 rgba(10,186,181,0); }
+      50% { box-shadow: 0 0 20px rgba(10,186,181,0.08); }
     }
 
     .feature-card:hover {
@@ -377,6 +416,19 @@
       border-color: rgba(10, 186, 181, 0.6);
       background: rgba(255, 255, 255, 0.1);
       box-shadow: 0 0 0 3px rgba(10, 186, 181, 0.12), 0 0 20px rgba(10, 186, 181, 0.08);
+      animation: inputGlowSweep 0.6s ease-out;
+    }
+
+    @keyframes inputGlowSweep {
+      0% {
+        box-shadow: 0 0 0 3px rgba(212,175,55,0), 0 0 0 rgba(10,186,181,0);
+      }
+      50% {
+        box-shadow: 0 0 0 3px rgba(212,175,55,0.15), 0 0 15px rgba(212,175,55,0.08);
+      }
+      100% {
+        box-shadow: 0 0 0 3px rgba(10, 186, 181, 0.12), 0 0 20px rgba(10,186,181,0.08);
+      }
     }
 
     .input-group input:focus + .input-icon {
@@ -439,7 +491,7 @@
     .btn-login {
       width: 100%;
       padding: 15px;
-      background: linear-gradient(135deg, #0A8A8 0%, #0ABAB5 50%, #0A9A9F 100%);
+      background: linear-gradient(135deg, #0B7A7A 0%, #0ABAB5 50%, #0C9A99 100%);
       color: white;
       border: 1.5px solid rgba(212, 175, 55, 0.25);
       border-radius: 12px;
@@ -488,7 +540,7 @@
     .btn-login:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 30px rgba(10, 186, 181, 0.4), 0 0 0 1px rgba(212,175,55,0.15) inset;
-      background: linear-gradient(135deg, #0B9B9 0%, #0ACAC5 50%, #0BABA5 100%);
+      background: linear-gradient(135deg, #0C8B8A 0%, #0BBAB5 50%, #0CA9A9 100%);
       border-color: rgba(212, 175, 55, 0.35);
     }
 
@@ -614,6 +666,10 @@
     <div class="particle"></div>
     <div class="particle"></div>
   </div>
+
+  <!-- 背景漂浮光晕 -->
+  <div style="position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(10,186,181,0.15) 0%,transparent 70%);top:-200px;right:-100px;pointer-events:none;z-index:0;animation:orbFloat1 12s ease-in-out infinite;"></div>
+  <div style="position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,0.08) 0%,transparent 70%);bottom:-100px;left:-50px;pointer-events:none;z-index:0;animation:orbFloat2 15s ease-in-out infinite;"></div>
 
   <!-- 顶部导航 -->
   <nav class="top-nav">
