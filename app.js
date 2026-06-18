@@ -1697,11 +1697,11 @@ function toggleSidebar(){
       var isCollapsed = sec.getAttribute('data-sub-collapsed') === 'true';
       var items = sec.querySelectorAll('.nav-item');
       if(isCollapsed){
-        // 用户之前收起了这个菜单，保持隐藏
-        for(var ii=0;ii<items.length;ii++) items[ii].style.display = 'none';
+        // 用户之前收起了这个菜单，保持隐藏（用 !important 覆盖 CSS）
+        for(var ii=0;ii<items.length;ii++) items[ii].style.setProperty('display', 'none', 'important');
       }else{
-        // 用户之前是展开的，恢复显示
-        for(var jj=0;jj<items.length;jj++) items[jj].style.display = '';
+        // 用户之前是展开的，恢复显示（移除 inline display，让 CSS 默认生效）
+        for(var jj=0;jj<items.length;jj++) items[jj].style.removeProperty('display');
       }
     }
     // 恢复图标样式：去掉收起时的特殊样式
@@ -1739,10 +1739,11 @@ function toggleSidebar(){
       allTexts2[j].style.opacity = '0';
     }
     // 隐藏二级菜单（侧边栏窄，显示不了；但不改变 data-sub-collapsed，保留用户选择）
+    // 用 !important 确保覆盖 CSS 里的 !important 规则
     var allSections = sidebar.querySelectorAll('.nav-section');
     for(var m=0;m<allSections.length;m++){
       var subItems = allSections[m].querySelectorAll('.nav-item');
-      for(var n=0;n<subItems.length;n++) subItems[n].style.display = 'none';
+      for(var n=0;n<subItems.length;n++) subItems[n].style.setProperty('display', 'none', 'important');
     }
     // 图标美化：统一大小 + 精致圆形背景（不是方形框）
     var allIcons2 = sidebar.querySelectorAll('.nav-icon');
@@ -1780,7 +1781,7 @@ function toggleSidebar(){
 }
 
 // ===== 导航折叠 =====
-// 用 inline style 直接控制子菜单显隐，不依赖 CSS collapsed 规则
+// 用 setProperty + !important 覆盖 CSS 里的 !important 规则
 function toggleSection(titleEl){
   const section = titleEl.closest('.nav-section');
   if(!section) return;
@@ -1793,7 +1794,8 @@ function toggleSection(titleEl){
     section.setAttribute('data-sub-collapsed', 'false');
     var items = section.querySelectorAll('.nav-item');
     for(var i=0;i<items.length;i++){
-      items[i].style.display = '';
+      // 用 removeProperty 移除 inline !important，让 CSS 默认 display:flex 生效
+      items[i].style.removeProperty('display');
     }
     var arrow = section.querySelector('.section-arrow');
     if(arrow) arrow.textContent = '▼';
@@ -1802,7 +1804,8 @@ function toggleSection(titleEl){
     section.setAttribute('data-sub-collapsed', 'true');
     var items2 = section.querySelectorAll('.nav-item');
     for(var j=0;j<items2.length;j++){
-      items2[j].style.display = 'none';
+      // 用 !important 覆盖 CSS 里的 !important
+      items2[j].style.setProperty('display', 'none', 'important');
     }
     var arrow2 = section.querySelector('.section-arrow');
     if(arrow2) arrow2.textContent = '▶';
@@ -1842,7 +1845,7 @@ function initNav(){
         if(isCollapsed){
           sec.setAttribute('data-sub-collapsed', 'false');
           var subItems = sec.querySelectorAll('.nav-item');
-          for(var i=0;i<subItems.length;i++) subItems[i].style.display = '';
+          for(var i=0;i<subItems.length;i++) subItems[i].style.removeProperty('display');
           const arrow = sec.querySelector('.section-arrow');
           if(arrow) arrow.textContent = '▼';
         }
