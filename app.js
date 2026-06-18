@@ -1668,21 +1668,21 @@ function closeMobileSidebar(){
 }
 
 // ===== 侧边栏折叠/展开 =====
+// 用全局变量记录状态，彻底绕过 DOM 判断
+var _sidebarCollapsed = false;
+
 function toggleSidebar(){
   var sidebar = document.getElementById('sidebar');
   var btn = document.getElementById('sidebar-toggle');
   if(!sidebar) return;
 
-  // 只用 inline style.width 判断（最可靠，我自己设的值）
-  var isNarrow = sidebar.style.width === '56px';
-
-  if(isNarrow){
-    // ===== 展开：恢复默认宽度 =====
+  if(_sidebarCollapsed){
+    // ===== 展开 =====
+    _sidebarCollapsed = false;
+    sidebar.classList.remove('collapsed');
     sidebar.style.width = '220px';
     sidebar.style.minWidth = '220px';
     sidebar.style.overflowX = '';
-    // 去掉 collapsed class（如果有）
-    sidebar.classList.remove('collapsed');
     // 显示所有文字
     var allTexts = sidebar.querySelectorAll('.nav-text, .section-text, .toggle-text, .section-arrow');
     for(var i=0;i<allTexts.length;i++){
@@ -1704,7 +1704,7 @@ function toggleSidebar(){
         }
       }
     }
-    // 恢复图标样式（彻底清空 inline 样式）
+    // 恢复图标样式
     var allIcons = sidebar.querySelectorAll('.nav-icon, .section-icon');
     for(var k=0;k<allIcons.length;k++) allIcons[k].style.cssText = '';
     // 恢复按钮
@@ -1717,6 +1717,7 @@ function toggleSidebar(){
     }
   }else{
     // ===== 收起 =====
+    _sidebarCollapsed = true;
     sidebar.classList.add('collapsed');
     sidebar.style.width = '56px';
     sidebar.style.minWidth = '56px';
