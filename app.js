@@ -1673,34 +1673,108 @@ function toggleSidebar(){
   var btn = document.getElementById('sidebar-toggle');
   if(!sidebar) return;
 
-  // 用 inline style 记录和切换状态（不依赖CSS collapsed 规则）
   var isNarrow = sidebar.style.width === '56px';
 
   if(isNarrow){
-    // ===== 展开：恢复原宽度，显示文字 =====
+    // ===== 展开 =====
     sidebar.style.width = '';
-    var texts = sidebar.querySelectorAll('.nav-text');
-    for(var i=0;i<texts.length;i++) texts[i].style.display = '';
-    if(btn){ var t=btn.querySelector('.toggle-text'); if(t) t.textContent='收起导航'; t.style.display=''; }
+    sidebar.style.minWidth = '';
+    sidebar.style.overflowX = '';
+    // 显示所有文字
+    var allTexts = sidebar.querySelectorAll('.nav-text, .section-text, .toggle-text, .section-arrow');
+    for(var i=0;i<allTexts.length;i++){
+      allTexts[i].style.display = '';
+      allTexts[i].style.width = '';
+      allTexts[i].style.opacity = '';
+    }
+    // 恢复二级菜单显示（去掉 nav-section 的 collapsed class）
+    var allSections = sidebar.querySelectorAll('.nav-section.collapsed');
+    for(var s=0;s<allSections.length;s++) allSections[s].classList.remove('collapsed');
+    // 恢复图标样式：去掉收起时的特殊样式
+    var allIcons = sidebar.querySelectorAll('.nav-icon, .section-icon');
+    for(var k=0;k<allIcons.length;k++){
+      allIcons[k].style.background = '';
+      allIcons[k].style.borderRadius = '';
+      allIcons[k].style.boxShadow = '';
+      allIcons[k].style.width = '';
+      allIcons[k].style.height = '';
+      allIcons[k].style.fontSize = '';
+      allIcons[k].style.display = '';
+      allIcons[k].style.alignItems = '';
+      allIcons[k].style.justifyContent = '';
+    }
+    // 恢复按钮
+    if(btn){
+      var t = btn.querySelector('.toggle-text');
+      if(t){ t.textContent = '收起导航'; t.style.display = ''; }
+      btn.style.padding = '';
+      btn.style.justifyContent = '';
+      var svg = btn.querySelector('svg');
+      if(svg) svg.style.transform = '';
+    }
   }else{
-    // ===== 收起：缩窄到56px，隐藏文字 =====
+    // ===== 收起 =====
     sidebar.style.width = '56px';
     sidebar.style.minWidth = '56px';
     sidebar.style.overflowX = 'hidden';
-    var texts2 = sidebar.querySelectorAll('.nav-text');
-    for(var j=0;j<texts2.length;j++) texts2[j].style.display = 'none';
-    if(btn){ var t2=btn.querySelector('.toggle-text'); if(t2) t2.textContent='展开导航'; }
+    // 隐藏所有文字
+    var allTexts2 = sidebar.querySelectorAll('.nav-text, .section-text, .toggle-text, .section-arrow');
+    for(var j=0;j<allTexts2.length;j++){
+      allTexts2[j].style.display = 'none';
+      allTexts2[j].style.width = '0';
+      allTexts2[j].style.opacity = '0';
+    }
+    // 隐藏二级菜单（加 collapsed class）
+    var allItems2 = sidebar.querySelectorAll('.nav-section');
+    for(var m=0;m<allItems2.length;m++) allItems2[m].classList.add('collapsed');
+    // 图标美化：统一大小 + 精致圆形背景（不是方形框）
+    var allIcons2 = sidebar.querySelectorAll('.nav-icon');
+    for(var n=0;n<allIcons2.length;n++){
+      allIcons2[n].style.fontSize = '16px';
+      allIcons2[n].style.width = '32px';
+      allIcons2[n].style.height = '32px';
+      allIcons2[n].style.display = 'flex';
+      allIcons2[n].style.alignItems = 'center';
+      allIcons2[n].style.justifyContent = 'center';
+      allIcons2[n].style.background = 'rgba(24,95,165,0.08)';
+      allIcons2[n].style.borderRadius = '8px';
+      allIcons2[n].style.boxShadow = 'none';
+    }
+    // section-icon 也美化
+    var secIcons = sidebar.querySelectorAll('.section-icon');
+    for(var p=0;p<secIcons.length;p++){
+      secIcons[p].style.fontSize = '16px';
+      secIcons[p].style.width = '32px';
+      secIcons[p].style.height = '32px';
+      secIcons[p].style.display = 'flex';
+      secIcons[p].style.alignItems = 'center';
+      secIcons[p].style.justifyContent = 'center';
+    }
+    // 按钮
+    if(btn){
+      var t2 = btn.querySelector('.toggle-text');
+      if(t2){ t2.textContent = '展开导航'; t2.style.display = 'none'; }
+      btn.style.padding = '8px 0';
+      btn.style.justifyContent = 'center';
+      var svg2 = btn.querySelector('svg');
+      if(svg2) svg2.style.transform = 'rotate(180deg)';
+    }
   }
 }
 
 // ===== 导航折叠 =====
 function toggleSection(titleEl){
   const section = titleEl.closest('.nav-section');
+  if(!section) return;
   const isCollapsed = section.classList.contains('collapsed');
   if(isCollapsed){
     section.classList.remove('collapsed');
+    const arrow = section.querySelector('.section-arrow');
+    if(arrow) arrow.textContent = '▼';
   }else{
     section.classList.add('collapsed');
+    const arrow = section.querySelector('.section-arrow');
+    if(arrow) arrow.textContent = '▶';
   }
 }
 
