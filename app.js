@@ -1668,13 +1668,25 @@ function closeMobileSidebar(){
 }
 
 // ===== 侧边栏折叠/展开 =====
-// 用全局变量记录状态，彻底绕过 DOM 判断
 var _sidebarCollapsed = false;
+var _toggleLock = false;
 
-function toggleSidebar(){
+function toggleSidebar(e){
+  // 防止事件冒泡导致重复触发
+  if(e){
+    e.stopPropagation();
+    e.preventDefault();
+  }
+  // 防抖锁
+  if(_toggleLock) return;
+  _toggleLock = true;
+  setTimeout(function(){ _toggleLock = false; }, 600);
+
   var sidebar = document.getElementById('sidebar');
   var btn = document.getElementById('sidebar-toggle');
   if(!sidebar) return;
+
+  console.log('[toggleSidebar] 当前状态 _sidebarCollapsed=' + _sidebarCollapsed);
 
   if(_sidebarCollapsed){
     // ===== 展开 =====
