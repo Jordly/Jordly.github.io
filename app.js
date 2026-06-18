@@ -1668,26 +1668,20 @@ function closeMobileSidebar(){
 }
 
 // ===== 侧边栏折叠/展开 =====
-var _toggleSidebarLock = false; // 防抖锁，防止双击或异步回调导致反复切换
 function toggleSidebar(){
-  if(_toggleSidebarLock) return; // 防抖：500ms 内只响应一次
-  _toggleSidebarLock = true;
-  setTimeout(function(){ _toggleSidebarLock = false; }, 500);
-
   var sidebar = document.getElementById('sidebar');
   var btn = document.getElementById('sidebar-toggle');
   if(!sidebar) return;
 
-  // 用 data-collapsed 属性判断状态（最可靠）
-  var isCollapsed = sidebar.getAttribute('data-collapsed') === 'true';
+  // 只用 inline style.width 判断（最可靠，我自己设的值）
+  var isNarrow = sidebar.style.width === '56px';
 
-  if(isCollapsed){
-    // ===== 展开 =====
-    sidebar.setAttribute('data-collapsed', 'false');
-    sidebar.style.width = '';
-    sidebar.style.minWidth = '';
+  if(isNarrow){
+    // ===== 展开：恢复默认宽度 =====
+    sidebar.style.width = '220px';
+    sidebar.style.minWidth = '220px';
     sidebar.style.overflowX = '';
-    // 去掉可能残留的 collapsed class
+    // 去掉 collapsed class（如果有）
     sidebar.classList.remove('collapsed');
     // 显示所有文字
     var allTexts = sidebar.querySelectorAll('.nav-text, .section-text, .toggle-text, .section-arrow');
@@ -1696,38 +1690,37 @@ function toggleSidebar(){
       allTexts[i].style.width = '';
       allTexts[i].style.opacity = '';
     }
-    // 恢复二级菜单显隐状态（根据 data-sub-collapsed）
+    // 恢复二级菜单显隐状态
     var allSections = sidebar.querySelectorAll('.nav-section');
     for(var s=0;s<allSections.length;s++){
       var sec = allSections[s];
       var subItems = sec.querySelectorAll('.nav-item');
       var subCollapsed = sec.getAttribute('data-sub-collapsed') === 'true';
       for(var ii=0;ii<subItems.length;ii++){
-        // 移除 inline display，让 CSS 属性选择器控制
-        subItems[ii].style.removeProperty('display');
+        if(subCollapsed){
+          subItems[ii].style.setProperty('display', 'none', 'important');
+        }else{
+          subItems[ii].style.removeProperty('display');
+        }
       }
     }
-    // 恢复图标样式
+    // 恢复图标样式（彻底清空 inline 样式）
     var allIcons = sidebar.querySelectorAll('.nav-icon, .section-icon');
-    for(var k=0;k<allIcons.length;k++){
-      allIcons[k].style.cssText = '';
-    }
+    for(var k=0;k<allIcons.length;k++) allIcons[k].style.cssText = '';
     // 恢复按钮
     if(btn){
       var t = btn.querySelector('.toggle-text');
       if(t){ t.textContent = '收起导航'; t.style.display = ''; }
-      btn.style.cssText = '';
+      btn.style.cssText = 'width:100%;';
       var svg = btn.querySelector('svg');
       if(svg) svg.style.transform = '';
     }
   }else{
     // ===== 收起 =====
-    sidebar.setAttribute('data-collapsed', 'true');
+    sidebar.classList.add('collapsed');
     sidebar.style.width = '56px';
     sidebar.style.minWidth = '56px';
     sidebar.style.overflowX = 'hidden';
-    // 加 collapsed class（让 CSS 规则生效）
-    sidebar.classList.add('collapsed');
     // 隐藏所有文字
     var allTexts2 = sidebar.querySelectorAll('.nav-text, .section-text, .toggle-text, .section-arrow');
     for(var j=0;j<allTexts2.length;j++){
@@ -1739,9 +1732,7 @@ function toggleSidebar(){
     var allSections2 = sidebar.querySelectorAll('.nav-section');
     for(var m=0;m<allSections2.length;m++){
       var subItems2 = allSections2[m].querySelectorAll('.nav-item');
-      for(var n=0;n<subItems2.length;n++){
-        subItems2[n].style.setProperty('display', 'none', 'important');
-      }
+      for(var n=0;n<subItems2.length;n++) subItems2[n].style.setProperty('display', 'none', 'important');
     }
     // 图标美化
     var allIcons2 = sidebar.querySelectorAll('.nav-icon');
