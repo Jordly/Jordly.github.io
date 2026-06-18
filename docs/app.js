@@ -1668,38 +1668,24 @@ function closeMobileSidebar(){
 }
 
 // ===== 侧边栏折叠/展开 =====
-var _sidebarToggling = false; // 防抖锁
 function toggleSidebar(){
-  if(_sidebarToggling) return; // 防止连续触发
-  _sidebarToggling = true;
-  setTimeout(function(){ _sidebarToggling = false; }, 350);
-
   var sidebar = document.getElementById('sidebar');
   var btn = document.getElementById('sidebar-toggle');
   if(!sidebar) return;
-
+  
   var isCollapsed = sidebar.classList.contains('collapsed');
-  console.log('[toggleSidebar] 当前状态:', isCollapsed ? '已折叠' : '已展开', ', 即将切换为:', isCollapsed ? '展开' : '折叠');
-
+  
   if(isCollapsed){
     sidebar.classList.remove('collapsed');
-    sidebar.style.removeProperty('width');
-    sidebar.style.removeProperty('min-width');
     if(btn){
       var txt = btn.querySelector('.toggle-text');
       if(txt) txt.textContent = '收起导航';
-      var svg = btn.querySelector('svg');
-      if(svg) svg.style.transform = '';
     }
   }else{
     sidebar.classList.add('collapsed');
-    sidebar.style.width = '56px';
-    sidebar.style.minWidth = '56px';
     if(btn){
       var txt = btn.querySelector('.toggle-text');
       if(txt) txt.textContent = '展开导航';
-      var svg = btn.querySelector('svg');
-      if(svg) svg.style.transform = 'rotate(180deg)';
     }
   }
 }
