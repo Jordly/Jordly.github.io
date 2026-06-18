@@ -1724,9 +1724,13 @@ function toggleSidebar(){
       allTexts2[j].style.width = '0';
       allTexts2[j].style.opacity = '0';
     }
-    // 隐藏二级菜单（加 collapsed class）
-    var allItems2 = sidebar.querySelectorAll('.nav-section');
-    for(var m=0;m<allItems2.length;m++) allItems2[m].classList.add('collapsed');
+    // 隐藏二级菜单（用 data 属性，不依赖 CSS class）
+    var allSections = sidebar.querySelectorAll('.nav-section');
+    for(var m=0;m<allSections.length;m++){
+      allSections[m].setAttribute('data-sub-collapsed', 'true');
+      var subItems = allSections[m].querySelectorAll('.nav-item');
+      for(var n=0;n<subItems.length;n++) subItems[n].style.display = 'none';
+    }
     // 图标美化：统一大小 + 精致圆形背景（不是方形框）
     var allIcons2 = sidebar.querySelectorAll('.nav-icon');
     for(var n=0;n<allIcons2.length;n++){
@@ -1763,18 +1767,32 @@ function toggleSidebar(){
 }
 
 // ===== 导航折叠 =====
+// 用 inline style 直接控制子菜单显隐，不依赖 CSS collapsed 规则
 function toggleSection(titleEl){
   const section = titleEl.closest('.nav-section');
   if(!section) return;
-  const isCollapsed = section.classList.contains('collapsed');
+
+  // 用 data 属性记录状态
+  var isCollapsed = section.getAttribute('data-sub-collapsed') === 'true';
+
   if(isCollapsed){
-    section.classList.remove('collapsed');
-    const arrow = section.querySelector('.section-arrow');
+    // 展开：显示该 section 下所有 .nav-item
+    section.setAttribute('data-sub-collapsed', 'false');
+    var items = section.querySelectorAll('.nav-item');
+    for(var i=0;i<items.length;i++){
+      items[i].style.display = '';
+    }
+    var arrow = section.querySelector('.section-arrow');
     if(arrow) arrow.textContent = '▼';
   }else{
-    section.classList.add('collapsed');
-    const arrow = section.querySelector('.section-arrow');
-    if(arrow) arrow.textContent = '▶';
+    // 收起：隐藏该 section 下所有 .nav-item
+    section.setAttribute('data-sub-collapsed', 'true');
+    var items2 = section.querySelectorAll('.nav-item');
+    for(var j=0;j<items2.length;j++){
+      items2[j].style.display = 'none';
+    }
+    var arrow2 = section.querySelector('.section-arrow');
+    if(arrow2) arrow2.textContent = '▶';
   }
 }
 
@@ -1788,34 +1806,48 @@ function initNav(){
       item.setAttribute('title', txt.textContent.trim());
     }
   });
- 
+
+  // 为所有一级菜单（分组标题）设置 tooltip（收起后悬停提示用）
+  document.querySelectorAll(".nav-section-title").forEach(title => {
+    const txt = title.querySelector('.section-text');
+    if(txt && !title.getAttribute('title')){
+      title.setAttribute('title', txt.textContent.trim());
+    }
+  });
+
   document.querySelectorAll(".nav-item").forEach(item => {
- 
+
     item.addEventListener("click", e => {
- 
+
       e.preventDefault();
- 
+
       // 自动展开所在分组（如果处于折叠状态）
       const sec = item.closest('.nav-section');
-      if(sec && sec.classList.contains('collapsed')){
-        sec.classList.remove('collapsed');
-        const arrow = sec.querySelector('.section-arrow');
-        if(arrow) arrow.textContent = '▼';
+      if(sec){
+        // 用 data 属性判断，不依赖 class
+        var isCollapsed = sec.getAttribute('data-sub-collapsed') === 'true';
+        if(isCollapsed){
+          sec.setAttribute('data-sub-collapsed', 'false');
+          var subItems = sec.querySelectorAll('.nav-item');
+          for(var i=0;i<subItems.length;i++) subItems[i].style.display = '';
+          const arrow = sec.querySelector('.section-arrow');
+          if(arrow) arrow.textContent = '▼';
+        }
       }
- 
+
       document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
- 
+
       item.classList.add("active");
- 
+
       renderModule(item.dataset.module);
- 
+
       // 移动端点击导航项后自动关闭侧边栏抽屉
       if(window.innerWidth <= 768 || (window.innerHeight <= 500 && window.matchMedia('(orientation: landscape)').matches)){
         closeMobileSidebar();
       }
- 
+
     });
- 
+
   });
 
 }
