@@ -160,9 +160,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #185fa5;
+  background: #0B9B96;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(24,95,165,0.25);
+  box-shadow: 0 2px 8px rgba(11,155,150,0.3);
   flex-shrink: 0;
 }
 .section-text {
