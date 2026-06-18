@@ -2428,7 +2428,7 @@ function renderDashboard(){
   <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;">
     ${kpiCards.map((k,i)=>{
       const decoColors = ['rgba(96,165,250,0.15)','rgba(147,197,253,0.15)','rgba(191,219,254,0.15)','rgba(147,197,253,0.12)','rgba(96,165,250,0.12)'];
-      return `<div style="background:linear-gradient(145deg,#1e40af 0%,#2563eb 60%,#3b82f6 100%);border-radius:12px;padding:14px 16px;color:#fff;box-shadow:0 4px 12px rgba(30,64,175,0.2);position:relative;overflow:hidden;min-height:110px;">
+      return `<div style="background:linear-gradient(145deg,#0A7B78 0%,#0B9B96 50%,#00C9A7 100%);border-radius:12px;padding:14px 16px;color:#fff;box-shadow:0 4px 16px rgba(11,155,150,0.25);position:relative;overflow:hidden;min-height:110px;">
         <div style="position:absolute;top:-20px;right:-20px;width:80px;height:80px;border-radius:50%;background:${decoColors[i]};"></div>
         <div style="position:relative;z-index:1;">
           <div style="font-size:12px;opacity:0.7;margin-bottom:4px;letter-spacing:0.5px;">${k.label}</div>
