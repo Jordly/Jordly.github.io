@@ -2375,11 +2375,11 @@ function renderDashboard(){
   // 客服配置数数据
   const totalStaff = all.reduce((s,p)=>s+(p.fteActual||0),0) || 186;
   const staffConfig = [
-    {name:'售前客服', count:68, pct:37, color:'#312e81'},
-    {name:'售后客服', count:52, pct:28, color:'#4338ca'},
-    {name:'综合客服', count:45, pct:24, color:'#6366f1'},
-    {name:'客服管理', count:14, pct:8, color:'#818cf8'},
-    {name:'数据专员', count:7, pct:4, color:'#a5b4fc'}
+    {name:'售前客服', count:68, pct:37, color:'#0A7B78'},
+    {name:'售后客服', count:52, pct:28, color:'#0B9B96'},
+    {name:'综合客服', count:45, pct:24, color:'#00C9A7'},
+    {name:'客服管理', count:14, pct:8, color:'#6EE7B7'},
+    {name:'数据专员', count:7, pct:4, color:'#C4E5D8'}
   ];
 
   // 销售排行数据
@@ -2654,9 +2654,9 @@ function renderDashboard(){
       <div style="text-align:center;margin-bottom:10px;">
         <div style="position:relative;display:inline-block;width:120px;height:66px;">
           <svg width="120" height="66" viewBox="0 0 120 66">
-            <path d="M 10,58 A 50,50 0 0,1 110,58" fill="none" stroke="#ede9fe" stroke-width="10" stroke-linecap="round"/>
+            <path d="M 10,58 A 50,50 0 0,1 110,58" fill="none" stroke="#d1fae5" stroke-width="10" stroke-linecap="round"/>
             <path d="M 10,58 A 50,50 0 0,1 ${10+50+50*Math.cos(Math.PI*(1-workloadRatio/100))},${58-50*Math.sin(Math.PI*(1-workloadRatio/100))}" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round"/>
-            <defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#6366f1"/><stop offset="50%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#f97316"/></linearGradient></defs>
+            <defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#0B9B96"/><stop offset="60%" stop-color="#00C9A7"/><stop offset="100%" stop-color="#D4AF37"/></linearGradient></defs>
           </svg>
           <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);text-align:center;width:100%;">
             <div style="font-size:15px;font-weight:700;color:#4f46e5;line-height:1;">${workloadRatio}%</div>
@@ -2669,7 +2669,7 @@ function renderDashboard(){
         ${workItems.map(w=>`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;">
           <span style="width:56px;color:#475569;flex-shrink:0;">${w.name}</span>
           <div style="flex:1;height:7px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
-            <div style="width:${w.ratio}%;height:100%;background:linear-gradient(90deg,#6366f1,#818cf8);border-radius:4px;"></div>
+            <div style="width:${w.ratio}%;height:100%;background:linear-gradient(90deg,#0B9B96,#00C9A7);border-radius:4px;"></div>
           </div>
           <span style="width:42px;text-align:right;color:#64748b;font-size:10px;flex-shrink:0;">${w.count}件</span>
         </div>`).join('')}
@@ -2694,11 +2694,11 @@ function renderDashboard(){
             </filter>
           </defs>
           <g filter="url(#pieShadow)">
-            <path d="M 0,0 L 0,-52 A 52,52 0 0,1 47,-22 Z" fill="#312e81" stroke="#fff" stroke-width="2"/>
-            <path d="M 0,0 L 47,-22 A 52,52 0 0,1 37,38 Z" fill="#4338ca" stroke="#fff" stroke-width="2"/>
-            <path d="M 0,0 L 37,38 A 52,52 0 0,1 -15,50 Z" fill="#6366f1" stroke="#fff" stroke-width="2"/>
-            <path d="M 0,0 L -15,50 A 52,52 0 0,1 -44,26 Z" fill="#818cf8" stroke="#fff" stroke-width="2"/>
-            <path d="M 0,0 L -44,26 A 52,52 0 0,1 -51,-13 A 52,52 0 0,1 0,-52 Z" fill="#a5b4fc" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L 0,-52 A 52,52 0 0,1 47,-22 Z" fill="#0A7B78" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L 47,-22 A 52,52 0 0,1 37,38 Z" fill="#0B9B96" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L 37,38 A 52,52 0 0,1 -15,50 Z" fill="#00C9A7" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L -15,50 A 52,52 0 0,1 -44,26 Z" fill="#6EE7B7" stroke="#fff" stroke-width="2"/>
+            <path d="M 0,0 L -44,26 A 52,52 0 0,1 -51,-13 A 52,52 0 0,1 0,-52 Z" fill="#C4E5D8" stroke="#fff" stroke-width="2"/>
           </g>
           <circle cx="0" cy="0" r="22" fill="#fff"/>
           <text x="0" y="-2" text-anchor="middle" font-size="11" font-weight="700" fill="#312e81">${totalStaff}</text>
