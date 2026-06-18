@@ -1676,13 +1676,19 @@ function toggleSidebar(){
   var isCollapsed = sidebar.classList.contains('collapsed');
   
   if(isCollapsed){
+    // 展开：移除 collapsed class + 恢复原始宽度
     sidebar.classList.remove('collapsed');
+    sidebar.style.width = '';
+    sidebar.style.minWidth = '';
     if(btn){
       var txt = btn.querySelector('.toggle-text');
       if(txt) txt.textContent = '收起导航';
     }
   }else{
+    // 收起：加 collapsed class + 用 inline style 强制缩窄（双保险）
     sidebar.classList.add('collapsed');
+    sidebar.style.width = '56px';
+    sidebar.style.minWidth = '56px';
     if(btn){
       var txt = btn.querySelector('.toggle-text');
       if(txt) txt.textContent = '展开导航';
