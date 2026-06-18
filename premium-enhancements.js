@@ -354,11 +354,9 @@ function initPerformanceMonitoring() {
         Load: perfData.loadEventEnd - perfData.navigationStart
       };
       
-      console.log('⚡ Performance Metrics:', metrics);
       
       // 警告慢加载
       if (metrics.Load > 3000) {
-        console.warn('⚠️ Page load time exceeds 3 seconds!');
       }
     }, 0);
   });
@@ -368,10 +366,8 @@ function initPerformanceMonitoring() {
 function initVisibilityOptimization() {
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-      console.log('⏸️ Page hidden, pausing animations');
       document.body.classList.add('paused');
     } else {
-      console.log('▶️ Page visible, resuming animations');
       document.body.classList.remove('paused');
     }
   });
@@ -428,7 +424,6 @@ async function enhancedLogin() {
 
 /* ===== 初始化 ===== */
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('🚀 Premium Enhancements Loaded');
   
   // 初始化所有增强功能
   enhanceAuthForms();
@@ -639,7 +634,6 @@ function initTableEnhancements() {
   });
   
   if (tables.length > 0) {
-    console.log(`📊 已为 ${tables.length} 个数据表格添加 Premium 增强`);
   }
 }
 
@@ -685,7 +679,6 @@ function showModalWithAnimation(modalId) {
   modal.style.opacity = '1';
   modal.style.pointerEvents = 'auto';
   
-  console.log(`📊 弹窗已显示：${modalId}`);
 }
 
 /**
@@ -707,7 +700,6 @@ function hideModalWithAnimation(modalId) {
     modal.style.pointerEvents = '';
   }, 350); // 与 CSS 动画时间一致
   
-  console.log(`📊 弹窗已关闭：${modalId}`);
 }
 
 // 导出供全局使用
@@ -910,7 +902,6 @@ function initFormEnhancements() {
       });
     });
     
-    console.log('📝 已为表单添加 Premium 增强');
   });
 }
 
@@ -942,7 +933,6 @@ if (moduleContent) {
   formModuleObserver.observe(moduleContent, { childList: true, subtree: true });
 }
 
-console.log('✨ Premium 弹窗和表单增强已加载');
 
 /* ===== 主题切换功能 ===== */
 
@@ -984,7 +974,6 @@ function setTheme(theme) {
   // 更新主题按钮图标
   updateThemeIcon(theme);
     
-  console.log(`🎨 主题已切换为：${theme}`);
 }
 
 /**
