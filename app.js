@@ -1673,9 +1673,10 @@ function toggleSidebar(){
   var btn = document.getElementById('sidebar-toggle');
   if(!sidebar) return;
 
-  var isCollapsed = sidebar.classList.contains('collapsed');
+  // 用 inline style 宽度判断当前状态（最可靠，不受 class/CSS 干扰）
+  var isNarrow = sidebar.style.width === '56px';
 
-  if(isCollapsed){
+  if(isNarrow){
     // ===== 展开 =====
     sidebar.classList.remove('collapsed');
     sidebar.style.width = '';
