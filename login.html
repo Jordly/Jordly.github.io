@@ -206,28 +206,7 @@
       z-index: 1;
       opacity: 0;
       transform: rotate(-45deg);
-      animation: shoot linear infinite;
-    }
-
-    .shooting-star:nth-child(1) {
-      top: -20px;
-      left: 110%;
-      animation-duration: 4s;
-      animation-delay: 0s;
-    }
-
-    .shooting-star:nth-child(2) {
-      top: -20px;
-      left: 110%;
-      animation-duration: 4s;
-      animation-delay: 2s;
-    }
-
-    .shooting-star:nth-child(3) {
-      top: -20px;
-      left: 110%;
-      animation-duration: 4s;
-      animation-delay: 4s;
+      animation: shoot 4s linear infinite backwards;
     }
 
     /* ===== 流星2（从正上方中间到左下方） ===== */
@@ -241,21 +220,7 @@
       z-index: 1;
       opacity: 0;
       transform: rotate(-65deg);
-      animation: shoot2 linear infinite;
-    }
-
-    .shooting-star2:nth-child(1) {
-      top: -20px;
-      left: 50%;
-      animation-duration: 2s;
-      animation-delay: 0s;
-    }
-
-    .shooting-star2:nth-child(2) {
-      top: -20px;
-      left: 50%;
-      animation-duration: 2s;
-      animation-delay: 2s;
+      animation: shoot2 2s linear infinite backwards;
     }
 
     @keyframes shoot {
@@ -885,13 +850,13 @@
   </div>
 
   <!-- 流星（从右上角划到左下角） -->
-  <div class="shooting-star"></div>
-  <div class="shooting-star"></div>
-  <div class="shooting-star"></div>
+  <div class="shooting-star" style="animation-delay: 0s;"></div>
+  <div class="shooting-star" style="animation-delay: 2s;"></div>
+  <div class="shooting-star" style="animation-delay: 4s;"></div>
 
   <!-- 流星2（从正上方中间划到左下方） -->
-  <div class="shooting-star2"></div>
-  <div class="shooting-star2"></div>
+  <div class="shooting-star2" style="animation-delay: 0s;"></div>
+  <div class="shooting-star2" style="animation-delay: 2s;"></div>
 
   <!-- 背景粒子 -->
   <div class="bg-particles">
