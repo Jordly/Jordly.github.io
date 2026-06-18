@@ -108,20 +108,20 @@
       border-radius: 50%;
       filter: blur(50px);
       opacity: 0.25;
-      animation: auroraDrift linear infinite;
+      animation: auroraDrift ease-in-out infinite;
     }
 
     .aurora-band:nth-child(1) {
       background: linear-gradient(90deg, transparent 0%, #00FFB9 20%, #0ABAB5 50%, #9B59B6 80%, transparent 100%);
       top: 15%;
-      animation-duration: 28s;
+      animation-duration: 35s;
       opacity: 0.35;
     }
 
     .aurora-band:nth-child(2) {
       background: linear-gradient(90deg, transparent 0%, #0ABAB5 30%, #6C5CE7 60%, transparent 100%);
       top: 35%;
-      animation-duration: 35s;
+      animation-duration: 42s;
       animation-direction: reverse;
       opacity: 0.3;
     }
@@ -129,13 +129,13 @@
     .aurora-band:nth-child(3) {
       background: linear-gradient(90deg, transparent 0%, #00D4AA 25%, #0ABAB5 55%, #A29BFE 85%, transparent 100%);
       top: 55%;
-      animation-duration: 22s;
+      animation-duration: 30s;
       opacity: 0.25;
     }
 
     @keyframes auroraDrift {
-      0% { transform: translateX(-30%); }
-      100% { transform: translateX(0%); }
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(50%); }
     }
 
     /* ===== 繁星点点 ===== */
@@ -195,39 +195,46 @@
       50%        { opacity: 1;   transform: scale(1.4); }
     }
 
-    /* ===== 流星 ===== */
+    /* ===== 流星（从右上角到左下角） ===== */
     .shooting-star {
       position: fixed;
+      width: 120px;
       height: 1.5px;
       background: linear-gradient(90deg, white, rgba(255,255,255,0.6), transparent);
       border-radius: 1px;
       pointer-events: none;
       z-index: 1;
       opacity: 0;
+      transform: rotate(-45deg);
       animation: shoot linear infinite;
     }
 
     .shooting-star:nth-child(1) {
-      top: 12%;
-      width: 120px;
-      animation-duration: 8s;
-      animation-delay: 2s;
-      transform: rotate(25deg);
+      top: -20px;
+      left: 110%;
+      animation-duration: 3s;
+      animation-delay: 0s;
     }
 
     .shooting-star:nth-child(2) {
-      top: 30%;
-      width: 90px;
-      animation-duration: 10s;
-      animation-delay: 6s;
-      transform: rotate(20deg);
+      top: -20px;
+      left: 110%;
+      animation-duration: 3s;
+      animation-delay: 1.5s;
+    }
+
+    .shooting-star:nth-child(3) {
+      top: -20px;
+      left: 110%;
+      animation-duration: 3s;
+      animation-delay: 3s;
     }
 
     @keyframes shoot {
-      0%   { opacity: 0;   left: -150px; }
-      5%   { opacity: 0.9; }
-      15%  { opacity: 0.9; }
-      20%  { opacity: 0;   left: 110vw; }
+      0%   { opacity: 0;   top: -20px; left: 110%; }
+      10%  { opacity: 1; }
+      30%  { opacity: 1; }
+      40%  { opacity: 0;   top: 120vh; left: -20px; }
       100% { opacity: 0; }
     }
     body::after {
@@ -841,7 +848,8 @@
     <div class="star"></div>
   </div>
 
-  <!-- 流星 -->
+  <!-- 流星（从右上角划到左下角） -->
+  <div class="shooting-star"></div>
   <div class="shooting-star"></div>
   <div class="shooting-star"></div>
 
