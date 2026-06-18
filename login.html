@@ -14,7 +14,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(160deg, #050A15 0%, #0A1628 25%, #0F1F3A 50%, #0A2A2E 75%, #050A15 100%);
+      background: linear-gradient(160deg, #0A1628 0%, #0F1F3A 25%, #162B4A 50%, #0A1F2E 75%, #0A1628 100%);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -104,10 +104,10 @@
     .aurora-band {
       position: absolute;
       width: 200%;
-      height: 180px;
+      height: 200px;
       border-radius: 50%;
-      filter: blur(70px);
-      opacity: 0.18;
+      filter: blur(50px);
+      opacity: 0.25;
       animation: auroraDrift linear infinite;
     }
 
@@ -115,7 +115,7 @@
       background: linear-gradient(90deg, transparent 0%, #00FFB9 20%, #0ABAB5 50%, #9B59B6 80%, transparent 100%);
       top: 15%;
       animation-duration: 28s;
-      opacity: 0.15;
+      opacity: 0.35;
     }
 
     .aurora-band:nth-child(2) {
@@ -123,14 +123,14 @@
       top: 35%;
       animation-duration: 35s;
       animation-direction: reverse;
-      opacity: 0.12;
+      opacity: 0.3;
     }
 
     .aurora-band:nth-child(3) {
       background: linear-gradient(90deg, transparent 0%, #00D4AA 25%, #0ABAB5 55%, #A29BFE 85%, transparent 100%);
       top: 55%;
       animation-duration: 22s;
-      opacity: 0.1;
+      opacity: 0.25;
     }
 
     @keyframes auroraDrift {
@@ -179,7 +179,16 @@
     .star:nth-child(22) { left: 88%; top: 35%; animation-duration: 2.7s; animation-delay: 1.1s; }
     .star:nth-child(23) { left: 95%; top: 65%; animation-duration: 3.5s; animation-delay: 0.5s; }
     .star:nth-child(24) { left: 48%; top:  5%; animation-duration: 2.8s; animation-delay: 2.4s; width: 3px; height: 3px; }
-    .star:nth-child(25) { left: 75%; top: 12%; animation-duration: 3.1s; animation-delay: 0.8s; }
+    .star:nth-child(26) { left: 22%; top: 72%; animation-duration: 3.3s; animation-delay: 1.1s; width: 3px; height: 3px; }
+    .star:nth-child(27) { left: 35%; top:  5%; animation-duration: 2.7s; animation-delay: 2.2s; }
+    .star:nth-child(28) { left: 48%; top: 62%; animation-duration: 3.6s; animation-delay: 0.4s; width: 3px; height: 3px; }
+    .star:nth-child(29) { left: 62%; top: 88%; animation-duration: 2.9s; animation-delay: 1.7s; }
+    .star:nth-child(30) { left: 75%; top: 35%; animation-duration: 3.4s; animation-delay: 0.2s; width: 3px; height: 3px; }
+    .star:nth-child(31) { left: 82%; top: 52%; animation-duration: 2.6s; animation-delay: 2.8s; }
+    .star:nth-child(32) { left: 92%; top: 18%; animation-duration: 3.1s; animation-delay: 1.4s; width: 3px; height: 3px; }
+    .star:nth-child(33) { left: 10%; top: 75%; animation-duration: 2.8s; animation-delay: 0.7s; }
+    .star:nth-child(34) { left: 55%; top: 28%; animation-duration: 3.5s; animation-delay: 2.1s; width: 3px; height: 3px; }
+    .star:nth-child(35) { left: 88%; top: 45%; animation-duration: 2.5s; animation-delay: 1.9s; }
 
     @keyframes starTwinkle {
       0%, 100% { opacity: 0.2; transform: scale(1); }
@@ -189,7 +198,6 @@
     /* ===== 流星 ===== */
     .shooting-star {
       position: fixed;
-      width: 120px;
       height: 1.5px;
       background: linear-gradient(90deg, white, rgba(255,255,255,0.6), transparent);
       border-radius: 1px;
@@ -201,27 +209,26 @@
 
     .shooting-star:nth-child(1) {
       top: 12%;
-      left: -120px;
-      transform: rotate(-25deg);
-      animation-duration: 6s;
-      animation-delay: 3s;
+      width: 120px;
+      animation-duration: 8s;
+      animation-delay: 2s;
+      transform: rotate(25deg);
     }
 
     .shooting-star:nth-child(2) {
       top: 30%;
-      left: -120px;
-      transform: rotate(-20deg);
-      animation-duration: 7s;
-      animation-delay: 8s;
       width: 90px;
+      animation-duration: 10s;
+      animation-delay: 6s;
+      transform: rotate(20deg);
     }
 
     @keyframes shoot {
-      0%        { opacity: 0;   transform: rotate(-25deg) translateX(0); }
-      3%        { opacity: 0.9; }
-      15%       { opacity: 0.9; }
-      18%       { opacity: 0;   transform: rotate(-25deg) translateX(110vw); }
-      100%      { opacity: 0; }
+      0%   { opacity: 0;   left: -150px; }
+      5%   { opacity: 0.9; }
+      15%  { opacity: 0.9; }
+      20%  { opacity: 0;   left: 110vw; }
+      100% { opacity: 0; }
     }
     body::after {
       content: '';
@@ -797,6 +804,15 @@
 
   <!-- 繁星点点 -->
   <div class="stars">
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
     <div class="star"></div>
     <div class="star"></div>
     <div class="star"></div>
