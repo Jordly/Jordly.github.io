@@ -423,19 +423,36 @@ async function checkLogin() {
             var cloudUser = USERS.find(u => u.username === currentUsername);
             var localUser = localUsersBackup.find(u => u.username === currentUsername);
             
-            // 如果云端用户缺少昵称或昵称是默认的，而本地备份里有正确的昵称，就用本地备份恢复
-            if (localUser && localUser.nickname && localUser.nickname !== '系统创建者' && localUser.nickname !== '未设置') {
-              if (!cloudUser || !cloudUser.nickname || cloudUser.nickname === '系统创建者' || cloudUser.nickname === '未设置') {
+            // 获取本地和云端用户的显示名称（同时检查 name 和 nickname 字段）
+            function getDisplayName(u) {
+              if (!u) return '';
+              return (u.name && u.name !== '系统创建者' && u.name !== '未设置' && u.name !== '') ? u.name
+                   : (u.nickname && u.nickname !== '系统创建者' && u.nickname !== '未设置' && u.nickname !== '') ? u.nickname
+                   : '';
+            }
+            var localName = getDisplayName(localUser);
+            var cloudName = getDisplayName(cloudUser);
+
+            // 如果本地有正确的名称（不是默认的），而云端是默认值或空的 → 用本地覆盖
+            if (localName && (!cloudName || cloudName === '' || cloudName === '系统创建者')) {
                 // 用本地备份的数据更新 USERS 数组
                 for (var bi = 0; bi < localUsersBackup.length; bi++) {
                   var bu = localUsersBackup[bi];
                   var found = false;
                   for (var ui = 0; ui < USERS.length; ui++) {
                     if (USERS[ui].id === bu.id || USERS[ui].username === bu.username) {
-                      // 保留云端数据，但如果云端数据缺少昵称等字段，就用本地备份的补全
-                      if (!USERS[ui].nickname || USERS[ui].nickname === '系统创建者' || USERS[ui].nickname === '未设置') {
-                        USERS[ui].nickname = bu.nickname;
-                        USERS[ui].name = bu.nickname;
+                      // 检查云端数据是否缺少名称字段（同时检查 name 和 nickname）
+                      var cloudHasName = USERS[ui].name && USERS[ui].name !== '系统创建者' && USERS[ui].name !== '未设置' && USERS[ui].name !== '';
+                      var cloudHasNickname = USERS[ui].nickname && USERS[ui].nickname !== '系统创建者' && USERS[ui].nickname !== '未设置';
+                      if (!cloudHasName && !cloudHasNickname) {
+                        // 云端没有正确的名称 → 用本地的补全（优先用 name）
+                        if (bu.name && bu.name !== '系统创建者' && bu.name !== '未设置') {
+                          USERS[ui].name = bu.name;
+                          USERS[ui].nickname = bu.name;
+                        } else if (bu.nickname && bu.nickname !== '系统创建者') {
+                          USERS[ui].name = bu.nickname;
+                          USERS[ui].nickname = bu.nickname;
+                        }
                       }
                       if (!USERS[ui].birthday && bu.birthday) USERS[ui].birthday = bu.birthday;
                       if (!USERS[ui].phone && bu.phone) USERS[ui].phone = bu.phone;
@@ -452,12 +469,14 @@ async function checkLogin() {
                 }
                 // 保存恢复后的数据到 localStorage
                 safeSetItem('chansee_users', JSON.stringify(USERS));
-                // 尝试再次同步到云端
+                // 尝试再次同步到云端（带结果提示）
                 if (window.CloudBaseSync) {
-                  window.CloudBaseSync.saveAll();
+                  var syncP = window.CloudBaseSync.saveAll();
+                  if (syncP && typeof syncP.then === 'function') {
+                    syncP.then(function() { try { localStorage.setItem('chansee_users_cloud_saved', 'true'); } catch(e){} }).catch(function(){});
+                  }
                 }
               }
-            }
           }
 
           // 从 USERS 数组（云端最新）中查找当前用户
