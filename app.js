@@ -430,11 +430,21 @@ async function checkLogin() {
                    : (u.nickname && u.nickname !== '系统创建者' && u.nickname !== '未设置' && u.nickname !== '') ? u.nickname
                    : '';
             }
-            var localName = getDisplayName(localUser);
-            var cloudName = getDisplayName(cloudUser);
+            // 检查是否需要用本地备份恢复（检查所有个人设置字段）
+            var needRestore = false;
+            if (localUser && cloudUser) {
+              if (localUser.name && localUser.name !== '系统创建者' && (!cloudUser.name || cloudUser.name === '系统创建者')) needRestore = true;
+              if (localUser.nickname && localUser.nickname !== '系统创建者' && (!cloudUser.nickname || cloudUser.nickname === '系统创建者')) needRestore = true;
+              if (localUser.birthday && (!cloudUser.birthday || cloudUser.birthday === '')) needRestore = true;
+              if (localUser.phone && (!cloudUser.phone || cloudUser.phone === '')) needRestore = true;
+              if (localUser.email && (!cloudUser.email || cloudUser.email === '')) needRestore = true;
+              if (localUser.position && localUser.position !== '客服总监' && (!cloudUser.position || cloudUser.position === '' || cloudUser.position === '客服总监')) needRestore = true;
+              if (localUser.brand && localUser.brand !== 'Chanseen' && (!cloudUser.brand || cloudUser.brand === '' || cloudUser.brand === 'Chanseen')) needRestore = true;
+            } else if (localUser && !cloudUser) {
+              needRestore = true;
+            }
 
-            // 如果本地有正确的名称（不是默认的），而云端是默认值或空的 → 用本地覆盖
-            if (localName && (!cloudName || cloudName === '' || cloudName === '系统创建者')) {
+            if (needRestore) {
                 // 用本地备份的数据更新 USERS 数组
                 for (var bi = 0; bi < localUsersBackup.length; bi++) {
                   var bu = localUsersBackup[bi];
@@ -458,6 +468,7 @@ async function checkLogin() {
                       if (!USERS[ui].phone && bu.phone) USERS[ui].phone = bu.phone;
                       if (!USERS[ui].email && bu.email) USERS[ui].email = bu.email;
                       if (!USERS[ui].position && bu.position) USERS[ui].position = bu.position;
+                      if (!USERS[ui].brand && bu.brand) USERS[ui].brand = bu.brand;
                       found = true;
                       break;
                     }
