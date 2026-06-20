@@ -2153,7 +2153,14 @@ function toggleFbSelectAll(key, btnEl) {
 }
 
 function applyFbMulti(key) {
+  // 保存选中的选项到 filterState[key]
   if (activeFbPanel) {
+    var selectedOptions = activeFbPanel.querySelectorAll('.fb-sp-option.selected');
+    filterState[key] = [];
+    selectedOptions.forEach(function(opt) {
+      var val = opt.getAttribute('data-value');
+      if (val) filterState[key].push(val);
+    });
     activeFbPanel.style.display = 'none';
     activeFbPanel = null;
   }
@@ -4872,9 +4879,18 @@ window.doExportXLSX = function() {
 
 
 function exportDashboard(){
-  const headers = ['项目编号','项目名称','健康度','状态','职场','负责人'];
-  const rows = PROJECTS.map(p => [
-    p.id, p.name, p.healthScore||'', p.status||'进行中', p.workplace||'', p.pm||''
+  const filtered = getFilteredProjects();
+  const headers = ['项目编号','项目名称','健康度','状态','职场','负责人','平台','品类','品牌'];
+  const rows = filtered.map(p => [
+    p.id, 
+    p.name, 
+    p.healthScore||'', 
+    p.status||'进行中', 
+    p.workplace||'', 
+    p.pm||'',
+    (p.platforms||'').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean).join(', '),
+    p.category||'',
+    p.brand||''
   ]);
   showExportDialog(headers, rows, `项目总览_${new Date().toISOString().slice(0,10)}`, '项目总览看板');
 }
