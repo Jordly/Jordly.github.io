@@ -2594,6 +2594,7 @@ function renderDashboard(){
       <button class="btn btn-sm" onclick="exportDashboard()">📥 导出报表</button>
       <button class="btn btn-sm" onclick="downloadSampleData()">📄 下载示例数据</button>
       <button class="btn btn-sm" onclick="importData()">📂 导入数据</button>
+      <button class="btn btn-sm" onclick="openDataManager()">⚙️ 数据管理</button>
       <a href="#" class="btn btn-sm btn-primary" onclick="renderModule('comparison');return false;">📊 项目对比</a>
     </div>
   </div>
@@ -8609,4 +8610,151 @@ function exportComparison(){
 function saveAssessmentsData() {
   try { localStorage.setItem('chansee_assessments', JSON.stringify(ASSESSMENTS_DATA)); } catch(e) {}
   if (typeof syncToCloud === 'function') syncToCloud('assessments', ASSESSMENTS_DATA);
+}
+// ===== 数据管理功能 =====
+function openDataManager() {
+  var tabs = ['客服配置', '工作量', 'KPI历史'];
+  var html = '<div style="display:flex;gap:10px;margin-bottom:16px;">';
+  tabs.forEach(function(tab, i) {
+    html += '<button class="btn btn-sm ' + (i === 0 ? 'btn-primary' : '') + '" onclick="switchDataTab(' + i + ')">' + tab + '</button>';
+  });
+  html += '</div>';
+  html += '<div id="data-manager-content"></div>';
+  var overlay = document.getElementById('modal-overlay');
+  var titleEl = document.getElementById('modal-title');
+  var body = document.getElementById('modal-body');
+  if (overlay && titleEl && body) {
+    titleEl.textContent = '数据管理';
+    body.innerHTML = html;
+    overlay.classList.remove('hidden');
+  }
+  switchDataTab(0);
+}
+
+function switchDataTab(tabIdx) {
+  window.__dataTab = tabIdx;
+  var html = '';
+  if (tabIdx === 0) {
+    html += '<table style="width:100%;border-collapse:collapse;"><tr style="background:var(--c-bg-2);"><th style="padding:6px;border:1px solid var(--c-border);">角色</th><th style="padding:6px;border:1px solid var(--c-border);">人数</th><th style="padding:6px;border:1px solid var(--c-border);">占比(%)</th><th style="padding:6px;border:1px solid var(--c-border);">操作</th></tr>';
+    STAFF_CONFIG.forEach(function(item, idx) {
+      html += '<tr>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="role" value="' + item.role + '" onchange="updateStaffField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:80px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="count" value="' + item.count + '" onchange="updateStaffField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:60px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="pct" value="' + item.pct + '" onchange="updateStaffField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:60px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><button class="btn btn-sm" onclick="deleteStaffItem(' + idx + ')" style="color:#FF6B6B;">删除</button></td>';
+      html += '</tr>';
+    });
+    html += '</table>';
+    html += '<button class="btn btn-sm btn-primary" onclick="addStaffItem()" style="margin-top:10px;">+ 新增行</button>';
+  } else if (tabIdx === 1) {
+    html += '<table style="width:100%;border-collapse:collapse;"><tr style="background:var(--c-bg-2);"><th style="padding:6px;border:1px solid var(--c-border);">工作类型</th><th style="padding:6px;border:1px solid var(--c-border);">数量</th><th style="padding:6px;border:1px solid var(--c-border);">占比(%)</th><th style="padding:6px;border:1px solid var(--c-border);">操作</th></tr>';
+    WORKLOAD_DATA.forEach(function(item, idx) {
+      html += '<tr>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="name" value="' + item.name + '" onchange="updateWorkloadField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:80px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="count" value="' + item.count + '" onchange="updateWorkloadField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:60px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="ratio" value="' + item.ratio + '" onchange="updateWorkloadField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:60px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><button class="btn btn-sm" onclick="deleteWorkloadItem(' + idx + ')" style="color:#FF6B6B;">删除</button></td>';
+      html += '</tr>';
+    });
+    html += '</table>';
+    html += '<button class="btn btn-sm btn-primary" onclick="addWorkloadItem()" style="margin-top:10px;">+ 新增行</button>';
+  } else if (tabIdx === 2) {
+    html += '<table style="width:100%;border-collapse:collapse;"><tr style="background:var(--c-bg-2);"><th style="padding:6px;border:1px solid var(--c-border);">月份</th><th style="padding:6px;border:1px solid var(--c-border);">销售额</th><th style="padding:6px;border:1px solid var(--c-border);">成本</th><th style="padding:6px;border:1px solid var(--c-border);">费效比</th><th style="padding:6px;border:1px solid var(--c-border);">目标达成率</th><th style="padding:6px;border:1px solid var(--c-border);">操作</th></tr>';
+    KPI_HISTORY.forEach(function(item, idx) {
+      html += '<tr>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="date" value="' + item.date + '" onchange="updateKpiField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:70px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="revenue" value="' + item.revenue + '" onchange="updateKpiField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:70px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="cost" value="' + item.cost + '" onchange="updateKpiField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:70px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="profitRate" value="' + item.profitRate + '" onchange="updateKpiField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:60px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="targetRate" value="' + item.targetRate + '" onchange="updateKpiField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:60px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><button class="btn btn-sm" onclick="deleteKpiItem(' + idx + ')" style="color:#FF6B6B;">删除</button></td>';
+      html += '</tr>';
+    });
+    html += '</table>';
+    html += '<button class="btn btn-sm btn-primary" onclick="addKpiItem()" style="margin-top:10px;">+ 新增行</button>';
+  }
+  var contentDiv = document.getElementById('data-manager-content');
+  if (contentDiv) contentDiv.innerHTML = html;
+}
+
+function updateStaffField(input) {
+  var idx = parseInt(input.getAttribute('data-idx'));
+  var field = input.getAttribute('data-field');
+  var val = input.value;
+  if (field === 'count' || field === 'pct') val = parseInt(val) || 0;
+  STAFF_CONFIG[idx][field] = val;
+  localStorage.setItem('chansee_staff_config', JSON.stringify(STAFF_CONFIG));
+  if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
+  showToast('✅ 已保存');
+}
+
+function deleteStaffItem(idx) {
+  STAFF_CONFIG.splice(idx, 1);
+  localStorage.setItem('chansee_staff_config', JSON.stringify(STAFF_CONFIG));
+  if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
+  showToast('✅ 已删除');
+  switchDataTab(0);
+}
+
+function addStaffItem() {
+  STAFF_CONFIG.push({ id:'SC'+Date.now(), role:'新角色', count:0, pct:0, workplace:'all', updatedAt:new Date().toISOString().slice(0,10), updatedBy:(typeof CURRENT_USER!=='undefined'&&CURRENT_USER)?CURRENT_USER.username:'admin' });
+  localStorage.setItem('chansee_staff_config', JSON.stringify(STAFF_CONFIG));
+  if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
+  showToast('✅ 已新增');
+  switchDataTab(0);
+}
+
+function updateWorkloadField(input) {
+  var idx = parseInt(input.getAttribute('data-idx'));
+  var field = input.getAttribute('data-field');
+  var val = input.value;
+  if (field === 'count' || field === 'ratio') val = parseInt(val) || 0;
+  WORKLOAD_DATA[idx][field] = val;
+  localStorage.setItem('chansee_workload_data', JSON.stringify(WORKLOAD_DATA));
+  if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
+  showToast('✅ 已保存');
+}
+
+function deleteWorkloadItem(idx) {
+  WORKLOAD_DATA.splice(idx, 1);
+  localStorage.setItem('chansee_workload_data', JSON.stringify(WORKLOAD_DATA));
+  if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
+  showToast('✅ 已删除');
+  switchDataTab(1);
+}
+
+function addWorkloadItem() {
+  WORKLOAD_DATA.push({ id:'WL'+Date.now(), name:'新工作类型', count:0, ratio:0, workplace:'all', updatedAt:new Date().toISOString().slice(0,10), updatedBy:(typeof CURRENT_USER!=='undefined'&&CURRENT_USER)?CURRENT_USER.username:'admin' });
+  localStorage.setItem('chansee_workload_data', JSON.stringify(WORKLOAD_DATA));
+  if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
+  showToast('✅ 已新增');
+  switchDataTab(1);
+}
+
+function updateKpiField(input) {
+  var idx = parseInt(input.getAttribute('data-idx'));
+  var field = input.getAttribute('data-field');
+  var val = input.value;
+  if (field === 'revenue' || field === 'cost') val = parseInt(val) || 0;
+  if (field === 'profitRate' || field === 'targetRate') val = parseFloat(val) || 0;
+  KPI_HISTORY[idx][field] = val;
+  localStorage.setItem('chansee_kpi_history', JSON.stringify(KPI_HISTORY));
+  if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
+  showToast('✅ 已保存');
+}
+
+function deleteKpiItem(idx) {
+  KPI_HISTORY.splice(idx, 1);
+  localStorage.setItem('chansee_kpi_history', JSON.stringify(KPI_HISTORY));
+  if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
+  showToast('✅ 已删除');
+  switchDataTab(2);
+}
+
+function addKpiItem() {
+  KPI_HISTORY.push({ id:'KH'+Date.now(), date:'2026-', revenue:0, cost:0, profitRate:0, targetRate:0, workplace:'all', updatedAt:new Date().toISOString().slice(0,10), updatedBy:(typeof CURRENT_USER!=='undefined'&&CURRENT_USER)?CURRENT_USER.username:'admin' });
+  localStorage.setItem('chansee_kpi_history', JSON.stringify(KPI_HISTORY));
+  if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
+  showToast('✅ 已新增');
+  switchDataTab(2);
 }
