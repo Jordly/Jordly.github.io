@@ -302,13 +302,15 @@
       saveOne('goals', goals),
       saveOne('assessments', assess),
       saveOne('knowledge', knowledge),
-      saveOne('risk_alerts', risks)
+      saveOne('risk_alerts', risks),
+      saveOne('login_logs', loginLogs)
     ]).then(function(results) {
       var coreOk = results[0].ok && results[1].ok && results[2].ok;
       var optionalErrors = [];
       if (!results[3].ok) optionalErrors.push('assessments:' + results[3].error);
       if (!results[4].ok) optionalErrors.push('knowledge:' + results[4].error);
       if (!results[5].ok) optionalErrors.push('risk_alerts:' + results[5].error);
+      if (!results[6].ok) optionalErrors.push('login_logs:' + results[6].error);
 
       if (coreOk) {
         if (optionalErrors.length > 0) {
@@ -386,7 +388,8 @@
       key === 'chansee_goals' ||
       key === 'chansee_assessments' ||
       key === 'chansee_knowledge' ||
-      key === 'chansee_risk_alerts'
+      key === 'chansee_risk_alerts' ||
+      key === 'chansee_login_logs'
     )) {
       markDirty(key);
     }
