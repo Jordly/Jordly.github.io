@@ -1,26 +1,26 @@
-﻿// VERSION: 202606091530 - 鏈嶅姟涓庤繘搴﹁拷韪〉闈㈤噸鏋勶細鍥涘ぇ鍗＄墖+璇勫垎鏄庣粏琛?鍋ュ悍棰勮
-// ===== Mock 鏁版嵁 =====
+// VERSION: 202606091530 - 服务与进度追踪页面重构：四大卡片+评分明细表+健康预警
+// ===== Mock 数据 =====
 
-// 绠＄悊闅惧害璇勪及鏁版嵁锛堣嚜鍔ㄧ敓鎴愶級
-const GROUPS_DATA = [{"month":"7鏈?,"group":"娴庡崡B浜嬩笟閮?Alpha缁?,"manager":"寮犱紵","level":"缁勯暱-1-1绾?,"shopCount":6,"categoryCount":1,"platformCount":4,"manageCount":1.0,"qcCount":0.4,"trainCount":0,"evalCount":0.35,"aiCount":0,"csCount":10,"new3m":2,"manageTrainSum":1.4,"storeMgrCount":5,"pptCount":2,"totalStaff":11.75,"manageRatio":7.14285714285714,"shopRatio":6.0,"platformRatio":0.307692307692308},{"month":"7鏈?,"group":"娴庡崡B浜嬩笟閮?Beta缁?,"manager":"鏉庡","level":"鍩硅甯?,"shopCount":10,"categoryCount":5,"platformCount":2,"manageCount":0.3,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.3,"storeMgrCount":8,"pptCount":0,"totalStaff":3.3,"manageRatio":10.0,"shopRatio":33.3333333333333,"platformRatio":0.153846153846154},{"month":"7鏈?,"group":"娴庡崡B浜嬩笟閮?Gamma缁?,"manager":"鐜嬪己","level":"缁勯暱-2绾?,"shopCount":2,"categoryCount":2,"platformCount":2,"manageCount":1.0,"qcCount":0.5,"trainCount":0.25,"evalCount":0.7,"aiCount":0,"csCount":9,"new3m":3,"manageTrainSum":1.75,"storeMgrCount":1,"pptCount":2,"totalStaff":11.45,"manageRatio":5.14285714285714,"shopRatio":2.0,"platformRatio":0.153846153846154},{"month":"7鏈?,"group":"娴庡崡A浜嬩笟閮?Delta缁?,"manager":"鍒樻磱","level":"缁勯暱-2绾?,"shopCount":6,"categoryCount":1,"platformCount":4,"manageCount":0.6,"qcCount":0.2,"trainCount":0,"evalCount":0.275,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":0.8,"storeMgrCount":3,"pptCount":1,"totalStaff":4.075,"manageRatio":3.75,"shopRatio":10.0,"platformRatio":0.307692307692308},{"month":"7鏈?,"group":"娴庡崡A浜嬩笟閮?Echo缁?,"manager":"鍒樻磱","level":"缁勯暱-2绾?,"shopCount":4,"categoryCount":1,"platformCount":3,"manageCount":0.4,"qcCount":0.2,"trainCount":0,"evalCount":0.06,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.6,"storeMgrCount":2,"pptCount":1,"totalStaff":3.66,"manageRatio":5.0,"shopRatio":10.0,"platformRatio":0.230769230769231},{"month":"7鏈?,"group":"娴庡崡A浜嬩笟閮?Foxtrot缁?,"manager":"闄堥潤","level":"缁勯暱-2绾?,"shopCount":5,"categoryCount":3,"platformCount":3,"manageCount":1.0,"qcCount":0.33,"trainCount":0.3,"evalCount":0.68,"aiCount":0,"csCount":7,"new3m":0,"manageTrainSum":1.63,"storeMgrCount":5,"pptCount":2,"totalStaff":9.31,"manageRatio":4.29447852760736,"shopRatio":5.0,"platformRatio":0.230769230769231},{"month":"7鏈?,"group":"娴庡崡A浜嬩笟閮?Golf缁?,"manager":"璧电","level":"缁勯暱-3绾?,"shopCount":2,"categoryCount":1,"platformCount":2,"manageCount":0.7,"qcCount":0.43,"trainCount":0.45,"evalCount":0.35,"aiCount":0.5,"csCount":6,"new3m":1,"manageTrainSum":1.58,"storeMgrCount":2,"pptCount":2,"totalStaff":8.43,"manageRatio":3.79746835443038,"shopRatio":2.85714285714286,"platformRatio":0.153846153846154},{"month":"7鏈?,"group":"娴庡崡A浜嬩笟閮?Hotel缁?,"manager":"璧电","level":"缁勯暱-3绾?,"shopCount":8,"categoryCount":2,"platformCount":5,"manageCount":0.3,"qcCount":0,"trainCount":0,"evalCount":0.05,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":0.3,"storeMgrCount":4,"pptCount":1,"totalStaff":3.35,"manageRatio":10.0,"shopRatio":26.6666666666667,"platformRatio":0.384615384615385},{"month":"7鏈?,"group":"娴庡崡A浜嬩笟閮?India缁?,"manager":"瀛欐槑&鍛ㄨ姵","level":"缁勯暱-3绾?,"shopCount":1,"categoryCount":1,"platformCount":1,"manageCount":2.0,"qcCount":0.67,"trainCount":0.98,"evalCount":2.2,"aiCount":0.5,"csCount":18,"new3m":5,"manageTrainSum":3.65,"storeMgrCount":1,"pptCount":2,"totalStaff":24.35,"manageRatio":4.93150684931507,"shopRatio":0.5,"platformRatio":0.0769230769230769},{"month":"7鏈?,"group":"娴庡崡C浜嬩笟閮?Juliet缁?,"manager":"鍚存稕","level":"缁勯暱-3绾?,"shopCount":3,"categoryCount":3,"platformCount":3,"manageCount":0.9,"qcCount":1.9,"trainCount":0,"evalCount":0.53,"aiCount":0,"csCount":4,"new3m":1,"manageTrainSum":2.8,"storeMgrCount":4,"pptCount":6,"totalStaff":7.33,"manageRatio":1.42857142857143,"shopRatio":3.33333333333333,"platformRatio":0.230769230769231},{"month":"7鏈?,"group":"娴庡崡C浜嬩笟閮?Kilo缁?,"manager":"鍚存稕","level":"缁勯暱-3绾?,"shopCount":4,"categoryCount":1,"platformCount":2,"manageCount":0.1,"qcCount":0.07,"trainCount":0,"evalCount":0.27,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.17,"storeMgrCount":2,"pptCount":0,"totalStaff":3.44,"manageRatio":17.6470588235294,"shopRatio":40.0,"platformRatio":0.153846153846154},{"month":"7鏈?,"group":"娴庡崡B浜嬩笟閮?Lima缁?,"manager":"閮戝崕","level":"涓荤-2绾?,"shopCount":5,"categoryCount":2,"platformCount":5,"manageCount":0.6,"qcCount":0.3,"trainCount":0,"evalCount":0.35,"aiCount":0,"csCount":4,"new3m":1,"manageTrainSum":0.9,"storeMgrCount":2,"pptCount":1,"totalStaff":5.25,"manageRatio":4.44444444444444,"shopRatio":8.33333333333333,"platformRatio":0.384615384615385},{"month":"7鏈?,"group":"娴庡崡B浜嬩笟閮?Mike缁?,"manager":"閮戝崕","level":"涓荤-2绾?,"shopCount":6,"categoryCount":2,"platformCount":5,"manageCount":0.4,"qcCount":0,"trainCount":0,"evalCount":0.1,"aiCount":0,"csCount":4,"new3m":1,"manageTrainSum":0.4,"storeMgrCount":4,"pptCount":1,"totalStaff":4.5,"manageRatio":10.0,"shopRatio":15.0,"platformRatio":0.384615384615385},{"month":"7鏈?,"group":"娴庡崡B浜嬩笟閮?November缁?,"manager":"榛勪附","level":"涓荤-2绾?,"shopCount":2,"categoryCount":1,"platformCount":1,"manageCount":3.0,"qcCount":0.5,"trainCount":1.0,"evalCount":1.0,"aiCount":0.5,"csCount":37,"new3m":32,"manageTrainSum":4.5,"storeMgrCount":2,"pptCount":4,"totalStaff":43.0,"manageRatio":8.22222222222222,"shopRatio":0.666666666666667,"platformRatio":0.0769230769230769},{"month":"7鏈?,"group":"娴庡崡鏀寔缁?Oscar缁?,"manager":"鏋楀嘲","level":"涓荤-1绾?,"shopCount":2,"categoryCount":1,"platformCount":2,"manageCount":0.5,"qcCount":0.15,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.65,"storeMgrCount":1,"pptCount":4,"totalStaff":3.65,"manageRatio":4.61538461538461,"shopRatio":4.0,"platformRatio":0.153846153846154},{"month":"7鏈?,"group":"娴庡崡C浜嬩笟閮?Papa缁?,"manager":"寰愭澃","level":"缁勯暱-1-1绾?,"shopCount":3,"categoryCount":1,"platformCount":2,"manageCount":0.4,"qcCount":0.5,"trainCount":0.02,"evalCount":0.2,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":0.92,"storeMgrCount":3,"pptCount":1,"totalStaff":4.12,"manageRatio":3.26086956521739,"shopRatio":7.5,"platformRatio":0.153846153846154},{"month":"7鏈?,"group":"娴庡崡A浜嬩笟閮?Quebec缁?,"manager":"寰愭澃","level":"缁勯暱-1-1绾?,"shopCount":4,"categoryCount":2,"platformCount":2,"manageCount":0.6,"qcCount":0.5,"trainCount":0,"evalCount":0.3,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":1.1,"storeMgrCount":2,"pptCount":1,"totalStaff":4.4,"manageRatio":2.72727272727273,"shopRatio":6.66666666666667,"platformRatio":0.153846153846154},{"month":"瀹氶噺鎸囨爣姹囨€?,"group":"","manager":"","level":"","shopCount":0,"categoryCount":0,"platformCount":0,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"鏈堜唤","group":"绠＄悊濮撳悕","manager":"瀹㈡湇浜烘暟","level":"3涓湀鍐呬汉鏁?,"shopCount":"绠＄悊+璐ㄥ煿浜烘暟","categoryCount":"搴楅暱瀵规帴浜烘暟","platformCount":"PPT骞村害姹囨姤娆℃暟","manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7鏈?,"group":"寮犱紵","manager":"10","level":"2","shopCount":1.4,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7鏈?,"group":"鏉庡","manager":"3","level":"","shopCount":0.3,"categoryCount":8,"platformCount":0,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7鏈?,"group":"鐜嬪己","manager":"9","level":"3","shopCount":1.75,"categoryCount":1,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7鏈?,"group":"鍒樻磱","manager":"6","level":"1","shopCount":1.4,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7鏈?,"group":"闄堥潤","manager":"7","level":"","shopCount":1.63,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7鏈?,"group":"璧电","manager":"9","level":"2","shopCount":1.88,"categoryCount":6,"platformCount":3,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7鏈?,"group":"瀛欐槑&鍛ㄨ姵","manager":"9","level":"5","shopCount":3.65,"categoryCount":1,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7鏈?,"group":"鍚存稕","manager":"7","level":"1","shopCount":2.97,"categoryCount":6,"platformCount":6,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7鏈?,"group":"閮戝崕","manager":"8","level":"2","shopCount":1.3,"categoryCount":6,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7鏈?,"group":"榛勪附","manager":"12.3333333333333","level":"32","shopCount":4.5,"categoryCount":2,"platformCount":4,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7鏈?,"group":"鏋楀嘲","manager":"3","level":"","shopCount":0.65,"categoryCount":1,"platformCount":4,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7鏈?,"group":"寰愭澃","manager":"6","level":"2","shopCount":2.02,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0}];
-const ASSESSMENTS_DATA = [{"month":"7鏈?,"dept":"B浜嬩笟閮?,"group":"Alpha缁?,"manager":"寮犱紵","level":"缁勯暱-1-1绾?,"totalScore":65.4428571428572,"quantScore":43.4428571428571,"qualScore":22.0,"csCountScore":10.0,"new3mScore":2.0,"ratioScore":1.4,"storeMgrScore":5.0,"pptScore":2.0,"qual1":3,"qual2":3,"qual3":3,"qual4":3,"qual5":3,"qual6":1,"qual7":3,"qual8":0},{"month":"7鏈?,"dept":"B浜嬩笟閮?,"group":"Beta缁?,"manager":"鏉庡","level":"鍩硅甯?,"totalScore":8.0,"quantScore":0,"qualScore":8.0,"csCountScore":3.0,"new3mScore":0,"ratioScore":0.3,"storeMgrScore":8.0,"pptScore":0,"qual1":0,"qual2":0,"qual3":1,"qual4":0,"qual5":3,"qual6":3,"qual7":0,"qual8":0},{"month":"7鏈?,"dept":"B浜嬩笟閮?,"group":"Gamma缁?,"manager":"鐜嬪己","level":"缁勯暱-2绾?,"totalScore":52.2261904761905,"quantScore":34.2261904761905,"qualScore":18.0,"csCountScore":9.0,"new3mScore":3.0,"ratioScore":1.75,"storeMgrScore":1.0,"pptScore":2.0,"qual1":2,"qual2":1,"qual3":1,"qual4":3,"qual5":1,"qual6":1,"qual7":3,"qual8":0},{"month":"7鏈?,"dept":"A浜嬩笟閮?,"group":"Delta鎵嬭〃&Echo缁?,"manager":"鍒樻磱","level":"缁勯暱-2绾?,"totalScore":40.2523809523809,"quantScore":32.2523809523809,"qualScore":8.0,"csCountScore":6.0,"new3mScore":1.0,"ratioScore":1.4,"storeMgrScore":5.0,"pptScore":2.0,"qual1":1,"qual2":0,"qual3":1,"qual4":1,"qual5":2,"qual6":1,"qual7":0,"qual8":0},{"month":"7鏈?,"dept":"A浜嬩笟閮?,"group":"Foxtrot缁?,"manager":"闄堥潤","level":"缁勯暱-2绾?,"totalScore":41.3598159509203,"quantScore":31.3598159509202,"qualScore":10.0,"csCountScore":7.0,"new3mScore":0,"ratioScore":1.63,"storeMgrScore":5.0,"pptScore":2.0,"qual1":0,"qual2":0,"qual3":1,"qual4":1,"qual5":2,"qual6":3,"qual7":0,"qual8":2},{"month":"7鏈?,"dept":"A浜嬩笟閮?,"group":"Golf缁?Hotel2&Hotel","manager":"璧电","level":"缁勯暱-3绾?,"totalScore":60.0971158392435,"quantScore":41.0971158392435,"qualScore":19.0,"csCountScore":9.0,"new3mScore":2.0,"ratioScore":1.88,"storeMgrScore":6.0,"pptScore":3.0,"qual1":3,"qual2":1,"qual3":3,"qual4":1,"qual5":3,"qual6":3,"qual7":1,"qual8":2},{"month":"7鏈?,"dept":"A浜嬩笟閮?,"group":"India缁?,"manager":"瀛欐槑&鍛ㄨ姵","level":"缁勯暱-3绾?,"totalScore":47.75,"quantScore":31.75,"qualScore":16.0,"csCountScore":9.0,"new3mScore":5.0,"ratioScore":3.65,"storeMgrScore":1.0,"pptScore":2.0,"qual1":3,"qual2":2,"qual3":2,"qual4":3,"qual5":1,"qual6":1,"qual7":1,"qual8":2},{"month":"7鏈?,"dept":"A浜嬩笟閮?,"group":"Juliet缁?鎵嬭〃鎷煎澶?鎶栭煶","manager":"鍚存稕","level":"缁勯暱-3绾?,"totalScore":60.6385714285714,"quantScore":41.6385714285714,"qualScore":19.0,"csCountScore":7.0,"new3mScore":1.0,"ratioScore":2.97,"storeMgrScore":6.0,"pptScore":6.0,"qual1":3,"qual2":2,"qual3":2,"qual4":3,"qual5":2,"qual6":3,"qual7":0,"qual8":3},{"month":"7鏈?,"dept":"B浜嬩笟閮?,"group":"Lima&Lima2&Mike缁?,"manager":"閮戝崕","level":"涓荤-2绾?,"totalScore":55.3830769230769,"quantScore":41.3830769230769,"qualScore":14.0,"csCountScore":8.0,"new3mScore":2.0,"ratioScore":1.3,"storeMgrScore":6.0,"pptScore":2.0,"qual1":2,"qual2":0,"qual3":1,"qual4":2,"qual5":2,"qual6":2,"qual7":1,"qual8":0},{"month":"7鏈?,"dept":"C浜嬩笟閮?,"group":"November缁?,"manager":"榛勪附","level":"涓荤-2绾?,"totalScore":59.57,"quantScore":39.57,"qualScore":20.0,"csCountScore":12.3333333333333,"new3mScore":32.0,"ratioScore":4.5,"storeMgrScore":2.0,"pptScore":4.0,"qual1":2,"qual2":3,"qual3":3,"qual4":3,"qual5":1,"qual6":1,"qual7":2,"qual8":1},{"month":"7鏈?,"dept":"鏀寔缁?,"group":"Oscar缁?,"manager":"鏋楀嘲","level":"涓荤-1绾?,"totalScore":32.6923076923077,"quantScore":28.6923076923077,"qualScore":4.0,"csCountScore":3.0,"new3mScore":0,"ratioScore":0.65,"storeMgrScore":1.0,"pptScore":4.0,"qual1":0,"qual2":1,"qual3":1,"qual4":0,"qual5":1,"qual6":1,"qual7":0,"qual8":0},{"month":"7鏈?,"dept":"A浜嬩笟閮?,"group":"Quebec缁?Papa","manager":"寰愭澃","level":"缁勯暱-1-1绾?,"totalScore":43.1333333333333,"quantScore":32.1333333333333,"qualScore":11.0,"csCountScore":6.0,"new3mScore":2.0,"ratioScore":2.02,"storeMgrScore":5.0,"pptScore":2.0,"qual1":1,"qual2":1,"qual3":1,"qual4":2,"qual5":1,"qual6":3,"qual7":1,"qual8":0},{"month":"1銆侀」鐩鐞嗛毦搴︿緷鎹畾閲忎笌瀹氭€х患鍚堣瘎浼版硶璁＄畻寰楀垎锛屽畾閲忔寚鏍囨潈閲嶅崰姣?0%锛屽畾鎬у洜绱犳潈閲嶅崰姣?0%锛沑n2銆佸畾閲忔寚鏍囦笅鏈?椤癸紝100鍒?椤癸紝70%鏉冮噸涓嬪叡璁?0鍒嗭紱瀹氭€у洜绱?0椤癸紝涓嶆秹鍙婃垨鍙互蹇界暐锛屽垯涓?鍒嗭紱濡傛秹鍙婂垯鏍规嵁澶с€佷腑銆佸皬璁＄畻姣忛」寰楀垎鍒嗗埆涓?鍒嗐€?鍒嗗拰1鍒嗭紝鏈€楂樺緱鍒?0鍒嗭紝鍚堣100鍒嗭紱\n3銆佸畾閲忛毦搴︽寚鏍囦负鍏抽敭鎸囨爣锛屽師鍒欎笂绠＄悊浜烘暟瓒婂or鏂颁汉鍗犳瘮瓒婇珮or绠＄悊閰嶇疆瓒婂皯or瀵规帴椤圭洰瓒婂or澶嶇洏娆℃暟瓒婂锛岀鐞嗛毦搴﹁秺澶э紱瀹氭€у洜绱犱富瑕佷负闄勫姞琛ュ厖鍥犵礌锛岄渶瑕佷緷鎹壒娈婇」鐩疄闄呬笟鍔″紑灞曟儏鍐佃瘎鍒嗭紱\n4銆佺鐞嗛毦搴﹁瘎浼板弬鑰冩爣鍑嗗垎锛歕n     缁勯暱1-1/1-2绾э細绠＄悊闅惧害30-40鍒哱n     缁勯暱2绾э細绠＄悊闅惧害41-50鍒哱n     缁勯暱3绾э細绠＄悊闅惧害51-60鍒哱n     涓荤绾?/2/3锛氱鐞嗛毦搴?1-80鍒哱n     缁忕悊绾?/2/3锛氱鐞嗛毦搴︼紴81鍒哱n5銆佷緷鎹幇闃舵鍥㈤槦绠＄悊姘村钩鍙婃墍璐熻矗搴楅摵绠＄悊闅惧害锛岀鐞嗙瓑绾у湪涓婅堪鍙傝€冩爣鍑嗗垎涔嬪唴锛屽悓鏃惰瀹氬熀鍑嗗垎鏁板樊鍊悸?鍒嗗潎涓烘甯稿€硷紝鍩哄噯鍒嗗樊鍊硷紴5鍒嗭紝閫傚綋缁欎簣濂栧姳or琛ュ姪锛沑n6銆佹绠＄悊闅惧害璇勪及涓虹煭鏈熻涓猴紝鍚屾椂瑕佸熀浜庣鐞嗛毦搴﹁瘎鍒嗕笌绠＄悊鑰呰嚜韬兘鍔涙按骞宠繘琛屽尮閰嶏細绠＄悊闅惧害楂橈紝绠＄悊姘村钩楂橈紝浣嗚秴鍑?鍒嗗樊寮傦紝濂栧姳閲戦X鍏冿紱\n     绠＄悊闅惧害楂橈紝绠＄悊姘村钩浣庯紝浣嗗洜鐗规畩鎯呭喌锛屽鏃犳硶蹇€熻皟鎹㈢粍鍒紝鏃犳硶蹇€熻ˉ鍏呬汉鍛樼瓑锛屽彲琛ュ姪閲戦Y鍏冿紱绠＄悊闅惧害浣庯紝绠＄悊姘村钩楂?浣庯紝浼樺厛璋冮厤缁勫埆锛屼絾鏃犺ˉ鍔╋紱\n7銆佺鐞嗗鍔?琛ュ姪鍙傝€冮噾棰濓細\n      鍩哄噯鍒嗗樊鍊?-10鍒嗭紝濂栧姳/琛ュ姪閲戦500鍏僜n      鍩哄噯鍒嗗樊鍊?1-15鍒嗭紝濂栧姳/琛ュ姪閲戦1000鍏僜n      鍩哄噯鍒嗗樊鍊?6-20鍒嗭紝濂栧姳/琛ュ姪閲戦1500鍏僜n","dept":"","group":"","manager":"","level":"","totalScore":0,"quantScore":0,"qualScore":0,"csCountScore":0,"new3mScore":0,"ratioScore":0,"storeMgrScore":0,"pptScore":0,"qual1":0,"qual2":0,"qual3":0,"qual4":0,"qual5":0,"qual6":0,"qual7":0,"qual8":0}];
+// 管理难度评估数据（自动生成）
+const GROUPS_DATA = [{"month":"7月","group":"济南B事业部-Alpha组","manager":"张伟","level":"组长-1-1级","shopCount":6,"categoryCount":1,"platformCount":4,"manageCount":1.0,"qcCount":0.4,"trainCount":0,"evalCount":0.35,"aiCount":0,"csCount":10,"new3m":2,"manageTrainSum":1.4,"storeMgrCount":5,"pptCount":2,"totalStaff":11.75,"manageRatio":7.14285714285714,"shopRatio":6.0,"platformRatio":0.307692307692308},{"month":"7月","group":"济南B事业部-Beta组","manager":"李娜","level":"培训师","shopCount":10,"categoryCount":5,"platformCount":2,"manageCount":0.3,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.3,"storeMgrCount":8,"pptCount":0,"totalStaff":3.3,"manageRatio":10.0,"shopRatio":33.3333333333333,"platformRatio":0.153846153846154},{"month":"7月","group":"济南B事业部-Gamma组","manager":"王强","level":"组长-2级","shopCount":2,"categoryCount":2,"platformCount":2,"manageCount":1.0,"qcCount":0.5,"trainCount":0.25,"evalCount":0.7,"aiCount":0,"csCount":9,"new3m":3,"manageTrainSum":1.75,"storeMgrCount":1,"pptCount":2,"totalStaff":11.45,"manageRatio":5.14285714285714,"shopRatio":2.0,"platformRatio":0.153846153846154},{"month":"7月","group":"济南A事业部-Delta组","manager":"刘洋","level":"组长-2级","shopCount":6,"categoryCount":1,"platformCount":4,"manageCount":0.6,"qcCount":0.2,"trainCount":0,"evalCount":0.275,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":0.8,"storeMgrCount":3,"pptCount":1,"totalStaff":4.075,"manageRatio":3.75,"shopRatio":10.0,"platformRatio":0.307692307692308},{"month":"7月","group":"济南A事业部-Echo组","manager":"刘洋","level":"组长-2级","shopCount":4,"categoryCount":1,"platformCount":3,"manageCount":0.4,"qcCount":0.2,"trainCount":0,"evalCount":0.06,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.6,"storeMgrCount":2,"pptCount":1,"totalStaff":3.66,"manageRatio":5.0,"shopRatio":10.0,"platformRatio":0.230769230769231},{"month":"7月","group":"济南A事业部-Foxtrot组","manager":"陈静","level":"组长-2级","shopCount":5,"categoryCount":3,"platformCount":3,"manageCount":1.0,"qcCount":0.33,"trainCount":0.3,"evalCount":0.68,"aiCount":0,"csCount":7,"new3m":0,"manageTrainSum":1.63,"storeMgrCount":5,"pptCount":2,"totalStaff":9.31,"manageRatio":4.29447852760736,"shopRatio":5.0,"platformRatio":0.230769230769231},{"month":"7月","group":"济南A事业部-Golf组","manager":"赵磊","level":"组长-3级","shopCount":2,"categoryCount":1,"platformCount":2,"manageCount":0.7,"qcCount":0.43,"trainCount":0.45,"evalCount":0.35,"aiCount":0.5,"csCount":6,"new3m":1,"manageTrainSum":1.58,"storeMgrCount":2,"pptCount":2,"totalStaff":8.43,"manageRatio":3.79746835443038,"shopRatio":2.85714285714286,"platformRatio":0.153846153846154},{"month":"7月","group":"济南A事业部-Hotel组","manager":"赵磊","level":"组长-3级","shopCount":8,"categoryCount":2,"platformCount":5,"manageCount":0.3,"qcCount":0,"trainCount":0,"evalCount":0.05,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":0.3,"storeMgrCount":4,"pptCount":1,"totalStaff":3.35,"manageRatio":10.0,"shopRatio":26.6666666666667,"platformRatio":0.384615384615385},{"month":"7月","group":"济南A事业部-India组","manager":"孙明&周芳","level":"组长-3级","shopCount":1,"categoryCount":1,"platformCount":1,"manageCount":2.0,"qcCount":0.67,"trainCount":0.98,"evalCount":2.2,"aiCount":0.5,"csCount":18,"new3m":5,"manageTrainSum":3.65,"storeMgrCount":1,"pptCount":2,"totalStaff":24.35,"manageRatio":4.93150684931507,"shopRatio":0.5,"platformRatio":0.0769230769230769},{"month":"7月","group":"济南C事业部-Juliet组","manager":"吴涛","level":"组长-3级","shopCount":3,"categoryCount":3,"platformCount":3,"manageCount":0.9,"qcCount":1.9,"trainCount":0,"evalCount":0.53,"aiCount":0,"csCount":4,"new3m":1,"manageTrainSum":2.8,"storeMgrCount":4,"pptCount":6,"totalStaff":7.33,"manageRatio":1.42857142857143,"shopRatio":3.33333333333333,"platformRatio":0.230769230769231},{"month":"7月","group":"济南C事业部-Kilo组","manager":"吴涛","level":"组长-3级","shopCount":4,"categoryCount":1,"platformCount":2,"manageCount":0.1,"qcCount":0.07,"trainCount":0,"evalCount":0.27,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.17,"storeMgrCount":2,"pptCount":0,"totalStaff":3.44,"manageRatio":17.6470588235294,"shopRatio":40.0,"platformRatio":0.153846153846154},{"month":"7月","group":"济南B事业部-Lima组","manager":"郑华","level":"主管-2级","shopCount":5,"categoryCount":2,"platformCount":5,"manageCount":0.6,"qcCount":0.3,"trainCount":0,"evalCount":0.35,"aiCount":0,"csCount":4,"new3m":1,"manageTrainSum":0.9,"storeMgrCount":2,"pptCount":1,"totalStaff":5.25,"manageRatio":4.44444444444444,"shopRatio":8.33333333333333,"platformRatio":0.384615384615385},{"month":"7月","group":"济南B事业部-Mike组","manager":"郑华","level":"主管-2级","shopCount":6,"categoryCount":2,"platformCount":5,"manageCount":0.4,"qcCount":0,"trainCount":0,"evalCount":0.1,"aiCount":0,"csCount":4,"new3m":1,"manageTrainSum":0.4,"storeMgrCount":4,"pptCount":1,"totalStaff":4.5,"manageRatio":10.0,"shopRatio":15.0,"platformRatio":0.384615384615385},{"month":"7月","group":"济南B事业部-November组","manager":"黄丽","level":"主管-2级","shopCount":2,"categoryCount":1,"platformCount":1,"manageCount":3.0,"qcCount":0.5,"trainCount":1.0,"evalCount":1.0,"aiCount":0.5,"csCount":37,"new3m":32,"manageTrainSum":4.5,"storeMgrCount":2,"pptCount":4,"totalStaff":43.0,"manageRatio":8.22222222222222,"shopRatio":0.666666666666667,"platformRatio":0.0769230769230769},{"month":"7月","group":"济南支持组-Oscar组","manager":"林峰","level":"主管-1级","shopCount":2,"categoryCount":1,"platformCount":2,"manageCount":0.5,"qcCount":0.15,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":3,"new3m":0,"manageTrainSum":0.65,"storeMgrCount":1,"pptCount":4,"totalStaff":3.65,"manageRatio":4.61538461538461,"shopRatio":4.0,"platformRatio":0.153846153846154},{"month":"7月","group":"济南C事业部-Papa组","manager":"徐杰","level":"组长-1-1级","shopCount":3,"categoryCount":1,"platformCount":2,"manageCount":0.4,"qcCount":0.5,"trainCount":0.02,"evalCount":0.2,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":0.92,"storeMgrCount":3,"pptCount":1,"totalStaff":4.12,"manageRatio":3.26086956521739,"shopRatio":7.5,"platformRatio":0.153846153846154},{"month":"7月","group":"济南A事业部-Quebec组","manager":"徐杰","level":"组长-1-1级","shopCount":4,"categoryCount":2,"platformCount":2,"manageCount":0.6,"qcCount":0.5,"trainCount":0,"evalCount":0.3,"aiCount":0,"csCount":3,"new3m":1,"manageTrainSum":1.1,"storeMgrCount":2,"pptCount":1,"totalStaff":4.4,"manageRatio":2.72727272727273,"shopRatio":6.66666666666667,"platformRatio":0.153846153846154},{"month":"定量指标汇总","group":"","manager":"","level":"","shopCount":0,"categoryCount":0,"platformCount":0,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"月份","group":"管理姓名","manager":"客服人数","level":"3个月内人数","shopCount":"管理+质培人数","categoryCount":"店长对接人数","platformCount":"PPT年度汇报次数","manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"张伟","manager":"10","level":"2","shopCount":1.4,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"李娜","manager":"3","level":"","shopCount":0.3,"categoryCount":8,"platformCount":0,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"王强","manager":"9","level":"3","shopCount":1.75,"categoryCount":1,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"刘洋","manager":"6","level":"1","shopCount":1.4,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"陈静","manager":"7","level":"","shopCount":1.63,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"赵磊","manager":"9","level":"2","shopCount":1.88,"categoryCount":6,"platformCount":3,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"孙明&周芳","manager":"9","level":"5","shopCount":3.65,"categoryCount":1,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"吴涛","manager":"7","level":"1","shopCount":2.97,"categoryCount":6,"platformCount":6,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"郑华","manager":"8","level":"2","shopCount":1.3,"categoryCount":6,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"黄丽","manager":"12.3333333333333","level":"32","shopCount":4.5,"categoryCount":2,"platformCount":4,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"林峰","manager":"3","level":"","shopCount":0.65,"categoryCount":1,"platformCount":4,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0},{"month":"7月","group":"徐杰","manager":"6","level":"2","shopCount":2.02,"categoryCount":5,"platformCount":2,"manageCount":0,"qcCount":0,"trainCount":0,"evalCount":0,"aiCount":0,"csCount":0,"new3m":0,"manageTrainSum":0,"storeMgrCount":0,"pptCount":0,"totalStaff":0,"manageRatio":0,"shopRatio":0,"platformRatio":0}];
+const ASSESSMENTS_DATA = [{"month":"7月","dept":"B事业部","group":"Alpha组","manager":"张伟","level":"组长-1-1级","totalScore":65.4428571428572,"quantScore":43.4428571428571,"qualScore":22.0,"csCountScore":10.0,"new3mScore":2.0,"ratioScore":1.4,"storeMgrScore":5.0,"pptScore":2.0,"qual1":3,"qual2":3,"qual3":3,"qual4":3,"qual5":3,"qual6":1,"qual7":3,"qual8":0},{"month":"7月","dept":"B事业部","group":"Beta组","manager":"李娜","level":"培训师","totalScore":8.0,"quantScore":0,"qualScore":8.0,"csCountScore":3.0,"new3mScore":0,"ratioScore":0.3,"storeMgrScore":8.0,"pptScore":0,"qual1":0,"qual2":0,"qual3":1,"qual4":0,"qual5":3,"qual6":3,"qual7":0,"qual8":0},{"month":"7月","dept":"B事业部","group":"Gamma组","manager":"王强","level":"组长-2级","totalScore":52.2261904761905,"quantScore":34.2261904761905,"qualScore":18.0,"csCountScore":9.0,"new3mScore":3.0,"ratioScore":1.75,"storeMgrScore":1.0,"pptScore":2.0,"qual1":2,"qual2":1,"qual3":1,"qual4":3,"qual5":1,"qual6":1,"qual7":3,"qual8":0},{"month":"7月","dept":"A事业部","group":"Delta手表&Echo组","manager":"刘洋","level":"组长-2级","totalScore":40.2523809523809,"quantScore":32.2523809523809,"qualScore":8.0,"csCountScore":6.0,"new3mScore":1.0,"ratioScore":1.4,"storeMgrScore":5.0,"pptScore":2.0,"qual1":1,"qual2":0,"qual3":1,"qual4":1,"qual5":2,"qual6":1,"qual7":0,"qual8":0},{"month":"7月","dept":"A事业部","group":"Foxtrot组","manager":"陈静","level":"组长-2级","totalScore":41.3598159509203,"quantScore":31.3598159509202,"qualScore":10.0,"csCountScore":7.0,"new3mScore":0,"ratioScore":1.63,"storeMgrScore":5.0,"pptScore":2.0,"qual1":0,"qual2":0,"qual3":1,"qual4":1,"qual5":2,"qual6":3,"qual7":0,"qual8":2},{"month":"7月","dept":"A事业部","group":"Golf组&Hotel2&Hotel","manager":"赵磊","level":"组长-3级","totalScore":60.0971158392435,"quantScore":41.0971158392435,"qualScore":19.0,"csCountScore":9.0,"new3mScore":2.0,"ratioScore":1.88,"storeMgrScore":6.0,"pptScore":3.0,"qual1":3,"qual2":1,"qual3":3,"qual4":1,"qual5":3,"qual6":3,"qual7":1,"qual8":2},{"month":"7月","dept":"A事业部","group":"India组","manager":"孙明&周芳","level":"组长-3级","totalScore":47.75,"quantScore":31.75,"qualScore":16.0,"csCountScore":9.0,"new3mScore":5.0,"ratioScore":3.65,"storeMgrScore":1.0,"pptScore":2.0,"qual1":3,"qual2":2,"qual3":2,"qual4":3,"qual5":1,"qual6":1,"qual7":1,"qual8":2},{"month":"7月","dept":"A事业部","group":"Juliet组&手表拼多多&抖音","manager":"吴涛","level":"组长-3级","totalScore":60.6385714285714,"quantScore":41.6385714285714,"qualScore":19.0,"csCountScore":7.0,"new3mScore":1.0,"ratioScore":2.97,"storeMgrScore":6.0,"pptScore":6.0,"qual1":3,"qual2":2,"qual3":2,"qual4":3,"qual5":2,"qual6":3,"qual7":0,"qual8":3},{"month":"7月","dept":"B事业部","group":"Lima&Lima2&Mike组","manager":"郑华","level":"主管-2级","totalScore":55.3830769230769,"quantScore":41.3830769230769,"qualScore":14.0,"csCountScore":8.0,"new3mScore":2.0,"ratioScore":1.3,"storeMgrScore":6.0,"pptScore":2.0,"qual1":2,"qual2":0,"qual3":1,"qual4":2,"qual5":2,"qual6":2,"qual7":1,"qual8":0},{"month":"7月","dept":"C事业部","group":"November组","manager":"黄丽","level":"主管-2级","totalScore":59.57,"quantScore":39.57,"qualScore":20.0,"csCountScore":12.3333333333333,"new3mScore":32.0,"ratioScore":4.5,"storeMgrScore":2.0,"pptScore":4.0,"qual1":2,"qual2":3,"qual3":3,"qual4":3,"qual5":1,"qual6":1,"qual7":2,"qual8":1},{"month":"7月","dept":"支持组","group":"Oscar组","manager":"林峰","level":"主管-1级","totalScore":32.6923076923077,"quantScore":28.6923076923077,"qualScore":4.0,"csCountScore":3.0,"new3mScore":0,"ratioScore":0.65,"storeMgrScore":1.0,"pptScore":4.0,"qual1":0,"qual2":1,"qual3":1,"qual4":0,"qual5":1,"qual6":1,"qual7":0,"qual8":0},{"month":"7月","dept":"A事业部","group":"Quebec组&Papa","manager":"徐杰","level":"组长-1-1级","totalScore":43.1333333333333,"quantScore":32.1333333333333,"qualScore":11.0,"csCountScore":6.0,"new3mScore":2.0,"ratioScore":2.02,"storeMgrScore":5.0,"pptScore":2.0,"qual1":1,"qual2":1,"qual3":1,"qual4":2,"qual5":1,"qual6":3,"qual7":1,"qual8":0},{"month":"1、项目管理难度依据定量与定性综合评估法计算得分，定量指标权重占比70%，定性因素权重占比30%；\n2、定量指标下有5项，100分/项，70%权重下共计70分；定性因素10项，不涉及或可以忽略，则为0分；如涉及则根据大、中、小计算每项得分分别为3分、2分和1分，最高得分30分，合计100分；\n3、定量难度指标为关键指标，原则上管理人数越多or新人占比越高or管理配置越少or对接项目越多or复盘次数越多，管理难度越大；定性因素主要为附加补充因素，需要依据特殊项目实际业务开展情况评分；\n4、管理难度评估参考标准分：\n     组长1-1/1-2级：管理难度30-40分\n     组长2级：管理难度41-50分\n     组长3级：管理难度51-60分\n     主管级1/2/3：管理难度61-80分\n     经理级1/2/3：管理难度＞81分\n5、依据现阶段团队管理水平及所负责店铺管理难度，管理等级在上述参考标准分之内，同时设定基准分数差值±5分均为正常值，基准分差值＞5分，适当给予奖励or补助；\n6、此管理难度评估为短期行为，同时要基于管理难度评分与管理者自身能力水平进行匹配：管理难度高，管理水平高，但超出5分差异，奖励金额X元；\n     管理难度高，管理水平低，但因特殊情况，如无法快速调换组别，无法快速补充人员等，可补助金额Y元；管理难度低，管理水平高/低，优先调配组别，但无补助；\n7、管理奖励/补助参考金额：\n      基准分差值5-10分，奖励/补助金额500元\n      基准分差值11-15分，奖励/补助金额1000元\n      基准分差值16-20分，奖励/补助金额1500元\n","dept":"","group":"","manager":"","level":"","totalScore":0,"quantScore":0,"qualScore":0,"csCountScore":0,"new3mScore":0,"ratioScore":0,"storeMgrScore":0,"pptScore":0,"qual1":0,"qual2":0,"qual3":0,"qual4":0,"qual5":0,"qual6":0,"qual7":0,"qual8":0}];
 
 
 
 
 var DEFAULT_OPERATIONS = [
 
-  {id:1, projectId:"P001", period:"2026-05", fteActual:28, attendance:96.5, ticketVol:12580, responseTime:98, resolveTime:320, csat:4.8, resolutionRate:97.2, reviewRate:82.5, health:"馃煝"},
+  {id:1, projectId:"P001", period:"2026-05", fteActual:28, attendance:96.5, ticketVol:12580, responseTime:98, resolveTime:320, csat:4.8, resolutionRate:97.2, reviewRate:82.5, health:"🟢"},
 
-  {id:2, projectId:"P002", period:"2026-05", fteActual:42, attendance:94.2, ticketVol:18420, responseTime:88, resolveTime:290, csat:4.6, resolutionRate:95.8, reviewRate:78.3, health:"馃煛"},
+  {id:2, projectId:"P002", period:"2026-05", fteActual:42, attendance:94.2, ticketVol:18420, responseTime:88, resolveTime:290, csat:4.6, resolutionRate:95.8, reviewRate:78.3, health:"🟡"},
 
-  {id:3, projectId:"P003", period:"2026-05", fteActual:52, attendance:91.8, ticketVol:22100, responseTime:75, resolveTime:380, csat:4.2, resolutionRate:91.5, reviewRate:65.2, health:"馃敶"},
+  {id:3, projectId:"P003", period:"2026-05", fteActual:52, attendance:91.8, ticketVol:22100, responseTime:75, resolveTime:380, csat:4.2, resolutionRate:91.5, reviewRate:65.2, health:"🔴"},
 
-  {id:4, projectId:"P004", period:"2026-05", fteActual:24, attendance:97.1, ticketVol:9800, responseTime:105, resolveTime:310, csat:4.9, resolutionRate:98.1, reviewRate:85.6, health:"馃煝"},
+  {id:4, projectId:"P004", period:"2026-05", fteActual:24, attendance:97.1, ticketVol:9800, responseTime:105, resolveTime:310, csat:4.9, resolutionRate:98.1, reviewRate:85.6, health:"🟢"},
 
-  {id:5, projectId:"P005", period:"2026-05", fteActual:33, attendance:95.0, ticketVol:15600, responseTime:92, resolveTime:295, csat:4.5, resolutionRate:94.5, reviewRate:76.8, health:"馃煛"},
+  {id:5, projectId:"P005", period:"2026-05", fteActual:33, attendance:95.0, ticketVol:15600, responseTime:92, resolveTime:295, csat:4.5, resolutionRate:94.5, reviewRate:76.8, health:"🟡"},
 
-  {id:6, projectId:"P006", period:"2026-05", fteActual:15, attendance:88.0, ticketVol:8900, responseTime:130, resolveTime:420, csat:3.8, resolutionRate:88.0, reviewRate:60.1, health:"馃敶"},
+  {id:6, projectId:"P006", period:"2026-05", fteActual:15, attendance:88.0, ticketVol:8900, responseTime:130, resolveTime:420, csat:3.8, resolutionRate:88.0, reviewRate:60.1, health:"🔴"},
 
 ];
 var OPERATIONS = [];
@@ -29,80 +29,80 @@ var OPERATIONS = [];
 
 var DEFAULT_ISSUES = [
 
-  {id:1, projectId:"P002", projectName:"瀹剁數鑷惀瀹㈡湇椤圭洰", type:"鏁存敼", desc:"杩炵画涓ゅ懆婊℃剰搴︿綆浜庣洰鏍囧€?.7", priority:"閲嶈", owner:"鍒樻磱", assignee:"鍒樻磱", status:"澶勭悊涓?, source:"鐩戞帶棰勮", responsibility:"鎵挎帴鏂?, createdAt:"2026-05-15", solution:""},
+  {id:1, projectId:"P002", projectName:"家电自营客服项目", type:"整改", desc:"连续两周满意度低于目标值4.7", priority:"重要", owner:"刘洋", assignee:"刘洋", status:"处理中", source:"监控预警", responsibility:"承接方", createdAt:"2026-05-15", solution:""},
 
-  {id:2, projectId:"P003", projectName:"鏈嶈鍝佺墝瀹㈡湇澶栧寘", type:"瀹㈣瘔", desc:"澶т績鏈熼棿绯荤粺宕╂簝瀵艰嚧鍥炲瓒呮椂锛屽搧鐗屾柟鎶曡瘔", priority:"绱ф€?, owner:"闄堥潤", assignee:"闄堥潤", status:"寰呴獙鏀?, source:"鍝佺墝鍙嶉", responsibility:"鍏卞悓", createdAt:"2026-05-10", solution:"宸叉惌寤哄鐢ㄤ細璇濆垎閰嶆満鍒讹紝澧炲姞鐔旀柇淇濇姢"},
+  {id:2, projectId:"P003", projectName:"服装品牌客服外包", type:"客诉", desc:"大促期间系统崩溃导致回复超时，品牌方投诉", priority:"紧急", owner:"陈静", assignee:"陈静", status:"待验收", source:"品牌反馈", responsibility:"共同", createdAt:"2026-05-10", solution:"已搭建备用会话分配机制，增加熔断保护"},
 
-  {id:3, projectId:"P006", projectName:"杩愬姩鍝佺墝瀹㈡湇椤圭洰", type:"浼樺寲", desc:"椤圭洰鍒╂鼎鐜囨寔缁负璐燂紝闇€閲嶆柊鏍哥畻鎴愭湰缁撴瀯", priority:"绱ф€?, owner:"闄堥潤", assignee:"鐜嬪己", status:"寰呭鐞?, source:"璐㈠姟棰勮", responsibility:"鎵挎帴鏂?, createdAt:"2026-05-20", solution:""},
+  {id:3, projectId:"P006", projectName:"运动品牌客服项目", type:"优化", desc:"项目利润率持续为负，需重新核算成本结构", priority:"紧急", owner:"陈静", assignee:"王强", status:"待处理", source:"财务预警", responsibility:"承接方", createdAt:"2026-05-20", solution:""},
 
-  {id:4, projectId:"P001", projectName:"缇庡鏃楄埌搴楀鏈嶉」鐩?, type:"浼樺寲", desc:"澶т績棰勬闇€瑕佹洿鏂帮紝鍘诲勾鍙?1鍑虹幇浜烘墜涓嶈冻", priority:"涓€鑸?, owner:"寮犱紵", assignee:"寮犱紵", status:"宸插叧闂?, source:"浜哄伐涓婃姤", responsibility:"鎵挎帴鏂?, createdAt:"2026-04-01", solution:"宸插畬鎴愬ぇ淇冧汉鍔涢妗堬紝澧炲姞20%涓存椂浜哄姏鍌ㄥ"},
+  {id:4, projectId:"P001", projectName:"美妆旗舰店客服项目", type:"优化", desc:"大促预案需要更新，去年双11出现人手不足", priority:"一般", owner:"张伟", assignee:"张伟", status:"已关闭", source:"人工上报", responsibility:"承接方", createdAt:"2026-04-01", solution:"已完成大促人力预案，增加20%临时人力储备"},
 
 ];
 var ISSUES = [];
 
 var DEFAULT_AGENT_PERFORMANCE = [
-  {id:1, projectId:"P001", agentName:"寮犱紵", group:"A缁?, status:"杞", agentType:"鍞墠", month:"2026-05", salesAmount:52000, conversionRate:3.8, workVolume:0, firstResolveRate:0, responseTime:105, csat:4.9, serviceVolume:1258, reward:0, penalty:0},
-  {id:2, projectId:"P001", agentName:"鏉庡", group:"A缁?, status:"杞", agentType:"鍞墠", month:"2026-05", salesAmount:48000, conversionRate:3.5, workVolume:0, firstResolveRate:0, responseTime:98, csat:4.8, serviceVolume:1102, reward:200, penalty:0},
-  {id:3, projectId:"P002", agentName:"鍒樻磱", group:"B缁?, status:"杞", agentType:"鍞悗", month:"2026-05", salesAmount:0, conversionRate:0, workVolume:1842, firstResolveRate:96.1, responseTime:92, csat:4.7, serviceVolume:1842, reward:0, penalty:0},
-  {id:4, projectId:"P003", agentName:"闄堥潤", group:"B缁?, status:"璇曠敤鏈?, agentType:"鍞悗", month:"2026-05", salesAmount:0, conversionRate:0, workVolume:2210, firstResolveRate:91.8, responseTime:78, csat:4.3, serviceVolume:2210, reward:0, penalty:100},
-  {id:5, projectId:"P004", agentName:"鐜嬪己", group:"A缁?, status:"杞", agentType:"缁煎悎", month:"2026-05", salesAmount:25000, conversionRate:2.1, workVolume:980, firstResolveRate:98.5, responseTime:110, csat:4.9, serviceVolume:980, reward:0, penalty:0},
-  {id:6, projectId:"P005", agentName:"璧电", group:"B缁?, status:"杞", agentType:"鍞悗", month:"2026-05", salesAmount:0, conversionRate:0, workVolume:1560, firstResolveRate:95.2, responseTime:95, csat:4.6, serviceVolume:1560, reward:0, penalty:0},
-  {id:7, projectId:"P007", agentName:"瀛欒姵", group:"A缁?, status:"璇曠敤鏈?, agentType:"鍞墠", month:"2026-05", salesAmount:38000, conversionRate:3.2, workVolume:0, firstResolveRate:0, responseTime:88, csat:4.8, serviceVolume:1320, reward:0, penalty:0},
-  {id:8, projectId:"P002", agentName:"鍛ㄦ澃", group:"B缁?, status:"杞", agentType:"缁煎悎", month:"2026-05", salesAmount:18000, conversionRate:1.8, workVolume:1620, firstResolveRate:95.8, responseTime:85, csat:4.5, serviceVolume:1620, reward:0, penalty:50},
+  {id:1, projectId:"P001", agentName:"张伟", group:"A组", status:"转正", agentType:"售前", month:"2026-05", salesAmount:52000, conversionRate:3.8, workVolume:0, firstResolveRate:0, responseTime:105, csat:4.9, serviceVolume:1258, reward:0, penalty:0},
+  {id:2, projectId:"P001", agentName:"李娜", group:"A组", status:"转正", agentType:"售前", month:"2026-05", salesAmount:48000, conversionRate:3.5, workVolume:0, firstResolveRate:0, responseTime:98, csat:4.8, serviceVolume:1102, reward:200, penalty:0},
+  {id:3, projectId:"P002", agentName:"刘洋", group:"B组", status:"转正", agentType:"售后", month:"2026-05", salesAmount:0, conversionRate:0, workVolume:1842, firstResolveRate:96.1, responseTime:92, csat:4.7, serviceVolume:1842, reward:0, penalty:0},
+  {id:4, projectId:"P003", agentName:"陈静", group:"B组", status:"试用期", agentType:"售后", month:"2026-05", salesAmount:0, conversionRate:0, workVolume:2210, firstResolveRate:91.8, responseTime:78, csat:4.3, serviceVolume:2210, reward:0, penalty:100},
+  {id:5, projectId:"P004", agentName:"王强", group:"A组", status:"转正", agentType:"综合", month:"2026-05", salesAmount:25000, conversionRate:2.1, workVolume:980, firstResolveRate:98.5, responseTime:110, csat:4.9, serviceVolume:980, reward:0, penalty:0},
+  {id:6, projectId:"P005", agentName:"赵磊", group:"B组", status:"转正", agentType:"售后", month:"2026-05", salesAmount:0, conversionRate:0, workVolume:1560, firstResolveRate:95.2, responseTime:95, csat:4.6, serviceVolume:1560, reward:0, penalty:0},
+  {id:7, projectId:"P007", agentName:"孙芳", group:"A组", status:"试用期", agentType:"售前", month:"2026-05", salesAmount:38000, conversionRate:3.2, workVolume:0, firstResolveRate:0, responseTime:88, csat:4.8, serviceVolume:1320, reward:0, penalty:0},
+  {id:8, projectId:"P002", agentName:"周杰", group:"B组", status:"转正", agentType:"综合", month:"2026-05", salesAmount:18000, conversionRate:1.8, workVolume:1620, firstResolveRate:95.8, responseTime:85, csat:4.5, serviceVolume:1620, reward:0, penalty:50},
 ];
-// 缁勫埆璐熻嵎姣旈粯璁ゅ€?
+// 组别负荷比默认值
 var DEFAULT_GROUP_LOAD_RATIO = [
-  {group:"A缁?, month:"2026-05", loadRatio:1.50},
-  {group:"B缁?, month:"2026-05", loadRatio:1.35},
+  {group:"A组", month:"2026-05", loadRatio:1.50},
+  {group:"B组", month:"2026-05", loadRatio:1.35},
 ];
 var GROUP_LOAD_RATIO = [];
-// 鎸囨爣鏉冮噸閰嶇疆榛樿鍊?
+// 指标权重配置默认值
 var DEFAULT_PERFORMANCE_WEIGHTS = {
   "2026-05": {
-    "鍞墠": {salesAmount:40, conversionRate:30, responseTime:15, csat:15},
-    "鍞悗": {workVolume:40, firstResolveRate:30, responseTime:15, csat:15},
-    "缁煎悎": {salesAmount:20, conversionRate:15, workVolume:20, firstResolveRate:15, responseTime:15, csat:15},
+    "售前": {salesAmount:40, conversionRate:30, responseTime:15, csat:15},
+    "售后": {workVolume:40, firstResolveRate:30, responseTime:15, csat:15},
+    "综合": {salesAmount:20, conversionRate:15, workVolume:20, firstResolveRate:15, responseTime:15, csat:15},
   }
 };
 var PERFORMANCE_WEIGHTS = {};
 var AGENT_PERFORMANCE = [];
 
 var DEFAULT_RISK_ALERTS = [
-  {id:1, projectId:"P003", projectName:"鏈嶈鍝佺墝瀹㈡湇澶栧寘", riskType:"鍋ュ悍鐘舵€?, severity:"馃敶 楂橀闄?, indicator:"鍋ュ悍鐘舵€侊細馃敶 椋庨櫓", triggerValue:"杩炵画3鍛ㄧ孩鑹?, threshold:"鍋ュ悍鐘舵€佷笉寰楄繛缁?鍛ㄧ孩鑹?, status:"鏈鐞?, createdAt:"2026-05-28"},
-  {id:2, projectId:"P002", projectName:"瀹剁數鑷惀瀹㈡湇椤圭洰", riskType:"SLA瓒呮爣", severity:"馃煛 涓闄?, indicator:"骞冲潎鍝嶅簲鏃堕暱锛?8s", triggerValue:"88s > 鐩爣90s", threshold:"鍝嶅簲鏃堕暱 鈮?SLA鍝嶅簲鐩爣", status:"澶勭悊涓?, createdAt:"2026-05-30"},
-  {id:3, projectId:"P006", projectName:"杩愬姩鍝佺墝瀹㈡湇椤圭洰", riskType:"鎴愭湰瓒呮敮", severity:"馃敶 楂橀闄?, indicator:"鍒╂鼎鐜囷細-10.7%", triggerValue:"-10.7% < 鐩爣鈮?%", threshold:"椤圭洰鍒╂鼎鐜?鈮?0%", status:"鏈鐞?, createdAt:"2026-05-25"},
-  {id:4, projectId:"P001", projectName:"缇庡鏃楄埌搴楀鏈嶉」鐩?, riskType:"婊℃剰搴︿笅婊?, severity:"馃煛 涓闄?, indicator:"CSAT锛?.9", triggerValue:"4.9 杈冧笂鏈堜笅闄?.2", threshold:"CSAT 鈮?4.7", status:"宸插拷鐣?, createdAt:"2026-05-20"},
-  {id:5, projectId:"P005", projectName:"椋熷搧鐢熼矞瀹㈡湇椤圭洰", riskType:"SLA瓒呮爣", severity:"馃煛 涓闄?, indicator:"骞冲潎鍝嶅簲鏃堕暱锛?2s", triggerValue:"92s > 鐩爣90s", threshold:"鍝嶅簲鏃堕暱 鈮?SLA鍝嶅簲鐩爣", status:"澶勭悊涓?, createdAt:"2026-05-31"},
+  {id:1, projectId:"P003", projectName:"服装品牌客服外包", riskType:"健康状态", severity:"🔴 高风险", indicator:"健康状态：🔴 风险", triggerValue:"连续3周红色", threshold:"健康状态不得连续2周红色", status:"未处理", createdAt:"2026-05-28"},
+  {id:2, projectId:"P002", projectName:"家电自营客服项目", riskType:"SLA超标", severity:"🟡 中风险", indicator:"平均响应时长：88s", triggerValue:"88s > 目标90s", threshold:"响应时长 ≤ SLA响应目标", status:"处理中", createdAt:"2026-05-30"},
+  {id:3, projectId:"P006", projectName:"运动品牌客服项目", riskType:"成本超支", severity:"🔴 高风险", indicator:"利润率：-10.7%", triggerValue:"-10.7% < 目标≥0%", threshold:"项目利润率 ≥ 0%", status:"未处理", createdAt:"2026-05-25"},
+  {id:4, projectId:"P001", projectName:"美妆旗舰店客服项目", riskType:"满意度下滑", severity:"🟡 中风险", indicator:"CSAT：4.9", triggerValue:"4.9 较上月下降0.2", threshold:"CSAT ≥ 4.7", status:"已忽略", createdAt:"2026-05-20"},
+  {id:5, projectId:"P005", projectName:"食品生鲜客服项目", riskType:"SLA超标", severity:"🟡 中风险", indicator:"平均响应时长：92s", triggerValue:"92s > 目标90s", threshold:"响应时长 ≤ SLA响应目标", status:"处理中", createdAt:"2026-05-31"},
 ];
 var RISK_ALERTS = [];
 
 
 var DEFAULT_KNOWLEDGE = [
 
-  {id:1, title:"缇庡澶т績瀹㈡湇鏍囧噯璇濇湳SOP", type:"SOP娴佺▼浼樺寲", tags:"缇庡,澶т績,SOP,璇濇湳", scope:"閫氱敤", permission:"鍏紑", createdAt:"2025-11-20", updateTime:"2026-06-08", views:328, downloads:56, description:"鍙?1澶т績鏈熼棿缇庡绫荤洰鐨勫鏈嶅簲瀵规爣鍑嗘祦绋嬶紝鍖呭惈蹇€熷洖澶嶈瘽鏈€侀€€鎹㈣揣澶勭悊銆佹姇璇夊崌绾ц矾寰勭瓑鏍稿績鍐呭銆?},
+  {id:1, title:"美妆大促客服标准话术SOP", type:"SOP流程优化", tags:"美妆,大促,SOP,话术", scope:"通用", permission:"公开", createdAt:"2025-11-20", updateTime:"2026-06-08", views:328, downloads:56, description:"双11大促期间美妆类目的客服应对标准流程，包含快速回复话术、退换货处理、投诉升级路径等核心内容。"},
 
-  {id:2, title:"宸瘎搴旀€ュ鐞嗘祦绋嬶紙鍚ā鏉匡級", type:"椋庢帶搴旀€ラ妗?, tags:"宸瘎,搴旀€?妯℃澘", scope:"閫氱敤", permission:"鍏紑", createdAt:"2026-01-15", updateTime:"2026-06-05", views:256, downloads:43, description:"宸瘎鍑虹幇鍚庣殑鏍囧噯搴旀€ュ鐞嗘祦绋嬶紝鍖呭惈鍒嗙被鍨嬪樊璇勫洖澶嶆ā鏉裤€佸唴閮ㄥ崌绾ф満鍒躲€佹暟鎹鐩樼瓑鐜妭銆?},
+  {id:2, title:"差评应急处理流程（含模板）", type:"风控应急预案", tags:"差评,应急,模板", scope:"通用", permission:"公开", createdAt:"2026-01-15", updateTime:"2026-06-05", views:256, downloads:43, description:"差评出现后的标准应急处理流程，包含分类型差评回复模板、内部升级机制、数据复盘等环节。"},
 
-  {id:3, title:"AI鏅鸿兘鍥炲閰嶇疆鎸囧崡 v2.0", type:"AI鎻愭晥璧嬭兘", tags:"AI,鏅鸿兘鍥炲,閰嶇疆", scope:"閫氱敤", permission:"鍏紑", createdAt:"2026-03-10", updateTime:"2026-06-03", views:198, downloads:67, description:"AI鏅鸿兘鍥炲绯荤粺鐨勯厤缃寚鍗梫2.0锛屽寘鍚煡璇嗗簱鎼缓銆佸洖澶嶈鍒欓厤缃€佷汉宸ュ厹搴曠瓥鐣ョ瓑鍏ㄦ祦绋嬫寚寮曘€?},
+  {id:3, title:"AI智能回复配置指南 v2.0", type:"AI提效赋能", tags:"AI,智能回复,配置", scope:"通用", permission:"公开", createdAt:"2026-03-10", updateTime:"2026-06-03", views:198, downloads:67, description:"AI智能回复系统的配置指南v2.0，包含知识库搭建、回复规则配置、人工兜底策略等全流程指引。"},
 
-  {id:4, title:"鎴愭湰鎺у埗鐩爣鍒嗚В琛紙Q2锛?, type:"鎴愭湰鐩爣鎺у埗", tags:"鎴愭湰,鐩爣,鍒嗚В,Q2", scope:"鍏ㄥ钩鍙?, permission:"鍐呴儴", createdAt:"2026-04-01", updateTime:"2026-06-01", views:145, downloads:28, description:"2026骞碤2鎴愭湰鎺у埗鐩爣鍒嗚В琛紝鍖呭惈鍚勯」鐩爣鎴愭湰鐜囥€佸疄闄呮墽琛岃窡韪€佸亸宸垎鏋愮瓑鏍稿績鏁版嵁銆?},
+  {id:4, title:"成本控制目标分解表（Q2）", type:"成本目标控制", tags:"成本,目标,分解,Q2", scope:"全平台", permission:"内部", createdAt:"2026-04-01", updateTime:"2026-06-01", views:145, downloads:28, description:"2026年Q2成本控制目标分解表，包含各项目标成本率、实际执行跟踪、偏差分析等核心数据。"},
 
-  {id:5, title:"鏂板鏈嶅叆鑱屽煿璁墜鍐岋紙2026鐗堬級", type:"鍩硅鏉愭枡", tags:"鍩硅,鏂颁汉,鍏ヨ亴,鎵嬪唽", scope:"閫氱敤", permission:"鍏紑", createdAt:"2025-09-01", updateTime:"2026-05-28", views:412, downloads:89, description:"2026鐗堟柊浜哄鏈嶅叆鑱屽煿璁墜鍐岋紝娑电洊骞冲彴瑙勫垯銆佷骇鍝佺煡璇嗐€佽瘽鏈熀纭€銆佺郴缁熸搷浣溿€佸紓甯稿鐞嗕簲澶фā鍧椼€?},
+  {id:5, title:"新客服入职培训手册（2026版）", type:"培训材料", tags:"培训,新人,入职,手册", scope:"通用", permission:"公开", createdAt:"2025-09-01", updateTime:"2026-05-28", views:412, downloads:89, description:"2026版新人客服入职培训手册，涵盖平台规则、产品知识、话术基础、系统操作、异常处理五大模块。"},
 
-  {id:6, title:"楂橀瀹㈣瘔闂璇濇湳绮鹃€?, type:"浼樼璇濇湳钀冨彇", tags:"瀹㈣瘔,璇濇湳,绮鹃€?楂橀", scope:"閫氱敤", permission:"鍏紑", createdAt:"2026-02-20", updateTime:"2026-05-25", views:367, downloads:72, description:"鍚勯」鐩珮棰戝璇夐棶棰樼殑浼樼鍥炲璇濇湳绮鹃€夐泦锛岃鐩栫墿娴併€佽川閲忋€侀€€鎹㈣揣绛夊崄澶х被甯歌瀹㈣瘔鍦烘櫙銆?},
+  {id:6, title:"高频客诉问题话术精选", type:"优秀话术萃取", tags:"客诉,话术,精选,高频", scope:"通用", permission:"公开", createdAt:"2026-02-20", updateTime:"2026-05-25", views:367, downloads:72, description:"各项目高频客诉问题的优秀回复话术精选集，覆盖物流、质量、退换货等十大类常见客诉场景。"},
 
-  {id:7, title:"BPO椤圭洰浜哄姏鎴愭湰浼樺寲鏂规", type:"鎴愭湰鐩爣鎺у埗", tags:"BPO,浜哄姏,鎴愭湰,浼樺寲", scope:"鐗瑰畾鍝佺被", permission:"鍙楅檺", createdAt:"2026-05-10", updateTime:"2026-06-07", views:89, downloads:15, description:"BPO椤圭洰浜哄姏鎴愭湰浼樺寲鏂规锛屽寘鍚帓鐝ā鍨嬩紭鍖栥€佹妧鑳界煩闃垫彁鍗囥€佸椤圭洰鍏变韩姹犵瓑闄嶆湰澧炴晥绛栫暐銆?},
+  {id:7, title:"BPO项目人力成本优化方案", type:"成本目标控制", tags:"BPO,人力,成本,优化", scope:"特定品类", permission:"受限", createdAt:"2026-05-10", updateTime:"2026-06-07", views:89, downloads:15, description:"BPO项目人力成本优化方案，包含排班模型优化、技能矩阵提升、多项目共享池等降本增效策略。"},
 
-  {id:8, title:"澶т績鍓嶇郴缁熷帇娴嬫搷浣滄寚寮?, type:"椋庢帶搴旀€ラ妗?, tags:"澶т績,绯荤粺,鍘嬫祴,鎿嶄綔", scope:"閫氱敤", permission:"鍐呴儴", createdAt:"2026-04-15", updateTime:"2026-05-30", views:124, downloads:31, description:"澶т績鍓嶇郴缁熷帇鍔涙祴璇曠殑鏍囧噯鎿嶄綔鎸囧紩鏂囨。锛屾兜鐩栧帇娴嬪満鏅璁°€佹墽琛屾楠ゃ€侀棶棰樿褰曞強淇璺熻釜銆?},
+  {id:8, title:"大促前系统压测操作指引", type:"风控应急预案", tags:"大促,系统,压测,操作", scope:"通用", permission:"内部", createdAt:"2026-04-15", updateTime:"2026-05-30", views:124, downloads:31, description:"大促前系统压力测试的标准操作指引文档，涵盖压测场景设计、执行步骤、问题记录及修复跟踪。"},
 
 ];
 var DEFAULT_HANDOVERS = [
 
-  {id:1, projectId:"P001", projectName:"缇庡鏃楄埌搴楀鏈嶉」鐩?, from:"鐜嬭姵", to:"寮犱紵", date:"2026-03-15", status:"宸插畬鎴?, summary:"瀹屾垚鍏ㄩ儴鍩虹妗ｆ+鐩爣浜ゆ帴锛岃繍钀ユ暟鎹凡鍚屾"},
+  {id:1, projectId:"P001", projectName:"美妆旗舰店客服项目", from:"王芳", to:"张伟", date:"2026-03-15", status:"已完成", summary:"完成全部基础档案+目标交接，运营数据已同步"},
 
-  {id:2, projectId:"P003", projectName:"鏈嶈鍝佺墝瀹㈡湇澶栧寘", from:"璧典附", to:"闄堥潤", date:"2025-11-20", status:"宸插畬鎴?, summary:"BPO鐗规畩鎴愭湰鏍哥畻鏂瑰紡宸查噸鐐逛氦鎺?},
+  {id:2, projectId:"P003", projectName:"服装品牌客服外包", from:"赵丽", to:"陈静", date:"2025-11-20", status:"已完成", summary:"BPO特殊成本核算方式已重点交接"},
 
-  {id:3, projectId:"P005", projectName:"椋熷搧鐢熼矞瀹㈡湇椤圭洰", from:"瀛欑", to:"鍒樻磱", date:"2026-02-28", status:"宸插畬鎴?, summary:"椋熷搧绫荤洰鐨勭壒娈婇€€鎹㈣揣鏀跨瓥宸蹭氦鎺?},
+  {id:3, projectId:"P005", projectName:"食品生鲜客服项目", from:"孙磊", to:"刘洋", date:"2026-02-28", status:"已完成", summary:"食品类目的特殊退换货政策已交接"},
 
 ];
 var HANDOVERS = [];
@@ -110,7 +110,7 @@ var HANDOVERS = [];
 
 
 
-// ===== Toast 鎻愮ず鍑芥暟锛堜富鐣岄潰鐗堬紝琛ヤ笂 login.html 閲屾湁鐨勫嚱鏁帮級=====
+// ===== Toast 提示函数（主界面版，补上 login.html 里有的函数）=====
 function showToast(msg, type) {
   try {
     var el = document.getElementById('toast-msg');
@@ -120,21 +120,21 @@ function showToast(msg, type) {
       el.classList.add('show');
       setTimeout(function() { el.classList.remove('show'); }, 2500);
     } else {
-      // fallback锛氱敤 alert 浠ｆ浛
+      // fallback：用 alert 代替
     }
   } catch(e) {
   }
 }
 
-// ===== 鏁版嵁鎸佷箙鍖栵紙褰诲簳淇鐗堬級=====
-// 瀹夊叏鍐欏叆 localStorage锛堝甫 quota 澶勭悊鍜岀敤鎴锋彁绀猴級
+// ===== 数据持久化（彻底修复版）=====
+// 安全写入 localStorage（带 quota 处理和用户提示）
 function safeSetItem(key, value) {
   try {
     localStorage.setItem(key, value);
     return true;
   } catch(e) {
     if (e.name === 'QuotaExceededError' || e.code === 22) {
-      // 灏濊瘯娓呯悊瓒呭ぇ澶村儚
+      // 尝试清理超大头像
       try {
         var users = JSON.parse(localStorage.getItem('chansee_users') || '[]');
         var cleaned = 0;
@@ -147,33 +147,33 @@ function safeSetItem(key, value) {
           return true;
         }
       } catch(e2) {}
-      alert('娴忚鍣ㄥ瓨鍌ㄧ┖闂翠笉瓒筹紝鏃犳硶淇濆瓨淇敼锛乗n璇锋竻鐞嗘祻瑙堝櫒鏁版嵁锛堣缃啋闅愮鍜屽畨鍏ㄢ啋娓呴櫎娴忚鏁版嵁锛夛紝鐒跺悗閲嶆柊鐧诲綍銆?);
+      alert('浏览器存储空间不足，无法保存修改！\n请清理浏览器数据（设置→隐私和安全→清除浏览数据），然后重新登录。');
     }
     return false;
   }
 }
 
-// 榛樿鐢ㄦ埛鏁版嵁锛堝彧鍦ㄩ娆″垵濮嬪寲鏃朵娇鐢級
+// 默认用户数据（只在首次初始化时使用）
 var DEFAULT_USERS = [
-  {id:"U001", name:"绯荤粺鍒涘缓鑰?, username:"admin", role:"瓒呯骇绠＄悊鍛?, status:"宸叉縺娲?, registerTime:"2025-01-01", password:"admin123", phone:"138****0001", email:"admin@chanseen.com", approvedBy:"system", remark:"绯荤粺鍒濆鍖栬秴绾х鐞嗗憳"},
-  {id:"U002", name:"鐜嬬鐞?, username:"wangadmin", role:"绠＄悊鍛?, status:"宸叉縺娲?, registerTime:"2025-03-15", password:"wang456", phone:"139****1111", email:"wang@chanseen.com", approvedBy:"admin", remark:""},
-  {id:"U003", name:"鏉庣粍闀?, username:"lilead", role:"瀹㈡湇缁勯暱", status:"寰呭鏍?, registerTime:"2026-05-20", password:"li789", phone:"137****2222", email:"li@chanseen.com", approvedBy:"", remark:"鏂板叆鑱岀敵璇?},
-  {id:"U004", name:"寮犱富绠?, username:"zhangsup", role:"瀹㈡湇涓荤", status:"宸叉嫆缁?, registerTime:"2026-05-18", password:"zhang000", phone:"136****3333", email:"zhang@chanseen.com", approvedBy:"wangadmin", remark:"淇℃伅涓嶅畬鏁?},
-  {id:"U005", name:"闄堢粡鐞?, username:"chenmgr", role:"瀹㈡湇缁忕悊", status:"宸叉縺娲?, registerTime:"2025-06-10", password:"chen111", phone:"135****4444", email:"chen@chanseen.com", approvedBy:"admin", remark:""},
-  {id:"U006", name:"璧典笓鍛?, username:"zhaocs", role:"瀹㈡湇缁勯暱", status:"寰呭鏍?, registerTime:"2026-06-01", password:"zhao222", phone:"134****5555", email:"zhao@chanseen.com", approvedBy:"", remark:"璺ㄩ儴闂ㄨ皟鍔?}
+  {id:"U001", name:"系统创建者", username:"admin", role:"超级管理员", status:"已激活", registerTime:"2025-01-01", password:"admin123", phone:"138****0001", email:"admin@chanseen.com", approvedBy:"system", remark:"系统初始化超级管理员"},
+  {id:"U002", name:"王管理", username:"wangadmin", role:"管理员", status:"已激活", registerTime:"2025-03-15", password:"wang456", phone:"139****1111", email:"wang@chanseen.com", approvedBy:"admin", remark:""},
+  {id:"U003", name:"李组长", username:"lilead", role:"客服组长", status:"待审核", registerTime:"2026-05-20", password:"li789", phone:"137****2222", email:"li@chanseen.com", approvedBy:"", remark:"新入职申请"},
+  {id:"U004", name:"张主管", username:"zhangsup", role:"客服主管", status:"已拒绝", registerTime:"2026-05-18", password:"zhang000", phone:"136****3333", email:"zhang@chanseen.com", approvedBy:"wangadmin", remark:"信息不完整"},
+  {id:"U005", name:"陈经理", username:"chenmgr", role:"客服经理", status:"已激活", registerTime:"2025-06-10", password:"chen111", phone:"135****4444", email:"chen@chanseen.com", approvedBy:"admin", remark:""},
+  {id:"U006", name:"赵专员", username:"zhaocs", role:"客服组长", status:"待审核", registerTime:"2026-06-01", password:"zhao222", phone:"134****5555", email:"zhao@chanseen.com", approvedBy:"", remark:"跨部门调动"}
 ];
 
 var DEFAULT_PROJECTS = [
-  {id:"P001", name:"缇庡鏃楄埌搴楀鏈嶉」鐩?, brand:"鍏拌敾", category:"缇庡", serviceMode:"TP椤圭洰", workplace:"娴庡崡", pm:"寮犱紵", director:"鏉庢槑", pmHistory:[{name:"鐜嬭姵", from:"2025-06", to:"2026-03", reason:"璋冨矖"}], status:"浼樿川鍋ュ悍搴?, startDate:"2025-04-01", endDate:"2026-12-31", base:"娴庡崡鑱屽満2F", platforms:"澶╃尗,鎶栭煶", serviceHours:"09:00-24:00", fteTarget:30, slaResponse:120, slaResolve:360, costBudget:450000, revenue:520000, profitRate:13.5, targetRate:95.0, healthScore:88, health:"馃煝"},
-  {id:"P002", name:"瀹剁數鑷惀瀹㈡湇椤圭洰", brand:"缇庣殑", category:"瀹剁數", serviceMode:"DP椤圭洰", workplace:"娣勫崥", pm:"鍒樻磱", director:"鐜嬪己", pmHistory:[], status:"骞崇ǔ甯歌搴?, startDate:"2025-01-15", endDate:"2026-12-31", base:"娣勫崥鑱屽満1F", platforms:"浜笢,澶╃尗", serviceHours:"08:00-22:00", fteTarget:45, slaResponse:90, slaResolve:300, costBudget:680000, revenue:750000, profitRate:9.3, targetRate:92.0, healthScore:72, health:"馃煛"},
-  {id:"P003", name:"鏈嶈鍝佺墝瀹㈡湇澶栧寘", brand:"浼樿。搴?, category:"鏈嶈", serviceMode:"BPO椤圭洰", workplace:"鏉窞", pm:"闄堥潤", director:"鏉庢槑", pmHistory:[{name:"璧典附", from:"2025-01", to:"2025-11", reason:"绂昏亴"}], status:"椋庨櫓棰勮搴?, startDate:"2025-01-10", endDate:"2026-06-30", base:"鏉窞鑱屽満3F", platforms:"鍏ㄥ钩鍙?, serviceHours:"08:00-24:00", fteTarget:60, slaResponse:60, slaResolve:240, costBudget:880000, revenue:920000, profitRate:4.3, targetRate:88.0, healthScore:55, health:"馃敶"},
-  {id:"P004", name:"姣嶅┐鐢ㄥ搧瀹㈡湇椤圭洰", brand:"濂藉瀛?, category:"姣嶅┐", serviceMode:"TP椤圭洰", workplace:"娴庡崡", pm:"寮犱紵", director:"鐜嬪己", pmHistory:[], status:"浼樿川鍋ュ悍搴?, startDate:"2025-08-01", endDate:"2027-01-31", base:"娴庡崡鑱屽満2F", platforms:"澶╃尗,浜笢,鎷煎澶?, serviceHours:"09:00-21:00", fteTarget:25, slaResponse:120, slaResolve:360, costBudget:320000, revenue:380000, profitRate:15.8, targetRate:96.0, healthScore:90, health:"馃煝"},
-  {id:"P005", name:"椋熷搧鐢熼矞瀹㈡湇椤圭洰", brand:"涓夊彧鏉鹃紶", category:"椋熷搧", serviceMode:"DP椤圭洰", workplace:"娣勫崥", pm:"鍒樻磱", director:"鏉庢槑", pmHistory:[{name:"瀛欑", from:"2025-03", to:"2026-02", reason:"鍐呴儴璋冩崲"}], status:"骞崇ǔ甯歌搴?, startDate:"2025-03-01", endDate:"2026-08-31", base:"娣勫崥鑱屽満1F", platforms:"澶╃尗,鎶栭煶", serviceHours:"08:00-23:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:520000, revenue:600000, profitRate:13.3, targetRate:93.0, healthScore:75, health:"馃煛"},
-  {id:"P006", name:"杩愬姩鍝佺墝瀹㈡湇椤圭洰", brand:"鑰愬厠", category:"杩愬姩", serviceMode:"BPO椤圭洰", workplace:"鏉窞", pm:"闄堥潤", director:"鐜嬪己", pmHistory:[], status:"楂樺嵄闂搴?, startDate:"2025-06-01", endDate:"2026-05-31", base:"鏉窞鑱屽満3F", platforms:"澶╃尗,瀹樼綉", serviceHours:"09:00-21:00", fteTarget:20, slaResponse:60, slaResolve:240, costBudget:280000, revenue:250000, profitRate:-10.7, targetRate:85.0, healthScore:40, health:"馃敶"},
-  {id:"P007", name:"鏅鸿兘瀹跺眳瀹㈡湇椤圭洰", brand:"灏忕背", category:"鏅鸿兘纭欢", serviceMode:"TP椤圭洰", workplace:"鏃犻敗", pm:"寮犱紵", director:"鏉庢槑", pmHistory:[], status:"浼樿川鍋ュ悍搴?, startDate:"2026-03-01", endDate:"2027-02-28", base:"鏃犻敗鑱屽満1F", platforms:"澶╃尗,浜笢,鎶栭煶", serviceHours:"09:00-22:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:420000, revenue:480000, profitRate:12.5, targetRate:94.0, healthScore:85, health:"馃煝"}
+  {id:"P001", name:"美妆旗舰店客服项目", brand:"兰蔻", category:"美妆", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"李明", pmHistory:[{name:"王芳", from:"2025-06", to:"2026-03", reason:"调岗"}], status:"优质健康店", startDate:"2025-04-01", endDate:"2026-12-31", base:"济南职场2F", platforms:"天猫,抖音", serviceHours:"09:00-24:00", fteTarget:30, slaResponse:120, slaResolve:360, costBudget:450000, revenue:520000, profitRate:13.5, targetRate:95.0, healthScore:88, health:"🟢"},
+  {id:"P002", name:"家电自营客服项目", brand:"美的", category:"家电", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"王强", pmHistory:[], status:"平稳常规店", startDate:"2025-01-15", endDate:"2026-12-31", base:"淄博职场1F", platforms:"京东,天猫", serviceHours:"08:00-22:00", fteTarget:45, slaResponse:90, slaResolve:300, costBudget:680000, revenue:750000, profitRate:9.3, targetRate:92.0, healthScore:72, health:"🟡"},
+  {id:"P003", name:"服装品牌客服外包", brand:"优衣库", category:"服装", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"李明", pmHistory:[{name:"赵丽", from:"2025-01", to:"2025-11", reason:"离职"}], status:"风险预警店", startDate:"2025-01-10", endDate:"2026-06-30", base:"杭州职场3F", platforms:"全平台", serviceHours:"08:00-24:00", fteTarget:60, slaResponse:60, slaResolve:240, costBudget:880000, revenue:920000, profitRate:4.3, targetRate:88.0, healthScore:55, health:"🔴"},
+  {id:"P004", name:"母婴用品客服项目", brand:"好孩子", category:"母婴", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"王强", pmHistory:[], status:"优质健康店", startDate:"2025-08-01", endDate:"2027-01-31", base:"济南职场2F", platforms:"天猫,京东,拼多多", serviceHours:"09:00-21:00", fteTarget:25, slaResponse:120, slaResolve:360, costBudget:320000, revenue:380000, profitRate:15.8, targetRate:96.0, healthScore:90, health:"🟢"},
+  {id:"P005", name:"食品生鲜客服项目", brand:"三只松鼠", category:"食品", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"李明", pmHistory:[{name:"孙磊", from:"2025-03", to:"2026-02", reason:"内部调换"}], status:"平稳常规店", startDate:"2025-03-01", endDate:"2026-08-31", base:"淄博职场1F", platforms:"天猫,抖音", serviceHours:"08:00-23:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:520000, revenue:600000, profitRate:13.3, targetRate:93.0, healthScore:75, health:"🟡"},
+  {id:"P006", name:"运动品牌客服项目", brand:"耐克", category:"运动", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"王强", pmHistory:[], status:"高危问题店", startDate:"2025-06-01", endDate:"2026-05-31", base:"杭州职场3F", platforms:"天猫,官网", serviceHours:"09:00-21:00", fteTarget:20, slaResponse:60, slaResolve:240, costBudget:280000, revenue:250000, profitRate:-10.7, targetRate:85.0, healthScore:40, health:"🔴"},
+  {id:"P007", name:"智能家居客服项目", brand:"小米", category:"智能硬件", serviceMode:"TP项目", workplace:"无锡", pm:"张伟", director:"李明", pmHistory:[], status:"优质健康店", startDate:"2026-03-01", endDate:"2027-02-28", base:"无锡职场1F", platforms:"天猫,京东,抖音", serviceHours:"09:00-22:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:420000, revenue:480000, profitRate:12.5, targetRate:94.0, healthScore:85, health:"🟢"}
 ];
 
-// 鍒濆鍖?USERS
+// 初始化 USERS
 var USERS = [];
 (function initUsers() {
   var raw = localStorage.getItem('chansee_users');
@@ -184,12 +184,12 @@ var USERS = [];
     } catch(e) {
     }
   }
-  // 棣栨鍒濆鍖?
+  // 首次初始化
   USERS = JSON.parse(JSON.stringify(DEFAULT_USERS));
   safeSetItem('chansee_users', JSON.stringify(USERS));
 })();
 
-// 鍒濆鍖?PROJECTS
+// 初始化 PROJECTS
 var PROJECTS = [];
 (function initProjects() {
   var raw = localStorage.getItem('chansee_projects');
@@ -204,7 +204,7 @@ var PROJECTS = [];
   safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
 })();
 
-// 鍒濆鍖?OPERATIONS
+// 初始化 OPERATIONS
 (function initOperations() {
   var raw = localStorage.getItem('chansee_operations');
   if (raw && raw !== 'null' && raw !== '[]') {
@@ -213,7 +213,7 @@ var PROJECTS = [];
   safeSetItem('chansee_operations', JSON.stringify(OPERATIONS));
 })();
 
-// 鍒濆鍖?ISSUES
+// 初始化 ISSUES
 (function initIssues() {
   var raw = localStorage.getItem('chansee_issues');
   if (raw && raw !== 'null' && raw !== '[]') {
@@ -222,7 +222,7 @@ var PROJECTS = [];
   safeSetItem('chansee_issues', JSON.stringify(ISSUES));
 })();
 
-// 鍒濆鍖?AGENT_PERFORMANCE
+// 初始化 AGENT_PERFORMANCE
 (function initAgentPerformance() {
   var raw = localStorage.getItem('chansee_agent_performance');
   if (raw && raw !== 'null' && raw !== '[]') {
@@ -231,7 +231,7 @@ var PROJECTS = [];
   safeSetItem('chansee_agent_performance', JSON.stringify(AGENT_PERFORMANCE));
 })();
 
-// 鍒濆鍖?GROUP_LOAD_RATIO
+// 初始化 GROUP_LOAD_RATIO
 (function initGroupLoadRatio() {
   var raw = localStorage.getItem('chansee_group_load_ratio');
   if (raw && raw !== 'null' && raw !== '[]') {
@@ -240,7 +240,7 @@ var PROJECTS = [];
   safeSetItem('chansee_group_load_ratio', JSON.stringify(GROUP_LOAD_RATIO));
 })();
 
-// 鍒濆鍖?PERFORMANCE_WEIGHTS
+// 初始化 PERFORMANCE_WEIGHTS
 (function initPerformanceWeights() {
   var raw = localStorage.getItem('chansee_performance_weights');
   if (raw && raw !== 'null' && raw !== '{}') {
@@ -249,15 +249,15 @@ var PROJECTS = [];
   safeSetItem('chansee_performance_weights', JSON.stringify(PERFORMANCE_WEIGHTS));
 })();
 
-// ===== 鏂板锛氱湅鏉挎暟鎹ā鍨?=====
+// ===== 新增：看板数据模型 =====
 
-// 瀹㈡湇閰嶇疆鏁版嵁
+// 客服配置数据
 var DEFAULT_STAFF_CONFIG = [
-  {id:'SC001', role:'鍞墠瀹㈡湇', count:68, pct:37, workplace:'鍚堣偉', updatedAt:'2026-06-20', updatedBy:'admin'},
-  {id:'SC002', role:'鍞悗瀹㈡湇', count:52, pct:28, workplace:'鍚堣偉', updatedAt:'2026-06-20', updatedBy:'admin'},
-  {id:'SC003', role:'缁煎悎瀹㈡湇', count:45, pct:24, workplace:'鍚堣偉', updatedAt:'2026-06-20', updatedBy:'admin'},
-  {id:'SC004', role:'瀹㈡湇绠＄悊', count:14, pct:8, workplace:'鍚堣偉', updatedAt:'2026-06-20', updatedBy:'admin'},
-  {id:'SC005', role:'鏁版嵁涓撳憳', count:7, pct:4, workplace:'鍚堣偉', updatedAt:'2026-06-20', updatedBy:'admin'}
+  {id:'SC001', role:'售前客服', count:68, pct:37, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'SC002', role:'售后客服', count:52, pct:28, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'SC003', role:'综合客服', count:45, pct:24, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'SC004', role:'客服管理', count:14, pct:8, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'SC005', role:'数据专员', count:7, pct:4, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'}
 ];
 
 var STAFF_CONFIG = [];
@@ -273,12 +273,12 @@ var STAFF_CONFIG = [];
   safeSetItem('chansee_staff_config', JSON.stringify(STAFF_CONFIG));
 })();
 
-// 宸ヤ綔閲忔暟鎹?
+// 工作量数据
 var DEFAULT_WORKLOAD_DATA = [
-  {id:'WL001', name:'璁㈠崟澶勭悊', count:625, ratio:100, workplace:'鍚堣偉', updatedAt:'2026-06-20', updatedBy:'admin'},
-  {id:'WL002', name:'閫€娆惧鐞?, count:342, ratio:55, workplace:'鍚堣偉', updatedAt:'2026-06-20', updatedBy:'admin'},
-  {id:'WL003', name:'鎶曡瘔澶勭悊', count:198, ratio:32, workplace:'鍚堣偉', updatedAt:'2026-06-20', updatedBy:'admin'},
-  {id:'WL004', name:'鎹㈣揣璺熻繘', count:156, ratio:25, workplace:'鍚堣偉', updatedAt:'2026-06-20', updatedBy:'admin'}
+  {id:'WL001', name:'订单处理', count:625, ratio:100, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'WL002', name:'退款处理', count:342, ratio:55, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'WL003', name:'投诉处理', count:198, ratio:32, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'WL004', name:'换货跟进', count:156, ratio:25, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'}
 ];
 
 var WORKLOAD_DATA = [];
@@ -294,7 +294,7 @@ var WORKLOAD_DATA = [];
   safeSetItem('chansee_workload_data', JSON.stringify(WORKLOAD_DATA));
 })();
 
-// KPI鍘嗗彶鏁版嵁
+// KPI历史数据
 var DEFAULT_KPI_HISTORY = [
   {id:'KH001', date:'2026-01', revenue:450000, cost:380000, profitRate:1.18, targetRate:92.0, workplace:'all', updatedAt:'2026-06-20', updatedBy:'admin'},
   {id:'KH002', date:'2026-02', revenue:480000, cost:400000, profitRate:1.20, targetRate:93.5, workplace:'all', updatedAt:'2026-06-20', updatedBy:'admin'},
@@ -314,7 +314,7 @@ var KPI_HISTORY = [];
   safeSetItem('chansee_kpi_history', JSON.stringify(KPI_HISTORY));
 })();
 
-// 鏁版嵁淇敼鍘嗗彶
+// 数据修改历史
 var DATA_CHANGE_LOG = [];
 (function initDataChangeLog() {
   var raw = localStorage.getItem('chansee_data_change_log');
@@ -328,10 +328,10 @@ var DATA_CHANGE_LOG = [];
   safeSetItem('chansee_data_change_log', JSON.stringify(DATA_CHANGE_LOG));
 })();
 
-// 鏁版嵁鏉冮檺閰嶇疆
+// 数据权限配置
 var DEFAULT_DATA_PERMISSIONS = [
   {
-    role: '瓒呯骇绠＄悊鍛?,
+    role: '超级管理员',
     permissions: {
       PROJECTS: ['read', 'write', 'delete'],
       OPERATIONS: ['read', 'write', 'delete'],
@@ -342,7 +342,7 @@ var DEFAULT_DATA_PERMISSIONS = [
     }
   },
   {
-    role: '绠＄悊鍛?,
+    role: '管理员',
     permissions: {
       PROJECTS: ['read', 'write'],
       OPERATIONS: ['read', 'write'],
@@ -353,7 +353,7 @@ var DEFAULT_DATA_PERMISSIONS = [
     }
   },
   {
-    role: '瀹㈡湇涓荤',
+    role: '客服主管',
     permissions: {
       PROJECTS: ['read'],
       OPERATIONS: ['read', 'write'],
@@ -378,7 +378,7 @@ var DATA_PERMISSIONS = [];
   safeSetItem('chansee_data_permissions', JSON.stringify(DATA_PERMISSIONS));
 })();
 
-// 鍒濆鍖?RISK_ALERTS
+// 初始化 RISK_ALERTS
 (function initRiskAlerts() {
   var raw = localStorage.getItem('chansee_risk_alerts');
   if (raw && raw !== 'null' && raw !== '[]') {
@@ -387,7 +387,7 @@ var DATA_PERMISSIONS = [];
   safeSetItem('chansee_risk_alerts', JSON.stringify(RISK_ALERTS));
 })();
 
-// 鍒濆鍖?KNOWLEDGE
+// 初始化 KNOWLEDGE
 (function initKnowledge() {
   var raw = localStorage.getItem('chansee_knowledge');
   if (raw && raw !== 'null' && raw !== '[]') {
@@ -396,7 +396,7 @@ var DATA_PERMISSIONS = [];
   safeSetItem('chansee_knowledge', JSON.stringify(KNOWLEDGE));
 })();
 
-// 鍒濆鍖?HANDOVERS
+// 初始化 HANDOVERS
 (function initHandovers() {
   var raw = localStorage.getItem('chansee_handovers');
   if (raw && raw !== 'null' && raw !== '[]') {
@@ -407,29 +407,29 @@ var DATA_PERMISSIONS = [];
 
 function saveUsers() {
   var ok = safeSetItem('chansee_users', JSON.stringify(USERS));
-  if (!ok) { alert('鈿狅笍 鐢ㄦ埛鏁版嵁淇濆瓨澶辫触锛乗n鍙兘鏄祻瑙堝櫒瀛樺偍绌洪棿涓嶈冻锛岃娓呯悊娴忚鍣ㄦ暟鎹悗閲嶈瘯銆?); return; }
-  // 鍚屾鍒?CloudBase
+  if (!ok) { alert('⚠️ 用户数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); return; }
+  // 同步到 CloudBase
   if (window.CloudBaseSync) {
-    // 娣诲姞鏃ュ織锛氭樉绀烘鍦ㄤ繚瀛樼殑鏁版嵁
+    // 添加日志：显示正在保存的数据
     
     var p = window.CloudBaseSync.saveAll();
     if (p && typeof p.then === 'function') {
       p.then(function(success) {
         if (success) {
-          // 浜戠淇濆瓨鎴愬姛鏃讹紝璁板綍鎴愬姛鏍囪
+          // 云端保存成功时，记录成功标记
           try { localStorage.setItem('chansee_users_cloud_saved', 'true'); } catch(e) {}
         } else {
-          // 浜戠淇濆瓨澶辫触锛岀粰鐢ㄦ埛鎻愮ず
+          // 云端保存失败，给用户提示
           if (typeof showToast === 'function') {
-            showToast('鈿狅笍 浜戠淇濆瓨澶辫触锛屾暟鎹粎淇濆瓨鍦ㄦ湰鍦版祻瑙堝櫒');
+            showToast('⚠️ 云端保存失败，数据仅保存在本地浏览器');
           } else {
           }
-          // 鏍囪浜戠淇濆瓨澶辫触
+          // 标记云端保存失败
           try { localStorage.setItem('chansee_users_cloud_saved', 'false'); } catch(e) {}
         }
       }).catch(function(err) {
         if (typeof showToast === 'function') {
-          showToast('鈿狅笍 浜戠淇濆瓨寮傚父锛屾暟鎹粎淇濆瓨鍦ㄦ湰鍦版祻瑙堝櫒');
+          showToast('⚠️ 云端保存异常，数据仅保存在本地浏览器');
         }
         try { localStorage.setItem('chansee_users_cloud_saved', 'false'); } catch(e) {}
       });
@@ -438,8 +438,8 @@ function saveUsers() {
 }
 function saveProjects() {
   var ok = safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
-  if (!ok) { alert('鈿狅笍 椤圭洰鏁版嵁淇濆瓨澶辫触锛乗n鍙兘鏄祻瑙堝櫒瀛樺偍绌洪棿涓嶈冻锛岃娓呯悊娴忚鍣ㄦ暟鎹悗閲嶈瘯銆?); return; }
-  // 鍚屾鍒?CloudBase
+  if (!ok) { alert('⚠️ 项目数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); return; }
+  // 同步到 CloudBase
   if (window.CloudBaseSync) {
     var p = window.CloudBaseSync.saveAll();
     if (p && typeof p.then === 'function') {
@@ -473,22 +473,22 @@ function saveHandovers() {
   safeSetItem('chansee_handovers', JSON.stringify(HANDOVERS));
 }
 
-// 绾ц仈鍒犻櫎椤圭洰鍙婃墍鏈夊叧鑱旀暟鎹?
+// 级联删除项目及所有关联数据
 function deleteProject(id) {
-  if (!confirm('纭鍒犻櫎椤圭洰 ' + id + '锛焅n\n姝ゆ搷浣滀笉鍙仮澶嶏紒')) return;
+  if (!confirm('确认删除项目 ' + id + '？\n\n此操作不可恢复！')) return;
   PROJECTS = PROJECTS.filter(function(p){ return p.id !== id; });
   saveProjects();
-  alert('椤圭洰 ' + id + ' 宸插垹闄わ紒');
+  alert('项目 ' + id + ' 已删除！');
   renderArchive();
 }
 
-// 鎸佷箙鍖栧綋鍓嶇敤鎴凤紙鍚屾鍒?USERS 鏁扮粍 + 鏇存柊 session锛?
+// 持久化当前用户（同步到 USERS 数组 + 更新 session）
 function persistCurrentUser() {
   if (!currentUser) return;
-  // 鍚屾鍒?USERS 鏁扮粍
+  // 同步到 USERS 数组
   for (var i = 0; i < USERS.length; i++) {
     if (USERS[i].id === currentUser.id) {
-      // 鎶?currentUser 鐨勬墍鏈夊瓧娈靛悓姝ュ埌 USERS[i]
+      // 把 currentUser 的所有字段同步到 USERS[i]
       var keys = Object.keys(currentUser);
       for (var j = 0; j < keys.length; j++) {
         USERS[i][keys[j]] = currentUser[keys[j]];
@@ -497,17 +497,17 @@ function persistCurrentUser() {
     }
   }
   saveUsers();
-  // 鏇存柊 session 涓殑 currentUser锛堜笉鍚瘑鐮侊紝浣跨敤 safeSetItem锛?
+  // 更新 session 中的 currentUser（不含密码，使用 safeSetItem）
   var sessionData = JSON.parse(JSON.stringify(currentUser));
   delete sessionData.password;
   safeSetItem('chansee_current_user', JSON.stringify(sessionData));
 }
 
 
-// 褰撳墠鐧诲綍鐢ㄦ埛锛坣ull 琛ㄧず鏈櫥褰曪級
+// 当前登录用户（null 表示未登录）
 let currentUser = null;
 
-// 鎺у埗涓荤晫闈紙header + main-container锛夋樉绀?闅愯棌
+// 控制主界面（header + main-container）显示/隐藏
 function setAppContentVisible(visible) {
   const hd = document.getElementById("top-header");
   const mc = document.getElementById("main-container");
@@ -517,14 +517,14 @@ function setAppContentVisible(visible) {
 
 async function checkLogin() {
   try {
-    // 鍏堟鏌?login.html 鐨勭櫥褰曠姸鎬?
+    // 先检查 login.html 的登录状态
     const authStr = localStorage.getItem('chanseen_auth');
     if (authStr) {
       try {
         const auth = JSON.parse(authStr);
         const maxAge = auth.remember ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
         if (auth.token && (Date.now() - auth.loginAt) < maxAge) {
-          // 銆愰槻閲嶇疆淇銆戝姞杞戒簯绔暟鎹墠锛屽厛澶囦唤鏈湴鐨勭敤鎴锋暟鎹?
+          // 【防重置修复】加载云端数据前，先备份本地的用户数据
           var localUsersBackup = null;
           try {
             var localUsersStr = localStorage.getItem('chansee_users');
@@ -534,7 +534,7 @@ async function checkLogin() {
           } catch(e) {
           }
 
-          // login.html 鐧诲綍锛氬厛浠庝簯绔姞杞芥渶鏂扮敤鎴锋暟鎹紝鍐嶇敤浜戠鏁版嵁鏋勫缓 currentUser
+          // login.html 登录：先从云端加载最新用户数据，再用云端数据构建 currentUser
           if (window.CloudBaseSync) {
             try {
               await window.CloudBaseSync.loadAll();
@@ -546,49 +546,49 @@ async function checkLogin() {
             }
           }
 
-          // 銆愰槻閲嶇疆淇銆戞鏌ヤ簯绔姞杞界殑鏁版嵁鏄惁瀵艰嚧鏁版嵁涓㈠け锛屽鏋滄槸锛岀敤鏈湴澶囦唤鎭㈠
+          // 【防重置修复】检查云端加载的数据是否导致数据丢失，如果是，用本地备份恢复
           if (localUsersBackup && Array.isArray(localUsersBackup)) {
             var currentUsername = auth.user?.username || auth.user?.name || 'admin';
             var cloudUser = USERS.find(u => u.username === currentUsername);
             var localUser = localUsersBackup.find(u => u.username === currentUsername);
             
-            // 鑾峰彇鏈湴鍜屼簯绔敤鎴风殑鏄剧ず鍚嶇О锛堝悓鏃舵鏌?name 鍜?nickname 瀛楁锛?
+            // 获取本地和云端用户的显示名称（同时检查 name 和 nickname 字段）
             function getDisplayName(u) {
               if (!u) return '';
-              return (u.name && u.name !== '绯荤粺鍒涘缓鑰? && u.name !== '鏈缃? && u.name !== '') ? u.name
-                   : (u.nickname && u.nickname !== '绯荤粺鍒涘缓鑰? && u.nickname !== '鏈缃? && u.nickname !== '') ? u.nickname
+              return (u.name && u.name !== '系统创建者' && u.name !== '未设置' && u.name !== '') ? u.name
+                   : (u.nickname && u.nickname !== '系统创建者' && u.nickname !== '未设置' && u.nickname !== '') ? u.nickname
                    : '';
             }
-            // 妫€鏌ユ槸鍚﹂渶瑕佺敤鏈湴澶囦唤鎭㈠锛堟鏌ユ墍鏈変釜浜鸿缃瓧娈碉級
+            // 检查是否需要用本地备份恢复（检查所有个人设置字段）
             var needRestore = false;
             if (localUser && cloudUser) {
-              if (localUser.name && localUser.name !== '绯荤粺鍒涘缓鑰? && (!cloudUser.name || cloudUser.name === '绯荤粺鍒涘缓鑰?)) needRestore = true;
-              if (localUser.nickname && localUser.nickname !== '绯荤粺鍒涘缓鑰? && (!cloudUser.nickname || cloudUser.nickname === '绯荤粺鍒涘缓鑰?)) needRestore = true;
+              if (localUser.name && localUser.name !== '系统创建者' && (!cloudUser.name || cloudUser.name === '系统创建者')) needRestore = true;
+              if (localUser.nickname && localUser.nickname !== '系统创建者' && (!cloudUser.nickname || cloudUser.nickname === '系统创建者')) needRestore = true;
               if (localUser.birthday && (!cloudUser.birthday || cloudUser.birthday === '')) needRestore = true;
               if (localUser.phone && (!cloudUser.phone || cloudUser.phone === '')) needRestore = true;
               if (localUser.email && (!cloudUser.email || cloudUser.email === '')) needRestore = true;
-              if (localUser.position && localUser.position !== '瀹㈡湇鎬荤洃' && (!cloudUser.position || cloudUser.position === '' || cloudUser.position === '瀹㈡湇鎬荤洃')) needRestore = true;
+              if (localUser.position && localUser.position !== '客服总监' && (!cloudUser.position || cloudUser.position === '' || cloudUser.position === '客服总监')) needRestore = true;
               if (localUser.brand && localUser.brand !== 'Chanseen' && (!cloudUser.brand || cloudUser.brand === '' || cloudUser.brand === 'Chanseen')) needRestore = true;
             } else if (localUser && !cloudUser) {
               needRestore = true;
             }
 
             if (needRestore) {
-                // 鐢ㄦ湰鍦板浠界殑鏁版嵁鏇存柊 USERS 鏁扮粍
+                // 用本地备份的数据更新 USERS 数组
                 for (var bi = 0; bi < localUsersBackup.length; bi++) {
                   var bu = localUsersBackup[bi];
                   var found = false;
                   for (var ui = 0; ui < USERS.length; ui++) {
                     if (USERS[ui].id === bu.id || USERS[ui].username === bu.username) {
-                      // 妫€鏌ヤ簯绔暟鎹槸鍚︾己灏戝悕绉板瓧娈碉紙鍚屾椂妫€鏌?name 鍜?nickname锛?
-                      var cloudHasName = USERS[ui].name && USERS[ui].name !== '绯荤粺鍒涘缓鑰? && USERS[ui].name !== '鏈缃? && USERS[ui].name !== '';
-                      var cloudHasNickname = USERS[ui].nickname && USERS[ui].nickname !== '绯荤粺鍒涘缓鑰? && USERS[ui].nickname !== '鏈缃?;
+                      // 检查云端数据是否缺少名称字段（同时检查 name 和 nickname）
+                      var cloudHasName = USERS[ui].name && USERS[ui].name !== '系统创建者' && USERS[ui].name !== '未设置' && USERS[ui].name !== '';
+                      var cloudHasNickname = USERS[ui].nickname && USERS[ui].nickname !== '系统创建者' && USERS[ui].nickname !== '未设置';
                       if (!cloudHasName && !cloudHasNickname) {
-                        // 浜戠娌℃湁姝ｇ‘鐨勫悕绉?鈫?鐢ㄦ湰鍦扮殑琛ュ叏锛堜紭鍏堢敤 name锛?
-                        if (bu.name && bu.name !== '绯荤粺鍒涘缓鑰? && bu.name !== '鏈缃?) {
+                        // 云端没有正确的名称 → 用本地的补全（优先用 name）
+                        if (bu.name && bu.name !== '系统创建者' && bu.name !== '未设置') {
                           USERS[ui].name = bu.name;
                           USERS[ui].nickname = bu.name;
-                        } else if (bu.nickname && bu.nickname !== '绯荤粺鍒涘缓鑰?) {
+                        } else if (bu.nickname && bu.nickname !== '系统创建者') {
                           USERS[ui].name = bu.nickname;
                           USERS[ui].nickname = bu.nickname;
                         }
@@ -602,14 +602,14 @@ async function checkLogin() {
                       break;
                     }
                   }
-                  // 濡傛灉浜戠娌℃湁杩欎釜鐢ㄦ埛锛屽氨鎶婃湰鍦板浠界殑鐢ㄦ埛鍔犺繘鍘?
+                  // 如果云端没有这个用户，就把本地备份的用户加进去
                   if (!found) {
                     USERS.push(bu);
                   }
                 }
-                // 淇濆瓨鎭㈠鍚庣殑鏁版嵁鍒?localStorage
+                // 保存恢复后的数据到 localStorage
                 safeSetItem('chansee_users', JSON.stringify(USERS));
-                // 灏濊瘯鍐嶆鍚屾鍒颁簯绔紙甯︾粨鏋滄彁绀猴級
+                // 尝试再次同步到云端（带结果提示）
                 if (window.CloudBaseSync) {
                   var syncP = window.CloudBaseSync.saveAll();
                   if (syncP && typeof syncP.then === 'function') {
@@ -619,7 +619,7 @@ async function checkLogin() {
               }
           }
 
-          // 浠?USERS 鏁扮粍锛堜簯绔渶鏂帮級涓煡鎵惧綋鍓嶇敤鎴?
+          // 从 USERS 数组（云端最新）中查找当前用户
           var cloudUser = null;
           if (auth.user && auth.user.username) {
             cloudUser = USERS.find(u => u.username === auth.user.username);
@@ -627,7 +627,7 @@ async function checkLogin() {
           if (!cloudUser && auth.user && auth.user.id) {
             cloudUser = USERS.find(u => u.id === auth.user.id);
           }
-          // 濡傛灉閮芥病鎵惧埌锛岀敤 U001锛坅dmin锛変綔涓洪粯璁?
+          // 如果都没找到，用 U001（admin）作为默认
           if (!cloudUser) {
             cloudUser = USERS.find(u => u.id === 'U001') || USERS[0];
           }
@@ -635,12 +635,12 @@ async function checkLogin() {
           currentUser = {
             id: (cloudUser && cloudUser.id) || 'U001',
             username: (cloudUser && cloudUser.username) || auth.user?.username || 'admin',
-            name: (cloudUser && cloudUser.name) || (cloudUser && cloudUser.nickname) || '绯荤粺鍒涘缓鑰?,
-            role: (cloudUser && cloudUser.role) || auth.user?.role || '瓒呯骇绠＄悊鍛?,
+            name: (cloudUser && cloudUser.name) || (cloudUser && cloudUser.nickname) || '系统创建者',
+            role: (cloudUser && cloudUser.role) || auth.user?.role || '超级管理员',
             avatar: (cloudUser && cloudUser.avatar) || '',
-            position: (cloudUser && cloudUser.position) || '瀹㈡湇鎬荤洃',
+            position: (cloudUser && cloudUser.position) || '客服总监',
             brand: (cloudUser && cloudUser.brand) || 'Chanseen',
-            nickname: (cloudUser && cloudUser.nickname) || (cloudUser && cloudUser.name) || '绯荤粺鍒涘缓鑰?,
+            nickname: (cloudUser && cloudUser.nickname) || (cloudUser && cloudUser.name) || '系统创建者',
             birthday: (cloudUser && cloudUser.birthday) || '',
             phone: (cloudUser && cloudUser.phone) || '',
             email: (cloudUser && cloudUser.email) || '',
@@ -648,15 +648,15 @@ async function checkLogin() {
             keepStatus: cloudUser ? (cloudUser.keepStatus !== undefined ? cloudUser.keepStatus : false) : false
           };
 
-          // 鍏滃簳淇濇姢锛氬鏋滃尮閰嶅埌鐨勭敤鎴风己灏戣嚜瀹氫箟瀛楁锛岄亶鍘哢SERS鎵句竴涓暟鎹渶瀹屾暣鐨勬潵琛ュ叏
-          if (currentUser && (!currentUser.nickname || currentUser.nickname === '绯荤粺鍒涘缓鑰?)) {
+          // 兜底保护：如果匹配到的用户缺少自定义字段，遍历USERS找一个数据最完整的来补全
+          if (currentUser && (!currentUser.nickname || currentUser.nickname === '系统创建者')) {
             for (var fi = 0; fi < USERS.length; fi++) {
               var fu = USERS[fi];
-              if (fu && fu.nickname && fu.nickname !== '绯荤粺鍒涘缓鑰? && fu.nickname !== '鏈缃?) {
-                // 鎵惧埌浜嗘湁鑷畾涔夋樀绉扮殑鐢ㄦ埛锛岀敤瀹冩潵琛ュ叏褰撳墠鐢ㄦ埛鐨勪釜浜轰俊鎭?
-                if (!currentUser.nickname || currentUser.nickname === '绯荤粺鍒涘缓鑰?) currentUser.nickname = fu.nickname;
+              if (fu && fu.nickname && fu.nickname !== '系统创建者' && fu.nickname !== '未设置') {
+                // 找到了有自定义昵称的用户，用它来补全当前用户的个人信息
+                if (!currentUser.nickname || currentUser.nickname === '系统创建者') currentUser.nickname = fu.nickname;
                 if (!currentUser.birthday) currentUser.birthday = fu.birthday || '';
-                if (!currentUser.position || currentUser.position === '瀹㈡湇鎬荤洃') currentUser.position = fu.position || '';
+                if (!currentUser.position || currentUser.position === '客服总监') currentUser.position = fu.position || '';
                 if (!currentUser.phone) currentUser.phone = fu.phone || '';
                 if (!currentUser.email) currentUser.email = fu.email || '';
                 break;
@@ -664,16 +664,16 @@ async function checkLogin() {
             }
           }
 
-          // 鎶婃渶鏂版暟鎹啓鍥?chansee_current_user锛岀‘淇濅笅娆¤兘鐢?
+          // 把最新数据写回 chansee_current_user，确保下次能用
           var sess = JSON.parse(JSON.stringify(currentUser));
           delete sess.password;
           safeSetItem('chansee_current_user', JSON.stringify(sess));
 
-          currentRole = currentUser.role || '瓒呯骇绠＄悊鍛?;
+          currentRole = currentUser.role || '超级管理员';
           hideLoginModal();
           updateUserDisplay();
           setAppContentVisible(true);
-          // 鐧诲綍鎴愬姛鍚庯紝璁板綍鐧诲綍淇℃伅
+          // 登录成功后，记录登录信息
           recordLogin();
           return true;
         } else {
@@ -684,19 +684,19 @@ async function checkLogin() {
       }
     }
 
-    // 鍐嶆鏌ョ幇鏈夌郴缁熺殑鐧诲綍鐘舵€?
+    // 再检查现有系统的登录状态
     const raw = localStorage.getItem("chansee_current_user")
               || sessionStorage.getItem("chansee_current_user");
-    // 灏濊瘯浠庝簯绔姞杞芥渶鏂版暟鎹?
+    // 尝试从云端加载最新数据
     if (window.CloudBaseSync) {
       try {
         await window.CloudBaseSync.loadAll();
-        // 浠?localStorage 閲嶆柊璇诲彇 USERS 鏁扮粍锛堝凡琚簯绔暟鎹洿鏂帮級
+        // 从 localStorage 重新读取 USERS 数组（已被云端数据更新）
         var savedUsers = localStorage.getItem('chansee_users');
         if (savedUsers) {
           try {
             USERS = JSON.parse(savedUsers);
-            // 鏄剧ず褰撳墠鐢ㄦ埛鐨勬暟鎹?
+            // 显示当前用户的数据
             var currentUserId = JSON.parse(raw)?.id;
             var currentUserData = USERS.find(u => u.id === currentUserId);
           } catch(e) {
@@ -709,17 +709,17 @@ async function checkLogin() {
     }
     if (raw) {
       const data = JSON.parse(raw);
-      // 鏍￠獙鏄惁杩囨湡
+      // 校验是否过期
       if (data._expiry && Date.now() > data._expiry) {
         sessionStorage.removeItem("chansee_current_user");
         localStorage.removeItem("chansee_current_user");
         throw new Error("session expired");
       }
-      // 鐢?session 閲岀殑 id 浠?USERS 鏁扮粍鍙栨渶鏂板畬鏁存暟鎹?
+      // 用 session 里的 id 从 USERS 数组取最新完整数据
       const userInDb = USERS.find(u => u.id === data.id);
       if (userInDb) {
-        // 鏋勯€?currentUser锛堜笉鍚瘑鐮侊級
-        // 娉ㄦ剰锛氫互 USERS 鏁扮粍锛堜簯绔渶鏂版暟鎹級涓哄噯锛屼笉鍐嶇敤鏃х殑 session 鏁版嵁瑕嗙洊
+        // 构造 currentUser（不含密码）
+        // 注意：以 USERS 数组（云端最新数据）为准，不再用旧的 session 数据覆盖
         currentUser = {};
         var keys = Object.keys(userInDb);
         for (var i = 0; i < keys.length; i++) {
@@ -727,18 +727,18 @@ async function checkLogin() {
             currentUser[keys[i]] = userInDb[keys[i]];
           }
         }
-        // 鍚屾鏇存柊 chansee_current_user锛堢‘淇濅笅娆＄櫥褰曟椂鐢ㄧ殑鏄渶鏂版暟鎹級
+        // 同步更新 chansee_current_user（确保下次登录时用的是最新数据）
         var updatedSession = JSON.parse(JSON.stringify(currentUser));
         delete updatedSession.password;
         safeSetItem('chansee_current_user', JSON.stringify(updatedSession));
       } else {
-        // 鐢ㄦ埛宸茶鍒犻櫎锛屾竻闄?session
+        // 用户已被删除，清除 session
         currentUser = null;
         sessionStorage.removeItem("chansee_current_user");
         localStorage.removeItem("chansee_current_user");
         throw new Error("user not found");
       }
-      currentRole = currentUser.role || "鏂扮敤鎴?;
+      currentRole = currentUser.role || "新用户";
       hideLoginModal();
       updateUserDisplay();
       setAppContentVisible(true);
@@ -752,7 +752,7 @@ async function checkLogin() {
   return false;
 }
 
-// 鏇存柊椤堕儴鐢ㄦ埛鏄剧ず锛堝ご鍍?+ 涓嬫媺鑿滃崟锛?
+// 更新顶部用户显示（头像 + 下拉菜单）
 function updateUserDisplay() {
   const el = document.getElementById("user-display");
   if (!el) return;
@@ -769,7 +769,7 @@ function updateUserDisplay() {
     <div class="user-avatar-wrap" onclick="toggleUserMenu(event)">
       ${avatarHtml}
       <span class="user-name">${currentUser.name}</span>
-      <span class="user-arrow">鈻?/span>
+      <span class="user-arrow">▼</span>
       <div class="user-dropdown" id="user-dropdown">
         <div class="user-dropdown-header">
           ${dropdownAvatarHtml}
@@ -780,30 +780,30 @@ function updateUserDisplay() {
         </div>
         <div class="user-dropdown-divider"></div>
         <div class="user-dropdown-item" onclick="goToProfile()">
-          <span class="user-dropdown-icon">鈿欙笍</span>
-          <span>涓汉璁剧疆</span>
+          <span class="user-dropdown-icon">⚙️</span>
+          <span>个人设置</span>
         </div>
         <div class="user-dropdown-item" onclick="switchAccount()">
-          <span class="user-dropdown-icon">馃攧</span>
-          <span>鍒囨崲璐﹀彿</span>
+          <span class="user-dropdown-icon">🔄</span>
+          <span>切换账号</span>
         </div>
         <div class="user-dropdown-divider"></div>
         <div class="user-dropdown-item user-dropdown-danger" onclick="logout()">
-          <span class="user-dropdown-icon">馃毆</span>
-          <span>閫€鍑鸿处鍙?/span>
+          <span class="user-dropdown-icon">🚪</span>
+          <span>退出账号</span>
         </div>
       </div>
     </div>`;
 }
 
-// 澶村儚涓嬫媺鑿滃崟鏄鹃殣
+// 头像下拉菜单显隐
 function toggleUserMenu(e) {
   e.stopPropagation();
   const dd = document.getElementById("user-dropdown");
   if (dd) dd.classList.toggle("show");
 }
 
-// 鐐瑰嚮澶栭儴鍏抽棴涓嬫媺
+// 点击外部关闭下拉
 function closeUserMenu() {
   const dd = document.getElementById("user-dropdown");
   if (dd) dd.classList.remove("show");
@@ -811,59 +811,59 @@ function closeUserMenu() {
 
 document.addEventListener("click", closeUserMenu);
 
-// 璺宠浆鍒颁釜浜鸿缃?
+// 跳转到个人设置
 function goToProfile() {
   closeUserMenu();
-  // 鑷姩灞曞紑"绯荤粺绠＄悊涓庨厤缃?鍒嗙粍
+  // 自动展开"系统管理与配置"分组
   const sysSection = document.querySelector('.nav-section[data-section="system"]');
   if (sysSection) {
     sysSection.classList.remove("collapsed");
     const arrow = sysSection.querySelector('.section-arrow');
-    if (arrow) arrow.textContent = '鈻?;
+    if (arrow) arrow.textContent = '▼';
   }
   renderModule("profile");
 }
 
-// 鍒囨崲璐﹀彿
+// 切换账号
 function switchAccount() {
   closeUserMenu();
   logout();
 }
 
-// 鏄剧ず鐧诲綍寮圭獥
+// 显示登录弹窗
 function showLoginModal() {
   const modal = document.getElementById("login-modal");
   if (modal) modal.classList.remove("hidden");
 }
 
-// 闅愯棌鐧诲綍寮圭獥
+// 隐藏登录弹窗
 function hideLoginModal() {
   const modal = document.getElementById("login-modal");
   if (modal) modal.classList.add("hidden");
 }
 
-// 鍒囨崲鐧诲綍/娉ㄥ唽
+// 切换登录/注册
 function switchAuthTab(tab) {
   document.getElementById("auth-login-form").style.display = tab === "login" ? "block" : "none";
   document.getElementById("auth-register-form").style.display = tab === "register" ? "block" : "none";
   document.querySelectorAll(".auth-tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
 }
 
-// 鐧诲綍
+// 登录
 function doLogin() {
   const username = document.getElementById("login-username").value.trim();
   const password = document.getElementById("login-password").value;
   const remember = document.getElementById("login-remember")?.checked;
-  if (!username || !password) { alert("璇峰～鍐欒处鍙峰拰瀵嗙爜"); return; }
+  if (!username || !password) { alert("请填写账号和密码"); return; }
 
   const btn = document.querySelector("#login-form .btn-primary");
-  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "鐧诲綍涓?; }
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "登录中"; }
 
   const user = USERS.find(u => u.username === username && u.password === password);
-  if (!user) { alert("璐﹀彿鎴栧瘑鐮侀敊璇?); return; }
-  if (user.status !== "宸叉縺娲?) { alert("璐﹀彿鐘舵€侊細" + user.status + "锛岃鑱旂郴绠＄悊鍛樺鎵?); return; }
+  if (!user) { alert("账号或密码错误"); return; }
+  if (user.status !== "已激活") { alert("账号状态：" + user.status + "，请联系管理员审批"); return; }
 
-  // 娴呮嫹璐濆畬鏁寸敤鎴峰璞★紙淇濈暀 avatar/position/brand 绛夋墍鏈夊瓧娈碉級
+  // 浅拷贝完整用户对象（保留 avatar/position/brand 等所有字段）
   currentUser = {};
   const keys = Object.keys(user);
   for (var i = 0; i < keys.length; i++) {
@@ -871,10 +871,10 @@ function doLogin() {
       currentUser[keys[i]] = user[keys[i]];
     }
   }
-  currentRole = user.role || "鏂扮敤鎴?;
+  currentRole = user.role || "新用户";
 
-  const expiry = Date.now() + 3600000; // 1灏忔椂鏈夋晥鏈?
-  // session 鍙瓨 id + 杩囨湡鏃堕棿锛屼笉瀛樺畬鏁寸敤鎴锋暟鎹?
+  const expiry = Date.now() + 3600000; // 1小时有效期
+  // session 只存 id + 过期时间，不存完整用户数据
   const sessionData = JSON.stringify({id: user.id, _expiry: expiry});
 
   if (remember) {
@@ -888,10 +888,10 @@ function doLogin() {
   hideLoginModal();
   updateUserDisplay();
   setAppContentVisible(true);
-  showToast("鐧诲綍鎴愬姛锛屾杩庡洖鏉ワ紒");
+  showToast("登录成功，欢迎回来！");
 }
 
-// 娉ㄥ唽
+// 注册
 function doRegister() {
   const name = document.getElementById("reg-name").value.trim();
   const username = document.getElementById("reg-username").value.trim();
@@ -900,37 +900,37 @@ function doRegister() {
   const phone = document.getElementById("reg-phone").value.trim();
   const email = document.getElementById("reg-email").value.trim();
 
-  if (!name || !username || !password || !confirm) { alert("璇峰～鍐欏畬鏁翠俊鎭?); return; }
+  if (!name || !username || !password || !confirm) { alert("请填写完整信息"); return; }
 
   const btn = document.querySelector("#register-form .btn-primary");
-  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "娉ㄥ唽涓?; }
-  if (password !== confirm) { alert("涓ゆ瀵嗙爜涓嶄竴鑷?); return; }
-  if (USERS.some(u => u.username === username)) { alert("璇ヨ处鍙峰凡琚敞鍐?); return; }
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "注册中"; }
+  if (password !== confirm) { alert("两次密码不一致"); return; }
+  if (USERS.some(u => u.username === username)) { alert("该账号已被注册"); return; }
 
   const newUser = {
     id: "U" + String(USERS.length + 1).padStart(3, "0"),
     name, username, password, role: "",
-    status: "寰呭鏍?, registerTime: new Date().toISOString().slice(0, 10),
+    status: "待审核", registerTime: new Date().toISOString().slice(0, 10),
     phone: phone || "", email: email || "", approvedBy: "", remark: ""
   };
   USERS.push(newUser);
   saveUsers();
-  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "娉ㄥ唽"; }
-  alert("娉ㄥ唽鎴愬姛锛佽绛夊緟绠＄悊鍛樺鎵瑰悗鐧诲綍銆?);
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "注册"; }
+  alert("注册成功！请等待管理员审批后登录。");
   switchAuthTab("login");
 }
 
-// ===== 瀵嗙爜鏄剧ず/闅愯棌鍒囨崲 =====
+// ===== 密码显示/隐藏切换 =====
 function togglePassword() {
   const inp = document.getElementById("login-password");
   const eye = document.getElementById("password-eye");
   if (!inp || !eye) return;
   if (inp.type === "password") {
     inp.type = "text";
-    eye.textContent = "馃憗锔?; // 鐫佺溂 = 瀵嗙爜鍙
+    eye.textContent = "👁️"; // 睁眼 = 密码可见
   } else {
     inp.type = "password";
-    eye.textContent = "馃檲"; // 闂溂 = 瀵嗙爜闅愯棌
+    eye.textContent = "🙈"; // 闭眼 = 密码隐藏
   }
 }
 function toggleRegPassword() {
@@ -939,10 +939,10 @@ function toggleRegPassword() {
   if (!inp || !eye) return;
   if (inp.type === "password") {
     inp.type = "text";
-    eye.textContent = "馃憗锔?;
+    eye.textContent = "👁️";
   } else {
     inp.type = "password";
-    eye.textContent = "馃檲";
+    eye.textContent = "🙈";
   }
 }
 function toggleRegConfirm() {
@@ -951,18 +951,18 @@ function toggleRegConfirm() {
   if (!inp || !eye) return;
   if (inp.type === "password") {
     inp.type = "text";
-    eye.textContent = "馃憗锔?;
+    eye.textContent = "👁️";
   } else {
     inp.type = "password";
-    eye.textContent = "馃檲";
+    eye.textContent = "🙈";
   }
 }
 
-// 婕旂ず鐧诲綍锛堝揩閫熻繘鍏ョ郴缁燂級
+// 演示登录（快速进入系统）
 function demoLogin() {
   const auth = {
     token: 'demo_' + Date.now(),
-    user: { username: 'demo', name: '婕旂ず鐢ㄦ埛', role: '绠＄悊鍛? },
+    user: { username: 'demo', name: '演示用户', role: '管理员' },
     loginAt: Date.now(),
     remember: true
   };
@@ -970,7 +970,7 @@ function demoLogin() {
   window.location.href = 'index.html';
 }
 
-// 閫€鍑虹櫥褰?
+// 退出登录
 function logout() {
   currentUser = null;
   localStorage.removeItem("chansee_current_user");
@@ -980,23 +980,23 @@ function logout() {
   window.location.href = "login.html";
 }
 
-// 鍒ゆ柇褰撳墠鐢ㄦ埛鏄惁涓虹鐞嗗憳/瓒呯骇绠＄悊鍛?
+// 判断当前用户是否为管理员/超级管理员
 function isAdmin() {
-  return currentUser && (currentUser.role === "绠＄悊鍛? || currentUser.role === "瓒呯骇绠＄悊鍛?);
+  return currentUser && (currentUser.role === "管理员" || currentUser.role === "超级管理员");
 }
 
-// 鍒ゆ柇褰撳墠鐢ㄦ埛鏄惁涓鸿秴绾х鐞嗗憳
+// 判断当前用户是否为超级管理员
 function isSuperAdmin() {
-  return currentUser && currentUser.role === "瓒呯骇绠＄悊鍛?;
+  return currentUser && currentUser.role === "超级管理员";
 }
 
-// ===== 椤圭洰杩愮淮璋冪爺鏁版嵁 =====
+// ===== 项目运维调研数据 =====
 
-// 瀵瑰锛氶」鐩柟鍙～鍐欐劅鍙楁弿杩帮紝涓嶆樉绀哄垎鍊?
+// 对外：项目方只填写感受描述，不显示分值
 
-// 瀵瑰唴锛氫笂绾у熀浜庢矡閫氬唴瀹?鏍￠獙鐪熶吉锛岀粰鍑?10/8/6/3/0 浜旀。璇勫垎
+// 对内：上级基于沟通内容+校验真伪，给出 10/8/6/3/0 五档评分
 
-// 鐩殑锛氬府鍔╁憳宸ユ彁鑳芥彁鏁堬紝鏀硅繘涓嶈冻锛屼績杩涘弸濂藉崗浣?
+// 目的：帮助员工提能提效，改进不足，促进友好协作
 
 const SATISFACTION_DATA = [
 
@@ -1006,25 +1006,25 @@ const SATISFACTION_DATA = [
 
     projectFeedback: {
 
-      busiLima2sPerf: "鏁翠綋琛ㄧ幇瓒呰繃棰勬湡锛屽洟闃熼厤鍚堥潪甯哥Н鏋佷富鍔?,
+      busiLima2sPerf: "整体表现超过预期，团队配合非常积极主动",
 
-      professionalism: "瀵逛簬涓氬姟闇€姹傛彁渚涘悎鐞嗐€佹湁鏁堛€佷笓涓氱殑搴斿鏂规锛岃秴鍑洪鏈?,
+      professionalism: "对于业务需求提供合理、有效、专业的应对方案，超出预期",
 
-      execution: "閮借兘鎸夐鏈熻惤鍦版墽琛?,
+      execution: "都能按预期落地执行",
 
-      reporting: { timeliLima2s: "鎸夐鏈熻惤鍦版墽琛?, accuracy: "灞曠ず鏁堟灉濂斤紝鏃犻敊婕?, completeLima2s: "姹囨姤鍐呭鍏ㄩ潰娓呮櫚锛岃秴杩囬鏈? },
+      reporting: { timeliLima2s: "按预期落地执行", accuracy: "展示效果好，无错漏", completeLima2s: "汇报内容全面清晰，超过预期" },
 
-      riskControl: "棰勬瀹屽杽锛屾姤澶囧疄鏃讹紝搴斿楂樻晥鍚堢悊",
+      riskControl: "预案完善，报备实时，应对高效合理",
 
-      communication: { frequency: "闈炲父婊℃剰", understanding: "娌熼€氱Н鏋佷富鍔紝瀵归」鐩渶姹傚厖鍒嗙悊瑙ｇ敋鑷抽鍒わ紝娌熼€氶潪甯搁『鐣?, sync: "闈炲父婊℃剰" },
+      communication: { frequency: "非常满意", understanding: "沟通积极主动，对项目需求充分理解甚至预判，沟通非常顺畅", sync: "非常满意" },
 
-      overall: "闈炲父婊℃剰"
+      overall: "非常满意"
 
     },
 
-    leaderScore: 10, leaderComment: "椤圭洰鍙嶉闈炲父濂斤紝鍥㈤槦琛ㄧ幇瓒呭嚭棰勬湡锛岀户缁繚鎸?,
+    leaderScore: 10, leaderComment: "项目反馈非常好，团队表现超出预期，继续保持",
 
-    evaluatedBy: "鏉庢槑", evaluatedAt: "2026-05-28", status: "宸茶瘎瀹?
+    evaluatedBy: "李明", evaluatedAt: "2026-05-28", status: "已评定"
 
   },
 
@@ -1034,25 +1034,25 @@ const SATISFACTION_DATA = [
 
     projectFeedback: {
 
-      busiLima2sPerf: "涓氬姟杈炬垚杈冨ソ锛屽洟闃熺Н鏋佹€т富鍔ㄦ€ц緝濂?,
+      busiLima2sPerf: "业务达成较好，团队积极性主动性较好",
 
-      professionalism: "瀵逛簬涓氬姟闇€姹傝兘鎻愪緵鍚堢悊鏈夋晥鐨勫簲瀵规柟妗?,
+      professionalism: "对于业务需求能提供合理有效的应对方案",
 
-      execution: "鏈変笉鑳藉鏈熻惤鍦版墽琛岀殑鎯呭喌锛屼絾鑳芥帴鍙?,
+      execution: "有不能如期落地执行的情况，但能接受",
 
-      reporting: { timeliLima2s: "鎸夐鏈熻惤鍦版墽琛?, accuracy: "灞曠ず鏁堟灉涓嶉敊锛岄敊婕忓皯锛堝皯浜?娆★級", completeLima2s: "姹囨姤鍐呭杈冨畬鏁村悎鐞嗭紝瀵圭枒闂兘鎻愪緵瀹炴椂銆佹弧鎰忕殑瑙ｉ噴" },
+      reporting: { timeliLima2s: "按预期落地执行", accuracy: "展示效果不错，错漏少（少于1次）", completeLima2s: "汇报内容较完整合理，对疑问能提供实时、满意的解释" },
 
-      riskControl: "鏈夐妗堬紝鎶ュ鍙婃椂锛堥闄╁悗1涓伐浣滄棩鍐咃級锛屽簲瀵瑰熀鏈悎鐞?,
+      riskControl: "有预案，报备及时（风险后1个工作日内），应对基本合理",
 
-      communication: { frequency: "婊℃剰", understanding: "瀹氭湡姹囨姤娌熼€氾紝鐞嗚В椤圭洰闇€姹傦紝鏈夐棶棰樺強鏃跺悓姝?, sync: "婊℃剰" },
+      communication: { frequency: "满意", understanding: "定期汇报沟通，理解项目需求，有问题及时同步", sync: "满意" },
 
-      overall: "婊℃剰"
+      overall: "满意"
 
     },
 
-    leaderScore: 8, leaderComment: "鏁翠綋琛ㄧ幇鑹ソ锛屾墽琛屾晥鐜囨湁寰呮彁鍗囷紝闇€鍔犲己钀藉湴鏃舵晥鎬х鐞?,
+    leaderScore: 8, leaderComment: "整体表现良好，执行效率有待提升，需加强落地时效性管理",
 
-    evaluatedBy: "鐜嬪己", evaluatedAt: "2026-05-28", status: "宸茶瘎瀹?
+    evaluatedBy: "王强", evaluatedAt: "2026-05-28", status: "已评定"
 
   },
 
@@ -1062,25 +1062,25 @@ const SATISFACTION_DATA = [
 
     projectFeedback: {
 
-      busiLima2sPerf: "涓氬姟杈炬垚涓€鑸紝鍥㈤槦涓诲姩鎬ф湁寰呮彁鍗?,
+      busiLima2sPerf: "业务达成一般，团队主动性有待提升",
 
-      professionalism: "鏂规鍑哄叿鍩烘湰鍚堢悊锛屼絾鏈夋椂鍝嶅簲杈冩參",
+      professionalism: "方案出具基本合理，但有时响应较慢",
 
-      execution: "缁忓父涓嶈兘濡傛湡钀藉湴鎵ц",
+      execution: "经常不能如期落地执行",
 
-      reporting: { timeliLima2s: "鎵ц鏃舵晥灏氳兘鎺ュ彈", accuracy: "灞曠ず鏁堟灉灏氬彲锛屽熀鏈棤閿欐紡", completeLima2s: "姹囨姤鍐呭鍩烘湰瀹屾暣锛屼絾瀵归儴鍒嗙枒闂В閲婁笉澶熸竻鏅? },
+      reporting: { timeliLima2s: "执行时效尚能接受", accuracy: "展示效果尚可，基本无错漏", completeLima2s: "汇报内容基本完整，但对部分疑问解释不够清晰" },
 
-      riskControl: "鏈夐妗堬紝浣嗘姤澶囦笉澶熷強鏃讹紝搴斿鏂规闇€瑕佸姞寮?,
+      riskControl: "有预案，但报备不够及时，应对方案需要加强",
 
-      communication: { frequency: "涓€鑸?, understanding: "娌熼€氬熀鏈『鐣咃紝浣嗘湁鏃跺闇€姹傜悊瑙ｆ湁鍋忓樊", sync: "涓€鑸? },
+      communication: { frequency: "一般", understanding: "沟通基本顺畅，但有时对需求理解有偏差", sync: "一般" },
 
-      overall: "涓€鑸?
+      overall: "一般"
 
     },
 
-    leaderScore: 6, leaderComment: "澶氶」鎸囨爣闇€鏀硅繘锛屽凡瀹夋帓涓撻」杈呭锛岄噸鐐规彁鍗囨墽琛屾晥鐜囧拰椋庨櫓绠℃帶鑳藉姏",
+    leaderScore: 6, leaderComment: "多项指标需改进，已安排专项辅导，重点提升执行效率和风险管控能力",
 
-    evaluatedBy: "鏉庢槑", evaluatedAt: "2026-05-28", status: "宸茶瘎瀹?
+    evaluatedBy: "李明", evaluatedAt: "2026-05-28", status: "已评定"
 
   },
 
@@ -1090,25 +1090,25 @@ const SATISFACTION_DATA = [
 
     projectFeedback: {
 
-      busiLima2sPerf: "鏁翠綋琛ㄧ幇瓒呰繃棰勬湡锛屽洟闃熼厤鍚堥潪甯哥Н鏋佷富鍔?,
+      busiLima2sPerf: "整体表现超过预期，团队配合非常积极主动",
 
-      professionalism: "瀵逛簬涓氬姟闇€姹傛彁渚涘悎鐞嗐€佹湁鏁堛€佷笓涓氱殑搴斿鏂规锛岃秴鍑洪鏈?,
+      professionalism: "对于业务需求提供合理、有效、专业的应对方案，超出预期",
 
-      execution: "瓒呰繃棰勬湡蹇€熻惤鍦?,
+      execution: "超过预期快速落地",
 
-      reporting: { timeliLima2s: "瓒呰繃棰勬湡蹇€熻惤鍦?, accuracy: "灞曠ず鏁堟灉濂斤紝鏃犻敊婕?, completeLima2s: "姹囨姤鍐呭鍏ㄩ潰娓呮櫚锛岃秴杩囬鏈? },
+      reporting: { timeliLima2s: "超过预期快速落地", accuracy: "展示效果好，无错漏", completeLima2s: "汇报内容全面清晰，超过预期" },
 
-      riskControl: "棰勬瀹屽杽锛屾姤澶囧疄鏃讹紝搴斿楂樻晥鍚堢悊",
+      riskControl: "预案完善，报备实时，应对高效合理",
 
-      communication: { frequency: "闈炲父婊℃剰", understanding: "娌熼€氱Н鏋佷富鍔紝瀵归」鐩渶姹傚厖鍒嗙悊瑙ｇ敋鑷抽鍒わ紝娌熼€氶潪甯搁『鐣?, sync: "闈炲父婊℃剰" },
+      communication: { frequency: "非常满意", understanding: "沟通积极主动，对项目需求充分理解甚至预判，沟通非常顺畅", sync: "非常满意" },
 
-      overall: "闈炲父婊℃剰"
+      overall: "非常满意"
 
     },
 
-    leaderScore: 10, leaderComment: "姣嶅┐绫荤洰鏈嶅姟鏍囨潌锛屽洟闃熶笓涓氬害楂橈紝寤鸿浣滀负鏈€浣冲疄璺垫帹骞?,
+    leaderScore: 10, leaderComment: "母婴类目服务标杆，团队专业度高，建议作为最佳实践推广",
 
-    evaluatedBy: "鐜嬪己", evaluatedAt: "2026-05-28", status: "宸茶瘎瀹?
+    evaluatedBy: "王强", evaluatedAt: "2026-05-28", status: "已评定"
 
   },
 
@@ -1118,25 +1118,25 @@ const SATISFACTION_DATA = [
 
     projectFeedback: {
 
-      busiLima2sPerf: "涓氬姟杈炬垚杈冨ソ锛屽洟闃熺Н鏋佹€т富鍔ㄦ€ц緝濂?,
+      busiLima2sPerf: "业务达成较好，团队积极性主动性较好",
 
-      professionalism: "瀵逛簬涓氬姟闇€姹傝兘鎻愪緵鍚堢悊鏈夋晥鐨勫簲瀵规柟妗?,
+      professionalism: "对于业务需求能提供合理有效的应对方案",
 
-      execution: "閮借兘鎸夐鏈熻惤鍦版墽琛?,
+      execution: "都能按预期落地执行",
 
-      reporting: { timeliLima2s: "鎸夐鏈熻惤鍦版墽琛?, accuracy: "灞曠ず鏁堟灉涓嶉敊锛岄敊婕忓皯锛堝皯浜?娆★級", completeLima2s: "姹囨姤鍐呭杈冨畬鏁村悎鐞? },
+      reporting: { timeliLima2s: "按预期落地执行", accuracy: "展示效果不错，错漏少（少于1次）", completeLima2s: "汇报内容较完整合理" },
 
-      riskControl: "鏈夐妗堬紝鎶ュ鍙婃椂锛屽簲瀵瑰熀鏈悎鐞?,
+      riskControl: "有预案，报备及时，应对基本合理",
 
-      communication: { frequency: "婊℃剰", understanding: "瀹氭湡姹囨姤娌熼€氾紝鐞嗚В椤圭洰闇€姹?, sync: "婊℃剰" },
+      communication: { frequency: "满意", understanding: "定期汇报沟通，理解项目需求", sync: "满意" },
 
-      overall: "婊℃剰"
+      overall: "满意"
 
     },
 
-    leaderScore: 8, leaderComment: "椋熷搧绫荤洰瀛ｈ妭鎬ф尝鍔ㄥぇ锛屽洟闃熷簲瀵逛笉閿欙紝缁х画淇濇寔绋冲畾",
+    leaderScore: 8, leaderComment: "食品类目季节性波动大，团队应对不错，继续保持稳定",
 
-    evaluatedBy: "鏉庢槑", evaluatedAt: "2026-05-28", status: "宸茶瘎瀹?
+    evaluatedBy: "李明", evaluatedAt: "2026-05-28", status: "已评定"
 
   },
 
@@ -1146,25 +1146,25 @@ const SATISFACTION_DATA = [
 
     projectFeedback: {
 
-      busiLima2sPerf: "涓氬姟杈炬垚杈冨樊锛屽洟闃熶富鍔ㄦ€т笉瓒?,
+      busiLima2sPerf: "业务达成较差，团队主动性不足",
 
-      professionalism: "鏂规鍑哄叿涓嶅悎鐞嗭紝搴斿涓嶅涓撲笟",
+      professionalism: "方案出具不合理，应对不够专业",
 
-      execution: "缁忓父涓嶈兘濡傛湡钀藉湴鎵ц",
+      execution: "经常不能如期落地执行",
 
-      reporting: { timeliLima2s: "鎵ц鏁堢巼涓嶅ソ", accuracy: "灞曠ず鏁堟灉涓嶅ソ锛岄敊婕忚緝澶?, completeLima2s: "姹囨姤鍐呭涓嶅瀹屾暣锛屽鐤戦棶瑙ｉ噴涓嶆弧鎰? },
+      reporting: { timeliLima2s: "执行效率不好", accuracy: "展示效果不好，错漏较多", completeLima2s: "汇报内容不够完整，对疑问解释不满意" },
 
-      riskControl: "鏃犻妗堬紝鎶ュ涓嶅強鏃讹紝搴斿涓嶅悎鐞?,
+      riskControl: "无预案，报备不及时，应对不合理",
 
-      communication: { frequency: "涓嶆弧鎰?, understanding: "娌熼€氫笉椤虹晠锛屽闇€姹傜悊瑙ｆ湁鍋忓樊", sync: "涓嶆弧鎰? },
+      communication: { frequency: "不满意", understanding: "沟通不顺畅，对需求理解有偏差", sync: "不满意" },
 
-      overall: "涓嶆弧鎰?
+      overall: "不满意"
 
     },
 
-    leaderScore: 3, leaderComment: "椤圭洰宸叉殏鍋滐紝闇€娣卞埢澶嶇洏銆傚凡瀹夋帓涓€瀵逛竴杈呭锛岄噸鐐规敼杩涙矡閫氬拰涓撲笟搴﹂棶棰?,
+    leaderScore: 3, leaderComment: "项目已暂停，需深刻复盘。已安排一对一辅导，重点改进沟通和专业度问题",
 
-    evaluatedBy: "鐜嬪己", evaluatedAt: "2026-05-28", status: "宸茶瘎瀹?
+    evaluatedBy: "王强", evaluatedAt: "2026-05-28", status: "已评定"
 
   }
 
@@ -1176,79 +1176,79 @@ const HEALTH_DATA = [
 
   {
 
-    projectId:"P001", period:"2026-05", overallScore:94, overallLevel:"鍋ュ悍",
+    projectId:"P001", period:"2026-05", overallScore:94, overallLevel:"健康",
 
     dimensions:[
 
-      {key:"manpower", name:"浜哄姏鍋ュ悍搴?, score:90, level:"鍋ュ悍", weight:0.15,
+      {key:"manpower", name:"人力健康度", score:90, level:"健康", weight:0.15,
 
        items:[
 
-         {name:"鏂拌€佸憳宸ラ厤姣?, target:"鈮?0%", actual:"22%", score:90, level:"鍋ュ悍", remark:"鍥㈤槦绋冲畾锛屾柊鍛樺伐鍗犳瘮鍚堢悊"},
+         {name:"新老员工配比", target:"≤30%", actual:"22%", score:90, level:"健康", remark:"团队稳定，新员工占比合理"},
 
-         {name:"褰撴湀瀹㈡湇绂昏亴娴佸け鐜?, target:"鈮?%", actual:"3.2%", score:90, level:"鍋ュ悍", remark:"浣庝簬鐩爣锛屽洟闃熺ǔ瀹?}
+         {name:"当月客服离职流失率", target:"≤5%", actual:"3.2%", score:90, level:"健康", remark:"低于目标，团队稳定"}
 
        ]},
 
-      {key:"service", name:"鏈嶅姟鍋ュ悍搴?, score:95, level:"浼樼", weight:0.2,
+      {key:"service", name:"服务健康度", score:95, level:"优秀", weight:0.2,
 
        items:[
 
-         {name:"DSR瀵规瘮琛屼笟鍋ュ悍搴?, target:"鈮?.8", actual:"4.85", score:100, level:"浼樼", remark:"楂樹簬琛屼笟鍧囧€?.05"},
+         {name:"DSR对比行业健康度", target:"≥4.8", actual:"4.85", score:100, level:"优秀", remark:"高于行业均值0.05"},
 
-         {name:"DSR鏈嶅姟瀵规瘮涓婃湀鍋ュ悍搴?, target:"鈮?.75", actual:"4.82", score:100, level:"浼樼", remark:"鐜瘮鎸佺画鎻愬崌"},
+         {name:"DSR服务对比上月健康度", target:"≥4.75", actual:"4.82", score:100, level:"优秀", remark:"环比持续提升"},
 
-         {name:"缁煎悎浣撻獙璇勫垎鍋ュ悍搴?, target:"鈮?.5", actual:"4.52", score:90, level:"鍋ュ悍", remark:"杈炬爣"},
+         {name:"综合体验评分健康度", target:"≥4.5", actual:"4.52", score:90, level:"健康", remark:"达标"},
 
-         {name:"閲戦摱鏃烘椇鍋ュ悍搴?, target:"閲戞椇鏃?, actual:"閲戞椇鏃?, score:100, level:"浼樼", remark:"淇濇寔閲戠墝璇勭骇"}
+         {name:"金银旺旺健康度", target:"金旺旺", actual:"金旺旺", score:100, level:"优秀", remark:"保持金牌评级"}
 
        ]},
 
-      {key:"sales", name:"閿€鍞仴搴峰害", score:90, level:"鍋ュ悍", weight:0.35,
+      {key:"sales", name:"销售健康度", score:90, level:"健康", weight:0.35,
 
        items:[
 
-         {name:"骞村害閿€鍞寚鏍囪揪鎴愬仴搴峰害-瀹㈡湇", target:"65%", actual:"68%", score:100, level:"浼樼", remark:"瓒呴瀹屾垚骞村害杩涘害"},
+         {name:"年度销售指标达成健康度-客服", target:"65%", actual:"68%", score:100, level:"优秀", remark:"超额完成年度进度"},
 
-         {name:"鏈堝害閿€鍞寚鏍囧仴搴峰害-搴楅摵", target:"100%", actual:"102%", score:100, level:"浼樼", remark:"鏈堝害閿€鍞揪鏍?},
+         {name:"月度销售指标健康度-店铺", target:"100%", actual:"102%", score:100, level:"优秀", remark:"月度销售达标"},
 
-         {name:"鏈堝害閿€鍞寚鏍囧仴搴峰害-瀹㈡湇", target:"100%", actual:"95%", score:90, level:"鍋ュ悍", remark:"鐣ヤ綆浜庣洰鏍?},
+         {name:"月度销售指标健康度-客服", target:"100%", actual:"95%", score:90, level:"健康", remark:"略低于目标"},
 
-         {name:"浜哄伐瀹㈡湇杞寲鐜囧仴搴峰害", target:"12%", actual:"11.5%", score:85, level:"闇€娉ㄦ剰", remark:"杞寲鐜囬渶鍏虫敞"},
+         {name:"人工客服转化率健康度", target:"12%", actual:"11.5%", score:85, level:"需注意", remark:"转化率需关注"},
 
-         {name:"鎸藉崟鎴愬姛鐜?, target:"50%", actual:"55%", score:100, level:"浼樼", remark:"楂樹簬鐩爣"}
+         {name:"挽单成功率", target:"50%", actual:"55%", score:100, level:"优秀", remark:"高于目标"}
 
        ]},
 
-      {key:"returns", name:"閫€璐ч€€娆?, score:100, level:"浼樼", weight:0.1,
+      {key:"returns", name:"退货退款", score:100, level:"优秀", weight:0.1,
 
        items:[
 
-         {name:"閫€璐ч€€娆惧仴搴疯瘎浼?, target:"鈮?%", actual:"4.2%", score:100, level:"浼樼", remark:"閫€璐х巼鎺у埗鑹ソ"}
+         {name:"退货退款健康评估", target:"≤5%", actual:"4.2%", score:100, level:"优秀", remark:"退货率控制良好"}
 
        ]},
 
-      {key:"risk", name:"寮傚父椋庨櫓", score:100, level:"浼樼", weight:0.2,
+      {key:"risk", name:"异常风险", score:100, level:"优秀", weight:0.2,
 
        items:[
 
-         {name:"寮傚父闂鍋ュ悍搴﹁瘎浼?, target:"鏃犲紓甯?, actual:"鏃犲紓甯?, score:100, level:"浼樼", remark:"鏈湀鏃犲紓甯?},
+         {name:"异常问题健康度评估", target:"无异常", actual:"无异常", score:100, level:"优秀", remark:"本月无异常"},
 
-         {name:"璧勬崯绫婚闄╄鍗曞仴搴峰害璇勪及", target:"鏃犻闄?, actual:"鏃犻闄?, score:100, level:"浼樼", remark:"鏈湀鏃犺祫鎹熼闄?}
+         {name:"资损类风险订单健康度评估", target:"无风险", actual:"无风险", score:100, level:"优秀", remark:"本月无资损风险"}
 
        ]},
 
-      {key:"cost", name:"鎴愭湰鎶婃帶", score:88, level:"鍋ュ悍", weight:0,
+      {key:"cost", name:"成本把控", score:88, level:"健康", weight:0,
 
        items:[
 
-         {name:"瀹㈡湇鍥㈤槦瀹為檯褰撴湀鎴愭湰", target:"150000", actual:"142000", score:90, level:"鍋ュ悍", remark:"浣庝簬棰勭畻"},
+         {name:"客服团队实际当月成本", target:"150000", actual:"142000", score:90, level:"健康", remark:"低于预算"},
 
-         {name:"瀹㈡湇鍥㈤槦褰撴湀鎴愭湰鐩爣", target:"150000", actual:"150000", score:100, level:"浼樼", remark:"鐩爣涓€鑷?},
+         {name:"客服团队当月成本目标", target:"150000", actual:"150000", score:100, level:"优秀", remark:"目标一致"},
 
-         {name:"鎴愭湰鎶婃帶鍋ュ悍搴?, target:"鏈秴棰勭畻", actual:"鏈秴棰勭畻", score:100, level:"浼樼", remark:"鎴愭湰鍙帶"},
+         {name:"成本把控健康度", target:"未超预算", actual:"未超预算", score:100, level:"优秀", remark:"成本可控"},
 
-         {name:"鎴愭湰鍚屾瘮", target:"-10%", actual:"-8%", score:90, level:"鍋ュ悍", remark:"鍚屾瘮涓嬮檷"}
+         {name:"成本同比", target:"-10%", actual:"-8%", score:90, level:"健康", remark:"同比下降"}
 
        ]}
 
@@ -1258,75 +1258,75 @@ const HEALTH_DATA = [
 
   {
 
-    projectId:"P002", period:"2026-05", overallScore:89, overallLevel:"鍋ュ悍",
+    projectId:"P002", period:"2026-05", overallScore:89, overallLevel:"健康",
 
     dimensions:[
 
-      {key:"manpower", name:"浜哄姏鍋ュ悍搴?, score:85, level:"闇€娉ㄦ剰", weight:0.15,
+      {key:"manpower", name:"人力健康度", score:85, level:"需注意", weight:0.15,
 
        items:[
 
-         {name:"鏂拌€佸憳宸ラ厤姣?, target:"鈮?0%", actual:"35%", score:85, level:"闇€娉ㄦ剰", remark:"鏂板憳宸ュ崰姣旂暐楂橈紝闇€鍔犲己鍩硅"},
+         {name:"新老员工配比", target:"≤30%", actual:"35%", score:85, level:"需注意", remark:"新员工占比略高，需加强培训"},
 
-         {name:"褰撴湀瀹㈡湇绂昏亴娴佸け鐜?, target:"鈮?%", actual:"6.5%", score:85, level:"闇€娉ㄦ剰", remark:"娴佸け鐜囧亸楂橈紝鍏虫敞鍘熷洜"}
+         {name:"当月客服离职流失率", target:"≤5%", actual:"6.5%", score:85, level:"需注意", remark:"流失率偏高，关注原因"}
 
        ]},
 
-      {key:"service", name:"鏈嶅姟鍋ュ悍搴?, score:90, level:"鍋ュ悍", weight:0.2,
+      {key:"service", name:"服务健康度", score:90, level:"健康", weight:0.2,
 
        items:[
 
-         {name:"DSR瀵规瘮琛屼笟鍋ュ悍搴?, target:"鈮?.8", actual:"4.78", score:90, level:"鍋ュ悍", remark:"鎺ヨ繎琛屼笟鍧囧€?},
+         {name:"DSR对比行业健康度", target:"≥4.8", actual:"4.78", score:90, level:"健康", remark:"接近行业均值"},
 
-         {name:"DSR鏈嶅姟瀵规瘮涓婃湀鍋ュ悍搴?, target:"鈮?.75", actual:"4.76", score:90, level:"鍋ュ悍", remark:"灏忓箙鎻愬崌"},
+         {name:"DSR服务对比上月健康度", target:"≥4.75", actual:"4.76", score:90, level:"健康", remark:"小幅提升"},
 
-         {name:"缁煎悎浣撻獙璇勫垎鍋ュ悍搴?, target:"鈮?.5", actual:"4.45", score:85, level:"闇€娉ㄦ剰", remark:"鐣ヤ綆浜庣洰鏍?},
+         {name:"综合体验评分健康度", target:"≥4.5", actual:"4.45", score:85, level:"需注意", remark:"略低于目标"},
 
-         {name:"閲戦摱鏃烘椇鍋ュ悍搴?, target:"閲戞椇鏃?, actual:"閾舵椇鏃?, score:85, level:"闇€娉ㄦ剰", remark:"闄嶇骇涓洪摱鐗?}
+         {name:"金银旺旺健康度", target:"金旺旺", actual:"银旺旺", score:85, level:"需注意", remark:"降级为银牌"}
 
        ]},
 
-      {key:"sales", name:"閿€鍞仴搴峰害", score:90, level:"鍋ュ悍", weight:0.35,
+      {key:"sales", name:"销售健康度", score:90, level:"健康", weight:0.35,
 
        items:[
 
-         {name:"骞村害閿€鍞寚鏍囪揪鎴愬仴搴峰害-瀹㈡湇", target:"65%", actual:"62%", score:90, level:"鍋ュ悍", remark:"杩涘害姝ｅ父"},
+         {name:"年度销售指标达成健康度-客服", target:"65%", actual:"62%", score:90, level:"健康", remark:"进度正常"},
 
-         {name:"鏈堝害閿€鍞寚鏍囧仴搴峰害-搴楅摵", target:"100%", actual:"95%", score:85, level:"闇€娉ㄦ剰", remark:"鏈堝害鏈揪鏍?},
+         {name:"月度销售指标健康度-店铺", target:"100%", actual:"95%", score:85, level:"需注意", remark:"月度未达标"},
 
-         {name:"鏈堝害閿€鍞寚鏍囧仴搴峰害-瀹㈡湇", target:"100%", actual:"92%", score:85, level:"闇€娉ㄦ剰", remark:"瀹㈡湇绔湭杈炬爣"},
+         {name:"月度销售指标健康度-客服", target:"100%", actual:"92%", score:85, level:"需注意", remark:"客服端未达标"},
 
-         {name:"浜哄伐瀹㈡湇杞寲鐜囧仴搴峰害", target:"12%", actual:"11.8%", score:90, level:"鍋ュ悍", remark:"鎺ヨ繎鐩爣"},
+         {name:"人工客服转化率健康度", target:"12%", actual:"11.8%", score:90, level:"健康", remark:"接近目标"},
 
-         {name:"鎸藉崟鎴愬姛鐜?, target:"50%", actual:"48%", score:90, level:"鍋ュ悍", remark:"鎺ヨ繎鐩爣"}
+         {name:"挽单成功率", target:"50%", actual:"48%", score:90, level:"健康", remark:"接近目标"}
 
        ]},
 
-      {key:"returns", name:"閫€璐ч€€娆?, score:85, level:"闇€娉ㄦ剰", weight:0.1,
+      {key:"returns", name:"退货退款", score:85, level:"需注意", weight:0.1,
 
        items:[
 
-         {name:"閫€璐ч€€娆惧仴搴疯瘎浼?, target:"鈮?%", actual:"5.3%", score:85, level:"闇€娉ㄦ剰", remark:"閫€璐х巼鐣ラ珮浜庣洰鏍?}
+         {name:"退货退款健康评估", target:"≤5%", actual:"5.3%", score:85, level:"需注意", remark:"退货率略高于目标"}
 
        ]},
 
-      {key:"risk", name:"寮傚父椋庨櫓", score:90, level:"鍋ュ悍", weight:0.2,
+      {key:"risk", name:"异常风险", score:90, level:"健康", weight:0.2,
 
        items:[
 
-         {name:"寮傚父闂鍋ュ悍搴﹁瘎浼?, target:"鏃犲奖鍝?, actual:"鏈夊奖鍝嶆棤璧勬崯", score:90, level:"鍋ュ悍", remark:"鏈夊紓甯镐絾鏃犺祫鎹?},
+         {name:"异常问题健康度评估", target:"无影响", actual:"有影响无资损", score:90, level:"健康", remark:"有异常但无资损"},
 
-         {name:"璧勬崯绫婚闄╄鍗曞仴搴峰害璇勪及", target:"鏃犻闄?, actual:"鏃犻闄?, score:100, level:"浼樼", remark:"鏃犺祫鎹?}
+         {name:"资损类风险订单健康度评估", target:"无风险", actual:"无风险", score:100, level:"优秀", remark:"无资损"}
 
        ]},
 
-      {key:"cost", name:"鎴愭湰鎶婃帶", score:90, level:"鍋ュ悍", weight:0,
+      {key:"cost", name:"成本把控", score:90, level:"健康", weight:0,
 
        items:[
 
-         {name:"瀹㈡湇鍥㈤槦瀹為檯褰撴湀鎴愭湰", target:"220000", actual:"215000", score:90, level:"鍋ュ悍", remark:"鐣ヤ綆浜庨绠?},
+         {name:"客服团队实际当月成本", target:"220000", actual:"215000", score:90, level:"健康", remark:"略低于预算"},
 
-         {name:"鎴愭湰鎶婃帶鍋ュ悍搴?, target:"鏈秴棰勭畻", actual:"鏈秴棰勭畻", score:100, level:"浼樼", remark:"鎴愭湰鍙帶"}
+         {name:"成本把控健康度", target:"未超预算", actual:"未超预算", score:100, level:"优秀", remark:"成本可控"}
 
        ]}
 
@@ -1336,75 +1336,75 @@ const HEALTH_DATA = [
 
   {
 
-    projectId:"P003", period:"2026-05", overallScore:83, overallLevel:"闇€娉ㄦ剰",
+    projectId:"P003", period:"2026-05", overallScore:83, overallLevel:"需注意",
 
     dimensions:[
 
-      {key:"manpower", name:"浜哄姏鍋ュ悍搴?, score:85, level:"闇€娉ㄦ剰", weight:0.15,
+      {key:"manpower", name:"人力健康度", score:85, level:"需注意", weight:0.15,
 
        items:[
 
-         {name:"鏂拌€佸憳宸ラ厤姣?, target:"鈮?0%", actual:"42%", score:80, level:"鏋佸樊", remark:"鏂板憳宸ュ崰姣旇繃楂橈紝褰卞搷鏈嶅姟璐ㄩ噺"},
+         {name:"新老员工配比", target:"≤30%", actual:"42%", score:80, level:"极差", remark:"新员工占比过高，影响服务质量"},
 
-         {name:"褰撴湀瀹㈡湇绂昏亴娴佸け鐜?, target:"鈮?%", actual:"8%", score:80, level:"鏋佸樊", remark:"娴佸け鐜囦弗閲嶈秴鏍?}
+         {name:"当月客服离职流失率", target:"≤5%", actual:"8%", score:80, level:"极差", remark:"流失率严重超标"}
 
        ]},
 
-      {key:"service", name:"鏈嶅姟鍋ュ悍搴?, score:80, level:"鏋佸樊", weight:0.2,
+      {key:"service", name:"服务健康度", score:80, level:"极差", weight:0.2,
 
        items:[
 
-         {name:"DSR瀵规瘮琛屼笟鍋ュ悍搴?, target:"鈮?.8", actual:"4.55", score:80, level:"鏋佸樊", remark:"浣庝簬琛屼笟鍧囧€?},
+         {name:"DSR对比行业健康度", target:"≥4.8", actual:"4.55", score:80, level:"极差", remark:"低于行业均值"},
 
-         {name:"DSR鏈嶅姟瀵规瘮涓婃湀鍋ュ悍搴?, target:"鈮?.75", actual:"4.50", score:80, level:"鏋佸樊", remark:"鐜瘮涓嬮檷"},
+         {name:"DSR服务对比上月健康度", target:"≥4.75", actual:"4.50", score:80, level:"极差", remark:"环比下降"},
 
-         {name:"缁煎悎浣撻獙璇勫垎鍋ュ悍搴?, target:"鈮?.5", actual:"4.20", score:80, level:"鏋佸樊", remark:"鏄庢樉浣庝簬鐩爣"},
+         {name:"综合体验评分健康度", target:"≥4.5", actual:"4.20", score:80, level:"极差", remark:"明显低于目标"},
 
-         {name:"閲戦摱鏃烘椇鍋ュ悍搴?, target:"閲戞椇鏃?, actual:"鏃犺瘎绾?, score:80, level:"鏋佸樊", remark:"鏈幏寰楄瘎绾?}
+         {name:"金银旺旺健康度", target:"金旺旺", actual:"无评级", score:80, level:"极差", remark:"未获得评级"}
 
        ]},
 
-      {key:"sales", name:"閿€鍞仴搴峰害", score:85, level:"闇€娉ㄦ剰", weight:0.35,
+      {key:"sales", name:"销售健康度", score:85, level:"需注意", weight:0.35,
 
        items:[
 
-         {name:"骞村害閿€鍞寚鏍囪揪鎴愬仴搴峰害-瀹㈡湇", target:"65%", actual:"55%", score:80, level:"鏋佸樊", remark:"杩涘害涓ラ噸婊炲悗"},
+         {name:"年度销售指标达成健康度-客服", target:"65%", actual:"55%", score:80, level:"极差", remark:"进度严重滞后"},
 
-         {name:"鏈堝害閿€鍞寚鏍囧仴搴峰害-搴楅摵", target:"100%", actual:"88%", score:85, level:"闇€娉ㄦ剰", remark:"鏈堝害鏈揪鏍?},
+         {name:"月度销售指标健康度-店铺", target:"100%", actual:"88%", score:85, level:"需注意", remark:"月度未达标"},
 
-         {name:"鏈堝害閿€鍞寚鏍囧仴搴峰害-瀹㈡湇", target:"100%", actual:"85%", score:80, level:"鏋佸樊", remark:"瀹㈡湇绔弗閲嶄笉杈炬爣"},
+         {name:"月度销售指标健康度-客服", target:"100%", actual:"85%", score:80, level:"极差", remark:"客服端严重不达标"},
 
-         {name:"浜哄伐瀹㈡湇杞寲鐜囧仴搴峰害", target:"12%", actual:"9.8%", score:80, level:"鏋佸樊", remark:"杞寲鐜囦綆"},
+         {name:"人工客服转化率健康度", target:"12%", actual:"9.8%", score:80, level:"极差", remark:"转化率低"},
 
-         {name:"鎸藉崟鎴愬姛鐜?, target:"50%", actual:"45%", score:85, level:"闇€娉ㄦ剰", remark:"鐣ヤ綆浜庣洰鏍?}
+         {name:"挽单成功率", target:"50%", actual:"45%", score:85, level:"需注意", remark:"略低于目标"}
 
        ]},
 
-      {key:"returns", name:"閫€璐ч€€娆?, score:80, level:"鏋佸樊", weight:0.1,
+      {key:"returns", name:"退货退款", score:80, level:"极差", weight:0.1,
 
        items:[
 
-         {name:"閫€璐ч€€娆惧仴搴疯瘎浼?, target:"鈮?%", actual:"6.8%", score:80, level:"鏋佸樊", remark:"閫€璐х巼涓ラ噸瓒呮爣"}
+         {name:"退货退款健康评估", target:"≤5%", actual:"6.8%", score:80, level:"极差", remark:"退货率严重超标"}
 
        ]},
 
-      {key:"risk", name:"寮傚父椋庨櫓", score:85, level:"闇€娉ㄦ剰", weight:0.2,
+      {key:"risk", name:"异常风险", score:85, level:"需注意", weight:0.2,
 
        items:[
 
-         {name:"寮傚父闂鍋ュ悍搴﹁瘎浼?, target:"鏃犲奖鍝?, actual:"鏈夊奖鍝嶆湁瀹㈣瘔", score:85, level:"闇€娉ㄦ剰", remark:"鏈夊璇変絾鏈骇鐢熻祫鎹?},
+         {name:"异常问题健康度评估", target:"无影响", actual:"有影响有客诉", score:85, level:"需注意", remark:"有客诉但未产生资损"},
 
-         {name:"璧勬崯绫婚闄╄鍗曞仴搴峰害璇勪及", target:"鏃犻闄?, actual:"鏈夐闄╄拷鍥炰腑", score:85, level:"闇€娉ㄦ剰", remark:"鏈夐闄╄鍗曪紝璐ф杩藉洖涓?}
+         {name:"资损类风险订单健康度评估", target:"无风险", actual:"有风险追回中", score:85, level:"需注意", remark:"有风险订单，货款追回中"}
 
        ]},
 
-      {key:"cost", name:"鎴愭湰鎶婃帶", score:85, level:"闇€娉ㄦ剰", weight:0,
+      {key:"cost", name:"成本把控", score:85, level:"需注意", weight:0,
 
        items:[
 
-         {name:"瀹㈡湇鍥㈤槦瀹為檯褰撴湀鎴愭湰", target:"280000", actual:"295000", score:80, level:"鏋佸樊", remark:"瓒呭嚭棰勭畻"},
+         {name:"客服团队实际当月成本", target:"280000", actual:"295000", score:80, level:"极差", remark:"超出预算"},
 
-         {name:"鎴愭湰鎶婃帶鍋ュ悍搴?, target:"鏈秴棰勭畻", actual:"瓒呭嚭棰勭畻", score:80, level:"鏋佸樊", remark:"鎴愭湰瓒呮敮闇€鍏虫敞"}
+         {name:"成本把控健康度", target:"未超预算", actual:"超出预算", score:80, level:"极差", remark:"成本超支需关注"}
 
        ]}
 
@@ -1414,75 +1414,75 @@ const HEALTH_DATA = [
 
   {
 
-    projectId:"P004", period:"2026-05", overallScore:96, overallLevel:"浼樼",
+    projectId:"P004", period:"2026-05", overallScore:96, overallLevel:"优秀",
 
     dimensions:[
 
-      {key:"manpower", name:"浜哄姏鍋ュ悍搴?, score:100, level:"浼樼", weight:0.15,
+      {key:"manpower", name:"人力健康度", score:100, level:"优秀", weight:0.15,
 
        items:[
 
-         {name:"鏂拌€佸憳宸ラ厤姣?, target:"鈮?0%", actual:"15%", score:100, level:"浼樼", remark:"鍥㈤槦鎴愮啛绋冲畾"},
+         {name:"新老员工配比", target:"≤30%", actual:"15%", score:100, level:"优秀", remark:"团队成熟稳定"},
 
-         {name:"褰撴湀瀹㈡湇绂昏亴娴佸け鐜?, target:"鈮?%", actual:"0%", score:100, level:"浼樼", remark:"闆舵祦澶?}
+         {name:"当月客服离职流失率", target:"≤5%", actual:"0%", score:100, level:"优秀", remark:"零流失"}
 
        ]},
 
-      {key:"service", name:"鏈嶅姟鍋ュ悍搴?, score:95, level:"浼樼", weight:0.2,
+      {key:"service", name:"服务健康度", score:95, level:"优秀", weight:0.2,
 
        items:[
 
-         {name:"DSR瀵规瘮琛屼笟鍋ュ悍搴?, target:"鈮?.8", actual:"4.90", score:100, level:"浼樼", remark:"杩滆秴琛屼笟鍧囧€?},
+         {name:"DSR对比行业健康度", target:"≥4.8", actual:"4.90", score:100, level:"优秀", remark:"远超行业均值"},
 
-         {name:"DSR鏈嶅姟瀵规瘮涓婃湀鍋ュ悍搴?, target:"鈮?.75", actual:"4.88", score:100, level:"浼樼", remark:"鎸佺画鎻愬崌"},
+         {name:"DSR服务对比上月健康度", target:"≥4.75", actual:"4.88", score:100, level:"优秀", remark:"持续提升"},
 
-         {name:"缁煎悎浣撻獙璇勫垎鍋ュ悍搴?, target:"鈮?.5", actual:"4.60", score:100, level:"浼樼", remark:"瓒呭嚭鐩爣"},
+         {name:"综合体验评分健康度", target:"≥4.5", actual:"4.60", score:100, level:"优秀", remark:"超出目标"},
 
-         {name:"閲戦摱鏃烘椇鍋ュ悍搴?, target:"閲戞椇鏃?, actual:"閲戞椇鏃?, score:100, level:"浼樼", remark:"淇濇寔閲戠墝"}
+         {name:"金银旺旺健康度", target:"金旺旺", actual:"金旺旺", score:100, level:"优秀", remark:"保持金牌"}
 
        ]},
 
-      {key:"sales", name:"閿€鍞仴搴峰害", score:95, level:"浼樼", weight:0.35,
+      {key:"sales", name:"销售健康度", score:95, level:"优秀", weight:0.35,
 
        items:[
 
-         {name:"骞村害閿€鍞寚鏍囪揪鎴愬仴搴峰害-瀹㈡湇", target:"65%", actual:"72%", score:100, level:"浼樼", remark:"瓒呴瀹屾垚"},
+         {name:"年度销售指标达成健康度-客服", target:"65%", actual:"72%", score:100, level:"优秀", remark:"超额完成"},
 
-         {name:"鏈堝害閿€鍞寚鏍囧仴搴峰害-搴楅摵", target:"100%", actual:"108%", score:100, level:"浼樼", remark:"瓒呴杈炬爣"},
+         {name:"月度销售指标健康度-店铺", target:"100%", actual:"108%", score:100, level:"优秀", remark:"超额达标"},
 
-         {name:"鏈堝害閿€鍞寚鏍囧仴搴峰害-瀹㈡湇", target:"100%", actual:"105%", score:100, level:"浼樼", remark:"瓒呴杈炬爣"},
+         {name:"月度销售指标健康度-客服", target:"100%", actual:"105%", score:100, level:"优秀", remark:"超额达标"},
 
-         {name:"浜哄伐瀹㈡湇杞寲鐜囧仴搴峰害", target:"12%", actual:"13.2%", score:100, level:"浼樼", remark:"杞寲鐜囦紭绉€"},
+         {name:"人工客服转化率健康度", target:"12%", actual:"13.2%", score:100, level:"优秀", remark:"转化率优秀"},
 
-         {name:"鎸藉崟鎴愬姛鐜?, target:"50%", actual:"58%", score:100, level:"浼樼", remark:"杩滈珮浜庣洰鏍?}
+         {name:"挽单成功率", target:"50%", actual:"58%", score:100, level:"优秀", remark:"远高于目标"}
 
        ]},
 
-      {key:"returns", name:"閫€璐ч€€娆?, score:100, level:"浼樼", weight:0.1,
+      {key:"returns", name:"退货退款", score:100, level:"优秀", weight:0.1,
 
        items:[
 
-         {name:"閫€璐ч€€娆惧仴搴疯瘎浼?, target:"鈮?%", actual:"3.5%", score:100, level:"浼樼", remark:"閫€璐х巼浼樼"}
+         {name:"退货退款健康评估", target:"≤5%", actual:"3.5%", score:100, level:"优秀", remark:"退货率优秀"}
 
        ]},
 
-      {key:"risk", name:"寮傚父椋庨櫓", score:100, level:"浼樼", weight:0.2,
+      {key:"risk", name:"异常风险", score:100, level:"优秀", weight:0.2,
 
        items:[
 
-         {name:"寮傚父闂鍋ュ悍搴﹁瘎浼?, target:"鏃犲紓甯?, actual:"鏃犲紓甯?, score:100, level:"浼樼", remark:"鏃犲紓甯?},
+         {name:"异常问题健康度评估", target:"无异常", actual:"无异常", score:100, level:"优秀", remark:"无异常"},
 
-         {name:"璧勬崯绫婚闄╄鍗曞仴搴峰害璇勪及", target:"鏃犻闄?, actual:"鏃犻闄?, score:100, level:"浼樼", remark:"鏃犻闄?}
+         {name:"资损类风险订单健康度评估", target:"无风险", actual:"无风险", score:100, level:"优秀", remark:"无风险"}
 
        ]},
 
-      {key:"cost", name:"鎴愭湰鎶婃帶", score:92, level:"鍋ュ悍", weight:0,
+      {key:"cost", name:"成本把控", score:92, level:"健康", weight:0,
 
        items:[
 
-         {name:"瀹㈡湇鍥㈤槦瀹為檯褰撴湀鎴愭湰", target:"120000", actual:"110000", score:90, level:"鍋ュ悍", remark:"浣庝簬棰勭畻"},
+         {name:"客服团队实际当月成本", target:"120000", actual:"110000", score:90, level:"健康", remark:"低于预算"},
 
-         {name:"鎴愭湰鎶婃帶鍋ュ悍搴?, target:"鏈秴棰勭畻", actual:"鏈秴棰勭畻", score:100, level:"浼樼", remark:"鎴愭湰浼樼"}
+         {name:"成本把控健康度", target:"未超预算", actual:"未超预算", score:100, level:"优秀", remark:"成本优秀"}
 
        ]}
 
@@ -1492,75 +1492,75 @@ const HEALTH_DATA = [
 
   {
 
-    projectId:"P005", period:"2026-05", overallScore:88, overallLevel:"鍋ュ悍",
+    projectId:"P005", period:"2026-05", overallScore:88, overallLevel:"健康",
 
     dimensions:[
 
-      {key:"manpower", name:"浜哄姏鍋ュ悍搴?, score:90, level:"鍋ュ悍", weight:0.15,
+      {key:"manpower", name:"人力健康度", score:90, level:"健康", weight:0.15,
 
        items:[
 
-         {name:"鏂拌€佸憳宸ラ厤姣?, target:"鈮?0%", actual:"28%", score:90, level:"鍋ュ悍", remark:"鏂板憳宸ュ崰姣斿悎鐞?},
+         {name:"新老员工配比", target:"≤30%", actual:"28%", score:90, level:"健康", remark:"新员工占比合理"},
 
-         {name:"褰撴湀瀹㈡湇绂昏亴娴佸け鐜?, target:"鈮?%", actual:"4.5%", score:90, level:"鍋ュ悍", remark:"姝ｅ父姘村钩"}
+         {name:"当月客服离职流失率", target:"≤5%", actual:"4.5%", score:90, level:"健康", remark:"正常水平"}
 
        ]},
 
-      {key:"service", name:"鏈嶅姟鍋ュ悍搴?, score:88, level:"鍋ュ悍", weight:0.2,
+      {key:"service", name:"服务健康度", score:88, level:"健康", weight:0.2,
 
        items:[
 
-         {name:"DSR瀵规瘮琛屼笟鍋ュ悍搴?, target:"鈮?.8", actual:"4.80", score:90, level:"鍋ュ悍", remark:"鍒氬ソ杈炬爣"},
+         {name:"DSR对比行业健康度", target:"≥4.8", actual:"4.80", score:90, level:"健康", remark:"刚好达标"},
 
-         {name:"DSR鏈嶅姟瀵规瘮涓婃湀鍋ュ悍搴?, target:"鈮?.75", actual:"4.77", score:90, level:"鍋ュ悍", remark:"灏忓箙鎻愬崌"},
+         {name:"DSR服务对比上月健康度", target:"≥4.75", actual:"4.77", score:90, level:"健康", remark:"小幅提升"},
 
-         {name:"缁煎悎浣撻獙璇勫垎鍋ュ悍搴?, target:"鈮?.5", actual:"4.48", score:85, level:"闇€娉ㄦ剰", remark:"鐣ヤ綆浜庣洰鏍?},
+         {name:"综合体验评分健康度", target:"≥4.5", actual:"4.48", score:85, level:"需注意", remark:"略低于目标"},
 
-         {name:"閲戦摱鏃烘椇鍋ュ悍搴?, target:"閲戞椇鏃?, actual:"閾舵椇鏃?, score:85, level:"闇€娉ㄦ剰", remark:"閾剁墝锛岄渶鎻愬崌"}
+         {name:"金银旺旺健康度", target:"金旺旺", actual:"银旺旺", score:85, level:"需注意", remark:"银牌，需提升"}
 
        ]},
 
-      {key:"sales", name:"閿€鍞仴搴峰害", score:90, level:"鍋ュ悍", weight:0.35,
+      {key:"sales", name:"销售健康度", score:90, level:"健康", weight:0.35,
 
        items:[
 
-         {name:"骞村害閿€鍞寚鏍囪揪鎴愬仴搴峰害-瀹㈡湇", target:"65%", actual:"64%", score:90, level:"鍋ュ悍", remark:"杩涘害姝ｅ父"},
+         {name:"年度销售指标达成健康度-客服", target:"65%", actual:"64%", score:90, level:"健康", remark:"进度正常"},
 
-         {name:"鏈堝害閿€鍞寚鏍囧仴搴峰害-搴楅摵", target:"100%", actual:"98%", score:90, level:"鍋ュ悍", remark:"鎺ヨ繎杈炬爣"},
+         {name:"月度销售指标健康度-店铺", target:"100%", actual:"98%", score:90, level:"健康", remark:"接近达标"},
 
-         {name:"鏈堝害閿€鍞寚鏍囧仴搴峰害-瀹㈡湇", target:"100%", actual:"96%", score:90, level:"鍋ュ悍", remark:"鎺ヨ繎杈炬爣"},
+         {name:"月度销售指标健康度-客服", target:"100%", actual:"96%", score:90, level:"健康", remark:"接近达标"},
 
-         {name:"浜哄伐瀹㈡湇杞寲鐜囧仴搴峰害", target:"12%", actual:"11.2%", score:90, level:"鍋ュ悍", remark:"鎺ヨ繎鐩爣"},
+         {name:"人工客服转化率健康度", target:"12%", actual:"11.2%", score:90, level:"健康", remark:"接近目标"},
 
-         {name:"鎸藉崟鎴愬姛鐜?, target:"50%", actual:"51%", score:100, level:"浼樼", remark:"杈炬爣"}
+         {name:"挽单成功率", target:"50%", actual:"51%", score:100, level:"优秀", remark:"达标"}
 
        ]},
 
-      {key:"returns", name:"閫€璐ч€€娆?, score:90, level:"鍋ュ悍", weight:0.1,
+      {key:"returns", name:"退货退款", score:90, level:"健康", weight:0.1,
 
        items:[
 
-         {name:"閫€璐ч€€娆惧仴搴疯瘎浼?, target:"鈮?%", actual:"4.8%", score:90, level:"鍋ュ悍", remark:"鎺ヨ繎鐩爣"}
+         {name:"退货退款健康评估", target:"≤5%", actual:"4.8%", score:90, level:"健康", remark:"接近目标"}
 
        ]},
 
-      {key:"risk", name:"寮傚父椋庨櫓", score:90, level:"鍋ュ悍", weight:0.2,
+      {key:"risk", name:"异常风险", score:90, level:"健康", weight:0.2,
 
        items:[
 
-         {name:"寮傚父闂鍋ュ悍搴﹁瘎浼?, target:"鏃犲奖鍝?, actual:"鏈夊奖鍝嶆棤璧勬崯", score:90, level:"鍋ュ悍", remark:"鏈夊紓甯镐絾鏃犺祫鎹?},
+         {name:"异常问题健康度评估", target:"无影响", actual:"有影响无资损", score:90, level:"健康", remark:"有异常但无资损"},
 
-         {name:"璧勬崯绫婚闄╄鍗曞仴搴峰害璇勪及", target:"鏃犻闄?, actual:"鏃犻闄?, score:100, level:"浼樼", remark:"鏃犺祫鎹?}
+         {name:"资损类风险订单健康度评估", target:"无风险", actual:"无风险", score:100, level:"优秀", remark:"无资损"}
 
        ]},
 
-      {key:"cost", name:"鎴愭湰鎶婃帶", score:88, level:"鍋ュ悍", weight:0,
+      {key:"cost", name:"成本把控", score:88, level:"健康", weight:0,
 
        items:[
 
-         {name:"瀹㈡湇鍥㈤槦瀹為檯褰撴湀鎴愭湰", target:"170000", actual:"165000", score:90, level:"鍋ュ悍", remark:"浣庝簬棰勭畻"},
+         {name:"客服团队实际当月成本", target:"170000", actual:"165000", score:90, level:"健康", remark:"低于预算"},
 
-         {name:"鎴愭湰鎶婃帶鍋ュ悍搴?, target:"鏈秴棰勭畻", actual:"鏈秴棰勭畻", score:100, level:"浼樼", remark:"鎴愭湰鍙帶"}
+         {name:"成本把控健康度", target:"未超预算", actual:"未超预算", score:100, level:"优秀", remark:"成本可控"}
 
        ]}
 
@@ -1570,75 +1570,75 @@ const HEALTH_DATA = [
 
   {
 
-    projectId:"P006", period:"2026-05", overallScore:78, overallLevel:"鏋佸樊",
+    projectId:"P006", period:"2026-05", overallScore:78, overallLevel:"极差",
 
     dimensions:[
 
-      {key:"manpower", name:"浜哄姏鍋ュ悍搴?, score:80, level:"鏋佸樊", weight:0.15,
+      {key:"manpower", name:"人力健康度", score:80, level:"极差", weight:0.15,
 
        items:[
 
-         {name:"鏂拌€佸憳宸ラ厤姣?, target:"鈮?0%", actual:"50%", score:80, level:"鏋佸樊", remark:"鏂板憳宸ュ崰姣斾弗閲嶈秴鏍?},
+         {name:"新老员工配比", target:"≤30%", actual:"50%", score:80, level:"极差", remark:"新员工占比严重超标"},
 
-         {name:"褰撴湀瀹㈡湇绂昏亴娴佸け鐜?, target:"鈮?%", actual:"12%", score:80, level:"鏋佸樊", remark:"娴佸け鐜囦弗閲嶈秴鏍?}
+         {name:"当月客服离职流失率", target:"≤5%", actual:"12%", score:80, level:"极差", remark:"流失率严重超标"}
 
        ]},
 
-      {key:"service", name:"鏈嶅姟鍋ュ悍搴?, score:75, level:"鏋佸樊", weight:0.2,
+      {key:"service", name:"服务健康度", score:75, level:"极差", weight:0.2,
 
        items:[
 
-         {name:"DSR瀵规瘮琛屼笟鍋ュ悍搴?, target:"鈮?.8", actual:"4.40", score:80, level:"鏋佸樊", remark:"杩滀綆浜庤涓氬潎鍊?},
+         {name:"DSR对比行业健康度", target:"≥4.8", actual:"4.40", score:80, level:"极差", remark:"远低于行业均值"},
 
-         {name:"DSR鏈嶅姟瀵规瘮涓婃湀鍋ュ悍搴?, target:"鈮?.75", actual:"4.35", score:80, level:"鏋佸樊", remark:"鐜瘮涓嬮檷"},
+         {name:"DSR服务对比上月健康度", target:"≥4.75", actual:"4.35", score:80, level:"极差", remark:"环比下降"},
 
-         {name:"缁煎悎浣撻獙璇勫垎鍋ュ悍搴?, target:"鈮?.5", actual:"3.90", score:80, level:"鏋佸樊", remark:"涓ラ噸浣庝簬鐩爣"},
+         {name:"综合体验评分健康度", target:"≥4.5", actual:"3.90", score:80, level:"极差", remark:"严重低于目标"},
 
-         {name:"閲戦摱鏃烘椇鍋ュ悍搴?, target:"閲戞椇鏃?, actual:"鏃犺瘎绾?, score:80, level:"鏋佸樊", remark:"鏈幏寰楄瘎绾?}
+         {name:"金银旺旺健康度", target:"金旺旺", actual:"无评级", score:80, level:"极差", remark:"未获得评级"}
 
        ]},
 
-      {key:"sales", name:"閿€鍞仴搴峰害", score:80, level:"鏋佸樊", weight:0.35,
+      {key:"sales", name:"销售健康度", score:80, level:"极差", weight:0.35,
 
        items:[
 
-         {name:"骞村害閿€鍞寚鏍囪揪鎴愬仴搴峰害-瀹㈡湇", target:"65%", actual:"48%", score:80, level:"鏋佸樊", remark:"杩涘害涓ラ噸婊炲悗"},
+         {name:"年度销售指标达成健康度-客服", target:"65%", actual:"48%", score:80, level:"极差", remark:"进度严重滞后"},
 
-         {name:"鏈堝害閿€鍞寚鏍囧仴搴峰害-搴楅摵", target:"100%", actual:"82%", score:80, level:"鏋佸樊", remark:"涓ラ噸涓嶈揪鏍?},
+         {name:"月度销售指标健康度-店铺", target:"100%", actual:"82%", score:80, level:"极差", remark:"严重不达标"},
 
-         {name:"鏈堝害閿€鍞寚鏍囧仴搴峰害-瀹㈡湇", target:"100%", actual:"78%", score:80, level:"鏋佸樊", remark:"涓ラ噸涓嶈揪鏍?},
+         {name:"月度销售指标健康度-客服", target:"100%", actual:"78%", score:80, level:"极差", remark:"严重不达标"},
 
-         {name:"浜哄伐瀹㈡湇杞寲鐜囧仴搴峰害", target:"12%", actual:"8.5%", score:80, level:"鏋佸樊", remark:"杞寲鐜囦弗閲嶅亸浣?},
+         {name:"人工客服转化率健康度", target:"12%", actual:"8.5%", score:80, level:"极差", remark:"转化率严重偏低"},
 
-         {name:"鎸藉崟鎴愬姛鐜?, target:"50%", actual:"42%", score:80, level:"鏋佸樊", remark:"浣庝簬鐩爣"}
+         {name:"挽单成功率", target:"50%", actual:"42%", score:80, level:"极差", remark:"低于目标"}
 
        ]},
 
-      {key:"returns", name:"閫€璐ч€€娆?, score:80, level:"鏋佸樊", weight:0.1,
+      {key:"returns", name:"退货退款", score:80, level:"极差", weight:0.1,
 
        items:[
 
-         {name:"閫€璐ч€€娆惧仴搴疯瘎浼?, target:"鈮?%", actual:"7.5%", score:80, level:"鏋佸樊", remark:"閫€璐х巼涓ラ噸瓒呮爣"}
+         {name:"退货退款健康评估", target:"≤5%", actual:"7.5%", score:80, level:"极差", remark:"退货率严重超标"}
 
        ]},
 
-      {key:"risk", name:"寮傚父椋庨櫓", score:80, level:"鏋佸樊", weight:0.2,
+      {key:"risk", name:"异常风险", score:80, level:"极差", weight:0.2,
 
        items:[
 
-         {name:"寮傚父闂鍋ュ悍搴﹁瘎浼?, target:"鏃犲奖鍝?, actual:"鏈夎祫鎹熸湁瀹㈣瘔", score:80, level:"鏋佸樊", remark:"浜х敓璧勬崯鍜屽璇?},
+         {name:"异常问题健康度评估", target:"无影响", actual:"有资损有客诉", score:80, level:"极差", remark:"产生资损和客诉"},
 
-         {name:"璧勬崯绫婚闄╄鍗曞仴搴峰害璇勪及", target:"鏃犻闄?, actual:"鏈夋崯澶?, score:80, level:"鏋佸樊", remark:"璐ф鏃犳硶杩藉洖"}
+         {name:"资损类风险订单健康度评估", target:"无风险", actual:"有损失", score:80, level:"极差", remark:"货款无法追回"}
 
        ]},
 
-      {key:"cost", name:"鎴愭湰鎶婃帶", score:78, level:"鏋佸樊", weight:0,
+      {key:"cost", name:"成本把控", score:78, level:"极差", weight:0,
 
        items:[
 
-         {name:"瀹㈡湇鍥㈤槦瀹為檯褰撴湀鎴愭湰", target:"90000", actual:"95000", score:80, level:"鏋佸樊", remark:"瓒呭嚭棰勭畻"},
+         {name:"客服团队实际当月成本", target:"90000", actual:"95000", score:80, level:"极差", remark:"超出预算"},
 
-         {name:"鎴愭湰鎶婃帶鍋ュ悍搴?, target:"鏈秴棰勭畻", actual:"瓒呭嚭棰勭畻", score:80, level:"鏋佸樊", remark:"鎴愭湰瓒呮敮"}
+         {name:"成本把控健康度", target:"未超预算", actual:"超出预算", score:80, level:"极差", remark:"成本超支"}
 
        ]}
 
@@ -1650,37 +1650,37 @@ const HEALTH_DATA = [
 
 
 
-// ===== 瑙掕壊涓庢潈闄愮郴缁?=====
+// ===== 角色与权限系统 =====
 
 const ROLES = [
-  "绠＄悊鍊欓€?, "瀹㈡湇缁勯暱", "瀹㈡湇涓荤", "瀹㈡湇缁忕悊", "瀹㈡湇鎬荤洃",
-  "绠＄悊鍛?, "椤圭洰浼欎即", "鎶€鏈紮浼?, "椋庢帶浼欎即", "鏂扮敤鎴?
+  "管理候选", "客服组长", "客服主管", "客服经理", "客服总监",
+  "管理员", "项目伙伴", "技术伙伴", "风控伙伴", "新用户"
 ];
 
-// 榛樿鏉冮檺閰嶇疆锛氭瘡涓鑹插鍚勬ā鍧楃殑鏉冮檺锛坮ead=鍙, write=璇诲啓, hidden=闅愯棌锛?
-// 鍏ㄥ眬妯″潡 key 鍒楄〃锛堜緵 batchSetPermission 绛夊嚱鏁颁娇鐢級
+// 默认权限配置：每个角色对各模块的权限（read=只读, write=读写, hidden=隐藏）
+// 全局模块 key 列表（供 batchSetPermission 等函数使用）
 const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","permissions","notifications","performance","risk","profile"];
 
 const DEFAULT_PERMISSIONS = {
-  "绠＄悊鍊欓€?: { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
-  "瀹㈡湇缁勯暱": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
-  "瀹㈡湇涓荤": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", permissions:"read", notifications:"read", performance:"write", risk:"read", profile:"write" },
-  "瀹㈡湇缁忕悊": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"read", notifications:"read", performance:"write", risk:"write", profile:"write" },
-  "瀹㈡湇鎬荤洃": { dashboard:"read", archive:"write", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
-  "绠＄悊鍛?: { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
-  "瓒呯骇绠＄悊鍛?: { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
-  "椤圭洰浼欎即": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
-  "鎶€鏈紮浼?: { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"write", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
-  "椋庢帶浼欎即": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"write", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
-  "鏂扮敤鎴?: { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" }
+  "管理候选": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
+  "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
+  "客服主管": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", permissions:"read", notifications:"read", performance:"write", risk:"read", profile:"write" },
+  "客服经理": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"read", notifications:"read", performance:"write", risk:"write", profile:"write" },
+  "客服总监": { dashboard:"read", archive:"write", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
+  "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
+  "超级管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
+  "项目伙伴": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
+  "技术伙伴": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"write", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
+  "风控伙伴": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"write", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
+  "新用户": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" }
 };
 
-// 褰撳墠瑙掕壊锛堥粯璁わ細绠＄悊鍊欓€夛級
-let currentRole = "绠＄悊鍊欓€?;
+// 当前角色（默认：管理候选）
+let currentRole = "管理候选";
 let currentModule = "dashboard";
 let currentHealthFilter = "all";
 
-// 浠巐ocalStorage鍔犺浇鏉冮檺閰嶇疆锛堝鏋滄湁鐨勮瘽锛?
+// 从localStorage加载权限配置（如果有的话）
 let rolePermissions = {};
 try {
   const saved = localStorage.getItem("chansee_permissions");
@@ -1689,54 +1689,54 @@ try {
   rolePermissions = {...DEFAULT_PERMISSIONS};
 }
 
-// 淇濆瓨鏉冮檺閰嶇疆鍒發ocalStorage
+// 保存权限配置到localStorage
 function savePermissions() {
   localStorage.setItem("chansee_permissions", JSON.stringify(rolePermissions));
 }
 
-// 鑾峰彇褰撳墠瑙掕壊瀵规煇涓ā鍧楃殑鏉冮檺
+// 获取当前角色对某个模块的权限
 function getPermission(module) {
   const p = rolePermissions[currentRole];
   if (!p) return "hidden";
   return p[module] || "hidden";
 }
 
-// 妫€鏌ュ綋鍓嶈鑹叉槸鍚﹀彲浠ョ紪杈戞煇涓ā鍧?
+// 检查当前角色是否可以编辑某个模块
 function canEditModule(module) {
   return getPermission(module) === "write";
 }
 
-// 妫€鏌ュ綋鍓嶈鑹叉槸鍚﹀彲浠ユ煡鐪嬫煇涓ā鍧?
+// 检查当前角色是否可以查看某个模块
 function canViewModule(module) {
   const p = getPermission(module);
   return p === "write" || p === "read";
 }
 
-// ===== 鍒濆鍖?=====
+// ===== 初始化 =====
 
 document.addEventListener("DOMContentLoaded", () => {
   try {
     initNav();
     initModal();
-    // 鐧诲綍妫€鏌ワ細鏈櫥褰曞垯鍙樉绀虹櫥褰曟锛屼笉鍒濆鍖栦富鐣岄潰
+    // 登录检查：未登录则只显示登录框，不初始化主界面
     const loggedIn = checkLogin();
     if (!loggedIn) return;
-    // 榛樿锛氬彧灞曞紑绗竴涓垎缁勶紝鍏朵綑鎶樺彔
+    // 默认：只展开第一个分组，其余折叠
     document.querySelectorAll(".nav-section").forEach((sec,idx) => {
       const arrow = sec.querySelector('.section-arrow');
       if(idx===0){
         sec.classList.remove("collapsed");
-        if(arrow) arrow.textContent = '鈻?;
+        if(arrow) arrow.textContent = '▼';
       }else{
         sec.classList.add("collapsed");
-        if(arrow) arrow.textContent = '鈻?;
+        if(arrow) arrow.textContent = '▶';
       }
     });
     renderModule("dashboard");
   } catch(e) {
     document.getElementById("module-content").innerHTML =
       '<div style="padding:40px;text-align:center;color:red;">' +
-      '<h3>鍒濆鍖栭敊璇?/h3><p>' + e.message + '</p></div>';
+      '<h3>初始化错误</h3><p>' + e.message + '</p></div>';
   }
 });
 
@@ -1746,7 +1746,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-// ===== 绉诲姩绔晶杈规爮鎶藉眽 =====
+// ===== 移动端侧边栏抽屉 =====
 function toggleMobileSidebar(){
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebar-overlay');
@@ -1766,17 +1766,17 @@ function closeMobileSidebar(){
   document.body.style.overflow = '';
 }
 
-// ===== 渚ц竟鏍忔姌鍙?灞曞紑 =====
+// ===== 侧边栏折叠/展开 =====
 var _sidebarCollapsed = false;
 var _toggleLock = false;
 
 function toggleSidebar(e){
-  // 闃叉浜嬩欢鍐掓场瀵艰嚧閲嶅瑙﹀彂
+  // 防止事件冒泡导致重复触发
   if(e){
     e.stopPropagation();
     e.preventDefault();
   }
-  // 闃叉姈閿?
+  // 防抖锁
   if(_toggleLock) return;
   _toggleLock = true;
   setTimeout(function(){ _toggleLock = false; }, 600);
@@ -1787,20 +1787,20 @@ function toggleSidebar(e){
 
 
   if(_sidebarCollapsed){
-    // ===== 灞曞紑 =====
+    // ===== 展开 =====
     _sidebarCollapsed = false;
     sidebar.classList.remove('collapsed');
     sidebar.style.width = '220px';
     sidebar.style.minWidth = '220px';
     sidebar.style.overflowX = '';
-    // 鏄剧ず鎵€鏈夋枃瀛?
+    // 显示所有文字
     var allTexts = sidebar.querySelectorAll('.nav-text, .section-text, .toggle-text, .section-arrow');
     for(var i=0;i<allTexts.length;i++){
       allTexts[i].style.display = '';
       allTexts[i].style.width = '';
       allTexts[i].style.opacity = '';
     }
-    // 鎭㈠浜岀骇鑿滃崟鏄鹃殣鐘舵€?
+    // 恢复二级菜单显隐状态
     var allSections = sidebar.querySelectorAll('.nav-section');
     for(var s=0;s<allSections.length;s++){
       var sec = allSections[s];
@@ -1814,38 +1814,38 @@ function toggleSidebar(e){
         }
       }
     }
-    // 鎭㈠鍥炬爣鏍峰紡
+    // 恢复图标样式
     var allIcons = sidebar.querySelectorAll('.nav-icon, .section-icon');
     for(var k=0;k<allIcons.length;k++) allIcons[k].style.cssText = '';
-    // 鎭㈠鎸夐挳
+    // 恢复按钮
     if(btn){
       var t = btn.querySelector('.toggle-text');
-      if(t){ t.textContent = '鏀惰捣瀵艰埅'; t.style.display = ''; }
+      if(t){ t.textContent = '收起导航'; t.style.display = ''; }
       btn.style.cssText = 'width:100%;';
       var svg = btn.querySelector('svg');
       if(svg) svg.style.transform = '';
     }
   }else{
-    // ===== 鏀惰捣 =====
+    // ===== 收起 =====
     _sidebarCollapsed = true;
     sidebar.classList.add('collapsed');
     sidebar.style.width = '56px';
     sidebar.style.minWidth = '56px';
     sidebar.style.overflowX = 'hidden';
-    // 闅愯棌鎵€鏈夋枃瀛?
+    // 隐藏所有文字
     var allTexts2 = sidebar.querySelectorAll('.nav-text, .section-text, .toggle-text, .section-arrow');
     for(var j=0;j<allTexts2.length;j++){
       allTexts2[j].style.display = 'none';
       allTexts2[j].style.width = '0';
       allTexts2[j].style.opacity = '0';
     }
-    // 闅愯棌浜岀骇鑿滃崟
+    // 隐藏二级菜单
     var allSections2 = sidebar.querySelectorAll('.nav-section');
     for(var m=0;m<allSections2.length;m++){
       var subItems2 = allSections2[m].querySelectorAll('.nav-item');
       for(var n=0;n<subItems2.length;n++) subItems2[n].style.setProperty('display', 'none', 'important');
     }
-    // 鍥炬爣缇庡寲
+    // 图标美化
     var allIcons2 = sidebar.querySelectorAll('.nav-icon');
     for(var x=0;x<allIcons2.length;x++){
       allIcons2[x].style.cssText = 'display:flex;align-items:center;justify-content:center;width:32px;height:32px;font-size:16px;border-radius:8px;background:rgba(24,95,165,0.08);box-shadow:none;';
@@ -1854,10 +1854,10 @@ function toggleSidebar(e){
     for(var y=0;y<secIcons.length;y++){
       secIcons[y].style.cssText = 'display:flex;align-items:center;justify-content:center;width:32px;height:32px;font-size:16px;';
     }
-    // 鎸夐挳
+    // 按钮
     if(btn){
       var t2 = btn.querySelector('.toggle-text');
-      if(t2){ t2.textContent = '灞曞紑瀵艰埅'; t2.style.display = 'none'; }
+      if(t2){ t2.textContent = '展开导航'; t2.style.display = 'none'; }
       btn.style.cssText = 'padding:8px 0;justify-content:center;width:100%;';
       var svg2 = btn.querySelector('svg');
       if(svg2) svg2.style.transform = 'rotate(180deg)';
@@ -1865,28 +1865,28 @@ function toggleSidebar(e){
   }
 }
 
-// ===== 瀵艰埅鎶樺彔 =====
-// 鍙敤 data-sub-collapsed 灞炴€ф帶鍒讹紝CSS 閫氳繃灞炴€ч€夋嫨鍣ㄦ帶鍒舵樉闅?
+// ===== 导航折叠 =====
+// 只用 data-sub-collapsed 属性控制，CSS 通过属性选择器控制显隐
 function toggleSection(titleEl){
   var section = titleEl.closest('.nav-section');
   if(!section) return;
   var isCollapsed = section.getAttribute('data-sub-collapsed') === 'true';
   if(isCollapsed){
-    // 灞曞紑
+    // 展开
     section.setAttribute('data-sub-collapsed', 'false');
   }else{
-    // 鏀惰捣
+    // 收起
     section.setAttribute('data-sub-collapsed', 'true');
   }
-  // 鍚屾绠ご
+  // 同步箭头
   var arrow = section.querySelector('.section-arrow');
-  if(arrow) arrow.textContent = isCollapsed ? '鈻? : '鈻?;
+  if(arrow) arrow.textContent = isCollapsed ? '▼' : '▶';
 }
 
-// ===== 瀵艰埅 =====
+// ===== 导航 =====
 
 function initNav(){
-  // 涓烘墍鏈変簩绾ц彍鍗曢」璁剧疆 tooltip
+  // 为所有二级菜单项设置 tooltip
   document.querySelectorAll(".nav-item").forEach(item => {
     const txt = item.querySelector('.nav-text');
     if(txt && !item.getAttribute('title')){
@@ -1894,7 +1894,7 @@ function initNav(){
     }
   });
 
-  // 涓烘墍鏈変竴绾ц彍鍗曪紙鍒嗙粍鏍囬锛夎缃?tooltip锛堟敹璧峰悗鎮仠鎻愮ず鐢級
+  // 为所有一级菜单（分组标题）设置 tooltip（收起后悬停提示用）
   document.querySelectorAll(".nav-section-title").forEach(title => {
     const txt = title.querySelector('.section-text');
     if(txt && !title.getAttribute('title')){
@@ -1908,17 +1908,17 @@ function initNav(){
 
       e.preventDefault();
 
-      // 鑷姩灞曞紑鎵€鍦ㄥ垎缁勶紙濡傛灉澶勪簬鎶樺彔鐘舵€侊級
+      // 自动展开所在分组（如果处于折叠状态）
       const sec = item.closest('.nav-section');
       if(sec){
-        // 鐢?data 灞炴€у垽鏂紝涓嶄緷璧?class
+        // 用 data 属性判断，不依赖 class
         var isCollapsed = sec.getAttribute('data-sub-collapsed') === 'true';
         if(isCollapsed){
           sec.setAttribute('data-sub-collapsed', 'false');
           var subItems = sec.querySelectorAll('.nav-item');
           for(var i=0;i<subItems.length;i++) subItems[i].style.removeProperty('display');
           const arrow = sec.querySelector('.section-arrow');
-          if(arrow) arrow.textContent = '鈻?;
+          if(arrow) arrow.textContent = '▼';
         }
       }
 
@@ -1928,7 +1928,7 @@ function initNav(){
 
       renderModule(item.dataset.module);
 
-      // 绉诲姩绔偣鍑诲鑸」鍚庤嚜鍔ㄥ叧闂晶杈规爮鎶藉眽
+      // 移动端点击导航项后自动关闭侧边栏抽屉
       if(window.innerWidth <= 768 || (window.innerHeight <= 500 && window.matchMedia('(orientation: landscape)').matches)){
         closeMobileSidebar();
       }
@@ -1937,14 +1937,14 @@ function initNav(){
 
   });
 
-  // 鍒濆鍖栦竴绾ц彍鍗曠澶寸姸鎬侊紙纭繚绠ご鏂瑰悜鍜屽疄闄呯姸鎬佷竴鑷达級
+  // 初始化一级菜单箭头状态（确保箭头方向和实际状态一致）
   document.querySelectorAll('.nav-section').forEach(sec => {
     var arrow = sec.querySelector('.section-arrow');
     if(!arrow) return;
-    // data-sub-collapsed 涓嶅瓨鍦ㄦ垨涓?'false' 鈫?灞曞紑 鈫?绠ご 鈻?
-    // data-sub-collapsed 涓?'true' 鈫?鏀惰捣 鈫?绠ご 鈻?
+    // data-sub-collapsed 不存在或为 'false' → 展开 → 箭头 ▼
+    // data-sub-collapsed 为 'true' → 收起 → 箭头 ▶
     var isCollapsed = sec.getAttribute('data-sub-collapsed') === 'true';
-    arrow.textContent = isCollapsed ? '鈻? : '鈻?;
+    arrow.textContent = isCollapsed ? '▶' : '▼';
   });
 
 }
@@ -1955,26 +1955,26 @@ function initNav(){
 
 
 
-// ===== 妯″潡鍒嗗彂 =====
+// ===== 模块分发 =====
 
 function renderModule(module){
   try {
     currentModule = module;
     const area = document.getElementById("module-content");
     const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
-    area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">馃毀</div><p>妯″潡寮€鍙戜腑...</p></div>`;
+    area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
     bindEvents();
   } catch(e) {
     document.getElementById("module-content").innerHTML =
       '<div style="padding:40px;text-align:center;color:red;">' +
-      '<h3>妯″潡鍔犺浇閿欒</h3><p>' + e.message + '</p></div>';
+      '<h3>模块加载错误</h3><p>' + e.message + '</p></div>';
   }
 }
 
 
 
 
-// ----- 绛涢€夋爮鐘舵€?(v4) -----
+// ----- 筛选栏状态 (v4) -----
 const filterState = {
   project: [],
   workplace: "",
@@ -1998,146 +1998,146 @@ function setFilter(key, value) {
 }
 
 function renderFilterBar() {
-  var timeLabel = {'':'鍏ㄩ儴鏃堕棿', all:'鍏ㄩ儴鏃堕棿', month:'鏈湀', lastMonth:'涓婃湀', quarter:'鏈', year:'鏈勾', custom:'鑷畾涔?};
+  var timeLabel = {'':'全部时间', all:'全部时间', month:'本月', lastMonth:'上月', quarter:'本季', year:'本年', custom:'自定义'};
 
-  // 宸查€夋爣绛?
+  // 已选标签
   var tagsHtml = '';
   var hasFilter = false;
-  if (filterState.timeMode !== 'all' && filterState.timeMode !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + timeLabel[filterState.timeMode] + '<i onclick="setFilter(\'timeMode\',\'\')">脳</i></span>'; }
-  if (filterState.workplace !== 'all' && filterState.workplace !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.workplace + '<i onclick="setFilter(\'workplace\',\'\')">脳</i></span>'; }
-  if (filterState.projectType !== 'all' && filterState.projectType !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.projectType + '<i onclick="setFilter(\'projectType\',\'\')">脳</i></span>'; }
-  if (filterState.status !== 'all' && filterState.status !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.status + '<i onclick="setFilter(\'status\',\'\')">脳</i></span>'; }
-  if (filterState.health !== 'all' && filterState.health !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.health + '<i onclick="setFilter(\'health\',\'\')">脳</i></span>'; }
-  if (filterState.pm !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.pm + '<i onclick="setFilter(\'pm\',\'all\')">脳</i></span>'; }
-  if (filterState.director !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.director + '<i onclick="setFilter(\'director\',\'all\')">脳</i></span>'; }
-  filterState.platforms.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'platforms\',\'' + v.replace(/'/g,"\\'") + '\')">脳</i></span>'; });
-  filterState.category.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'category\',\'' + v.replace(/'/g,"\\'") + '\')">脳</i></span>'; });
-  filterState.brand.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'brand\',\'' + v.replace(/'/g,"\\'") + '\')">脳</i></span>'; });
-  if (hasFilter) tagsHtml = '<div class="filter-tags-row">' + tagsHtml + '<button class="filter-clear-btn" onclick="resetFilters()">娓呯┖绛涢€?/button></div>';
+  if (filterState.timeMode !== 'all' && filterState.timeMode !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + timeLabel[filterState.timeMode] + '<i onclick="setFilter(\'timeMode\',\'\')">×</i></span>'; }
+  if (filterState.workplace !== 'all' && filterState.workplace !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.workplace + '<i onclick="setFilter(\'workplace\',\'\')">×</i></span>'; }
+  if (filterState.projectType !== 'all' && filterState.projectType !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.projectType + '<i onclick="setFilter(\'projectType\',\'\')">×</i></span>'; }
+  if (filterState.status !== 'all' && filterState.status !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.status + '<i onclick="setFilter(\'status\',\'\')">×</i></span>'; }
+  if (filterState.health !== 'all' && filterState.health !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.health + '<i onclick="setFilter(\'health\',\'\')">×</i></span>'; }
+  if (filterState.pm !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.pm + '<i onclick="setFilter(\'pm\',\'all\')">×</i></span>'; }
+  if (filterState.director !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.director + '<i onclick="setFilter(\'director\',\'all\')">×</i></span>'; }
+  filterState.platforms.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'platforms\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  filterState.category.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'category\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  filterState.brand.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'brand\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  if (hasFilter) tagsHtml = '<div class="filter-tags-row">' + tagsHtml + '<button class="filter-clear-btn" onclick="resetFilters()">清空筛选</button></div>';
 
-  // 绗竴琛岋細鏅€氫笅鎷?
+  // 第一行：普通下拉
   var workplaces = [...new Set(PROJECTS.map(function(p){return p.workplace}))].sort();
-  var types = ['TP椤圭洰','DP椤圭洰','BPO椤圭洰'];
-  var statuses = ['浼樿川鍋ュ悍搴?,'骞崇ǔ甯歌搴?,'椋庨櫓棰勮搴?,'楂樺嵄闂搴?];
-  var healths = ['馃煝','馃煛','馃敶'];
+  var types = ['TP项目','DP项目','BPO项目'];
+  var statuses = ['优质健康店','平稳常规店','风险预警店','高危问题店'];
+  var healths = ['🟢','🟡','🔴'];
 
   var row1 = '<div class="filter-row-v4">';
-  row1 += '<select class="fb-select" id="filter-time" onchange="onFilterTimeChange(this.value)" title="鏃堕棿">';
-  row1 += '<option value="" disabled selected hidden>鏃堕棿 鈻?/option>';
-  row1 += '<option value="month"'+(filterState.timeMode==='month'?' selected':'')+'>鏈湀</option>';
-  row1 += '<option value="lastMonth"'+(filterState.timeMode==='lastMonth'?' selected':'')+'>涓婃湀</option>';
-  row1 += '<option value="quarter"'+(filterState.timeMode==='quarter'?' selected':'')+'>鏈</option>';
-  row1 += '<option value="year"'+(filterState.timeMode==='year'?' selected':'')+'>鏈勾</option>';
-  row1 += '<option value="custom"'+(filterState.timeMode==='custom'?' selected':'')+'>鑷畾涔?/option>';
+  row1 += '<select class="fb-select" id="filter-time" onchange="onFilterTimeChange(this.value)" title="时间">';
+  row1 += '<option value="" disabled selected hidden>时间 ▼</option>';
+  row1 += '<option value="month"'+(filterState.timeMode==='month'?' selected':'')+'>本月</option>';
+  row1 += '<option value="lastMonth"'+(filterState.timeMode==='lastMonth'?' selected':'')+'>上月</option>';
+  row1 += '<option value="quarter"'+(filterState.timeMode==='quarter'?' selected':'')+'>本季</option>';
+  row1 += '<option value="year"'+(filterState.timeMode==='year'?' selected':'')+'>本年</option>';
+  row1 += '<option value="custom"'+(filterState.timeMode==='custom'?' selected':'')+'>自定义</option>';
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" id="filter-workplace" onchange="setFilter(\'workplace\',this.value)" title="鑱屽満">';
-  row1 += '<option value="" disabled selected hidden>鑱屽満 鈻?/option>';
-  row1 += '<option value="all"'+(filterState.workplace==='all'?' selected':'')+'>鍏ㄩ儴</option>';
+  row1 += '<select class="fb-select" id="filter-workplace" onchange="setFilter(\'workplace\',this.value)" title="职场">';
+  row1 += '<option value="" disabled selected hidden>职场 ▼</option>';
+  row1 += '<option value="all"'+(filterState.workplace==='all'?' selected':'')+'>全部</option>';
   workplaces.forEach(function(w){ row1 += '<option value="'+w+'"'+(filterState.workplace===w?' selected':'')+'>'+w+'</option>'; });
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" id="filter-projectType" onchange="setFilter(\'projectType\',this.value)" title="绫诲瀷">';
-  row1 += '<option value="" disabled selected hidden>绫诲瀷 鈻?/option>';
-  row1 += '<option value="all"'+(filterState.projectType==='all'?' selected':'')+'>鍏ㄩ儴</option>';
+  row1 += '<select class="fb-select" id="filter-projectType" onchange="setFilter(\'projectType\',this.value)" title="类型">';
+  row1 += '<option value="" disabled selected hidden>类型 ▼</option>';
+  row1 += '<option value="all"'+(filterState.projectType==='all'?' selected':'')+'>全部</option>';
   types.forEach(function(t){ row1 += '<option value="'+t+'"'+(filterState.projectType===t?' selected':'')+'>'+t+'</option>'; });
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" id="filter-status" onchange="setFilter(\'status\',this.value)" title="鐘舵€?>';
-  row1 += '<option value="" disabled selected hidden>鐘舵€?鈻?/option>';
-  row1 += '<option value="all"'+(filterState.status==='all'?' selected':'')+'>鍏ㄩ儴</option>';
+  row1 += '<select class="fb-select" id="filter-status" onchange="setFilter(\'status\',this.value)" title="状态">';
+  row1 += '<option value="" disabled selected hidden>状态 ▼</option>';
+  row1 += '<option value="all"'+(filterState.status==='all'?' selected':'')+'>全部</option>';
   statuses.forEach(function(s){ row1 += '<option value="'+s+'"'+(filterState.status===s?' selected':'')+'>'+s+'</option>'; });
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" id="filter-health" onchange="setFilter(\'health\',this.value)" title="鍋ュ悍搴?>';
-  row1 += '<option value="" disabled selected hidden>鍋ュ悍搴?鈻?/option>';
-  row1 += '<option value="all"'+(filterState.health==='all'?' selected':'')+'>鍏ㄩ儴</option>';
+  row1 += '<select class="fb-select" id="filter-health" onchange="setFilter(\'health\',this.value)" title="健康度">';
+  row1 += '<option value="" disabled selected hidden>健康度 ▼</option>';
+  row1 += '<option value="all"'+(filterState.health==='all'?' selected':'')+'>全部</option>';
   healths.forEach(function(h){
-    var label = h==='馃煝'?'馃煝 鍋ュ悍':h==='馃煛'?'馃煛 棰勮':'馃敶 椋庨櫓';
+    var label = h==='🟢'?'🟢 健康':h==='🟡'?'🟡 预警':'🔴 风险';
     row1 += '<option value="'+h+'"'+(filterState.health===h?' selected':'')+'>'+label+'</option>';
   });
   row1 += '</select>';
   row1 += '</div>';
 
-  // 鑷畾涔夋椂闂?
+  // 自定义时间
   var customTimeHtml = '';
   if (filterState.timeMode === 'custom') {
     customTimeHtml = '<div class="fb-custom-time">'+
-      '<span>寮€濮嬫棩鏈?/span><input type="date" class="fb-date" id="fb-time-start" value="'+(filterState.timeStart||'')+'" onchange="filterState.timeStart=this.value;applyTimeFilter()">'+
-      '<span>缁撴潫鏃ユ湡</span><input type="date" class="fb-date" id="fb-time-end" value="'+(filterState.timeEnd||'')+'" onchange="filterState.timeEnd=this.value;applyTimeFilter()">'+
+      '<span>开始日期</span><input type="date" class="fb-date" id="fb-time-start" value="'+(filterState.timeStart||'')+'" onchange="filterState.timeStart=this.value;applyTimeFilter()">'+
+      '<span>结束日期</span><input type="date" class="fb-date" id="fb-time-end" value="'+(filterState.timeEnd||'')+'" onchange="filterState.timeEnd=this.value;applyTimeFilter()">'+
       '</div>';
   }
 
-  // 绗簩琛岋細鎼滅储涓嬫媺
+  // 第二行：搜索下拉
   var row2 = '<div class="filter-row-v4 filter-row-v4-second">';
 
-  // 骞冲彴
-  var pfLabel = '骞冲彴 鈻?;
+  // 平台
+  var pfLabel = '平台 ▼';
   if (filterState.platforms.length === 1) pfLabel = filterState.platforms[0];
-  else if (filterState.platforms.length > 1) pfLabel = '宸查€?+filterState.platforms.length+'椤?;
+  else if (filterState.platforms.length > 1) pfLabel = '已选'+filterState.platforms.length+'项';
   row2 += '<div class="fb-search-wrap" data-filter="platforms">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+pfLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-platforms" style="display:none;">'+
-    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-platforms" placeholder="鎼滅储骞冲彴..." oninput="renderFbOptions(\'platforms\')"></div>'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-platforms" placeholder="搜索平台..." oninput="renderFbOptions(\'platforms\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-platforms"></div>'+
-    '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'platforms\',this)">鍏ㄩ€?/button><button class="fb-sp-clear" onclick="clearFbMulti(\'platforms\')">娓呯┖</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'platforms\')">纭畾</button></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'platforms\',this)">全选</button><button class="fb-sp-clear" onclick="clearFbMulti(\'platforms\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'platforms\')">确定</button></div>'+
     '</div>';
   row2 += '</div>';
 
-  // 鍝佺被
-  var caLabel = '鍝佺被 鈻?;
+  // 品类
+  var caLabel = '品类 ▼';
   if (filterState.category.length === 1) caLabel = filterState.category[0];
-  else if (filterState.category.length > 1) caLabel = '宸查€?+filterState.category.length+'椤?;
+  else if (filterState.category.length > 1) caLabel = '已选'+filterState.category.length+'项';
   row2 += '<div class="fb-search-wrap" data-filter="category">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+caLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-category" style="display:none;">'+
-    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-category" placeholder="鎼滅储鍝佺被..." oninput="renderFbOptions(\'category\')"></div>'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-category" placeholder="搜索品类..." oninput="renderFbOptions(\'category\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-category"></div>'+
-    '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'category\',this)">鍏ㄩ€?/button><button class="fb-sp-clear" onclick="clearFbMulti(\'category\')">娓呯┖</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'category\')">纭畾</button></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'category\',this)">全选</button><button class="fb-sp-clear" onclick="clearFbMulti(\'category\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'category\')">确定</button></div>'+
     '</div>';
   row2 += '</div>';
 
-  // 鍝佺墝
-  var brLabel = '鍝佺墝 鈻?;
+  // 品牌
+  var brLabel = '品牌 ▼';
   if (filterState.brand.length === 1) brLabel = filterState.brand[0];
-  else if (filterState.brand.length > 1) brLabel = '宸查€?+filterState.brand.length+'椤?;
+  else if (filterState.brand.length > 1) brLabel = '已选'+filterState.brand.length+'项';
   row2 += '<div class="fb-search-wrap" data-filter="brand">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+brLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-brand" style="display:none;">'+
-    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-brand" placeholder="鎼滅储鍝佺墝..." oninput="renderFbOptions(\'brand\')"></div>'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-brand" placeholder="搜索品牌..." oninput="renderFbOptions(\'brand\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-brand"></div>'+
-    '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'brand\',this)">鍏ㄩ€?/button><button class="fb-sp-clear" onclick="clearFbMulti(\'brand\')">娓呯┖</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'brand\')">纭畾</button></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'brand\',this)">全选</button><button class="fb-sp-clear" onclick="clearFbMulti(\'brand\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'brand\')">确定</button></div>'+
     '</div>';
   row2 += '</div>';
 
-  // PM锛堝崟閫夛級
-  var pmLabel = filterState.pm === 'all' ? '椤圭洰PM 鈻? : filterState.pm;
+  // PM（单选）
+  var pmLabel = filterState.pm === 'all' ? '项目PM ▼' : filterState.pm;
   row2 += '<div class="fb-search-wrap" data-filter="pm">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+pmLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-pm" style="display:none;">'+
-    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-pm" placeholder="鎼滅储PM..." oninput="renderFbOptions(\'pm\')"></div>'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-pm" placeholder="搜索PM..." oninput="renderFbOptions(\'pm\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-pm"></div>'+
     '</div>';
   row2 += '</div>';
 
-  // 瀹㈡湇绠＄悊锛堝崟閫夛級
-  var drLabel = filterState.director === 'all' ? '瀹㈡湇绠＄悊 鈻? : filterState.director;
+  // 客服管理（单选）
+  var drLabel = filterState.director === 'all' ? '客服管理 ▼' : filterState.director;
   row2 += '<div class="fb-search-wrap" data-filter="director">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+drLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-director" style="display:none;">'+
-    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-director" placeholder="鎼滅储瀹㈡湇绠＄悊..." oninput="renderFbOptions(\'director\')"></div>'+
+    '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-director" placeholder="搜索客服管理..." oninput="renderFbOptions(\'director\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-director"></div>'+
     '</div>';
   row2 += '</div>';
 
-  // 楂樼骇绛涢€夋寜閽?
-  row2 += '<button class="fb-adv-btn" onclick="alert(\'楂樼骇绛涢€?- 寰呭紑鍙慭')">楂樼骇绛涢€?/button>';
+  // 高级筛选按钮
+  row2 += '<button class="fb-adv-btn" onclick="alert(\'高级筛选 - 待开发\')">高级筛选</button>';
   row2 += '</div>';
 
   return '<div class="filter-bar-v4">' + tagsHtml + row1 + customTimeHtml + row2 + '</div>';
 }
 
-// ----- 绛涢€夋爮 v4 杈呭姪鍑芥暟 -----
+// ----- 筛选栏 v4 辅助函数 -----
 function onFilterTimeChange(val) {
   filterState.timeMode = val;
   if (val !== 'custom') {
@@ -2193,7 +2193,7 @@ function renderFbOptions(key) {
   var keyword = input ? input.value.toLowerCase() : '';
   var values = [];
   if (key === 'platforms') {
-    values = [...new Set(PROJECTS.flatMap(function(p) { return (p.platforms || '').split(/[,锛屻€乚/).map(function(s){return s.trim();}).filter(Boolean); }))].filter(function(v){ return v !== '鍏ㄥ钩鍙?; }).sort();
+    values = [...new Set(PROJECTS.flatMap(function(p) { return (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean); }))].filter(function(v){ return v !== '全平台'; }).sort();
   } else if (key === 'category') {
     values = [...new Set(PROJECTS.map(function(p){return p.category}))].sort();
   } else if (key === 'brand') {
@@ -2210,7 +2210,7 @@ function renderFbOptions(key) {
   html += filtered.map(function(v) {
     var isSelected = isMulti ? (selected.indexOf(v) !== -1) : (selected === v);
     return '<div class="fb-sp-option' + (isSelected ? ' selected' : '') + '" data-value="' + v.replace(/"/g, '&quot;') + '" onclick="onFbOptionClick(this,\'' + key + '\')">' +
-      '<span class="fb-sp-check">' + (isSelected ? '鉁? : '') + '</span>' +
+      '<span class="fb-sp-check">' + (isSelected ? '✓' : '') + '</span>' +
       '<span>' + v + '</span>' +
     '</div>';
   }).join('');
@@ -2229,7 +2229,7 @@ function onFbOptionClick(el, key) {
     } else {
       filterState[key].push(val);
       el.classList.add('selected');
-      el.querySelector('.fb-sp-check').textContent = '鉁?;
+      el.querySelector('.fb-sp-check').textContent = '✓';
     }
   } else {
     filterState[key] = val;
@@ -2249,40 +2249,40 @@ function toggleFbSelectAll(key, btnEl) {
     }
   });
   if (allSelected) {
-    // 鍙栨秷鍏ㄩ€?
+    // 取消全选
     options.forEach(function(opt) {
       opt.classList.remove('selected');
       var check = opt.querySelector('.fb-sp-check');
       if (check) check.textContent = '';
     });
-    // 閫変腑"鍏ㄩ儴"閫夐」
+    // 选中"全部"选项
     var allOpt = panel.querySelector('.fb-sp-all');
     if (allOpt) {
       allOpt.classList.add('selected');
       var allCheck = allOpt.querySelector('.fb-sp-check');
-      if (allCheck) allCheck.textContent = '鉁?;
+      if (allCheck) allCheck.textContent = '✓';
     }
-    btnEl.textContent = '鍏ㄩ€?;
+    btnEl.textContent = '全选';
   } else {
-    // 鍏ㄩ€?
+    // 全选
     options.forEach(function(opt) {
       opt.classList.add('selected');
       var check = opt.querySelector('.fb-sp-check');
-      if (check) check.textContent = '鉁?;
+      if (check) check.textContent = '✓';
     });
-    // 鍙栨秷"鍏ㄩ儴"閫夐」鐨勯€変腑鐘舵€?
+    // 取消"全部"选项的选中状态
     var allOpt = panel.querySelector('.fb-sp-all');
     if (allOpt) {
       allOpt.classList.remove('selected');
       var allCheck = allOpt.querySelector('.fb-sp-check');
       if (allCheck) allCheck.textContent = '';
     }
-    btnEl.textContent = '鍙栨秷鍏ㄩ€?;
+    btnEl.textContent = '取消全选';
   }
 }
 
 function applyFbMulti(key) {
-  // 淇濆瓨閫変腑鐨勯€夐」鍒?filterState[key]
+  // 保存选中的选项到 filterState[key]
   if (activeFbPanel) {
     var selectedOptions = activeFbPanel.querySelectorAll('.fb-sp-option.selected');
     filterState[key] = [];
@@ -2305,7 +2305,7 @@ function clearFbMulti(key) {
   renderModule(currentModule);
 }
 
-// 鐐瑰嚮椤甸潰绌虹櫧澶勫叧闂潰鏉?
+// 点击页面空白处关闭面板
 document.addEventListener('click', function(e) {
   if (activeFbPanel && !activeFbPanel.contains(e.target) && !e.target.closest('.fb-search-trigger')) {
     activeFbPanel.classList.remove('show');
@@ -2314,13 +2314,13 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// ----- 椤圭洰鍚嶇О鎼滅储澶氶€夌粍浠?-----
+// ----- 项目名称搜索多选组件 -----
 function toggleProjectDropdown(e) {
   e.stopPropagation();
   const dd = document.getElementById("project-filter-dropdown");
   if (!dd) return;
   const isOpen = dd.classList.contains("show");
-  // 鍏抽棴鎵€鏈夊叾浠栦笅鎷?
+  // 关闭所有其他下拉
   document.querySelectorAll(".project-filter-dropdown.show").forEach(el => el.classList.remove("show"));
   if (!isOpen) {
     dd.classList.add("show");
@@ -2334,7 +2334,7 @@ function closeProjectDropdown() {
   const dd = document.getElementById("project-filter-dropdown");
   if (dd) dd.classList.remove("show");
 }
-// 鐐瑰嚮澶栭儴鍏抽棴椤圭洰涓嬫媺
+// 点击外部关闭项目下拉
 document.addEventListener("click", function(e) {
   const dd = document.getElementById("project-filter-dropdown");
   if (dd && dd.classList.contains("show") && !e.target.closest(".project-filter-dropdown") && !e.target.closest(".project-filter-trigger")) {
@@ -2359,16 +2359,16 @@ function toggleProjectSelect(id) {
     filterState.project.push(id);
   }
   updateProjectFilterLabel();
-  // 鍙洿鏂拌鏁帮紝涓嶅埛鏂伴〉闈紝绛夌敤鎴风偣纭
+  // 只更新计数，不刷新页面，等用户点确认
 }
 
-// 纭绛涢€夛細搴旂敤閫夋嫨骞跺埛鏂?
+// 确认筛选：应用选择并刷新
 function applyProjectFilter() {
   closeProjectDropdown();
   renderModule(currentModule);
 }
 
-// 閲嶇疆椤圭洰绛涢€夛細娓呯┖閫夋嫨锛屽簲鐢?鍏ㄩ儴"
+// 重置项目筛选：清空选择，应用"全部"
 function resetProjectFilter() {
   filterState.project = [];
   updateProjectFilterLabel();
@@ -2378,7 +2378,7 @@ function resetProjectFilter() {
 function updateProjectFilterLabel() {
   const el = document.getElementById("project-filter-label");
   if (el) {
-    el.textContent = filterState.project.length ? `宸查€?${filterState.project.length} 椤筦 : "鍏ㄩ儴椤圭洰";
+    el.textContent = filterState.project.length ? `已选 ${filterState.project.length} 项` : "全部项目";
   }
 }
 
@@ -2404,12 +2404,12 @@ function resetFilters() {
 function getFilteredProjects(){
   let list = [...PROJECTS];
 
-  // 鑱屽満绛涢€?
+  // 职场筛选
   if (filterState.workplace !== "all" && filterState.workplace !== "") {
     list = list.filter(p => p.workplace === filterState.workplace);
   }
 
-  // 搴旂敤绛涢€夋爮鐨勭瓫閫夋潯浠?
+  // 应用筛选栏的筛选条件
   if (filterState.project.length > 0) {
     list = list.filter(p => filterState.project.includes(p.id));
   }
@@ -2433,7 +2433,7 @@ function getFilteredProjects(){
   }
   if (filterState.platforms.length > 0) {
     list = list.filter(p => {
-      var pfs = (p.platforms || '').split(/[,锛屻€乚/).map(function(s){return s.trim();}).filter(Boolean);
+      var pfs = (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean);
       return filterState.platforms.some(function(fp){ return pfs.indexOf(fp) !== -1; });
     });
   }
@@ -2489,24 +2489,24 @@ function canEdit(){
 }
 
 function canViewAll(){
-  return currentRole === "绠＄悊鍛? || currentRole === "绠＄悊鍊欓€?;
+  return currentRole === "管理员" || currentRole === "管理候选";
 }
 
 
 
 
 
-// ===== 椹鹃┒鑸?=====
+// ===== 驾驶舱 =====
 
 function renderDashboard(){
 
   const all = getFilteredProjects();
 
-  const green = all.filter(p=>p.health==="馃煝").length;
+  const green = all.filter(p=>p.health==="🟢").length;
 
-  const yellow = all.filter(p=>p.health==="馃煛").length;
+  const yellow = all.filter(p=>p.health==="🟡").length;
 
-  const red = all.filter(p=>p.health==="馃敶").length;
+  const red = all.filter(p=>p.health==="🔴").length;
 
   const totalRevenue = all.reduce((s,p)=>s+(p.revenue||0),0);
 
@@ -2514,12 +2514,12 @@ function renderDashboard(){
 
   const avgProfit = all.length ? (all.reduce((s,p)=>s+(p.profitRate||0),0)/all.length).toFixed(1) : 0;
 
-  // 璁＄畻椤圭洰绫诲瀷鍒嗗竷
-  const tpCount = all.filter(p=>p.serviceMode==="TP椤圭洰").length;
-  const jxCount = all.filter(p=>p.serviceMode==="DP椤圭洰").length;
-  const bpoCount = all.filter(p=>p.serviceMode==="BPO椤圭洰").length;
+  // 计算项目类型分布
+  const tpCount = all.filter(p=>p.serviceMode==="TP项目").length;
+  const jxCount = all.filter(p=>p.serviceMode==="DP项目").length;
+  const bpoCount = all.filter(p=>p.serviceMode==="BPO项目").length;
 
-  // 璁＄畻杩愯惀鏁版嵁
+  // 计算运营数据
   const filteredOps = OPERATIONS.filter(o => {
     const p = PROJECTS.find(pp=>pp.id===o.projectId);
     if (!p) return false;
@@ -2529,74 +2529,57 @@ function renderDashboard(){
   const totalOrders = filteredOps.reduce((s,o)=>s+o.ticketVol,0);
   const totalConv = filteredOps.reduce((s,o)=>s+o.convCount,0);
 
-  // 瀹㈡湇宸ヤ綔閲忔暟鎹紙浠?WORKLOAD_DATA 璇诲彇锛屽鏋滄病鏈夋暟鎹垯浣跨敤榛樿鍊硷級
+  // 客服工作量数据
   const onlineCount = totalConv || 4286;
   const offlineCount = Math.round(totalOrders * 0.15) || 1852;
   const workloadRatio = 78;
-  const workItems = WORKLOAD_DATA.length > 0 ? WORKLOAD_DATA.map(item => ({
-    name: item.name,
-    count: item.count,
-    ratio: item.ratio
-  })) : [
-    {name:'璁㈠崟澶勭悊', count:625, ratio:100},
-    {name:'閫€娆惧鐞?, count:342, ratio:55},
-    {name:'鎶曡瘔澶勭悊', count:198, ratio:32},
-    {name:'鎹㈣揣璺熻繘', count:156, ratio:25}
+  const workItems = [
+    {name:'订单处理', count:625, ratio:100},
+    {name:'退款处理', count:342, ratio:55},
+    {name:'投诉处理', count:198, ratio:32},
+    {name:'换货跟进', count:156, ratio:25}
   ];
 
-  // 瀹㈡湇閰嶇疆鏁版暟鎹紙浠?STAFF_CONFIG 璇诲彇锛屽鏋滄病鏈夋暟鎹垯浣跨敤榛樿鍊硷級
+  // 客服配置数数据
   const totalStaff = all.reduce((s,p)=>s+(p.fteActual||0),0) || 186;
-  const staffConfig = STAFF_CONFIG.length > 0 ? STAFF_CONFIG.map((item, idx) => ({
-    name: item.role,
-    count: item.count,
-    pct: item.pct,
-    color: ['#0A7B78', '#0B9B96', '#00C9A7', '#6EE7B7', '#C4E5D8'][idx % 5]
-  })) : [
-    {name:'鍞墠瀹㈡湇', count:68, pct:37, color:'#0A7B78'},
-    {name:'鍞悗瀹㈡湇', count:52, pct:28, color:'#0B9B96'},
-    {name:'缁煎悎瀹㈡湇', count:45, pct:24, color:'#00C9A7'},
-    {name:'瀹㈡湇绠＄悊', count:14, pct:8, color:'#6EE7B7'},
-    {name:'鏁版嵁涓撳憳', count:7, pct:4, color:'#C4E5D8'}
+  const staffConfig = [
+    {name:'售前客服', count:68, pct:37, color:'#0A7B78'},
+    {name:'售后客服', count:52, pct:28, color:'#0B9B96'},
+    {name:'综合客服', count:45, pct:24, color:'#00C9A7'},
+    {name:'客服管理', count:14, pct:8, color:'#6EE7B7'},
+    {name:'数据专员', count:7, pct:4, color:'#C4E5D8'}
   ];
 
-  // 閿€鍞帓琛屾暟鎹?
+  // 销售排行数据
   const salesRank = filteredOps.slice().sort((a,b)=>b.ticketVol-a.ticketVol).slice(0,5);
   const maxVol = salesRank.length ? salesRank[0].ticketVol : 1;
 
-  // 鏈嶅姟鍒嗗竷鏁版嵁
+  // 服务分布数据
   const goodSvc = filteredOps.filter(o=>o.csat>=4.5).length;
   const warnSvc = filteredOps.filter(o=>o.csat>=4.0&&o.csat<4.5).length;
   const badSvc = filteredOps.filter(o=>o.csat<4.0).length;
   const svcTotal = filteredOps.length || 1;
 
-  // 鎴愭湰鍒嗗竷鏁版嵁
+  // 成本分布数据
   const goodCost = all.filter(p=>p.profitRate>=15).length;
   const warnCost = all.filter(p=>p.profitRate>=5&&p.profitRate<15).length;
   const badCost = all.filter(p=>p.profitRate<5).length;
   const costTotal = all.length || 1;
 
-  // 婊℃剰搴︾粏鍒嗙淮搴︼紙浠庤繍钀ユ暟鎹绠楃湡瀹炴弧鎰忓害锛?
-  const avgCsat = filteredOps.length ? 
-    (filteredOps.reduce((s,o)=>s+(o.csat||0),0)/filteredOps.length).toFixed(1) : '0.0';
-  // 濡傛灉娌℃湁缁嗗垎鏁版嵁锛屼娇鐢ㄦ暣浣撴弧鎰忓害妯℃嫙涓変釜缁村害锛堢湡瀹炴暟鎹┍鍔級
-  const baseScore = parseFloat(avgCsat) || 4.0;
-  const dimScores = {
-    comm: Math.min(5.0, (baseScore + 0.2).toFixed(1)),
-    exec: Math.min(5.0, (baseScore + 0.4).toFixed(1)),
-    collab: Math.min(5.0, (baseScore - 0.1).toFixed(1))
-  };
+  // 满意度细分维度（模拟数据）
+  const dimScores = {comm:4.5, exec:4.7, collab:4.3};
 
-  // KPI sparkline 鏁版嵁锛堟ā鎷燂級
-    const _trendRev = calculateKpiTrend('revenue');
-  const _trendCost = calculateKpiTrend('cost');
-  const _trendProfit = calculateKpiTrend('profitRate');
-  const _trendTarget = calculateKpiTrend('targetRate');
+  // KPI sparkline 数据（模拟）
+    var _trendRev = calculateKpiTrend('revenue');
+  var _trendCost = calculateKpiTrend('cost');
+  var _trendProfit = calculateKpiTrend('profitRate');
+  var _trendTarget = calculateKpiTrend('targetRate');
   const kpiCards = [
-    {label:'鏈堝害鎬婚攢鍞', value:isNaN(totalRevenue)?'0.0涓?:(totalRevenue/10000).toFixed(1)+'涓?, trend:'+12.3%', trendUp:true, areaColor:'#FFD700', strokeColor:'#FFD700', path:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20'},
-    {label:'鏈堝害鎬绘垚鏈?, value:isNaN(totalCost)?'0.0涓?:(totalCost/10000).toFixed(1)+'涓?, trend:'+5.1%', trendUp:false, areaColor:'#FF6B6B', strokeColor:'#FF6B6B', path:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28'},
-    {label:'椤圭洰璐规晥姣?, value:'1.19', trend:'+0.08', trendUp:true, areaColor:'#00FFB9', strokeColor:'#00FFB9', path:'M 4,42 Q 14,40 24,38 T 44,36 T 64,32 T 84,30 T 104,26 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,40 24,38 T 44,36 T 64,32 T 84,30 T 104,26'},
-    {label:'鐩爣杈炬垚鐜?, value:'94.2%', trend:'+3.5pp', trendUp:true, areaColor:'#00CFFF', strokeColor:'#00CFFF', path:'M 4,44 Q 14,42 24,40 T 44,38 T 64,36 T 84,34 T 104,30 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,42 24,40 T 44,38 T 64,36 T 84,34 T 104,30'},
-    {label:'鍋ュ悍椤圭洰鏁?, value:green+'/'+all.length, trend:'鏌ョ湅璇︽儏 鈫?, trendUp:true, areaColor:'#ffffff', strokeColor:'#ffffff', path:'M 4,42 Q 14,40 28,38 T 52,36 T 76,32 T 100,30 T 124,26 L 124,50 L 4,50 Z', strokePath:'M 4,42 Q 14,40 28,38 T 52,36 T 76,32 T 100,30 T 124,26'}
+    {label:'月度总销售额', value:isNaN(totalRevenue)?'0.0万':(totalRevenue/10000).toFixed(1)+'万', trend:_trendRev.trend, trendUp:_trendRev.trendUp, areaColor:_trendRev.areaColor, strokeColor:_trendRev.strokeColor, path:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20'},
+    {label:'月度总成本', value:isNaN(totalCost)?'0.0万':(totalCost/10000).toFixed(1)+'万', trend:_trendCost.trend, trendUp:_trendCost.trendUp, areaColor:_trendCost.areaColor, strokeColor:_trendCost.strokeColor, path:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28'},
+    {label:'项目费效比', value:'1.19', trend:_trendProfit.trend, trendUp:_trendProfit.trendUp, areaColor:_trendProfit.areaColor, strokeColor:_trendProfit.strokeColor, path:'M 4,42 Q 14,40 24,38 T 44,36 T 64,32 T 84,30 T 104,26 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,40 24,38 T 44,36 T 64,32 T 84,30 T 104,26'},
+    {label:'目标达成率', value:'94.2%', trend:_trendTarget.trend, trendUp:_trendTarget.trendUp, areaColor:_trendTarget.areaColor, strokeColor:_trendTarget.strokeColor, path:'M 4,44 Q 14,42 24,40 T 44,38 T 64,36 T 84,34 T 104,30 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,42 24,40 T 44,38 T 64,36 T 84,34 T 104,30'},
+    {label:'健康项目数', value:green+'/'+all.length, trend:'查看详情 →', trendUp:true, areaColor:'#ffffff', strokeColor:'#ffffff', path:'M 4,42 Q 14,40 28,38 T 52,36 T 76,32 T 100,30 T 124,26 L 124,50 L 4,50 Z', strokePath:'M 4,42 Q 14,40 28,38 T 52,36 T 76,32 T 100,30 T 124,26'}
   ];
 
   return `
@@ -2604,18 +2587,18 @@ function renderDashboard(){
 
   <div class="module-header">
     <div>
-      <div class="module-title">馃搳 闀夸俊瀹㈡湇椤圭洰鏅鸿涓績</div>
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">${filterState.workplace==='all'?'鍏ㄩ儴鑱屽満':filterState.workplace+'鑱屽満'} 路 鍏?${all.length} 涓」鐩?/div>
+      <div class="module-title">📊 长信客服项目智览中心</div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">${filterState.workplace==='all'?'全部职场':filterState.workplace+'职场'} · 共 ${all.length} 个项目</div>
     </div>
     <div class="module-actions">
-      <button class="btn btn-sm" onclick="exportDashboard()">馃摜 瀵煎嚭鎶ヨ〃</button>
+      <button class="btn btn-sm" onclick="exportDashboard()">📥 导出报表</button>
       <button class="btn btn-sm" onclick="downloadSampleData()">📄 下载示例数据</button>
-
-      <button class="btn btn-sm" onclick="importData()">📂 导入数据</button>      <a href="#" class="btn btn-sm btn-primary" onclick="renderModule('comparison');return false;">馃搳 椤圭洰瀵规瘮</a>
+      <button class="btn btn-sm" onclick="importData()">📂 导入数据</button>
+      <a href="#" class="btn btn-sm btn-primary" onclick="renderModule('comparison');return false;">📊 项目对比</a>
     </div>
   </div>
 
-  <!-- KPI 杩蜂綘鍗＄墖琛?-->
+  <!-- KPI 迷你卡片行 -->
   <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;">
     ${kpiCards.map((k,i)=>{
       const decoColors = ['rgba(255,255,255,0.18)','rgba(255,255,255,0.13)','rgba(255,255,255,0.10)','rgba(255,255,255,0.08)','rgba(255,255,255,0.06)'];
@@ -2626,7 +2609,7 @@ function renderDashboard(){
           <div style="font-size:22px;font-weight:700;line-height:1.2;margin:4px 0;letter-spacing:-0.5px;">${k.value}</div>
           <div style="font-size:11px;opacity:0.95;">
             <span style="color:#ffffff;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,0.2);">${k.trend}</span>
-            <span style="opacity:0.8;margin-left:2px;">杈冧笂鏈?/span>
+            <span style="opacity:0.8;margin-left:2px;">较上月</span>
           </div>
         </div>
         <svg width="100%" height="50" viewBox="0 0 108 50" preserveAspectRatio="none" style="position:absolute;bottom:0;left:0;opacity:0.75;">
@@ -2638,22 +2621,22 @@ function renderDashboard(){
     }).join('')}
   </div>
 
-  <!-- 绗?琛岋細閿€鍞?鏈嶅姟/鎴愭湰 -->
+  <!-- 第1行：销售/服务/成本 -->
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
 
-    <!-- 閿€鍞瑙?-->
+    <!-- 销售概览 -->
     <div class="dashboard-card" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <span style="font-size:13px;font-weight:600;color:#1e40af;">閿€鍞瑙?/span>
-        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('鏌ョ湅瓒嬪娍鍔熻兘寮€鍙戜腑');return false;">鏌ョ湅瓒嬪娍 鈫?/a>
+        <span style="font-size:13px;font-weight:600;color:#1e40af;">销售概览</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('查看趋势功能开发中');return false;">查看趋势 →</a>
       </div>
-      <div style="font-size:10px;color:#94a3b8;margin-bottom:8px;">椤圭洰鏈堝害璁㈠崟閲?(TOP 5)</div>
+      <div style="font-size:10px;color:#94a3b8;margin-bottom:8px;">项目月度订单量 (TOP 5)</div>
       ${salesRank.map((o,idx)=>{
         const p = PROJECTS.find(pp=>pp.id===o.projectId);
         const name = p ? p.name : o.projectId;
         const shortName = name.length>8 ? name.substring(0,8) : name;
         const barW = Math.round((o.ticketVol/maxVol)*86);
-        const healthColor = o.health==='馃煝'?'#22c55e':o.health==='馃煛'?'#eab308':'#ef4444';
+        const healthColor = o.health==='🟢'?'#22c55e':o.health==='🟡'?'#eab308':'#ef4444';
         return `<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;">
           <span style="width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#334155;">${shortName}</span>
           <div style="flex:1;height:8px;background:#eff6ff;border-radius:4px;overflow:hidden;min-width:40px;">
@@ -2665,64 +2648,64 @@ function renderDashboard(){
       }).join('')}
     </div>
 
-    <!-- 鏈嶅姟姒傝 -->
+    <!-- 服务概览 -->
     <div class="dashboard-card" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <span style="font-size:13px;font-weight:600;color:#0f766e;">鏈嶅姟姒傝</span>
-        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('璇︽儏鍔熻兘寮€鍙戜腑');return false;">璇︽儏 鈫?/a>
+        <span style="font-size:13px;font-weight:600;color:#0f766e;">服务概览</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
       </div>
       <div style="display:flex;gap:16px;margin-bottom:10px;">
         <div style="text-align:center;flex:1;">
           <div style="font-size:26px;font-weight:700;color:#0f766e;">28s</div>
-          <div style="font-size:10px;color:#64748b;">骞冲潎鍝嶅簲鏃堕棿</div>
-          <div style="font-size:11px;color:#10b981;">蹇?绉?/div>
+          <div style="font-size:10px;color:#64748b;">平均响应时间</div>
+          <div style="font-size:11px;color:#10b981;">快3秒</div>
         </div>
         <div style="text-align:center;flex:1;">
           <div style="font-size:26px;font-weight:700;color:#0f766e;">4.72</div>
-          <div style="font-size:10px;color:#64748b;">CSAT 骞冲潎鍒?/div>
+          <div style="font-size:10px;color:#64748b;">CSAT 平均分</div>
           <div style="font-size:11px;color:#10b981;">+0.15</div>
         </div>
       </div>
       <div style="border-top:1px solid #f1f5f9;padding-top:8px;">
-        <div style="font-size:11px;color:#334155;font-weight:500;margin-bottom:6px;">椤圭洰鏈嶅姟琛ㄧ幇鍒嗗竷</div>
+        <div style="font-size:11px;color:#334155;font-weight:500;margin-bottom:6px;">项目服务表现分布</div>
         <div style="display:flex;align-items:center;gap:6px;padding:2px 0;font-size:11px;">
-          <span style="width:80px;color:#10b981;">杈炬爣 (>=4.5)</span>
+          <span style="width:80px;color:#10b981;">达标 (>=4.5)</span>
           <div style="flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
             <div style="width:${Math.round(goodSvc/svcTotal*100)}%;height:100%;background:#10b981;border-radius:4px;"></div>
           </div>
-          <span style="width:60px;text-align:right;color:#64748b;font-size:10px;">${goodSvc}椤?${Math.round(goodSvc/svcTotal*100)}%</span>
+          <span style="width:60px;text-align:right;color:#64748b;font-size:10px;">${goodSvc}项 ${Math.round(goodSvc/svcTotal*100)}%</span>
         </div>
         <div style="display:flex;align-items:center;gap:6px;padding:2px 0;font-size:11px;">
-          <span style="width:80px;color:#eab308;">棰勮 (4.0-4.5)</span>
+          <span style="width:80px;color:#eab308;">预警 (4.0-4.5)</span>
           <div style="flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
             <div style="width:${Math.round(warnSvc/svcTotal*100)}%;height:100%;background:#eab308;border-radius:4px;"></div>
           </div>
-          <span style="width:60px;text-align:right;color:#64748b;font-size:10px;">${warnSvc}椤?${Math.round(warnSvc/svcTotal*100)}%</span>
+          <span style="width:60px;text-align:right;color:#64748b;font-size:10px;">${warnSvc}项 ${Math.round(warnSvc/svcTotal*100)}%</span>
         </div>
         <div style="display:flex;align-items:center;gap:6px;padding:2px 0;font-size:11px;">
-          <span style="width:80px;color:#ef4444;">鍛婅 (<4.0)</span>
+          <span style="width:80px;color:#ef4444;">告警 (<4.0)</span>
           <div style="flex:1;height:8px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
             <div style="width:${Math.round(badSvc/svcTotal*100)}%;height:100%;background:#ef4444;border-radius:4px;"></div>
           </div>
-          <span style="width:60px;text-align:right;color:#64748b;font-size:10px;">${badSvc}椤?${Math.round(badSvc/svcTotal*100)}%</span>
+          <span style="width:60px;text-align:right;color:#64748b;font-size:10px;">${badSvc}项 ${Math.round(badSvc/svcTotal*100)}%</span>
         </div>
       </div>
     </div>
 
-    <!-- 鎴愭湰鎺у埗 -->
+    <!-- 成本控制 -->
     <div class="dashboard-card" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <span style="font-size:13px;font-weight:600;color:#44403c;">鎴愭湰鎺у埗</span>
-        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('鎶ュ憡鍔熻兘寮€鍙戜腑');return false;">鎶ュ憡 鈫?/a>
+        <span style="font-size:13px;font-weight:600;color:#44403c;">成本控制</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('报告功能开发中');return false;">报告 →</a>
       </div>
       <div style="display:flex;gap:16px;margin-bottom:10px;">
         <div style="text-align:center;flex:1;">
-          <div style="font-size:10px;color:#64748b;">鎬绘垚鏈?/div>
-          <div style="font-size:20px;font-weight:700;color:#44403c;">${isNaN(totalCost)?'0.0':(totalCost/10000).toFixed(1)}涓?/div>
+          <div style="font-size:10px;color:#64748b;">总成本</div>
+          <div style="font-size:20px;font-weight:700;color:#44403c;">${isNaN(totalCost)?'0.0':(totalCost/10000).toFixed(1)}万</div>
         </div>
         <div style="text-align:center;flex:1;">
-          <div style="font-size:10px;color:#64748b;">鎬婚绠?/div>
-          <div style="font-size:20px;font-weight:700;color:#44403c;">60.0涓?/div>
+          <div style="font-size:10px;color:#64748b;">总预算</div>
+          <div style="font-size:20px;font-weight:700;color:#44403c;">60.0万</div>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
@@ -2735,60 +2718,60 @@ function renderDashboard(){
           </svg>
           <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">
             <div style="font-size:16px;font-weight:700;color:#44403c;">${Math.round(totalCost/600000*1000)/10}%</div>
-            <div style="font-size:8px;color:#94a3b8;">棰勭畻鎵ц鐜?/div>
+            <div style="font-size:8px;color:#94a3b8;">预算执行率</div>
           </div>
         </div>
         <div style="flex:1;">
-          <div style="font-size:10px;color:#64748b;margin-bottom:4px;">鍒╂鼎鐜囧垎甯?/div>
+          <div style="font-size:10px;color:#64748b;margin-bottom:4px;">利润率分布</div>
           <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;font-size:10px;">
             <span style="width:8px;height:8px;border-radius:50%;background:#10b981;"></span>
-            <span style="color:#475569;">>=15% ${goodCost}椤?/span>
+            <span style="color:#475569;">>=15% ${goodCost}项</span>
           </div>
           <div style="display:flex;align-items:center;gap:4px;margin-bottom:3px;font-size:10px;">
             <span style="width:8px;height:8px;border-radius:50%;background:#eab308;"></span>
-            <span style="color:#475569;">5%-15% ${warnCost}椤?/span>
+            <span style="color:#475569;">5%-15% ${warnCost}项</span>
           </div>
           <div style="display:flex;align-items:center;gap:4px;font-size:10px;">
             <span style="width:8px;height:8px;border-radius:50%;background:#ef4444;"></span>
-            <span style="color:#475569;"><5% ${badCost}椤?/span>
+            <span style="color:#475569;"><5% ${badCost}项</span>
           </div>
         </div>
       </div>
       ${badCost>0?`<div style="background:#fef2f2;border-radius:4px;padding:4px 8px;text-align:center;">
-        <span style="font-size:10px;color:#dc2626;">${all.find(p=>p.profitRate<5)?.name||'鏌愰」鐩?} 瓒呴绠?${Math.abs(all.find(p=>p.profitRate<5)?.profitRate||5.3)}%</span>
+        <span style="font-size:10px;color:#dc2626;">${all.find(p=>p.profitRate<5)?.name||'某项目'} 超预算 ${Math.abs(all.find(p=>p.profitRate<5)?.profitRate||5.3)}%</span>
       </div>`:'`'}
     </div>
 
   </div>
 
-  <!-- 绗?琛岋細婊℃剰搴?宸ヤ綔閲?閰嶇疆鏁?-->
+  <!-- 第2行：满意度/工作量/配置数 -->
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
 
-    <!-- 椤圭洰婊℃剰搴?-->
+    <!-- 项目满意度 -->
     <div class="dashboard-card" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-size:13px;font-weight:600;color:#1d4ed8;">椤圭洰婊℃剰搴?/span>
-        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('璇︽儏鍔熻兘寮€鍙戜腑');return false;">璇︽儏 鈫?/a>
+        <span style="font-size:13px;font-weight:600;color:#1d4ed8;">项目满意度</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
       </div>
       <div style="display:flex;gap:12px;margin-bottom:8px;">
         <div>
-          <div style="font-size:10px;color:#64748b;">缁煎悎婊℃剰搴?/div>
+          <div style="font-size:10px;color:#64748b;">综合满意度</div>
           <div><span style="font-size:20px;font-weight:700;color:#1d4ed8;">4.6</span><span style="font-size:11px;color:#94a3b8;">/5.0</span></div>
-          <div style="font-size:10px;color:#10b981;">鈻?+0.2</div>
+          <div style="font-size:10px;color:#10b981;">▲ +0.2</div>
         </div>
         <div>
-          <div style="font-size:10px;color:#64748b;">NPS瓒嬪娍(鏈湀)</div>
+          <div style="font-size:10px;color:#64748b;">NPS趋势(本月)</div>
           <div style="font-size:13px;color:#1d4ed8;">+ 62%</div>
           <div style="font-size:13px;color:#ef4444;">- 8%</div>
         </div>
       </div>
       <div style="border-top:1px solid #f1f5f9;padding-top:6px;margin-bottom:6px;">
-        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">鍚勯」鐩瘎鍒?/div>
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">各项目评分</div>
         ${filteredOps.slice(0,6).map(o=>{
           const p = PROJECTS.find(pp=>pp.id===o.projectId);
           const barW = Math.round((o.csat/5)*80);
           const barColor = o.csat>=4.5?'#1d4ed8':o.csat>=4.0?'#3b82f6':'#60a5fa';
-          const tag = o.csat<4.0?'<span style="background:#fee2e2;color:#dc2626;font-size:8px;padding:1px 4px;border-radius:3px;margin-left:4px;">閲嶇偣</span>':o.csat<4.5?'<span style="background:#fef3c7;color:#d97706;font-size:8px;padding:1px 4px;border-radius:3px;margin-left:4px;">鏀硅繘</span>':'';
+          const tag = o.csat<4.0?'<span style="background:#fee2e2;color:#dc2626;font-size:8px;padding:1px 4px;border-radius:3px;margin-left:4px;">重点</span>':o.csat<4.5?'<span style="background:#fef3c7;color:#d97706;font-size:8px;padding:1px 4px;border-radius:3px;margin-left:4px;">改进</span>':'';
           return `<div style="display:flex;align-items:center;gap:4px;padding:1px 0;font-size:10px;">
             <span style="width:28px;color:#475569;">${o.projectId}</span>
             <div style="flex:1;height:6px;background:#eff6ff;border-radius:3px;overflow:hidden;">
@@ -2800,23 +2783,23 @@ function renderDashboard(){
         }).join('')}
       </div>
       <div style="border-top:1px solid #f1f5f9;padding-top:6px;">
-        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">缁嗗垎缁村害璇勫垎</div>
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">细分维度评分</div>
         <div style="display:flex;align-items:center;gap:4px;padding:1px 0;font-size:10px;">
-          <span style="width:28px;color:#475569;">娌熼€?/span>
+          <span style="width:28px;color:#475569;">沟通</span>
           <div style="flex:1;height:5px;background:#eff6ff;border-radius:3px;overflow:hidden;">
             <div style="width:${Math.round(dimScores.comm/5*60)}px;height:100%;background:#3b82f6;border-radius:3px;"></div>
           </div>
           <span style="width:20px;text-align:right;color:#1d4ed8;">${dimScores.comm}</span>
         </div>
         <div style="display:flex;align-items:center;gap:4px;padding:1px 0;font-size:10px;">
-          <span style="width:28px;color:#475569;">鎵ц</span>
+          <span style="width:28px;color:#475569;">执行</span>
           <div style="flex:1;height:5px;background:#eff6ff;border-radius:3px;overflow:hidden;">
             <div style="width:${Math.round(dimScores.exec/5*60)}px;height:100%;background:#60a5fa;border-radius:3px;"></div>
           </div>
           <span style="width:20px;text-align:right;color:#1d4ed8;">${dimScores.exec}</span>
         </div>
         <div style="display:flex;align-items:center;gap:4px;padding:1px 0;font-size:10px;">
-          <span style="width:28px;color:#475569;">鍗忎綔</span>
+          <span style="width:28px;color:#475569;">协作</span>
           <div style="flex:1;height:5px;background:#eff6ff;border-radius:3px;overflow:hidden;">
             <div style="width:${Math.round(dimScores.collab/5*60)}px;height:100%;background:#93c5fd;border-radius:3px;"></div>
           </div>
@@ -2825,20 +2808,20 @@ function renderDashboard(){
       </div>
     </div>
 
-    <!-- 瀹㈡湇宸ヤ綔閲?-->
+    <!-- 客服工作量 -->
     <div class="dashboard-card" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-size:13px;font-weight:600;color:#4f46e5;">瀹㈡湇宸ヤ綔閲?/span>
-        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('璇︽儏鍔熻兘寮€鍙戜腑');return false;">璇︽儏 鈫?/a>
+        <span style="font-size:13px;font-weight:600;color:#4f46e5;">客服工作量</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
       </div>
       <div style="display:flex;gap:12px;margin-bottom:10px;">
         <div style="flex:1;text-align:center;">
-          <div style="font-size:10px;color:#64748b;margin-bottom:2px;">绾夸笂鎺ュ緟浜烘暟</div>
+          <div style="font-size:10px;color:#64748b;margin-bottom:2px;">线上接待人数</div>
           <div style="font-size:18px;font-weight:700;color:#4f46e5;">${onlineCount.toLocaleString()}</div>
         </div>
         <div style="width:1px;background:#e2e8f0;"></div>
         <div style="flex:1;text-align:center;">
-          <div style="font-size:10px;color:#64748b;margin-bottom:2px;">绾夸笅宸ュ崟閲?/div>
+          <div style="font-size:10px;color:#64748b;margin-bottom:2px;">线下工单量</div>
           <div style="font-size:18px;font-weight:700;color:#4f46e5;">${offlineCount.toLocaleString()}</div>
         </div>
       </div>
@@ -2851,31 +2834,31 @@ function renderDashboard(){
           </svg>
           <div style="position:absolute;bottom:4px;left:50%;transform:translateX(-50%);text-align:center;width:100%;">
             <div style="font-size:15px;font-weight:700;color:#4f46e5;line-height:1;">${workloadRatio}%</div>
-            <div style="font-size:9px;color:#8b5cf6;line-height:1;margin-top:2px;">宸ヤ綔閲忚礋鑽锋瘮</div>
+            <div style="font-size:9px;color:#8b5cf6;line-height:1;margin-top:2px;">工作量负荷比</div>
           </div>
         </div>
       </div>
       <div style="border-top:1px solid #f1f5f9;padding-top:6px;">
-        <div style="font-size:10px;color:#94a3b8;margin-bottom:5px;">绾夸笅宸ヤ綔閲忓垎甯?TOP4</div>
+        <div style="font-size:10px;color:#94a3b8;margin-bottom:5px;">线下工作量分布 TOP4</div>
         ${workItems.map(w=>`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;">
           <span style="width:56px;color:#475569;flex-shrink:0;">${w.name}</span>
           <div style="flex:1;height:7px;background:#f1f5f9;border-radius:4px;overflow:hidden;">
             <div style="width:${w.ratio}%;height:100%;background:linear-gradient(90deg,#0B9B96,#00C9A7);border-radius:4px;"></div>
           </div>
-          <span style="width:42px;text-align:right;color:#64748b;font-size:10px;flex-shrink:0;">${w.count}浠?/span>
+          <span style="width:42px;text-align:right;color:#64748b;font-size:10px;flex-shrink:0;">${w.count}件</span>
         </div>`).join('')}
       </div>
     </div>
 
-    <!-- 瀹㈡湇閰嶇疆鏁?-->
+    <!-- 客服配置数 -->
     <div class="dashboard-card" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <span style="font-size:13px;font-weight:600;color:#312e81;">瀹㈡湇閰嶇疆鏁?/span>
-        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('璇︽儏鍔熻兘寮€鍙戜腑');return false;">璇︽儏 鈫?/a>
+        <span style="font-size:13px;font-weight:600;color:#312e81;">客服配置数</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
       </div>
       <div style="margin-bottom:10px;">
-        <div style="font-size:10px;color:#64748b;">鎬诲垎鎽婁汉鏁?/div>
-        <div><span style="font-size:24px;font-weight:700;color:#312e81;">${totalStaff}</span><span style="font-size:12px;color:#94a3b8;">浜?/span></div>
+        <div style="font-size:10px;color:#64748b;">总分摊人数</div>
+        <div><span style="font-size:24px;font-weight:700;color:#312e81;">${totalStaff}</span><span style="font-size:12px;color:#94a3b8;">人</span></div>
       </div>
       <div style="text-align:center;margin-bottom:12px;">
         <svg width="140" height="140" viewBox="-70 -70 140 140">
@@ -2893,7 +2876,7 @@ function renderDashboard(){
           </g>
           <circle cx="0" cy="0" r="22" fill="#fff"/>
           <text x="0" y="-2" text-anchor="middle" font-size="11" font-weight="700" fill="#312e81">${totalStaff}</text>
-          <text x="0" y="11" text-anchor="middle" font-size="8" fill="#64748b">鎬讳汉鏁?/text>
+          <text x="0" y="11" text-anchor="middle" font-size="8" fill="#64748b">总人数</text>
         </svg>
       </div>
       <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px 12px;font-size:11px;">
@@ -2908,24 +2891,24 @@ function renderDashboard(){
 
   </div>
 
-  <!-- 椤圭洰鍋ュ悍鏄庣粏 -->
+  <!-- 项目健康明细 -->
   <div class="card" style="padding:12px 16px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <span style="font-size:13px;font-weight:600;color:#1e40af;">椤圭洰鍋ュ悍鏄庣粏</span>
-      <a href="#" style="font-size:11px;color:#3b82f6;" onclick="renderModule('operation');return false;">鏌ョ湅瀹屾暣鍋ュ悍鎶ュ憡 鈫?/a>
+      <span style="font-size:13px;font-weight:600;color:#1e40af;">项目健康明细</span>
+      <a href="#" style="font-size:11px;color:#3b82f6;" onclick="renderModule('operation');return false;">查看完整健康报告 →</a>
     </div>
     <div style="overflow-x:auto;">
       <table style="width:100%;border-collapse:collapse;font-size:11px;min-width:500px;">
         <thead>
           <tr style="background:#eff6ff;">
-            <th style="padding:5px 4px;text-align:left;color:#1e40af;font-weight:600;">椤圭洰</th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">浜哄姏</th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">鏈嶅姟</th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">閿€鍞?/th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">閫€璐?/th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">椋庨櫓</th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">鎴愭湰</th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:50px;">缁煎悎</th>
+            <th style="padding:5px 4px;text-align:left;color:#1e40af;font-weight:600;">项目</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">人力</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">服务</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">销售</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">退货</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">风险</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">成本</th>
+            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:50px;">综合</th>
           </tr>
         </thead>
         <tbody>
@@ -2935,19 +2918,19 @@ function renderDashboard(){
             const getDim = name=>{
               const d = dims.find(dd=>dd.name.includes(name));
               if(!d) return '<span style="color:#9ca3af;">-</span>';
-              return d.level==='浼樼'||d.level==='鍋ュ悍'?'<span style="color:#22c55e;font-size:12px;">鈼?/span>':d.level==='闇€娉ㄦ剰'?'<span style="color:#eab308;font-size:12px;">鈼?/span>':'<span style="color:#ef4444;font-size:12px;">鈼?/span>';
+              return d.level==='优秀'||d.level==='健康'?'<span style="color:#22c55e;font-size:12px;">●</span>':d.level==='需注意'?'<span style="color:#eab308;font-size:12px;">●</span>':'<span style="color:#ef4444;font-size:12px;">●</span>';
             };
             const score = h?h.overallScore:'--';
             const scoreColor = score>=90?'#dcfce7':score>=80?'#fef9c3':'#fee2e2';
             const scoreText = score>=90?'#166534':score>=80?'#854d0e':'#991b1b';
             return `<tr style="border-bottom:1px solid #f1f5f9;">
               <td style="padding:5px 4px;"><a href="#" style="color:var(--c-primary);font-size:11px;" onclick="showProjectDetail('${p.id}');return false;">${p.name}</a></td>
-              <td style="padding:5px 4px;text-align:center;">${getDim('浜哄姏')}</td>
-              <td style="padding:5px 4px;text-align:center;">${getDim('鏈嶅姟')}</td>
-              <td style="padding:5px 4px;text-align:center;">${getDim('閿€鍞?)}</td>
-              <td style="padding:5px 4px;text-align:center;">${getDim('閫€璐?)}</td>
-              <td style="padding:5px 4px;text-align:center;">${getDim('椋庨櫓')}</td>
-              <td style="padding:5px 4px;text-align:center;">${getDim('鎴愭湰')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('人力')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('服务')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('销售')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('退货')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('风险')}</td>
+              <td style="padding:5px 4px;text-align:center;">${getDim('成本')}</td>
               <td style="padding:5px 4px;text-align:center;"><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:${scoreColor};color:${scoreText};font-size:10px;font-weight:600;">${score}</span></td>
             </tr>`;
           }).join('')}
@@ -2960,11 +2943,11 @@ function renderDashboard(){
 
 
 
-// ===== 椤圭洰鍩虹妗ｆ =====}
+// ===== 项目基础档案 =====}
 
 
 
-// ===== 椤圭洰鍩虹妗ｆ =====
+// ===== 项目基础档案 =====
 
 function renderArchive(){
 
@@ -2979,26 +2962,26 @@ function renderArchive(){
 
     <div>
 
-      <div class="module-title">馃搵 椤圭洰鍩虹妗ｆ</div>
+      <div class="module-title">📋 项目基础档案</div>
 
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">璁板綍椤圭洰闈欐€佸熀纭€淇℃伅锛屾柊浜哄彲蹇€熶簡瑙ｉ」鐩叏璨?/div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">记录项目静态基础信息，新人可快速了解项目全貌</div>
 
     </div>
 
     <div class="module-actions" style="flex-wrap:wrap;gap:6px;align-items:center;">
 
-      <!-- 鎼滅储妗?-->
-      <input type="text" id="archive-search" placeholder="馃攳 鎼滅储椤圭洰缂栧彿/鍚嶇О/鍝佺墝..." 
+      <!-- 搜索框 -->
+      <input type="text" id="archive-search" placeholder="🔍 搜索项目编号/名称/品牌..." 
         style="padding:5px 10px;border-radius:6px;border:1px solid var(--c-border);font-size:13px;width:220px;"
         oninput="filterArchiveTable(this.value)">
 
-      <button class="btn btn-sm" onclick="showImportDialog()" style="margin-right:4px;">馃摛 瀵煎叆</button>
-      <button class="btn btn-sm" onclick="exportProjects()" style="margin-right:8px;">馃摜 瀵煎嚭</button>
-      ${can?'<button class="btn btn-primary btn-sm" onclick="showAddProject()">锛?鏂板椤圭洰</button>':''}
+      <button class="btn btn-sm" onclick="showImportDialog()" style="margin-right:4px;">📤 导入</button>
+      <button class="btn btn-sm" onclick="exportProjects()" style="margin-right:8px;">📥 导出</button>
+      ${can?'<button class="btn btn-primary btn-sm" onclick="showAddProject()">＋ 新增项目</button>':''}
 
-      ${can?'<button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;margin-left:4px;" onclick="batchDeleteProjects()">馃棏 鎵归噺鍒犻櫎</button>':''}
+      ${can?'<button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;margin-left:4px;" onclick="batchDeleteProjects()">🗑 批量删除</button>':''}
 
-      ${currentRole==='leader'?'<span class="badge badge-gray">鍙鏉冮檺</span>':''}
+      ${currentRole==='leader'?'<span class="badge badge-gray">只读权限</span>':''}
 
     </div>
 
@@ -3009,8 +2992,8 @@ function renderArchive(){
     <table class="data-table">
 
       <thead><tr>
-        ${can?'<th style="width:36px;"><input type="checkbox" id="archive-select-all" onclick="toggleArchiveSelectAll(this.checked)" title="鍏ㄩ€?鍙栨秷"></th>':''}
-        <th>椤圭洰缂栧彿</th><th>椤圭洰鍚嶇О</th><th>鍝佺墝/鍝佺被</th><th>椤圭洰绫诲瀷</th><th>鎵€灞炶亴鍦?/th><th>璐熻矗浜?/th><th>椤圭洰鎬荤洃</th><th>浜ゆ帴鍘嗗彶</th><th>鎿嶄綔</th></tr></thead>
+        ${can?'<th style="width:36px;"><input type="checkbox" id="archive-select-all" onclick="toggleArchiveSelectAll(this.checked)" title="全选/取消"></th>':''}
+        <th>项目编号</th><th>项目名称</th><th>品牌/品类</th><th>项目类型</th><th>所属职场</th><th>负责人</th><th>项目总监</th><th>交接历史</th><th>操作</th></tr></thead>
 
       <tbody id="archive-tbody">
 
@@ -3026,7 +3009,7 @@ function renderArchive(){
 
             <td>${p.brand} / ${p.category}</td>
 
-            <td><span class="badge ${p.serviceMode==='TP椤圭洰'?'badge-blue':p.serviceMode==='DP椤圭洰'?'badge-green':'badge-orange'}">${p.serviceMode}</span></td>
+            <td><span class="badge ${p.serviceMode==='TP项目'?'badge-blue':p.serviceMode==='DP项目'?'badge-green':'badge-orange'}">${p.serviceMode}</span></td>
 
             <td><span class="wp-tag wp-${p.workplace}">${p.workplace}</span></td>
 
@@ -3034,12 +3017,12 @@ function renderArchive(){
 
             <td>${p.director}</td>
 
-            <td>${(p.pmHistory||[]).length>0?`<span class="badge badge-gray" title="${(p.pmHistory||[]).map(h=>h.name+'('+h.from+'~'+h.to+')').join('; ')}">${(p.pmHistory||[]).length}娆′氦鎺?/span>`:'鏃?}</td>
+            <td>${(p.pmHistory||[]).length>0?`<span class="badge badge-gray" title="${(p.pmHistory||[]).map(h=>h.name+'('+h.from+'~'+h.to+')').join('; ')}">${(p.pmHistory||[]).length}次交接</span>`:'无'}</td>
 
             <td class="actions">
-              <button class="btn btn-sm" onclick="showProjectDetail('${p.id}')">鏌ョ湅</button>
-              ${can?`&nbsp;<button class="btn btn-sm" onclick="editProject('${p.id}')">缂栬緫</button>&nbsp;
-              <button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;" onclick="deleteProjectConfirm('${p.id}','${p.name}')">鍒犻櫎</button>`:''}
+              <button class="btn btn-sm" onclick="showProjectDetail('${p.id}')">查看</button>
+              ${can?`&nbsp;<button class="btn btn-sm" onclick="editProject('${p.id}')">编辑</button>&nbsp;
+              <button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;" onclick="deleteProjectConfirm('${p.id}','${p.name}')">删除</button>`:''}
 
             </td>
 
@@ -3050,7 +3033,7 @@ function renderArchive(){
     </table>
 
     <div id="archive-empty-hint" style="display:none;padding:20px;text-align:center;color:var(--c-text-3);font-size:14px;">
-      鏈壘鍒板尮閰嶇殑椤圭洰锛岃灏濊瘯鍏朵粬鎼滅储鍏抽敭璇?
+      未找到匹配的项目，请尝试其他搜索关键词
     </div>
 
   </div>`;
@@ -3063,11 +3046,11 @@ function renderArchive(){
 function filterArchiveTable(kw){kw=(kw||'').toLowerCase().trim();var r=document.querySelectorAll('#archive-tbody tr'),c=0;r.forEach(function(row){if(!kw){row.style.display='';c++;return;}var t=(row.dataset.id+' '+row.dataset.name+' '+row.dataset.brand+' '+row.dataset.pm).toLowerCase();var m=t.indexOf(kw)!==-1;row.style.display=m?'':'none';if(m)c++});var h=document.getElementById('archive-empty-hint');if(h)h.style.display=c===0?'':'none'}
 function toggleArchiveSelectAll(c){var cb=document.querySelectorAll('.archive-row-check');for(var i=0;i<cb.length;i++)cb[i].checked=c;updateBatchDeleteBtn()}
 function updateBatchDeleteBtn(){var c=document.querySelectorAll('.archive-row-check:checked'),b=document.querySelectorAll("[onclick='batchDeleteProjects()']");for(var i=0;i<b.length;i++){b[i].disabled=c.length===0;b[i].style.opacity=c.length>0?1:0.5}}
-function batchDeleteProjects(){var c=document.querySelectorAll('.archive-row-check:checked');if(!c.length){alert('璇峰厛鍕鹃€夎鍒犻櫎鐨勯」鐩?);return}var ids=[];for(var i=0;i<c.length;i++)ids.push(c[i].value);if(!confirm('纭畾鍒犻櫎閫変腑鐨?+ids.length+'涓」鐩紵姝ゆ搷浣滀笉鍙仮澶嶏紒'))return;ids.forEach(function(id){deleteProjectDirectly(id)});showToast('宸插垹闄?+ids.length+'涓」鐩?);renderModule('archive')}
-function deleteProjectConfirm(id,name){if(confirm('纭畾鍒犻櫎銆?+name+'銆嶏紵浠呭垹姝ゆ潯锛屼笉褰卞搷鍏朵粬妯″潡'))deleteProject(id)}
+function batchDeleteProjects(){var c=document.querySelectorAll('.archive-row-check:checked');if(!c.length){alert('请先勾选要删除的项目');return}var ids=[];for(var i=0;i<c.length;i++)ids.push(c[i].value);if(!confirm('确定删除选中的'+ids.length+'个项目？此操作不可恢复！'))return;ids.forEach(function(id){deleteProjectDirectly(id)});showToast('已删除'+ids.length+'个项目');renderModule('archive')}
+function deleteProjectConfirm(id,name){if(confirm('确定删除「'+name+'」？仅删此条，不影响其他模块'))deleteProject(id)}
 function deleteProjectDirectly(id){PROJECTS=PROJECTS.filter(function(p){return p.id!==id});safeSetItem('chansee_projects',JSON.stringify(PROJECTS));if(window.CloudBaseSync)window.CloudBaseSync.saveAll()}
 
-// ===== 鐩爣涓庢潈璐ｇ鐞?=====
+// ===== 目标与权责管理 =====
 
 function renderTarget(){
 
@@ -3082,17 +3065,17 @@ function renderTarget(){
 
     <div>
 
-      <div class="module-title">馃幆 鐩爣涓庢潈璐ｇ鐞?/div>
+      <div class="module-title">🎯 目标与权责管理</div>
 
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">瀹氫箟椤圭洰鐩爣涓庢潈璐ｏ紝閬垮厤鎺ㄨ</div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">定义项目目标与权责，避免推诿</div>
 
     </div>
 
     <div class="module-actions">
 
-      ${can?'<button class="btn btn-primary btn-sm">锛?璁剧疆鐩爣</button>':''}
+      ${can?'<button class="btn btn-primary btn-sm">＋ 设置目标</button>':''}
 
-      ${currentRole==='leader'?'<span class="badge badge-gray">鍙鏉冮檺</span>':''}
+      ${currentRole==='leader'?'<span class="badge badge-gray">只读权限</span>':''}
 
     </div>
 
@@ -3102,7 +3085,7 @@ function renderTarget(){
 
     <table class="data-table">
 
-      <thead><tr><th>椤圭洰</th><th>浜哄姏鐩爣</th><th>SLA鍝嶅簲(绉?</th><th>SLA瑙ｅ喅(绉?</th><th>CSat鐩爣</th><th>鎴愭湰棰勭畻(涓?</th><th>璐ｄ换杈圭晫璇存槑</th></tr></thead>
+      <thead><tr><th>项目</th><th>人力目标</th><th>SLA响应(秒)</th><th>SLA解决(秒)</th><th>CSat目标</th><th>成本预算(万)</th><th>责任边界说明</th></tr></thead>
 
       <tbody>
 
@@ -3112,17 +3095,17 @@ function renderTarget(){
 
             <td>${p.name}</td>
 
-            <td>${p.fteTarget}浜?/td>
+            <td>${p.fteTarget}人</td>
 
             <td>${p.slaResponse}</td>
 
             <td>${p.slaResolve}</td>
 
-            <td>鈮?.5</td>
+            <td>≥4.5</td>
 
-            <td>楼${((p.costBudget||0)/10000).toFixed(1)}</td>
+            <td>¥${((p.costBudget||0)/10000).toFixed(1)}</td>
 
-            <td style="max-width:200px;font-size:12px;color:var(--c-text-2)">鎵挎帴鏂硅礋璐ｅ鏈嶆湇鍔¤川閲忥紱闇€姹傛柟璐熻矗绯荤粺绋冲畾鎬т笌娲诲姩淇℃伅鍚屾</td>
+            <td style="max-width:200px;font-size:12px;color:var(--c-text-2)">承接方负责客服服务质量；需求方负责系统稳定性与活动信息同步</td>
 
           </tr>`).join('')}
 
@@ -3136,7 +3119,7 @@ function renderTarget(){
 
 
 
-// ===== 鎴愭湰涓庡埄娑︾鐞?=====
+// ===== 成本与利润管理 =====
 
 function renderCost(){
 
@@ -3155,12 +3138,12 @@ function renderCost(){
     return pr < 5;
   }).length;
 
-  // 鍗＄墖鏁版嵁
+  // 卡片数据
   const cards = [
-    { label:'鎬昏惀鏀讹紙鏈堝害锛?, value:'楼'+(totalRevenue/10000).toFixed(1)+'涓?, sub:'', cls:'normal' },
-    { label:'鎬绘垚鏈紙鏈堝害锛?, value:'楼'+(totalActual/10000).toFixed(1)+'涓?, sub:'棰勭畻鍐吢疯秴鏀巼'+((totalActual-totalBudget)/totalBudget*100||0).toFixed(1)+'%', cls:'normal' },
-    { label:'骞冲潎鍒╂鼎鐜?, value:avgProfit.toFixed(1)+'%', sub:'鐜瘮+1.2%', cls:'blue' },
-    { label:'棰勮椤圭洰鏁?, value:warnCount+'', sub:warnCount>0?'闇€绔嬪嵆鍏虫敞':'鍏ㄩ儴姝ｅ父', cls:warnCount>0?'red':'green' }
+    { label:'总营收（月度）', value:'¥'+(totalRevenue/10000).toFixed(1)+'万', sub:'', cls:'normal' },
+    { label:'总成本（月度）', value:'¥'+(totalActual/10000).toFixed(1)+'万', sub:'预算内·超支率'+((totalActual-totalBudget)/totalBudget*100||0).toFixed(1)+'%', cls:'normal' },
+    { label:'平均利润率', value:avgProfit.toFixed(1)+'%', sub:'环比+1.2%', cls:'blue' },
+    { label:'预警项目数', value:warnCount+'', sub:warnCount>0?'需立即关注':'全部正常', cls:warnCount>0?'red':'green' }
   ];
 
   return `
@@ -3170,8 +3153,8 @@ function renderCost(){
 
     <div>
 
-      <div class="module-title">馃挵 鎴愭湰涓庡埄娑︾鐞?/div>
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">璺熻釜椤圭洰鎴愭湰缁撴瀯涓庡埄娑︽儏鍐碉紝鍒╂鼎鐜囦綆浜?%鑷姩棰勮</div>
+      <div class="module-title">💰 成本与利润管理</div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">跟踪项目成本结构与利润情况，利润率低于5%自动预警</div>
 
     </div>
 
@@ -3187,10 +3170,10 @@ function renderCost(){
   </div>
 
   <div class="card">
-    <div style="padding:14px 18px;border-bottom:1px solid var(--c-border-light);font-weight:500;font-size:14px;">馃搳 椤圭洰鍒╂鼎鏄庣粏</div>
+    <div style="padding:14px 18px;border-bottom:1px solid var(--c-border-light);font-weight:500;font-size:14px;">📊 项目利润明细</div>
     <div style="overflow-x:auto;">
     <table class="data-table profit-table">
-      <thead><tr><th>椤圭洰</th><th>钀ユ敹(涓?</th><th>棰勭畻鎴愭湰(涓?</th><th>瀹為檯鎴愭湰(涓?</th><th>鍒╂鼎鐜?/th><th>棰勮</th><th>瓒嬪娍</th></tr></thead>
+      <thead><tr><th>项目</th><th>营收(万)</th><th>预算成本(万)</th><th>实际成本(万)</th><th>利润率</th><th>预警</th><th>趋势</th></tr></thead>
       <tbody>
         ${all.map(p=>{
           const actualCost = Math.round((p.costBudget||0) * (0.9+Math.random()*0.3));
@@ -3199,14 +3182,14 @@ function renderCost(){
           let rowCls = 'profit-row-normal';
           if (pr < 5) rowCls = 'profit-row-danger';
           else if (pr < 10) rowCls = 'profit-row-warning';
-          let badge = '<span class="profit-badge profit-badge-green">姝ｅ父</span>';
-          if (pr < 5) badge = '<span class="profit-badge profit-badge-red">鍒╂鼎鐜囪繃浣?/span>';
-          else if (pr < 10) badge = '<span class="profit-badge profit-badge-yellow">鍏虫敞</span>';
+          let badge = '<span class="profit-badge profit-badge-green">正常</span>';
+          if (pr < 5) badge = '<span class="profit-badge profit-badge-red">利润率过低</span>';
+          else if (pr < 10) badge = '<span class="profit-badge profit-badge-yellow">关注</span>';
           return `<tr class="${rowCls}">
-            <td>${p.name||'鏈懡鍚?}</td>
-            <td>楼${((p.revenue||0)/10000).toFixed(1)}</td>
-            <td>楼${((p.costBudget||0)/10000).toFixed(1)}</td>
-            <td>楼${(actualCost/10000).toFixed(1)}</td>
+            <td>${p.name||'未命名'}</td>
+            <td>¥${((p.revenue||0)/10000).toFixed(1)}</td>
+            <td>¥${((p.costBudget||0)/10000).toFixed(1)}</td>
+            <td>¥${(actualCost/10000).toFixed(1)}</td>
             <td style="color:${pr>=10?'var(--c-green)':pr<0?'var(--c-red)':'var(--c-yellow)'}">${actualProfit}%</td>
             <td>${badge}</td>
             <td class="profit-trend-cell">--</td>
@@ -3218,9 +3201,9 @@ function renderCost(){
   </div>
 
   <div class="profit-legend">
-    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:var(--c-green)"></span>姝ｅ父鐩堝埄</span>
-    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:var(--c-yellow)"></span>闇€鍏虫敞</span>
-    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:var(--c-red)"></span>鍒╂鼎鐜囦负璐?浣庝簬5%</span>
+    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:var(--c-green)"></span>正常盈利</span>
+    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:var(--c-yellow)"></span>需关注</span>
+    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:var(--c-red)"></span>利润率为负/低于5%</span>
   </div>`;
 
 }
@@ -3228,22 +3211,22 @@ function renderCost(){
 
 
 
-// ===== 鏈嶅姟涓庤繘搴﹁拷韪紙鏂扮増 2026-06-09锛?=====
+// ===== 服务与进度追踪（新版 2026-06-09） =====
 
-// 璁＄畻椤圭洰鍋ュ悍绛夌骇
+// 计算项目健康等级
 function getHealthLevel(score) {
-  if (score >= 90) return { level: "浼樿川鍋ュ悍搴?, class: "excellent", icon: "馃煝" };
-  if (score >= 75) return { level: "骞崇ǔ甯歌搴?, class: "normal", icon: "馃煛" };
-  if (score >= 60) return { level: "椋庨櫓棰勮搴?, class: "warning", icon: "馃煚" };
-  return { level: "楂樺嵄闂搴?, class: "danger", icon: "馃敶" };
+  if (score >= 90) return { level: "优质健康店", class: "excellent", icon: "🟢" };
+  if (score >= 75) return { level: "平稳常规店", class: "normal", icon: "🟡" };
+  if (score >= 60) return { level: "风险预警店", class: "warning", icon: "🟠" };
+  return { level: "高危问题店", class: "danger", icon: "🔴" };
 }
 
-// 娓叉煋鍥涘ぇ鍗＄墖姒傝
+// 渲染四大卡片概览
 function renderHealthOverviewCards(projects) {
   const projectHealth = projects.map(p => {
     const h = HEALTH_DATA.find(hh => hh.projectId === p.id && hh.period === "2026-05");
     const score = h ? h.overallScore : 0;
-    const healthInfo = score > 0 ? getHealthLevel(score) : { level: "鏈瘎浼?, class: "unrated", icon: "鈿? };
+    const healthInfo = score > 0 ? getHealthLevel(score) : { level: "未评估", class: "unrated", icon: "⚪" };
     return { project: p, health: h, score, ...healthInfo };
   });
 
@@ -3260,7 +3243,7 @@ function renderHealthOverviewCards(projects) {
       const val = x.project[key];
       if (val) map[val] = (map[val] || 0) + 1;
     });
-    return Object.entries(map).map(([k, v]) => k + "(" + v + ")").join(" 路 ");
+    return Object.entries(map).map(([k, v]) => k + "(" + v + ")").join(" · ");
   }
 
   function renderCard(className, icon, title, items) {
@@ -3273,59 +3256,59 @@ function renderHealthOverviewCards(projects) {
         <div class="hoc-icon">${icon}</div>
         <div class="hoc-title">${title}</div>
       </div>
-      <div class="hoc-count">${count}<span class="hoc-unit">瀹?/span></div>
+      <div class="hoc-count">${count}<span class="hoc-unit">家</span></div>
       ${count > 0 ? `
         <div class="hoc-stats">
-          <div class="hoc-stat-item">馃搷 ${workplaces || "鏃?}</div>
-          <div class="hoc-stat-item">馃彿锔?${types || "鏃?}</div>
+          <div class="hoc-stat-item">📍 ${workplaces || "无"}</div>
+          <div class="hoc-stat-item">🏷️ ${types || "无"}</div>
         </div>
-        <div class="hoc-footer">鏌ョ湅鏄庣粏 鈫?/div>
-      ` : '<div class="hoc-empty">鏆傛棤鏁版嵁</div>'}
+        <div class="hoc-footer">查看明细 →</div>
+      ` : '<div class="hoc-empty">暂无数据</div>'}
     </div>`;
   }
 
   return `
   <div class="health-overview-cards">
-    ${renderCard("excellent", "馃煝", "浼樿川鍋ュ悍搴?, grouped.excellent)}
-    ${renderCard("normal", "馃煛", "骞崇ǔ甯歌搴?, grouped.normal)}
-    ${renderCard("warning", "馃煚", "椋庨櫓棰勮搴?, grouped.warning)}
-    ${renderCard("danger", "馃敶", "楂樺嵄闂搴?, grouped.danger)}
+    ${renderCard("excellent", "🟢", "优质健康店", grouped.excellent)}
+    ${renderCard("normal", "🟡", "平稳常规店", grouped.normal)}
+    ${renderCard("warning", "🟠", "风险预警店", grouped.warning)}
+    ${renderCard("danger", "🔴", "高危问题店", grouped.danger)}
   </div>
   <div id="health-card-detail" style="display:none;"></div>`;
 }
 
-// 娓叉煋鍋ュ悍棰勮鎽樿
+// 渲染健康预警摘要
 function renderHealthWarningSummary(healthData) {
-  if (!healthData) return '<div style="padding:12px;color:var(--c-text-3);">鏆傛棤鍋ュ悍搴︽暟鎹?/div>';
+  if (!healthData) return '<div style="padding:12px;color:var(--c-text-3);">暂无健康度数据</div>';
   const badDims = healthData.dimensions.filter(d => d.score < 85).sort((a, b) => a.score - b.score);
   if (badDims.length === 0) {
     return `
     <div class="health-warning-summary healthy">
-      <div class="hws-icon">鉁?/div>
-      <div class="hws-text">鍚勭淮搴﹁〃鐜拌壇濂斤紝鏃犳槑鏄鹃闄╃偣</div>
+      <div class="hws-icon">✅</div>
+      <div class="hws-text">各维度表现良好，无明显风险点</div>
     </div>`;
   }
   const reasons = badDims.map(d => {
     const badItems = d.items.filter(i => i.score < 85);
     const details = badItems.length > 0
-      ? badItems.map(i => i.name + ": 瀹為檯" + i.actual + "锛岀洰鏍? + i.target).join("<br>")
-      : "鏁翠綋缁村害寰楀垎鍋忎綆";
+      ? badItems.map(i => i.name + ": 实际" + i.actual + "，目标" + i.target).join("<br>")
+      : "整体维度得分偏低";
     return `<div class="hws-reason">
-      <div class="hws-reason-title ${d.level}">${d.name}(${d.score}鍒喡?{d.level})</div>
+      <div class="hws-reason-title ${d.level}">${d.name}(${d.score}分·${d.level})</div>
       <div class="hws-reason-details">${details}</div>
     </div>`;
   }).join("");
   return `
   <div class="health-warning-summary warning">
     <div class="hws-header">
-      <span class="hws-icon">鈿狅笍</span>
-      <span class="hws-title">鍋ュ悍棰勮鎽樿</span>
+      <span class="hws-icon">⚠️</span>
+      <span class="hws-title">健康预警摘要</span>
     </div>
     ${reasons}
   </div>`;
 }
 
-// 鍒嗘暟棰滆壊
+// 分数颜色
 function scoreColor(s) {
   if (s >= 90) return "var(--c-green)";
   if (s >= 75) return "var(--c-yellow)";
@@ -3339,7 +3322,7 @@ function scoreBg(s) {
   return "var(--c-red-bg)";
 }
 
-// 娓叉煋璇勫垎鏄庣粏琛?
+// 渲染评分明细表
 function renderHealthScoreTable(projects) {
   const sortState = window._healthSort || { key: "score", dir: "desc" };
   function sortProjects(list, key, dir) {
@@ -3359,28 +3342,28 @@ function renderHealthScoreTable(projects) {
   const sorted = sortProjects([...projects], sortState.key, sortState.dir);
   const top6 = sorted.slice(0, 6);
   function sortArrow(key) {
-    if (sortState.key !== key) return "鈫曪笍";
-    return sortState.dir === "desc" ? "鈫? : "鈫?;
+    if (sortState.key !== key) return "↕️";
+    return sortState.dir === "desc" ? "↓" : "↑";
   }
   return `
   <div class="card" style="margin-top:16px;">
-    <div style="padding:14px 18px;border-bottom:1px solid var(--c-border-light);font-weight:500;font-size:14px;">馃搳 搴楅摵缁煎悎璇勫垎鏄庣粏锛堝墠6鍚嶏級</div>
+    <div style="padding:14px 18px;border-bottom:1px solid var(--c-border-light);font-weight:500;font-size:14px;">📊 店铺综合评分明细（前6名）</div>
     <div style="overflow-x:auto;">
       <table class="data-table health-score-table">
         <thead>
           <tr>
-            <th style="width:50px;">鎺掑悕</th>
-            <th onclick="sortHealthTable('name')" style="cursor:pointer;">搴楅摵鍚嶇О ${sortArrow("name")}</th>
-            <th onclick="sortHealthTable('workplace')" style="cursor:pointer;">鑱屽満 ${sortArrow("workplace")}</th>
-            <th>绫诲瀷</th>
-            <th onclick="sortHealthTable('score')" style="cursor:pointer;">缁煎悎 ${sortArrow("score")}</th>
-            <th onclick="sortHealthTable('manpower')" style="cursor:pointer;">浜哄姏 ${sortArrow("manpower")}</th>
-            <th onclick="sortHealthTable('service')" style="cursor:pointer;">鏈嶅姟 ${sortArrow("service")}</th>
-            <th onclick="sortHealthTable('sales')" style="cursor:pointer;">閿€鍞?${sortArrow("sales")}</th>
-            <th onclick="sortHealthTable('returns')" style="cursor:pointer;">閫€璐?${sortArrow("returns")}</th>
-            <th onclick="sortHealthTable('risk')" style="cursor:pointer;">椋庨櫓 ${sortArrow("risk")}</th>
-            <th onclick="sortHealthTable('cost')" style="cursor:pointer;">鎴愭湰 ${sortArrow("cost")}</th>
-            <th>鎿嶄綔</th>
+            <th style="width:50px;">排名</th>
+            <th onclick="sortHealthTable('name')" style="cursor:pointer;">店铺名称 ${sortArrow("name")}</th>
+            <th onclick="sortHealthTable('workplace')" style="cursor:pointer;">职场 ${sortArrow("workplace")}</th>
+            <th>类型</th>
+            <th onclick="sortHealthTable('score')" style="cursor:pointer;">综合 ${sortArrow("score")}</th>
+            <th onclick="sortHealthTable('manpower')" style="cursor:pointer;">人力 ${sortArrow("manpower")}</th>
+            <th onclick="sortHealthTable('service')" style="cursor:pointer;">服务 ${sortArrow("service")}</th>
+            <th onclick="sortHealthTable('sales')" style="cursor:pointer;">销售 ${sortArrow("sales")}</th>
+            <th onclick="sortHealthTable('returns')" style="cursor:pointer;">退货 ${sortArrow("returns")}</th>
+            <th onclick="sortHealthTable('risk')" style="cursor:pointer;">风险 ${sortArrow("risk")}</th>
+            <th onclick="sortHealthTable('cost')" style="cursor:pointer;">成本 ${sortArrow("cost")}</th>
+            <th>操作</th>
           </tr>
         </thead>
         <tbody>
@@ -3388,7 +3371,7 @@ function renderHealthScoreTable(projects) {
             const p = x.project;
             const h = x.health;
             const rankClass = idx < 3 ? "top3" : (idx >= top6.length - 3 ? "bottom3" : "");
-            const rankIcon = idx === 0 ? "馃" : (idx === 1 ? "馃" : (idx === 2 ? "馃" : (idx + 1)));
+            const rankIcon = idx === 0 ? "🥇" : (idx === 1 ? "🥈" : (idx === 2 ? "🥉" : (idx + 1)));
             return `<tr class="${rankClass}">
               <td class="rank-col">${rankIcon}</td>
               <td>${p.name}</td>
@@ -3400,7 +3383,7 @@ function renderHealthScoreTable(projects) {
                 const bg = scoreBg(d.score);
                 return `<td class="score-col" style="background:${bg};color:${c}">${d.score}</td>`;
               }).join("") : "<td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>"}
-              <td><button class="btn btn-sm" onclick="toggleHealthDetail('${p.id}')">鏌ョ湅</button></td>
+              <td><button class="btn btn-sm" onclick="toggleHealthDetail('${p.id}')">查看</button></td>
             </tr>`;
           }).join("")}
         </tbody>
@@ -3409,45 +3392,45 @@ function renderHealthScoreTable(projects) {
   </div>`;
 }
 
-// 娓叉煋鍋ュ悍搴︾瓑绾у畾涔?
+// 渲染健康度等级定义
 function renderHealthLevelDefinition() {
   return `
   <div class="card" style="margin-top:16px;padding:14px 18px;">
-    <div style="font-size:13px;font-weight:500;margin-bottom:8px;">馃搵 鍋ュ悍搴︾瓑绾у畾涔?/div>
+    <div style="font-size:13px;font-weight:500;margin-bottom:8px;">📋 健康度等级定义</div>
     <div class="health-level-definition">
       <div class="hld-item excellent">
         <div class="hld-dot"></div>
         <div class="hld-content">
-          <div class="hld-title">馃煝 浼樿川鍋ュ悍搴楋紙90-100鍒嗭級</div>
-          <div class="hld-desc">鍚勭淮搴﹁〃鐜颁紭绉€锛屾棤鏄庢樉鐭澘锛屽彲浣滀负鏍囨潌妗堜緥鎺ㄥ箍</div>
+          <div class="hld-title">🟢 优质健康店（90-100分）</div>
+          <div class="hld-desc">各维度表现优秀，无明显短板，可作为标杆案例推广</div>
         </div>
       </div>
       <div class="hld-item normal">
         <div class="hld-dot"></div>
         <div class="hld-content">
-          <div class="hld-title">馃煛 骞崇ǔ甯歌搴楋紙75-89鍒嗭級</div>
-          <div class="hld-desc">鏁翠綋杩愯惀骞崇ǔ锛屼釜鍒淮搴﹂渶鍏虫敞锛屽缓璁埗瀹氭彁鍗囪鍒?/div>
+          <div class="hld-title">🟡 平稳常规店（75-89分）</div>
+          <div class="hld-desc">整体运营平稳，个别维度需关注，建议制定提升计划</div>
         </div>
       </div>
       <div class="hld-item warning">
         <div class="hld-dot"></div>
         <div class="hld-content">
-          <div class="hld-title">馃煚 椋庨櫓棰勮搴楋紙60-74鍒嗭級</div>
-          <div class="hld-desc">瀛樺湪鏄庢樉闂锛岄渶鍒跺畾鏀瑰杽璁″垝锛孭M闇€姣忓懆璺熻繘</div>
+          <div class="hld-title">🟠 风险预警店（60-74分）</div>
+          <div class="hld-desc">存在明显问题，需制定改善计划，PM需每周跟进</div>
         </div>
       </div>
       <div class="hld-item danger">
         <div class="hld-dot"></div>
         <div class="hld-content">
-          <div class="hld-title">馃敶 楂樺嵄闂搴楋紙0-59鍒嗭級</div>
-          <div class="hld-desc">澶氶」鎸囨爣涓嶈揪鏍囷紝闇€绔嬪嵆浠嬪叆鏁存敼锛屽缓璁垚绔嬩笓椤瑰皬缁?/div>
+          <div class="hld-title">🔴 高危问题店（0-59分）</div>
+          <div class="hld-desc">多项指标不达标，需立即介入整改，建议成立专项小组</div>
         </div>
       </div>
     </div>
   </div>`;
 }
 
-// 鍒囨崲鍗＄墖灞曞紑
+// 切换卡片展开
 function toggleHealthCard(className) {
   const container = document.getElementById("health-card-detail");
   if (!container) return;
@@ -3456,7 +3439,7 @@ function toggleHealthCard(className) {
   const projectHealth = projects.map(p => {
     const h = HEALTH_DATA.find(hh => hh.projectId === p.id && hh.period === "2026-05");
     const score = h ? h.overallScore : 0;
-    const healthInfo = score > 0 ? getHealthLevel(score) : { level: "鏈瘎浼?, class: "unrated", icon: "鈿? };
+    const healthInfo = score > 0 ? getHealthLevel(score) : { level: "未评估", class: "unrated", icon: "⚪" };
     return { project: p, health: h, score, ...healthInfo };
   });
   const filtered = projectHealth.filter(x => x.class === className);
@@ -3468,7 +3451,7 @@ function toggleHealthCard(className) {
   container.style.display = "block";
   container.innerHTML = `
     <div class="health-detail-cards">
-      <div style="font-size:13px;font-weight:500;margin-bottom:10px;">${filtered[0]?.icon || ""} ${filtered[0]?.level || ""} - 鍏?{filtered.length}瀹?/div>
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px;">${filtered[0]?.icon || ""} ${filtered[0]?.level || ""} - 共${filtered.length}家</div>
       <div class="hdc-grid">
         ${filtered.map(x => {
           const p = x.project;
@@ -3479,14 +3462,14 @@ function toggleHealthCard(className) {
           <div class="health-detail-card">
             <div class="hdc-header" style="background:${levelBg};">
               <div class="hdc-title">${p.name}</div>
-              <div class="hdc-score" style="color:${levelColor}">${x.score > 0 ? x.score + "鍒? : "鏈瘎浼?}</div>
+              <div class="hdc-score" style="color:${levelColor}">${x.score > 0 ? x.score + "分" : "未评估"}</div>
             </div>
             <div class="hdc-body">
-              <div class="hdc-info">${p.workplace} 路 ${p.serviceMode}</div>
+              <div class="hdc-info">${p.workplace} · ${p.serviceMode}</div>
               ${h ? renderHealthWarningSummary(h) : ""}
             </div>
             <div class="hdc-footer">
-              <button class="btn btn-sm btn-primary" onclick="toggleHealthDetail('${p.id}')">鏌ョ湅璇︽儏</button>
+              <button class="btn btn-sm btn-primary" onclick="toggleHealthDetail('${p.id}')">查看详情</button>
             </div>
           </div>`;
         }).join("")}
@@ -3495,28 +3478,28 @@ function toggleHealthCard(className) {
   container.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-// 鎺掑簭琛ㄦ牸
+// 排序表格
 function sortHealthTable(key) {
   const dir = (window._healthSort && window._healthSort.key === key && window._healthSort.dir === "desc") ? "asc" : "desc";
   window._healthSort = { key, dir };
-  renderModule("鏈嶅姟涓庤繘搴﹁拷韪?);
+  renderModule("服务与进度追踪");
 }
 
-// 涓绘覆鏌撳嚱鏁?
+// 主渲染函数
 function renderOperation() {
   const projects = getFilteredProjects();
   const projectHealth = projects.map(p => {
     const h = HEALTH_DATA.find(hh => hh.projectId === p.id && hh.period === "2026-05");
     const score = h ? h.overallScore : 0;
-    const healthInfo = score > 0 ? getHealthLevel(score) : { level: "鏈瘎浼?, class: "unrated", icon: "鈿? };
+    const healthInfo = score > 0 ? getHealthLevel(score) : { level: "未评估", class: "unrated", icon: "⚪" };
     return { project: p, health: h, score, ...healthInfo };
   });
   return `
   ${renderFilterBar()}
   <div class="module-header">
     <div>
-      <div class="module-title">馃搱 鏈嶅姟涓庤繘搴﹁拷韪?路 鍋ュ悍搴﹁瘎浼?/div>
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">鍩轰簬6澶х淮搴︾患鍚堣瘎浼伴」鐩仴搴风姸鍐碉紝鏀寔閫愬眰涓嬮捇鏌ョ湅璇︾粏鎸囨爣</div>
+      <div class="module-title">📈 服务与进度追踪 · 健康度评估</div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">基于6大维度综合评估项目健康状况，支持逐层下钻查看详细指标</div>
     </div>
   </div>
   ${renderHealthOverviewCards(projects)}
@@ -3526,17 +3509,17 @@ function renderOperation() {
 }
 
 
-// ===== 闂涓庤棰樺崗浣?=====
+// ===== 问题与课题协作 =====
 
 function renderIssue(){
 
   const can = canEdit();
 
-  // 璁＄畻鍚勭姸鎬佹暟閲?
-  const countPending = ISSUES.filter(i=>i.status==='寰呭鐞?).length;
-  const countProcessing = ISSUES.filter(i=>i.status==='澶勭悊涓?).length;
-  const countVerify = ISSUES.filter(i=>i.status==='寰呴獙鏀?).length;
-  const countClosed = ISSUES.filter(i=>i.status==='宸插叧闂?).length;
+  // 计算各状态数量
+  const countPending = ISSUES.filter(i=>i.status==='待处理').length;
+  const countProcessing = ISSUES.filter(i=>i.status==='处理中').length;
+  const countVerify = ISSUES.filter(i=>i.status==='待验收').length;
+  const countClosed = ISSUES.filter(i=>i.status==='已关闭').length;
   const countAll = ISSUES.length;
 
   return `
@@ -3545,68 +3528,68 @@ function renderIssue(){
   <div class="issue-page-header">
     <div class="issue-page-title-row">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      <h1 class="issue-page-title">闂涓庤棰樺崗浣?/h1>
+      <h1 class="issue-page-title">问题与课题协作</h1>
     </div>
-    <p class="issue-page-desc">闂鐧昏銆佽窡韪笌闂幆绠＄悊锛屾敮鎸佽法鑱屽満鍗忓悓</p>
+    <p class="issue-page-desc">问题登记、跟踪与闭环管理，支持跨职场协同</p>
   </div>
 
   <div class="issue-stat-cards">
     <div class="issue-stat-card issue-stat-pending">
-      <p class="issue-stat-label">寰呭鐞?/p>
+      <p class="issue-stat-label">待处理</p>
       <p class="issue-stat-count">${countPending}</p>
     </div>
     <div class="issue-stat-card issue-stat-processing">
-      <p class="issue-stat-label">澶勭悊涓?/p>
+      <p class="issue-stat-label">处理中</p>
       <p class="issue-stat-count">${countProcessing}</p>
     </div>
     <div class="issue-stat-card issue-stat-verify">
-      <p class="issue-stat-label">寰呴獙鏀?/p>
+      <p class="issue-stat-label">待验收</p>
       <p class="issue-stat-count">${countVerify}</p>
     </div>
     <div class="issue-stat-card issue-stat-closed">
-      <p class="issue-stat-label">宸插叧闂?/p>
+      <p class="issue-stat-label">已关闭</p>
       <p class="issue-stat-count">${countClosed}</p>
     </div>
   </div>
 
   <div class="issue-toolbar">
     <div class="issue-filter-btns">
-      <span class="issue-filter-btn issue-filter-active">鍏ㄩ儴(${countAll})</span>
-      <span class="issue-filter-btn">寰呭鐞?${countPending})</span>
-      <span class="issue-filter-btn">澶勭悊涓?${countProcessing})</span>
-      <span class="issue-filter-btn">寰呴獙鏀?${countVerify})</span>
-      <span class="issue-filter-btn">宸插叧闂?${countClosed})</span>
+      <span class="issue-filter-btn issue-filter-active">全部(${countAll})</span>
+      <span class="issue-filter-btn">待处理(${countPending})</span>
+      <span class="issue-filter-btn">处理中(${countProcessing})</span>
+      <span class="issue-filter-btn">待验收(${countVerify})</span>
+      <span class="issue-filter-btn">已关闭(${countClosed})</span>
     </div>
-    ${can?'<div class="issue-add-btn" onclick="showAddIssue()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>涓婃姤闂</div>':''}
+    ${can?'<div class="issue-add-btn" onclick="showAddIssue()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>上报问题</div>':''}
   </div>
 
   <div class="issue-table-wrapper">
     <table class="issue-table">
       <thead>
         <tr>
-          <th style="width:9%;">鐘舵€?/th>
-          <th style="width:9%;">璇鹃缂栧彿</th>
-          <th style="width:12%;">椤圭洰</th>
-          <th style="width:7%;">绫诲瀷</th>
-          <th style="width:26%;">闂鎻忚堪</th>
-          <th style="width:7%;text-align:center;">浼樺厛绾?/th>
-          <th style="width:7%;">璐ｄ换浜?/th>
-          <th style="width:8%;">璐ｄ换褰掑睘</th>
-          <th style="width:15%;text-align:center;">鎿嶄綔</th>
+          <th style="width:9%;">状态</th>
+          <th style="width:9%;">课题编号</th>
+          <th style="width:12%;">项目</th>
+          <th style="width:7%;">类型</th>
+          <th style="width:26%;">问题描述</th>
+          <th style="width:7%;text-align:center;">优先级</th>
+          <th style="width:7%;">责任人</th>
+          <th style="width:8%;">责任归属</th>
+          <th style="width:15%;text-align:center;">操作</th>
         </tr>
       </thead>
       <tbody>
         ${ISSUES.map(i=>{
-          const rowClass = (i.status==='寰呭鐞?||i.priority==='绱ф€?)?'issue-row-danger':i.status==='寰呴獙鏀??'issue-row-danger':i.status==='澶勭悊涓??'issue-row-warning':'';
+          const rowClass = (i.status==='待处理'||i.priority==='紧急')?'issue-row-danger':i.status==='待验收'?'issue-row-danger':i.status==='处理中'?'issue-row-warning':'';
           let statusClass = '';
-          if(i.status==='宸插叧闂?) statusClass = 'issue-badge-success';
-          else if(i.status==='寰呭鐞?) statusClass = 'issue-badge-danger';
-          else if(i.status==='寰呴獙鏀?) statusClass = 'issue-badge-warning';
+          if(i.status==='已关闭') statusClass = 'issue-badge-success';
+          else if(i.status==='待处理') statusClass = 'issue-badge-danger';
+          else if(i.status==='待验收') statusClass = 'issue-badge-warning';
           else statusClass = 'issue-badge-info';
 
           let priorityClass = '';
-          if(i.priority==='绱ф€?) priorityClass = 'issue-priority-danger';
-          else if(i.priority==='閲嶈') priorityClass = 'issue-priority-warning';
+          if(i.priority==='紧急') priorityClass = 'issue-priority-danger';
+          else if(i.priority==='重要') priorityClass = 'issue-priority-warning';
           else priorityClass = 'issue-priority-gray';
 
           return `
@@ -3620,8 +3603,8 @@ function renderIssue(){
             <td>${i.assignee}</td>
             <td>${i.responsibility}</td>
             <td style="text-align:center;">
-              <span class="issue-action-btn issue-action-view" onclick="showIssueDetail(${i.id})">鏌ョ湅</span>
-              ${can && i.status!=='宸插叧闂??'<span class="issue-action-btn issue-action-update" onclick="alert(\'澶勭悊鍔熻兘寮€鍙戜腑\')">鏇存柊</span>':''}
+              <span class="issue-action-btn issue-action-view" onclick="showIssueDetail(${i.id})">查看</span>
+              ${can && i.status!=='已关闭'?'<span class="issue-action-btn issue-action-update" onclick="alert(\'处理功能开发中\')">更新</span>':''}
             </td>
           </tr>`;
         }).join('')}
@@ -3630,21 +3613,21 @@ function renderIssue(){
   </div>
 
   <div class="issue-legend">
-    <div class="issue-legend-item"><span class="issue-legend-color issue-legend-red"></span> 绱ф€?閲嶈闂琛岄珮浜?/div>
-    <div class="issue-legend-item"><span class="issue-legend-color issue-legend-blue"></span> 澶勭悊涓?/div>
-    <div class="issue-legend-item"><span class="issue-legend-color issue-legend-green"></span> 宸插叧闂?/div>
+    <div class="issue-legend-item"><span class="issue-legend-color issue-legend-red"></span> 紧急/重要问题行高亮</div>
+    <div class="issue-legend-item"><span class="issue-legend-color issue-legend-blue"></span> 处理中</div>
+    <div class="issue-legend-item"><span class="issue-legend-color issue-legend-green"></span> 已关闭</div>
   </div>`;
 
 
 }
 
-// ===== 鏍稿績鐭ヨ瘑鑳介噺姹?=====
+// ===== 核心知识能量池 =====
 
 function renderKnowledge(){
 
   const can = canEdit();
 
-  // 璁＄畻缁熻鏁版嵁
+  // 计算统计数据
   const totalKnowledge = KNOWLEDGE.length;
   const weekNew = KNOWLEDGE.filter(k => {
     if (!k.createdAt) return false;
@@ -3656,18 +3639,18 @@ function renderKnowledge(){
   const totalViews = KNOWLEDGE.reduce((s, k) => s + (k.views || 0), 0);
   const totalDownloads = KNOWLEDGE.reduce((s, k) => s + (k.downloads || 0), 0);
 
-  // 鍒嗙被缁熻
+  // 分类统计
   const typeCounts = {};
   KNOWLEDGE.forEach(k => {
     typeCounts[k.type] = (typeCounts[k.type] || 0) + 1;
   });
 
-  const typeOrder = ['SOP娴佺▼浼樺寲','椋庢帶搴旀€ラ妗?,'鎴愭湰鐩爣鎺у埗','浼樼璇濇湳钀冨彇','AI鎻愭晥璧嬭兘','鍩硅鏉愭枡'];
+  const typeOrder = ['SOP流程优化','风控应急预案','成本目标控制','优秀话术萃取','AI提效赋能','培训材料'];
 
   const top5 = [...KNOWLEDGE].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
 
-  const permIcon = {'鍏紑':'馃寪','鍐呴儴':'馃數','鍙楅檺':'馃敶'};
-  const permLabel = {'鍏紑':'鍏紑','鍐呴儴':'鍐呴儴','鍙楅檺':'鍙楅檺'};
+  const permIcon = {'公开':'🌐','内部':'🔵','受限':'🔴'};
+  const permLabel = {'公开':'公开','内部':'内部','受限':'受限'};
 
   return `
   ${renderFilterBar()}
@@ -3676,11 +3659,11 @@ function renderKnowledge(){
     <div class="kyp-header-left">
       <div class="kyp-title-row">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        <h1 class="kyp-title">鏍稿績鐭ヨ瘑鑳介噺姹?/h1>
+        <h1 class="kyp-title">核心知识能量池</h1>
       </div>
-      <p class="kyp-desc">鐢靛晢瀹㈡湇鍥㈤槦涓撳睘鐭ヨ瘑搴?路 娌夋穩缁忛獙 路 璧嬭兘鍥㈤槦</p>
+      <p class="kyp-desc">电商客服团队专属知识库 · 沉淀经验 · 赋能团队</p>
     </div>
-    ${can ? '<div class="kyp-add-btn" onclick="alert(\'娣诲姞鐭ヨ瘑鍔熻兘寮€鍙戜腑\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>娣诲姞鐭ヨ瘑</div>' : ''}
+    ${can ? '<div class="kyp-add-btn" onclick="alert(\'添加知识功能开发中\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>添加知识</div>' : ''}
   </div>
 
   <div class="kyp-stats">
@@ -3688,40 +3671,40 @@ function renderKnowledge(){
       <div class="kyp-stat-icon kis-blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
       <div class="kyp-stat-body">
         <span class="kyp-stat-val">${totalKnowledge}</span>
-        <span class="kyp-stat-lbl">鐭ヨ瘑鎬婚噺</span>
+        <span class="kyp-stat-lbl">知识总量</span>
       </div>
     </div>
     <div class="kyp-stat-card">
       <div class="kyp-stat-icon kis-green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
       <div class="kyp-stat-body">
         <span class="kyp-stat-val">${weekNew}<span class="kyp-badge-new">NEW</span></span>
-        <span class="kyp-stat-lbl">鏈懆鏂板</span>
+        <span class="kyp-stat-lbl">本周新增</span>
       </div>
     </div>
     <div class="kyp-stat-card">
       <div class="kyp-stat-icon kis-orange"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
       <div class="kyp-stat-body">
         <span class="kyp-stat-val">${totalViews.toLocaleString()}</span>
-        <span class="kyp-stat-lbl">鎬绘祻瑙堥噺</span>
+        <span class="kyp-stat-lbl">总浏览量</span>
       </div>
     </div>
     <div class="kyp-stat-card">
       <div class="kyp-stat-icon kis-red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
       <div class="kyp-stat-body">
         <span class="kyp-stat-val">${totalDownloads.toLocaleString()}</span>
-        <span class="kyp-stat-lbl">鎬讳笅杞介噺</span>
+        <span class="kyp-stat-lbl">总下载量</span>
       </div>
     </div>
   </div>
 
   <div class="kyp-filters">
     <div class="kyp-filter-tags" id="kyp-filter-tags">
-      <span class="kyp-tag kyp-tag-active" data-type="all" onclick="kypFilter('all')">鍏ㄩ儴 ${totalKnowledge}</span>
+      <span class="kyp-tag kyp-tag-active" data-type="all" onclick="kypFilter('all')">全部 ${totalKnowledge}</span>
       ${typeOrder.filter(t => typeCounts[t]).map(t => `<span class="kyp-tag" data-type="${t}" onclick="kypFilter('${t}')">${t} ${typeCounts[t]}</span>`).join('')}
     </div>
     <div class="kyp-search-box">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input type="text" class="kyp-search-input" placeholder="鎼滅储鐭ヨ瘑鏍囬銆佹爣绛俱€佸唴瀹?.." oninput="kypSearch(this.value)">
+      <input type="text" class="kyp-search-input" placeholder="搜索知识标题、标签、内容..." oninput="kypSearch(this.value)">
     </div>
   </div>
 
@@ -3729,53 +3712,53 @@ function renderKnowledge(){
     <div class="kyp-main">
       <div class="kyp-grid" id="kyp-grid">
         ${KNOWLEDGE.map(k => {
-          const perm = k.permission || '鍏紑';
+          const perm = k.permission || '公开';
           return `
           <div class="kyp-card" data-type="${k.type}" data-search="${k.title}${k.description}${k.tags}" onclick="showKnowledgeDetail(${k.id})">
             <div class="kyp-card-top">
               <span class="kyp-card-title">${k.title}</span>
               <div class="kyp-card-actions">
-                ${can ? '<span class="kyp-act" onclick="event.stopPropagation();alert(\'缂栬緫鍔熻兘寮€鍙戜腑\')">鉁?/span>' : ''}
-                ${can ? '<span class="kyp-act kyp-act-del" onclick="event.stopPropagation();alert(\'鍒犻櫎鍔熻兘寮€鍙戜腑\')">鉁?/span>' : ''}
+                ${can ? '<span class="kyp-act" onclick="event.stopPropagation();alert(\'编辑功能开发中\')">✎</span>' : ''}
+                ${can ? '<span class="kyp-act kyp-act-del" onclick="event.stopPropagation();alert(\'删除功能开发中\')">✕</span>' : ''}
               </div>
             </div>
             <div class="kyp-card-meta">
               <span class="kyp-type-badge ktp-${k.type}">${k.type}</span>
-              <span class="kyp-scope-badge">${k.scope || '閫氱敤'}</span>
-              <span class="kyp-perm-badge">${permIcon[perm] || '馃寪'} ${permLabel[perm] || ''}</span>
+              <span class="kyp-scope-badge">${k.scope || '通用'}</span>
+              <span class="kyp-perm-badge">${permIcon[perm] || '🌐'} ${permLabel[perm] || ''}</span>
             </div>
-            <div class="kyp-card-desc">${k.description || '鏆傛棤鎻忚堪'}</div>
+            <div class="kyp-card-desc">${k.description || '暂无描述'}</div>
             <div class="kyp-card-tags">
               ${(k.tags || '').split(',').filter(t=>t.trim()).map(t => '<span class="kyp-tag-sm">' + t.trim() + '</span>').join('')}
             </div>
             <div class="kyp-card-footer">
-              <span class="kyp-card-time">馃搮 鏇存柊浜?${k.updateTime || k.createdAt || '-'}</span>
+              <span class="kyp-card-time">📅 更新于 ${k.updateTime || k.createdAt || '-'}</span>
               <span class="kyp-card-stats">
-                <span class="kyp-stat-item">馃憗 ${k.views || 0}</span>
-                <span class="kyp-stat-item">猬?${k.downloads || 0}</span>
+                <span class="kyp-stat-item">👁 ${k.views || 0}</span>
+                <span class="kyp-stat-item">⬇ ${k.downloads || 0}</span>
               </span>
             </div>
           </div>`;
         }).join('')}
       </div>
-      <div id="kyp-empty" style="display:none;text-align:center;padding:60px 0;color:var(--c-text-3,#999);font-size:14px;">娌℃湁鎵惧埌鍖归厤鐨勭煡璇嗗唴瀹?/div>
+      <div id="kyp-empty" style="display:none;text-align:center;padding:60px 0;color:var(--c-text-3,#999);font-size:14px;">没有找到匹配的知识内容</div>
     </div>
 
     <div class="kyp-sidebar">
       <div class="kyp-sb-section">
-        <div class="kyp-sb-title">馃敟 鐑棬鎺掕姒?TOP5</div>
+        <div class="kyp-sb-title">🔥 热门排行榜 TOP5</div>
         ${top5.map((k, i) => `
           <div class="kyp-rank-item" onclick="showKnowledgeDetail(${k.id})">
             <span class="kyp-rank-num ${i < 3 ? 'kyp-rank-top' : ''}">${i + 1}</span>
             <div class="kyp-rank-body">
               <span class="kyp-rank-title">${k.title}</span>
-              <span class="kyp-rank-stats">馃憗 ${k.views || 0}  路  猬?${k.downloads || 0}</span>
+              <span class="kyp-rank-stats">👁 ${k.views || 0}  ·  ⬇ ${k.downloads || 0}</span>
             </div>
           </div>
         `).join('')}
       </div>
       <div class="kyp-sb-section">
-        <div class="kyp-sb-title">馃晲 鏈€杩戞煡闃?/div>
+        <div class="kyp-sb-title">🕐 最近查阅</div>
         ${KNOWLEDGE.slice(0, 5).map(k => `
           <div class="kyp-recent-item" onclick="showKnowledgeDetail(${k.id})">
             <span class="kyp-recent-title">${k.title}</span>
@@ -3787,12 +3770,12 @@ function renderKnowledge(){
   </div>
 
   <div class="kyp-legend">
-    <span><span class="kyp-legend-dot" style="background:#378ADD;"></span> SOP娴佺▼浼樺寲</span>
-    <span><span class="kyp-legend-dot" style="background:#E24B4A;"></span> 椋庢帶搴旀€ラ妗?/span>
-    <span><span class="kyp-legend-dot" style="background:#3B6D11;"></span> 鎴愭湰鐩爣鎺у埗</span>
-    <span><span class="kyp-legend-dot" style="background:#E08B1A;"></span> 浼樼璇濇湳钀冨彇</span>
-    <span><span class="kyp-legend-dot" style="background:#7C3AED;"></span> AI鎻愭晥璧嬭兘</span>
-    <span><span class="kyp-legend-dot" style="background:#888;"></span> 鍩硅鏉愭枡</span>
+    <span><span class="kyp-legend-dot" style="background:#378ADD;"></span> SOP流程优化</span>
+    <span><span class="kyp-legend-dot" style="background:#E24B4A;"></span> 风控应急预案</span>
+    <span><span class="kyp-legend-dot" style="background:#3B6D11;"></span> 成本目标控制</span>
+    <span><span class="kyp-legend-dot" style="background:#E08B1A;"></span> 优秀话术萃取</span>
+    <span><span class="kyp-legend-dot" style="background:#7C3AED;"></span> AI提效赋能</span>
+    <span><span class="kyp-legend-dot" style="background:#888;"></span> 培训材料</span>
   </div>
 
   <script>
@@ -3832,7 +3815,7 @@ function renderKnowledge(){
   }
   <\/script>`;
 
-}// ===== 椤圭洰鎵挎帴瑙勮寖 =====
+}// ===== 项目承接规范 =====
 
 function renderHandover(){
 
@@ -3842,15 +3825,15 @@ function renderHandover(){
 
     <div>
 
-      <div class="module-title">馃攧 椤圭洰鎵挎帴瑙勮寖</div>
+      <div class="module-title">🔄 项目承接规范</div>
 
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">瑙ｅ喅浜哄憳鍙樺姩瀵艰嚧鐨勯」鐩俊鎭柇灞傞棶棰橈紝鎵€鏈変氦鎺ョ暀鐥曞彲鏌?/div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">解决人员变动导致的项目信息断层问题，所有交接留痕可查</div>
 
     </div>
 
     <div class="module-actions">
 
-      ${canEdit()?'<button class="btn btn-primary btn-sm" onclick="showNewHandover()">锛?鍙戣捣浜ゆ帴</button>':''}
+      ${canEdit()?'<button class="btn btn-primary btn-sm" onclick="showNewHandover()">＋ 发起交接</button>':''}
 
     </div>
 
@@ -3860,11 +3843,11 @@ function renderHandover(){
 
   <div class="card" style="background:var(--c-yellow-bg);border-color:var(--c-yellow);margin-bottom:16px;">
 
-    <div style="font-size:13px;color:var(--c-yellow);font-weight:500;">馃挕 椤圭洰鎵挎帴瑙勮寖璇存槑</div>
+    <div style="font-size:13px;color:var(--c-yellow);font-weight:500;">💡 项目承接规范说明</div>
 
     <div style="font-size:12px;color:var(--c-yellow);margin-top:4px;">
 
-      鍙戣捣浜ゆ帴鍚庯紝绯荤粺鑷姩鐢熸垚浜ゆ帴娓呭崟锛堝熀纭€妗ｆ+鐩爣璐ｄ换+杩愯惀鐜扮姸+杩涜涓棰?鏈叧闂棶棰橈級銆傛帴鏀朵汉纭鍚庯紝绯荤粺鑷姩鏇存柊璐熻矗浜哄瓧娈靛苟褰掓。鐣欑棔銆?
+      发起交接后，系统自动生成交接清单（基础档案+目标责任+运营现状+进行中课题+未关闭问题）。接收人确认后，系统自动更新负责人字段并归档留痕。
 
     </div>
 
@@ -3874,12 +3857,12 @@ function renderHandover(){
 
   <div class="card">
 
-    <div class="card-title">浜ゆ帴璁板綍</div>
-      <div class="detail-tab" onclick="switchDetailTab(this,'responsibility')">馃搵 璐ｄ换杈圭晫</div>
+    <div class="card-title">交接记录</div>
+      <div class="detail-tab" onclick="switchDetailTab(this,'responsibility')">📋 责任边界</div>
 
     <table class="data-table">
 
-      <thead><tr><th>浜ゆ帴缂栧彿</th><th>椤圭洰</th><th>鍘熻礋璐ｄ汉</th><th>鎺ユ敹浜?/th><th>浜ゆ帴鏃ユ湡</th><th>鐘舵€?/th><th>浜ゆ帴鎽樿</th><th>鎿嶄綔</th></tr></thead>
+      <thead><tr><th>交接编号</th><th>项目</th><th>原负责人</th><th>接收人</th><th>交接日期</th><th>状态</th><th>交接摘要</th><th>操作</th></tr></thead>
 
       <tbody>
 
@@ -3903,7 +3886,7 @@ function renderHandover(){
 
             <td class="actions">
 
-              <button class="btn btn-sm" onclick="alert('浜ゆ帴璇︽儏鍔熻兘寮€鍙戜腑')">鏌ョ湅璇︽儏</button>
+              <button class="btn btn-sm" onclick="alert('交接详情功能开发中')">查看详情</button>
 
             </td>
 
@@ -3919,11 +3902,11 @@ function renderHandover(){
 
   <div class="card" style="margin-top:16px;">
 
-    <div class="card-title">椤圭洰浜ゆ帴鐘舵€佹€昏</div>
+    <div class="card-title">项目交接状态总览</div>
 
     <table class="data-table">
 
-      <thead><tr><th>椤圭洰</th><th>鐜颁换璐熻矗浜?/th><th>浜ゆ帴鐘舵€?/th><th>鍘嗗彶浜ゆ帴娆℃暟</th><th>涓婃浜ゆ帴鏃ユ湡</th></tr></thead>
+      <thead><tr><th>项目</th><th>现任负责人</th><th>交接状态</th><th>历史交接次数</th><th>上次交接日期</th></tr></thead>
 
       <tbody>
 
@@ -3937,11 +3920,11 @@ function renderHandover(){
 
             <td>${p.pm}</td>
 
-            <td><span class="badge badge-green">姝ｅ父</span></td>
+            <td><span class="badge badge-green">正常</span></td>
 
             <td>${(p.pmHistory||[]).length + HANDOVERS.filter(h=>h.projectId===p.id).length}</td>
 
-            <td>${lastH?lastH.date:'鏃?}</td>
+            <td>${lastH?lastH.date:'无'}</td>
 
           </tr>`;
 
@@ -3959,7 +3942,7 @@ function renderHandover(){
 
 
 
-// ===== 椤圭洰鍏ㄦ櫙寮圭獥 =====
+// ===== 项目全景弹窗 =====
 
 function showProjectDetail(projectId){
 
@@ -3973,7 +3956,7 @@ function showProjectDetail(projectId){
 
   const modal = document.getElementById("modal-overlay");
 
-  document.getElementById("modal-title").textContent = "椤圭洰鍏ㄦ櫙 鈥?" + p.name;
+  document.getElementById("modal-title").textContent = "项目全景 — " + p.name;
 
   document.getElementById("modal-body").innerHTML = `
 
@@ -3987,13 +3970,13 @@ function showProjectDetail(projectId){
 
           <span class="wp-tag wp-${p.workplace}">${p.workplace}</span>
 
-          <span class="badge ${p.serviceMode==='TP椤圭洰'?'badge-blue':p.serviceMode==='DP椤圭洰'?'badge-green':'badge-orange'}">${p.serviceMode}</span>
+          <span class="badge ${p.serviceMode==='TP项目'?'badge-blue':p.serviceMode==='DP项目'?'badge-green':'badge-orange'}">${p.serviceMode}</span>
 
-          <span>${p.category} 路 ${p.brand}</span>
+          <span>${p.category} · ${p.brand}</span>
 
-          <span>鐘舵€侊細${p.status}</span>
+          <span>状态：${p.status}</span>
 
-          <span>鍋ュ悍锛?{p.health}</span>
+          <span>健康：${p.health}</span>
 
         </div>
 
@@ -4001,12 +3984,12 @@ function showProjectDetail(projectId){
 
       <div style="text-align:right;">
 
-        <button class="btn btn-sm" onclick="editProject('${p.id}')" style="font-size:12px;margin-bottom:8px;">鉁忥笍 缂栬緫</button>
-        <div style="font-size:12px;color:var(--c-text-3);">鐜颁换璐熻矗浜?/div>
+        <button class="btn btn-sm" onclick="editProject('${p.id}')" style="font-size:12px;margin-bottom:8px;">✏️ 编辑</button>
+        <div style="font-size:12px;color:var(--c-text-3);">现任负责人</div>
 
         <div style="font-size:16px;font-weight:600;color:var(--c-primary);">${p.pm}</div>
 
-        <div style="font-size:12px;color:var(--c-text-3);">椤圭洰鎬荤洃锛?{p.director}</div>
+        <div style="font-size:12px;color:var(--c-text-3);">项目总监：${p.director}</div>
 
       </div>
 
@@ -4016,56 +3999,56 @@ function showProjectDetail(projectId){
 
     <div class="detail-tabs">
 
-      <div class="detail-tab active" onclick="switchDetailTab(this,'info')">馃搵 鍩虹妗ｆ</div>
+      <div class="detail-tab active" onclick="switchDetailTab(this,'info')">📋 基础档案</div>
       
-      <div class="detail-tab" onclick="switchDetailTab(this,'target')">馃幆 鐩爣绾﹀畾</div>
+      <div class="detail-tab" onclick="switchDetailTab(this,'target')">🎯 目标约定</div>
       
-      <div class="detail-tab" onclick="switchDetailTab(this,'operation')">馃搳 杩愯惀瀹炲喌</div>
+      <div class="detail-tab" onclick="switchDetailTab(this,'operation')">📊 运营实况</div>
       
-      <div class="detail-tab" onclick="switchDetailTab(this,'issue')">鈿狅笍 璇鹃鎺ㄨ繘</div>
+      <div class="detail-tab" onclick="switchDetailTab(this,'issue')">⚠️ 课题推进</div>
       
-      <div class="detail-tab" onclick="switchDetailTab(this,'history')">馃摑 浜ゆ帴璁板綍</div>
+      <div class="detail-tab" onclick="switchDetailTab(this,'history')">📝 交接记录</div>
 
-      <div class="detail-tab" onclick="switchDetailTab(this,'responsibility')">馃搵 璐ｄ换杈圭晫</div>
+      <div class="detail-tab" onclick="switchDetailTab(this,'responsibility')">📋 责任边界</div>
     </div>
 
 
 
     <div id="detail-tab-info" class="detail-section">
 
-      <h4>鍩虹淇℃伅</h4>
+      <h4>基础信息</h4>
 
       <div class="detail-grid">
 
-        <div class="detail-item"><div class="detail-label">椤圭洰缂栧彿</div><div class="detail-value">${p.id}</div></div>
+        <div class="detail-item"><div class="detail-label">项目编号</div><div class="detail-value">${p.id}</div></div>
 
-        <div class="detail-item"><div class="detail-label">鍝佺墝</div><div class="detail-value">${p.brand}</div></div>
+        <div class="detail-item"><div class="detail-label">品牌</div><div class="detail-value">${p.brand}</div></div>
 
-        <div class="detail-item"><div class="detail-label">鍝佺被</div><div class="detail-value">${p.category}</div></div>
+        <div class="detail-item"><div class="detail-label">品类</div><div class="detail-value">${p.category}</div></div>
 
-        <div class="detail-item"><div class="detail-label">椤圭洰绫诲瀷</div><div class="detail-value">${p.serviceMode}</div></div>
+        <div class="detail-item"><div class="detail-label">项目类型</div><div class="detail-value">${p.serviceMode}</div></div>
 
-        <div class="detail-item"><div class="detail-label">鎵€灞炶亴鍦?/div><div class="detail-value">${p.workplace}</div></div>
+        <div class="detail-item"><div class="detail-label">所属职场</div><div class="detail-value">${p.workplace}</div></div>
 
-        <div class="detail-item"><div class="detail-label">瀹㈡湇base</div><div class="detail-value">${p.base}</div></div>
+        <div class="detail-item"><div class="detail-label">客服base</div><div class="detail-value">${p.base}</div></div>
 
-        <div class="detail-item"><div class="detail-label">鏈嶅姟鍛ㄦ湡</div><div class="detail-value">${p.startDate} ~ ${p.endDate}</div></div>
+        <div class="detail-item"><div class="detail-label">服务周期</div><div class="detail-value">${p.startDate} ~ ${p.endDate}</div></div>
 
-        <div class="detail-item"><div class="detail-label">鏈嶅姟娓犻亾</div><div class="detail-value">${p.platforms}</div></div>
+        <div class="detail-item"><div class="detail-label">服务渠道</div><div class="detail-value">${p.platforms}</div></div>
 
-        <div class="detail-item"><div class="detail-label">鏈嶅姟鏃堕棿</div><div class="detail-value">${p.serviceHours}</div></div>
+        <div class="detail-item"><div class="detail-label">服务时间</div><div class="detail-value">${p.serviceHours}</div></div>
 
-        <div class="detail-item"><div class="detail-label">椤圭洰鐘舵€?/div><div class="detail-value">${p.status}</div></div>
+        <div class="detail-item"><div class="detail-label">项目状态</div><div class="detail-value">${p.status}</div></div>
 
       </div>
 
       ${(p.pmHistory||[]).length>0?`
 
-        <h4 style="margin-top:16px;">鍘嗕换璐熻矗浜鸿褰?/h4>
+        <h4 style="margin-top:16px;">历任负责人记录</h4>
 
         <table class="data-table">
 
-          <thead><tr><th>濮撳悕</th><th>璧峰鏃堕棿</th><th>缁撴潫鏃堕棿</th><th>鍘熷洜</th></tr></thead>
+          <thead><tr><th>姓名</th><th>起始时间</th><th>结束时间</th><th>原因</th></tr></thead>
 
           <tbody>
 
@@ -4087,33 +4070,33 @@ function showProjectDetail(projectId){
 
     <div id="detail-tab-target" class="detail-section" style="display:none;">
 
-      <h4>鐩爣涓庢潈璐?/h4>
+      <h4>目标与权责</h4>
 
       <div class="detail-grid">
 
-        <div class="detail-item"><div class="detail-label">浜哄姏閰嶇疆鐩爣</div><div class="detail-value">${p.fteTarget} 浜?/div></div>
+        <div class="detail-item"><div class="detail-label">人力配置目标</div><div class="detail-value">${p.fteTarget} 人</div></div>
 
-        <div class="detail-item"><div class="detail-label">SLA鍝嶅簲鏃堕暱</div><div class="detail-value">鈮?${p.slaResponse} 绉?/div></div>
+        <div class="detail-item"><div class="detail-label">SLA响应时长</div><div class="detail-value">≤ ${p.slaResponse} 秒</div></div>
 
-        <div class="detail-item"><div class="detail-label">SLA瑙ｅ喅鏃堕暱</div><div class="detail-value">鈮?${p.slaResolve} 绉?/div></div>
+        <div class="detail-item"><div class="detail-label">SLA解决时长</div><div class="detail-value">≤ ${p.slaResolve} 秒</div></div>
 
-        <div class="detail-item"><div class="detail-label">CSat鐩爣</div><div class="detail-value">鈮?4.5</div></div>
+        <div class="detail-item"><div class="detail-label">CSat目标</div><div class="detail-value">≥ 4.5</div></div>
 
-        <div class="detail-item"><div class="detail-label">鏈堝害鎴愭湰棰勭畻</div><div class="detail-value">楼${((p.costBudget||0)/10000).toFixed(1)}涓?/div></div>
+        <div class="detail-item"><div class="detail-label">月度成本预算</div><div class="detail-value">¥${((p.costBudget||0)/10000).toFixed(1)}万</div></div>
 
-        <div class="detail-item"><div class="detail-label">鏈堝害钀ユ敹鐩爣</div><div class="detail-value">楼${((p.revenue||0)/10000).toFixed(1)}涓?/div></div>
+        <div class="detail-item"><div class="detail-label">月度营收目标</div><div class="detail-value">¥${((p.revenue||0)/10000).toFixed(1)}万</div></div>
 
       </div>
 
       <div style="margin-top:12px;padding:12px;background:var(--c-bg);border-radius:var(--radius);font-size:13px;">
 
-        <div style="font-weight:500;margin-bottom:6px;">璐ｄ换杈圭晫璇存槑</div>
+        <div style="font-weight:500;margin-bottom:6px;">责任边界说明</div>
 
         <div style="color:var(--c-text-2);line-height:1.8;">
 
-          <div><b>闇€姹傛柟锛堝搧鐗屾柟锛夎竟鐣岋細</b>璐熻矗鎻愪緵鍑嗙‘鐨勪骇鍝佷俊鎭€佹椿鍔ㄩ鍛娿€佺郴缁熸帴鍙ｇǔ瀹氭€т繚闅?/div>
+          <div><b>需求方（品牌方）边界：</b>负责提供准确的产品信息、活动预告、系统接口稳定性保障</div>
 
-          <div><b>鎵挎帴鏂癸紙瀹㈡湇鍥㈤槦锛夎竟鐣岋細</b>璐熻矗瀹㈡湇鏈嶅姟璐ㄩ噺銆佸搷搴旀椂鏁堛€佹弧鎰忓害缁存姢銆侀棶棰橀棴鐜鐞?/div>
+          <div><b>承接方（客服团队）边界：</b>负责客服服务质量、响应时效、满意度维护、问题闭环处理</div>
 
         </div>
 
@@ -4125,41 +4108,41 @@ function showProjectDetail(projectId){
 
     <div id="detail-tab-operation" class="detail-section" style="display:none;">
 
-      <h4>鏈€鏂拌繍钀ユ暟鎹紙${op?op.period:'鏃?}锛?/h4>
+      <h4>最新运营数据（${op?op.period:'无'}）</h4>
 
       ${op?`
 
       <div class="detail-grid">
 
-        <div class="detail-item"><div class="detail-label">鍦ㄥ矖浜烘暟</div><div class="detail-value">${op.fteActual} / ${p.fteTarget} 鐩爣</div></div>
+        <div class="detail-item"><div class="detail-label">在岗人数</div><div class="detail-value">${op.fteActual} / ${p.fteTarget} 目标</div></div>
 
-        <div class="detail-item"><div class="detail-label">鍑哄嫟鐜?/div><div class="detail-value" style="color:${op.attendance>=95?'var(--c-green)':'var(--c-yellow)'}">${op.attendance}%</div></div>
+        <div class="detail-item"><div class="detail-label">出勤率</div><div class="detail-value" style="color:${op.attendance>=95?'var(--c-green)':'var(--c-yellow)'}">${op.attendance}%</div></div>
 
-        <div class="detail-item"><div class="detail-label">鏈嶅姟鍗曢噺</div><div class="detail-value">${op.ticketVol.toLocaleString()}</div></div>
+        <div class="detail-item"><div class="detail-label">服务单量</div><div class="detail-value">${op.ticketVol.toLocaleString()}</div></div>
 
-        <div class="detail-item"><div class="detail-label">鍝嶅簲鏃堕暱</div><div class="detail-value" style="color:${op.responseTime<=p.slaResponse?'var(--c-green)':'var(--c-red)'}">${op.responseTime}绉掞紙鐩爣鈮?{p.slaResponse}锛?/div></div>
+        <div class="detail-item"><div class="detail-label">响应时长</div><div class="detail-value" style="color:${op.responseTime<=p.slaResponse?'var(--c-green)':'var(--c-red)'}">${op.responseTime}秒（目标≤${p.slaResponse}）</div></div>
 
-        <div class="detail-item"><div class="detail-label">瑙ｅ喅鏃堕暱</div><div class="detail-value" style="color:${op.resolveTime<=p.slaResolve?'var(--c-green)':'var(--c-red)'}">${op.resolveTime}绉掞紙鐩爣鈮?{p.slaResolve}锛?/div></div>
+        <div class="detail-item"><div class="detail-label">解决时长</div><div class="detail-value" style="color:${op.resolveTime<=p.slaResolve?'var(--c-green)':'var(--c-red)'}">${op.resolveTime}秒（目标≤${p.slaResolve}）</div></div>
 
-        <div class="detail-item"><div class="detail-label">CSat婊℃剰搴?/div><div class="detail-value" style="color:${op.csat>=4.5?'var(--c-green)':'var(--c-red)'}">${op.csat}锛堢洰鏍団墺4.5锛?/div></div>
+        <div class="detail-item"><div class="detail-label">CSat满意度</div><div class="detail-value" style="color:${op.csat>=4.5?'var(--c-green)':'var(--c-red)'}">${op.csat}（目标≥4.5）</div></div>
 
-        <div class="detail-item"><div class="detail-label">瑙ｅ喅鐜?/div><div class="detail-value">${op.resolutionRate}%</div></div>
+        <div class="detail-item"><div class="detail-label">解决率</div><div class="detail-value">${op.resolutionRate}%</div></div>
 
-        <div class="detail-item"><div class="detail-label">鍥炶瘎鐜?/div><div class="detail-value">${op.reviewRate}%</div></div>
+        <div class="detail-item"><div class="detail-label">回评率</div><div class="detail-value">${op.reviewRate}%</div></div>
 
       </div>
 
       <div style="margin-top:8px;">
 
-        <span style="font-size:13px;font-weight:500;">鍋ュ悍鐘舵€侊細</span>
+        <span style="font-size:13px;font-weight:500;">健康状态：</span>
 
         ${op.health}
 
-        <span style="font-size:12px;color:var(--c-text-3);margin-left:8px;">绯荤粺鑷姩璁＄畻</span>
+        <span style="font-size:12px;color:var(--c-text-3);margin-left:8px;">系统自动计算</span>
 
       </div>
 
-      `:'<div style="color:var(--c-text-3);padding:16px 0;">鏆傛棤杩愯惀鏁版嵁</div>'}
+      `:'<div style="color:var(--c-text-3);padding:16px 0;">暂无运营数据</div>'}
 
     </div>
 
@@ -4167,13 +4150,13 @@ function showProjectDetail(projectId){
 
     <div id="detail-tab-issue" class="detail-section" style="display:none;">
 
-      <h4>璇鹃涓庨棶棰樺垪琛?/h4>
+      <h4>课题与问题列表</h4>
 
       ${relatedIssues.length>0?`
 
         <table class="data-table">
 
-          <thead><tr><th>缂栧彿</th><th>绫诲瀷</th><th>鎻忚堪</th><th>浼樺厛绾?/th><th>鐘舵€?/th><th>璐ｄ换浜?/th></tr></thead>
+          <thead><tr><th>编号</th><th>类型</th><th>描述</th><th>优先级</th><th>状态</th><th>责任人</th></tr></thead>
 
           <tbody>
 
@@ -4187,9 +4170,9 @@ function showProjectDetail(projectId){
 
                 <td>${i.desc}</td>
 
-                <td><span class="badge ${i.priority==='绱ф€??'badge-red':i.priority==='閲嶈'?'badge-yellow':'badge-gray'}">${i.priority}</span></td>
+                <td><span class="badge ${i.priority==='紧急'?'badge-red':i.priority==='重要'?'badge-yellow':'badge-gray'}">${i.priority}</span></td>
 
-                <td><span class="badge ${i.status==='宸插叧闂??'badge-green':'badge-yellow'}">${i.status}</span></td>
+                <td><span class="badge ${i.status==='已关闭'?'badge-green':'badge-yellow'}">${i.status}</span></td>
 
                 <td>${i.assignee}</td>
 
@@ -4199,7 +4182,7 @@ function showProjectDetail(projectId){
 
         </table>
 
-      `:'<div style="color:var(--c-text-3);padding:16px 0;">鏆傛棤杩涜涓棰?/div>'}
+      `:'<div style="color:var(--c-text-3);padding:16px 0;">暂无进行中课题</div>'}
 
     </div>
 
@@ -4207,13 +4190,13 @@ function showProjectDetail(projectId){
 
     <div id="detail-tab-history" class="detail-section" style="display:none;">
 
-      <h4>浜ゆ帴鍘嗗彶璁板綍</h4>
+      <h4>交接历史记录</h4>
 
       ${HANDOVERS.filter(h=>h.projectId===p.id).length>0?`
 
         <table class="data-table">
 
-          <thead><tr><th>浜ゆ帴鏃ユ湡</th><th>鍘熻礋璐ｄ汉</th><th>鎺ユ敹浜?/th><th>鎽樿</th></tr></thead>
+          <thead><tr><th>交接日期</th><th>原负责人</th><th>接收人</th><th>摘要</th></tr></thead>
 
           <tbody>
 
@@ -4227,15 +4210,15 @@ function showProjectDetail(projectId){
 
         </table>
 
-      `:'<div style="color:var(--c-text-3);padding:16px 0;">鏆傛棤浜ゆ帴璁板綍</div>'}
+      `:'<div style="color:var(--c-text-3);padding:16px 0;">暂无交接记录</div>'}
 
       ${(p.pmHistory||[]).length>0?`
 
-        <h4 style="margin-top:16px;">鍘嗕换璐熻矗浜猴紙妗ｆ璁板綍锛?/h4>
+        <h4 style="margin-top:16px;">历任负责人（档案记录）</h4>
 
         <table class="data-table">
 
-          <thead><tr><th>濮撳悕</th><th>鏃堕棿娈?/th><th>鍘熷洜</th></tr></thead>
+          <thead><tr><th>姓名</th><th>时间段</th><th>原因</th></tr></thead>
 
           <tbody>
 
@@ -4281,7 +4264,7 @@ function switchDetailTab(el, tabName){
 
 
 
-// ===== 寮圭獥鎺у埗 =====
+// ===== 弹窗控制 =====
 
 function initModal(){
 
@@ -4305,11 +4288,11 @@ function initModal(){
 
 
 
-// ===== 浜嬩欢缁戝畾 =====
+// ===== 事件绑定 =====
 
 function bindEvents(){
 
-  // 鍏ㄥ眬鎼滅储
+  // 全局搜索
 
   const searchInput = document.getElementById("global-search");
 
@@ -4323,7 +4306,7 @@ function bindEvents(){
 
       const filtered = PROJECTS.filter(p=>p.name.toLowerCase().includes(kw)||p.brand.toLowerCase().includes(kw)||p.id.toLowerCase().includes(kw));
 
-      // 绠€鍗曢珮浜細鍦ㄨ〃鏍间腑杩囨护
+      // 简单高亮：在表格中过滤
 
       document.querySelectorAll(".data-table tbody tr").forEach(tr=>{
 
@@ -4343,7 +4326,7 @@ function showAddProject(){
 
   const body = document.getElementById("modal-body");
 
-  document.getElementById("modal-title").textContent = "锛?鏂板椤圭洰";
+  document.getElementById("modal-title").textContent = "＋ 新增项目";
 
   body.innerHTML = `
 
@@ -4351,7 +4334,7 @@ function showAddProject(){
 
       <div class="form-group">
 
-        <label class="form-label">椤圭洰缂栧彿</label>
+        <label class="form-label">项目编号</label>
 
         <input class="form-input" value="P00${PROJECTS.length+1}" disabled>
 
@@ -4359,9 +4342,9 @@ function showAddProject(){
 
       <div class="form-group">
 
-        <label class="form-label">椤圭洰鍚嶇О *</label>
+        <label class="form-label">项目名称 *</label>
 
-        <input class="form-input" id="f-name" placeholder="璇疯緭鍏ラ」鐩悕绉?>
+        <input class="form-input" id="f-name" placeholder="请输入项目名称">
 
       </div>
 
@@ -4371,21 +4354,21 @@ function showAddProject(){
 
       <div class="form-group">
 
-        <label class="form-label">鍝佺墝</label>
+        <label class="form-label">品牌</label>
 
-        <input class="form-input" id="f-brand" placeholder="鍝佺墝鍚嶇О">
+        <input class="form-input" id="f-brand" placeholder="品牌名称">
 
       </div>
 
       <div class="form-group">
 
-        <label class="form-label">鍝佺被</label>
+        <label class="form-label">品类</label>
 
         <select class="form-select" id="f-category">
 
-          <option>缇庡</option><option>瀹剁數</option><option>鏈嶈</option>
+          <option>美妆</option><option>家电</option><option>服装</option>
 
-          <option>姣嶅┐</option><option>椋熷搧</option><option>杩愬姩</option>
+          <option>母婴</option><option>食品</option><option>运动</option>
 
         </select>
 
@@ -4397,11 +4380,11 @@ function showAddProject(){
 
       <div class="form-group">
 
-        <label class="form-label">椤圭洰绫诲瀷</label>
+        <label class="form-label">项目类型</label>
 
         <select class="form-select" id="f-mode">
 
-          <option>TP椤圭洰</option><option>DP椤圭洰</option><option>BPO椤圭洰</option>
+          <option>TP项目</option><option>DP项目</option><option>BPO项目</option>
 
         </select>
 
@@ -4409,11 +4392,11 @@ function showAddProject(){
 
       <div class="form-group">
 
-        <label class="form-label">鎵€灞炶亴鍦?/label>
+        <label class="form-label">所属职场</label>
 
         <select class="form-select" id="f-workplace">
 
-          <option>娴庡崡</option><option>娣勫崥</option><option>鏉窞</option>
+          <option>济南</option><option>淄博</option><option>杭州</option>
 
         </select>
 
@@ -4425,17 +4408,17 @@ function showAddProject(){
 
       <div class="form-group">
 
-        <label class="form-label">椤圭洰缁忕悊</label>
+        <label class="form-label">项目经理</label>
 
-        <input class="form-input" id="f-pm" placeholder="濮撳悕">
+        <input class="form-input" id="f-pm" placeholder="姓名">
 
       </div>
 
       <div class="form-group">
 
-        <label class="form-label">椤圭洰鎬荤洃</label>
+        <label class="form-label">项目总监</label>
 
-        <input class="form-input" id="f-director" placeholder="濮撳悕">
+        <input class="form-input" id="f-director" placeholder="姓名">
 
       </div>
 
@@ -4445,17 +4428,17 @@ function showAddProject(){
 
       <div class="form-group">
 
-        <label class="form-label">瀹㈡湇base鑱屽満</label>
+        <label class="form-label">客服base职场</label>
 
-        <input class="form-input" id="f-base" placeholder="濡傦細娴庡崡鑱屽満2F">
+        <input class="form-input" id="f-base" placeholder="如：济南职场2F">
 
       </div>
 
       <div class="form-group">
 
-        <label class="form-label">鏈嶅姟娓犻亾</label>
+        <label class="form-label">服务渠道</label>
 
-        <input class="form-input" id="f-platforms" placeholder="濡傦細澶╃尗,浜笢,鎶栭煶">
+        <input class="form-input" id="f-platforms" placeholder="如：天猫,京东,抖音">
 
       </div>
 
@@ -4463,17 +4446,17 @@ function showAddProject(){
 
     <div class="form-group">
 
-      <label class="form-label">椤圭洰鑳屾櫙涓庤皟鎬?/label>
+      <label class="form-label">项目背景与调性</label>
 
-      <textarea class="form-textarea" id="f-background" placeholder="璁板綍椤圭洰鐗规畩鎬с€佹敞鎰忎簨椤广€佺敳鏂规矡閫氬亸濂界瓑锛屼究浜庢柊浜哄揩閫熶簡瑙?></textarea>
+      <textarea class="form-textarea" id="f-background" placeholder="记录项目特殊性、注意事项、甲方沟通偏好等，便于新人快速了解"></textarea>
 
     </div>
 
     <div class="form-actions">
 
-      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">鍙栨秷</button>
+      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">取消</button>
 
-      <button class="btn btn-primary" onclick="doAddProject()">纭鏂板</button>
+      <button class="btn btn-primary" onclick="doAddProject()">确认新增</button>
 
     </div>`;
 
@@ -4487,7 +4470,7 @@ function doAddProject(){
 
   const name = document.getElementById("f-name").value.trim();
 
-  if(!name) { alert("璇峰～鍐欓」鐩悕绉?); return; }
+  if(!name) { alert("请填写项目名称"); return; }
 
   const p = {
 
@@ -4495,7 +4478,7 @@ function doAddProject(){
 
     name: name,
 
-    brand: document.getElementById("f-brand").value||"鏈煡",
+    brand: document.getElementById("f-brand").value||"未知",
 
     category: document.getElementById("f-category").value,
 
@@ -4503,13 +4486,13 @@ function doAddProject(){
 
     workplace: document.getElementById("f-workplace").value,
 
-    pm: document.getElementById("f-pm").value||"鏈垎閰?,
+    pm: document.getElementById("f-pm").value||"未分配",
 
-    director: document.getElementById("f-director").value||"鏈垎閰?,
+    director: document.getElementById("f-director").value||"未分配",
 
     pmHistory:[],
 
-    status:"杩愯惀涓?,
+    status:"运营中",
 
     startDate: new Date().toISOString().slice(0,10),
 
@@ -4523,20 +4506,20 @@ function doAddProject(){
 
     fteTarget:20, slaResponse:120, slaResolve:360,
 
-    costBudget:200000, revenue:220000, profitRate:9.1, health:"馃煝"
+    costBudget:200000, revenue:220000, profitRate:9.1, health:"🟢"
 
   };
 
   PROJECTS.push(p);
   saveProjects();
 
-  OPERATIONS.push({id:OPERATIONS.length+1, projectId:p.id, period:new Date().toISOString().slice(0,7), fteActual:0, attendance:0, ticketVol:0, responseTime:0, resolveTime:0, csat:0, resolutionRate:0, reviewRate:0, health:"馃煛"});
+  OPERATIONS.push({id:OPERATIONS.length+1, projectId:p.id, period:new Date().toISOString().slice(0,7), fteActual:0, attendance:0, ticketVol:0, responseTime:0, resolveTime:0, csat:0, resolutionRate:0, reviewRate:0, health:"🟡"});
 
   document.getElementById("modal-overlay").classList.add("hidden");
 
   renderModule(currentModule);
 
-  showToast("椤圭洰銆?+name+"銆嶅凡鏂板锛?);
+  showToast("项目「"+name+"」已新增！");
 
 }
 
@@ -4546,7 +4529,7 @@ function showAddIssue(){
 
   const body = document.getElementById("modal-body");
 
-  document.getElementById("modal-title").textContent = "锛?涓婃姤闂";
+  document.getElementById("modal-title").textContent = "＋ 上报问题";
 
   const projectOptions = PROJECTS.map(p=>`<option value="${p.id}">${p.name}</option>`).join("");
 
@@ -4554,11 +4537,11 @@ function showAddIssue(){
 
     <div class="form-group">
 
-      <label class="form-label">鍏宠仈椤圭洰 *</label>
+      <label class="form-label">关联项目 *</label>
 
       <select class="form-select" id="i-project">
 
-        <option value="">-- 璇烽€夋嫨 --</option>
+        <option value="">-- 请选择 --</option>
 
         ${projectOptions}
 
@@ -4570,11 +4553,11 @@ function showAddIssue(){
 
       <div class="form-group">
 
-        <label class="form-label">闂绫诲瀷</label>
+        <label class="form-label">问题类型</label>
 
         <select class="form-select" id="i-type">
 
-          <option>浼樺寲</option><option>鏁存敼</option><option>瀹㈣瘔</option><option>浜哄憳</option><option>绯荤粺</option>
+          <option>优化</option><option>整改</option><option>客诉</option><option>人员</option><option>系统</option>
 
         </select>
 
@@ -4582,11 +4565,11 @@ function showAddIssue(){
 
       <div class="form-group">
 
-        <label class="form-label">浼樺厛绾?/label>
+        <label class="form-label">优先级</label>
 
         <select class="form-select" id="i-priority">
 
-          <option>涓€鑸?/option><option>閲嶈</option><option>绱ф€?/option>
+          <option>一般</option><option>重要</option><option>紧急</option>
 
         </select>
 
@@ -4596,9 +4579,9 @@ function showAddIssue(){
 
     <div class="form-group">
 
-      <label class="form-label">闂鎻忚堪 *</label>
+      <label class="form-label">问题描述 *</label>
 
-      <textarea class="form-textarea" id="i-desc" placeholder="璇疯缁嗘弿杩伴棶棰樼幇璞°€佸彂鐜版椂闂淬€佸奖鍝嶈寖鍥?></textarea>
+      <textarea class="form-textarea" id="i-desc" placeholder="请详细描述问题现象、发现时间、影响范围"></textarea>
 
     </div>
 
@@ -4606,11 +4589,11 @@ function showAddIssue(){
 
       <div class="form-group">
 
-        <label class="form-label">璐ｄ换褰掑睘</label>
+        <label class="form-label">责任归属</label>
 
         <select class="form-select" id="i-resp">
 
-          <option>鎵挎帴鏂?/option><option>闇€姹傛柟</option><option>鍏卞悓</option>
+          <option>承接方</option><option>需求方</option><option>共同</option>
 
         </select>
 
@@ -4618,9 +4601,9 @@ function showAddIssue(){
 
       <div class="form-group">
 
-        <label class="form-label">鎸囨淳缁?/label>
+        <label class="form-label">指派给</label>
 
-        <input class="form-input" id="i-assignee" placeholder="濮撳悕锛堝彲璺ㄨ亴鍦烘寚娲撅級">
+        <input class="form-input" id="i-assignee" placeholder="姓名（可跨职场指派）">
 
       </div>
 
@@ -4628,11 +4611,11 @@ function showAddIssue(){
 
     <div class="form-group">
 
-      <label class="form-label">鍙戠幇鏉ユ簮</label>
+      <label class="form-label">发现来源</label>
 
       <select class="form-select" id="i-source">
 
-        <option>鐩戞帶棰勮</option><option>浜哄伐涓婃姤</option><option>鍝佺墝鍙嶉</option><option>璐㈠姟棰勮</option>
+        <option>监控预警</option><option>人工上报</option><option>品牌反馈</option><option>财务预警</option>
 
       </select>
 
@@ -4640,9 +4623,9 @@ function showAddIssue(){
 
     <div class="form-actions">
 
-      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">鍙栨秷</button>
+      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">取消</button>
 
-      <button class="btn btn-primary" onclick="doAddIssue()">纭涓婃姤</button>
+      <button class="btn btn-primary" onclick="doAddIssue()">确认上报</button>
 
     </div>`;
 
@@ -4658,7 +4641,7 @@ function doAddIssue(){
 
   const desc = document.getElementById("i-desc").value.trim();
 
-  if(!pid||!desc) { alert("璇峰～鍐欏繀濉」"); return; }
+  if(!pid||!desc) { alert("请填写必填项"); return; }
 
   const p = PROJECTS.find(pp=>pp.id===pid);
 
@@ -4676,11 +4659,11 @@ function doAddIssue(){
 
     priority: document.getElementById("i-priority").value,
 
-    owner: currentRole==="pm"?"寮犱紵":currentRole==="exec"?"鍒樻磱":"",
+    owner: currentRole==="pm"?"张伟":currentRole==="exec"?"刘洋":"",
 
-    assignee: document.getElementById("i-assignee").value||"鏈垎閰?,
+    assignee: document.getElementById("i-assignee").value||"未分配",
 
-    status:"寰呭鐞?,
+    status:"待处理",
 
     source: document.getElementById("i-source").value,
 
@@ -4696,7 +4679,7 @@ function doAddIssue(){
 
   renderModule("issue");
 
-  alert("闂宸蹭笂鎶ワ紒");
+  alert("问题已上报！");
 
 }
 
@@ -4706,27 +4689,27 @@ function showNewHandover(){
 
   const body = document.getElementById("modal-body");
 
-  document.getElementById("modal-title").textContent = "馃攧 鍙戣捣浜ゆ帴";
+  document.getElementById("modal-title").textContent = "🔄 发起交接";
 
-  const projectOptions = PROJECTS.map(p=>`<option value="${p.id}">${p.name}锛堢幇浠伙細${p.pm}锛?/option>`).join("");
+  const projectOptions = PROJECTS.map(p=>`<option value="${p.id}">${p.name}（现任：${p.pm}）</option>`).join("");
 
   body.innerHTML = `
 
     <div style="background:var(--c-yellow-bg);padding:10px 14px;border-radius:var(--radius);margin-bottom:14px;font-size:13px;color:var(--c-yellow);">
 
-      馃挕 鍙戣捣浜ゆ帴鍚庯紝绯荤粺灏嗚嚜鍔ㄧ敓鎴愪互涓嬩氦鎺ユ竻鍗曪紝璇烽€愰」纭鍚庤浆浜わ細
+      💡 发起交接后，系统将自动生成以下交接清单，请逐项确认后转交：
 
-      <div style="margin-top:6px;font-size:12px;color:var(--c-yellow);">鉁?椤圭洰鍩虹妗ｆ &nbsp; 鉁?鐩爣涓庢潈璐?&nbsp; 鉁?褰撳墠杩愯惀鐜扮姸 &nbsp; 鉁?杩涜涓棰?&nbsp; 鉁?鏈叧闂棶棰?/div>
+      <div style="margin-top:6px;font-size:12px;color:var(--c-yellow);">✅ 项目基础档案 &nbsp; ✅ 目标与权责 &nbsp; ✅ 当前运营现状 &nbsp; ✅ 进行中课题 &nbsp; ✅ 未关闭问题</div>
 
     </div>
 
     <div class="form-group">
 
-      <label class="form-label">浜ゆ帴椤圭洰 *</label>
+      <label class="form-label">交接项目 *</label>
 
       <select class="form-select" id="h-project">
 
-        <option value="">-- 璇烽€夋嫨椤圭洰 --</option>
+        <option value="">-- 请选择项目 --</option>
 
         ${projectOptions}
 
@@ -4738,17 +4721,17 @@ function showNewHandover(){
 
       <div class="form-group">
 
-        <label class="form-label">鍘熻礋璐ｄ汉</label>
+        <label class="form-label">原负责人</label>
 
-        <input class="form-input" id="h-from" placeholder="鑷姩濉厖" disabled>
+        <input class="form-input" id="h-from" placeholder="自动填充" disabled>
 
       </div>
 
       <div class="form-group">
 
-        <label class="form-label">鎺ユ敹浜?*</label>
+        <label class="form-label">接收人 *</label>
 
-        <input class="form-input" id="h-to" placeholder="璇疯緭鍏ユ帴鏀朵汉濮撳悕">
+        <input class="form-input" id="h-to" placeholder="请输入接收人姓名">
 
       </div>
 
@@ -4756,21 +4739,21 @@ function showNewHandover(){
 
     <div class="form-group">
 
-      <label class="form-label">浜ゆ帴璇存槑</label>
+      <label class="form-label">交接说明</label>
 
-      <textarea class="form-textarea" id="h-summary" placeholder="閲嶇偣浜ゆ帴浜嬮」銆佹敞鎰忎簨椤圭瓑"></textarea>
+      <textarea class="form-textarea" id="h-summary" placeholder="重点交接事项、注意事项等"></textarea>
 
     </div>
 
     <div class="form-actions">
 
-      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">鍙栨秷</button>
+      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">取消</button>
 
-      <button class="btn btn-primary" onclick="doNewHandover()">纭鍙戣捣浜ゆ帴</button>
+      <button class="btn btn-primary" onclick="doNewHandover()">确认发起交接</button>
 
     </div>`;
 
-  // 閫夐」鍙樺寲鏃惰嚜鍔ㄥ～鍏呭師璐熻矗浜?
+  // 选项变化时自动填充原负责人
 
   setTimeout(()=>{
 
@@ -4800,21 +4783,21 @@ function doNewHandover(){
 
   const to = document.getElementById("h-to").value.trim();
 
-  if(!pid||!to) { alert("璇峰～鍐欏繀濉」"); return; }
+  if(!pid||!to) { alert("请填写必填项"); return; }
 
   const p = PROJECTS.find(pp=>pp.id===pid);
 
   const from = p?p.pm:"";
 
-  // 鏇存柊椤圭洰璐熻矗浜?
+  // 更新项目负责人
 
   if(p){ p.pm = to; }
 
-  // 杞Щ鏈叧闂棶棰?
+  // 转移未关闭问题
 
-  ISSUES.forEach(i=>{ if(i.projectId===pid&&i.status!=="宸插叧闂?) i.assignee = to; });
+  ISSUES.forEach(i=>{ if(i.projectId===pid&&i.status!=="已关闭") i.assignee = to; });
 
-  // 璁板綍浜ゆ帴鍘嗗彶
+  // 记录交接历史
 
   HANDOVERS.push({
 
@@ -4830,21 +4813,21 @@ function doNewHandover(){
 
     date: new Date().toISOString().slice(0,10),
 
-    status:"宸插畬鎴?,
+    status:"已完成",
 
-    summary: document.getElementById("h-summary").value||"宸插畬鎴愪氦鎺?
+    summary: document.getElementById("h-summary").value||"已完成交接"
 
   });
 
-  // 杩藉姞鍘嗕换璐熻矗浜鸿褰?
+  // 追加历任负责人记录
 
-  if(p){ p.pmHistory.push({name:from, from:"2026-03", to:new Date().toISOString().slice(0,7), reason:"浜哄憳浜ゆ帴"}); }
+  if(p){ p.pmHistory.push({name:from, from:"2026-03", to:new Date().toISOString().slice(0,7), reason:"人员交接"}); }
 
   document.getElementById("modal-overlay").classList.add("hidden");
 
   renderModule("handover");
 
-  alert("浜ゆ帴宸插畬鎴愶紒\n鍘熻礋璐ｄ汉锛?+from+"\n鎺ユ敹浜猴細"+to+"\n绯荤粺宸茶嚜鍔ㄦ洿鏂伴」鐩礋璐ｄ汉鍙婃湭鍏抽棴闂鎸囨淳銆?);
+  alert("交接已完成！\n原负责人："+from+"\n接收人："+to+"\n系统已自动更新项目负责人及未关闭问题指派。");
 
 }
 
@@ -4858,51 +4841,51 @@ function showIssueDetail(id){
 
   const body = document.getElementById("modal-body");
 
-  document.getElementById("modal-title").textContent = "璇鹃璇︽儏 I"+String(id).padStart(3,"0");
+  document.getElementById("modal-title").textContent = "课题详情 I"+String(id).padStart(3,"0");
 
   body.innerHTML = `
 
     <div class="detail-grid" style="margin-bottom:16px;">
 
-      <div class="detail-item"><div class="detail-label">鍏宠仈椤圭洰</div><div class="detail-value">${i.projectName}</div></div>
+      <div class="detail-item"><div class="detail-label">关联项目</div><div class="detail-value">${i.projectName}</div></div>
 
-      <div class="detail-item"><div class="detail-label">闂绫诲瀷</div><div class="detail-value">${i.type}</div></div>
+      <div class="detail-item"><div class="detail-label">问题类型</div><div class="detail-value">${i.type}</div></div>
 
-      <div class="detail-item"><div class="detail-label">浼樺厛绾?/div><div class="detail-value"><span class="badge ${i.priority==='绱ф€??'badge-red':i.priority==='閲嶈'?'badge-yellow':'badge-gray'}">${i.priority}</span></div></div>
+      <div class="detail-item"><div class="detail-label">优先级</div><div class="detail-value"><span class="badge ${i.priority==='紧急'?'badge-red':i.priority==='重要'?'badge-yellow':'badge-gray'}">${i.priority}</span></div></div>
 
-      <div class="detail-item"><div class="detail-label">褰撳墠鐘舵€?/div><div class="detail-value"><span class="badge ${i.status==='宸插叧闂??'badge-green':'badge-yellow'}">${i.status}</span></div></div>
+      <div class="detail-item"><div class="detail-label">当前状态</div><div class="detail-value"><span class="badge ${i.status==='已关闭'?'badge-green':'badge-yellow'}">${i.status}</span></div></div>
 
-      <div class="detail-item"><div class="detail-label">璐ｄ换浜?/div><div class="detail-value">${i.assignee}</div></div>
+      <div class="detail-item"><div class="detail-label">责任人</div><div class="detail-value">${i.assignee}</div></div>
 
-      <div class="detail-item"><div class="detail-label">璐ｄ换褰掑睘</div><div class="detail-value">${i.responsibility}</div></div>
+      <div class="detail-item"><div class="detail-label">责任归属</div><div class="detail-value">${i.responsibility}</div></div>
 
     </div>
 
     <div style="background:var(--c-bg);padding:12px;border-radius:var(--radius);margin-bottom:16px;">
 
-      <div style="font-size:12px;color:var(--c-text-3);">闂鎻忚堪</div>
+      <div style="font-size:12px;color:var(--c-text-3);">问题描述</div>
 
       <div style="margin-top:4px;font-size:13px;">${i.desc}</div>
 
     </div>
 
-    ${i.solution?'<div style="background:var(--c-green-bg);padding:12px;border-radius:var(--radius);margin-bottom:16px;"><div style="font-size:12px;color:var(--c-green);">瑙ｅ喅鏂规</div><div style="margin-top:4px;font-size:13px;">'+i.solution+'</div></div>':''}
+    ${i.solution?'<div style="background:var(--c-green-bg);padding:12px;border-radius:var(--radius);margin-bottom:16px;"><div style="font-size:12px;color:var(--c-green);">解决方案</div><div style="margin-top:4px;font-size:13px;">'+i.solution+'</div></div>':''}
 
-    ${currentRole!=='leader'&&i.status!=='宸插叧闂??`
+    ${currentRole!=='leader'&&i.status!=='已关闭'?`
 
     <div class="form-group">
 
-      <label class="form-label">鏇存柊澶勭悊鐘舵€?/label>
+      <label class="form-label">更新处理状态</label>
 
       <select class="form-select" id="i-status-update" style="max-width:200px;">
 
-        <option ${i.status==='寰呭鐞??'selected':''}>寰呭鐞?/option>
+        <option ${i.status==='待处理'?'selected':''}>待处理</option>
 
-        <option ${i.status==='澶勭悊涓??'selected':''}>澶勭悊涓?/option>
+        <option ${i.status==='处理中'?'selected':''}>处理中</option>
 
-        <option ${i.status==='寰呴獙鏀??'selected':''}>寰呴獙鏀?/option>
+        <option ${i.status==='待验收'?'selected':''}>待验收</option>
 
-        <option ${i.status==='宸插叧闂??'selected':''}>宸插叧闂?/option>
+        <option ${i.status==='已关闭'?'selected':''}>已关闭</option>
 
       </select>
 
@@ -4910,19 +4893,19 @@ function showIssueDetail(id){
 
     <div class="form-group">
 
-      <label class="form-label">濉啓瑙ｅ喅鏂规</label>
+      <label class="form-label">填写解决方案</label>
 
-      <textarea class="form-textarea" id="i-solution" placeholder="璁板綍澶勭悊鎺柦涓庣粨鏋?>${i.solution}</textarea>
+      <textarea class="form-textarea" id="i-solution" placeholder="记录处理措施与结果">${i.solution}</textarea>
 
     </div>
 
     <div class="form-actions">
 
-      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">鍏抽棴</button>
+      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">关闭</button>
 
-      <button class="btn btn-primary" onclick="doUpdateIssue(${id})">淇濆瓨鏇存柊</button>
+      <button class="btn btn-primary" onclick="doUpdateIssue(${id})">保存更新</button>
 
-    </div>`:'<div class="form-actions"><button class="btn" onclick="document.getElementById(\'modal-overlay\').classList.add(\'hidden\')">鍏抽棴</button></div>'}
+    </div>`:'<div class="form-actions"><button class="btn" onclick="document.getElementById(\'modal-overlay\').classList.add(\'hidden\')">关闭</button></div>'}
 
   `;
 
@@ -4950,13 +4933,13 @@ function doUpdateIssue(id){
 
   renderModule("issue");
 
-  alert("璇鹃 I"+String(id).padStart(3,"0")+" 宸叉洿鏂帮紒");
+  alert("课题 I"+String(id).padStart(3,"0")+" 已更新！");
 
 }
 
 
 
-// ===== 閫氱敤 XLSX/CSV 瀵煎嚭鍑芥暟 =====
+// ===== 通用 XLSX/CSV 导出函数 =====
 function exportToXlsx(filename, headers, rows) {
   try {
     var wsData = [headers, ...rows];
@@ -4965,9 +4948,9 @@ function exportToXlsx(filename, headers, rows) {
     var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, filename);
-    if (typeof showToast === 'function') showToast('宸插鍑猴細' + filename);
+    if (typeof showToast === 'function') showToast('已导出：' + filename);
   } catch(e) {
-    alert('瀵煎嚭 Excel 澶辫触锛? + e.message);
+    alert('导出 Excel 失败：' + e.message);
   }
 }
 
@@ -4985,29 +4968,10 @@ function exportToCSV(filename, headers, rows) {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
-    if (typeof showToast === 'function') showToast('宸插鍑猴細' + filename);
+    if (typeof showToast === 'function') showToast('已导出：' + filename);
   } catch(e) {
-    alert('瀵煎嚭 CSV 澶辫触锛? + e.message);
+    alert('导出 CSV 失败：' + e.message);
   }
-}
-
-// 璁＄畻KPI瓒嬪娍锛堜粠KPI_HISTORY璇诲彇鏈€杩戜袱涓湀鐨勬暟鎹姣旓級
-function calculateKpiTrend(fieldName) {
-  if (!KPI_HISTORY || KPI_HISTORY.length < 2) {
-    return { trend: '--', trendUp: true };
-  }
-  // 鎸夋棩鏈熸帓搴忥紙鏈€鏂扮殑鍦ㄥ墠闈級
-  const sorted = KPI_HISTORY.slice().sort((a, b) => b.date.localeCompare(a.date));
-  const current = sorted[0][fieldName];
-  const previous = sorted[1][fieldName];
-  if (!current || !previous || previous === 0) {
-    return { trend: '--', trendUp: true };
-  }
-  const change = ((current - previous) / previous * 100).toFixed(1);
-  return {
-    trend: (change >= 0 ? '+' : '') + change + '%',
-    trendUp: change >= 0
-  };
 }
 
 function showExportDialog(headers, rows, baseFilename, title) {
@@ -5018,18 +4982,18 @@ function showExportDialog(headers, rows, baseFilename, title) {
   var titleEl = document.getElementById('modal-title');
   var body = document.getElementById('modal-body');
   if (!overlay || !titleEl || !body) {
-    // fallback锛氱洿鎺ュ鍑?CSV
+    // fallback：直接导出 CSV
     exportToCSV(baseFilename + '.csv', headers, rows);
     return;
   }
-  titleEl.textContent = '瀵煎嚭锛? + (title || '鏁版嵁');
+  titleEl.textContent = '导出：' + (title || '数据');
   body.innerHTML = '<div style="padding:24px;text-align:center;">' +
-    '<div style="font-size:15px;margin-bottom:20px;color:#1e293b;font-weight:600;">璇烽€夋嫨瀵煎嚭鏍煎紡</div>' +
+    '<div style="font-size:15px;margin-bottom:20px;color:#1e293b;font-weight:600;">请选择导出格式</div>' +
     '<div style="display:flex;gap:16px;justify-content:center;margin-bottom:16px;">' +
-      '<button class="btn btn-primary" style="padding:14px 28px;font-size:14px;" onclick="doExportCSV()">馃摜 瀵煎嚭 CSV</button>' +
-      '<button class="btn" style="padding:14px 28px;font-size:14px;background:#1d6f42;color:#fff;border:none;" onclick="doExportXLSX()">馃搳 瀵煎嚭 Excel</button>' +
+      '<button class="btn btn-primary" style="padding:14px 28px;font-size:14px;" onclick="doExportCSV()">📥 导出 CSV</button>' +
+      '<button class="btn" style="padding:14px 28px;font-size:14px;background:#1d6f42;color:#fff;border:none;" onclick="doExportXLSX()">📊 导出 Excel</button>' +
     '</div>' +
-    '<div style="font-size:12px;color:#94a3b8;">CSV 鍏煎鏇村杞欢 | Excel 鏀寔鏍煎紡缇庡寲</div>' +
+    '<div style="font-size:12px;color:#94a3b8;">CSV 兼容更多软件 | Excel 支持格式美化</div>' +
   '</div>';
   overlay.classList.remove('hidden');
 }
@@ -5046,33 +5010,48 @@ window.doExportXLSX = function() {
   var ov = document.getElementById('modal-overlay');
   if (ov) ov.classList.add('hidden');
 };
-// ===== 缁撴潫閫氱敤瀵煎嚭鍑芥暟 =====
+// ===== 结束通用导出函数 =====
 
 
 function exportDashboard(){
   const filtered = getFilteredProjects();
-  const headers = ['椤圭洰缂栧彿','椤圭洰鍚嶇О','鍋ュ悍搴?,'鐘舵€?,'鑱屽満','璐熻矗浜?,'骞冲彴','鍝佺被','鍝佺墝'];
+  const headers = ['项目编号','项目名称','健康度','状态','职场','负责人','平台','品类','品牌'];
   const rows = filtered.map(p => [
     p.id, 
     p.name, 
     p.healthScore||'', 
-    p.status||'杩涜涓?, 
+    p.status||'进行中', 
     p.workplace||'', 
     p.pm||'',
-    (p.platforms||'').split(/[,锛屻€乚/).map(function(s){return s.trim();}).filter(Boolean).join(', '),
+    (p.platforms||'').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean).join(', '),
     p.category||'',
     p.brand||''
   ]);
-  showExportDialog(headers, rows, `椤圭洰鎬昏_${new Date().toISOString().slice(0,10)}`, '椤圭洰鎬昏鐪嬫澘');
+  showExportDialog(headers, rows, `项目总览_${new Date().toISOString().slice(0,10)}`, '项目总览看板');
 }
 
 
 
-// ===== 椤圭洰杩愮淮璋冪爺 =====
+
+
+// 从 KPI_HISTORY 计算真实趋势
+function calculateKpiTrend(fieldName) {
+  if (KPI_HISTORY.length < 2) return { trend: '0%', trendUp: true, areaColor: '#FFD700', strokeColor: '#FFD700' };
+  var current = KPI_HISTORY[KPI_HISTORY.length - 1][fieldName];
+  var previous = KPI_HISTORY[KPI_HISTORY.length - 2][fieldName];
+  if (previous === 0) previous = 1;
+  var change = ((current - previous) / previous * 100).toFixed(1);
+  return {
+    trend: (change >= 0 ? '+' : '') + change + '%',
+    trendUp: change >= 0,
+    areaColor: change >= 0 ? 'rgba(0,207,167,0.2)' : 'rgba(255,107,107,0.2)',
+    strokeColor: change >= 0 ? '#00C9A7' : '#FF6B6B'
+  };
+}
 
 // 下载示例数据 CSV 文件
 function downloadSampleData() {
-  const SAMPLE_DATA = {
+  var SAMPLE_DATA = {
     '客服配置数据': [
       ['角色', '人数', '占比(%)', '职场'],
       ['售前客服', '68', '37', 'all'],
@@ -5097,19 +5076,19 @@ function downloadSampleData() {
       ['2026-05', '520000', '430000', '1.21', '95.0']
     ]
   };
-  const lines = [];
+  var lines = [];
   lines.push('示例数据说明：请将此文件中的数据导入系统，支持 CSV/XLSX/XLS 格式');
   lines.push('');
-  for (const [sheetName, rows] of Object.entries(SAMPLE_DATA)) {
+  Object.keys(SAMPLE_DATA).forEach(function(sheetName) {
     lines.push('=== ' + sheetName + ' ===');
-    rows.forEach(r => lines.push(r.join(',')));
+    SAMPLE_DATA[sheetName].forEach(function(r) { lines.push(r.join(',')); });
     lines.push('');
     lines.push('');
-  }
-  const bom = '\uFEFF';
-  const blob = new Blob([bom + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  });
+  var bom = '\uFEFF';
+  var blob = new Blob([bom + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
   a.href = url;
   a.download = '示例数据_客服看板.csv';
   a.click();
@@ -5119,81 +5098,78 @@ function downloadSampleData() {
 
 // 导入 Excel/CSV 数据（支持 .xlsx / .xls / .csv）
 function importData() {
-  const input = document.createElement('input');
+  var input = document.createElement('input');
   input.type = 'file';
   input.accept = '.csv,.xlsx,.xls';
   input.onchange = function(e) {
-    const file = e.target.files[0];
+    var file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
+    var reader = new FileReader();
     reader.onload = function(ev) {
       try {
-        const data = new Uint8Array(ev.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        let imported = { staff: 0, workload: 0, kpi: 0 };
-        workbook.SheetNames.forEach(name => {
-          const sheet = workbook.Sheets[name];
-          const json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-          const lowerName = name.toLowerCase();
-          if (lowerName.indexOf('客服配置') >= 0 || lowerName.indexOf('staff') >= 0 || lowerName.indexOf('配置') >= 0) {
-            for (let i = 1; i < json.length; i++) {
-              const row = json[i];
-              if (!row || !row[0]) continue;
-              const idx = STAFF_CONFIG.findIndex(s => s.role === row[0]);
-              const item = {
+        var data = new Uint8Array(ev.target.result);
+        var workbook = XLSX.read(data, { type: 'array' });
+        var imported = { staff: 0, workload: 0, kpi: 0 };
+        workbook.SheetNames.forEach(function(name) {
+          var sheet = workbook.Sheets[name];
+          var json = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+          var lowerName = name.toLowerCase();
+          if (lowerName.indexOf('客服配置') !== -1 || lowerName.indexOf('staff') !== -1 || lowerName.indexOf('配置') !== -1) {
+            for (var i = 1; i < json.length; i++) {
+              var row = json[i]; if (!row || !row[0]) continue;
+              var idx = -1;
+              for (var si = 0; si < STAFF_CONFIG.length; si++) { if (STAFF_CONFIG[si].role === row[0]) { idx = si; break; } }
+              var item = {
                 id: idx >= 0 ? STAFF_CONFIG[idx].id : 'SC' + Date.now() + i,
                 role: String(row[0]),
                 count: parseInt(row[1]) || 0,
                 pct: parseInt(row[2]) || 0,
                 workplace: String(row[3] || 'all'),
                 updatedAt: new Date().toISOString().slice(0,10),
-                updatedBy: (CURRENT_USER || {}).username || 'admin'
+                updatedBy: (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) ? CURRENT_USER.username : 'admin'
               };
               if (idx >= 0) STAFF_CONFIG[idx] = item; else STAFF_CONFIG.push(item);
               imported.staff++;
             }
-          } else if (lowerName.indexOf('工作量') >= 0 || lowerName.indexOf('workload') >= 0 || lowerName.indexOf('工作') >= 0) {
-            for (let i = 1; i < json.length; i++) {
-              const row = json[i];
-              if (!row || !row[0]) continue;
-              const idx = WORKLOAD_DATA.findIndex(w => w.name === row[0]);
-              const item = {
-                id: idx >= 0 ? WORKLOAD_DATA[idx].id : 'WL' + Date.now() + i,
-                name: String(row[0]),
-                count: parseInt(row[1]) || 0,
-                ratio: parseInt(row[2]) || 0,
-                workplace: String(row[3] || 'all'),
+          } else if (lowerName.indexOf('工作量') !== -1 || lowerName.indexOf('workload') !== -1 || lowerName.indexOf('工作') !== -1) {
+            for (var i2 = 1; i2 < json.length; i2++) {
+              var row2 = json[i2]; if (!row2 || !row2[0]) continue;
+              var widx = -1;
+              for (var wi = 0; wi < WORKLOAD_DATA.length; wi++) { if (WORKLOAD_DATA[wi].name === row2[0]) { widx = wi; break; } }
+              var witem = {
+                id: widx >= 0 ? WORKLOAD_DATA[widx].id : 'WL' + Date.now() + i2,
+                name: String(row2[0]),
+                count: parseInt(row2[1]) || 0,
+                ratio: parseInt(row2[2]) || 0,
+                workplace: String(row2[3] || 'all'),
                 updatedAt: new Date().toISOString().slice(0,10),
-                updatedBy: (CURRENT_USER || {}).username || 'admin'
+                updatedBy: (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) ? CURRENT_USER.username : 'admin'
               };
-              if (idx >= 0) WORKLOAD_DATA[idx] = item; else WORKLOAD_DATA.push(item);
+              if (widx >= 0) WORKLOAD_DATA[widx] = witem; else WORKLOAD_DATA.push(witem);
               imported.workload++;
             }
-          } else if (lowerName.indexOf('kpi') >= 0 || lowerName.indexOf('历史') >= 0 || lowerName.indexOf('趋势') >= 0 || lowerName.indexOf('销售') >= 0) {
-            for (let i = 1; i < json.length; i++) {
-              const row = json[i];
-              if (!row || !row[0]) continue;
-              const item = {
-                id: 'KH' + Date.now() + i,
-                date: String(row[0]),
-                revenue: parseInt(row[1]) || 0,
-                cost: parseInt(row[2]) || 0,
-                profitRate: parseFloat(row[3]) || 0,
-                targetRate: parseFloat(row[4]) || 0,
+          } else if (lowerName.indexOf('kpi') !== -1 || lowerName.indexOf('历史') !== -1 || lowerName.indexOf('趋势') !== -1 || lowerName.indexOf('销售') !== -1) {
+            for (var i3 = 1; i3 < json.length; i3++) {
+              var row3 = json[i3]; if (!row3 || !row3[0]) continue;
+              var kitem = {
+                id: 'KH' + Date.now() + i3,
+                date: String(row3[0]),
+                revenue: parseInt(row3[1]) || 0,
+                cost: parseInt(row3[2]) || 0,
+                profitRate: parseFloat(row3[3]) || 0,
+                targetRate: parseFloat(row3[4]) || 0,
                 workplace: 'all',
                 updatedAt: new Date().toISOString().slice(0,10),
-                updatedBy: (CURRENT_USER || {}).username || 'admin'
+                updatedBy: (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) ? CURRENT_USER.username : 'admin'
               };
-              KPI_HISTORY.push(item);
+              KPI_HISTORY.push(kitem);
               imported.kpi++;
             }
           }
         });
-        // 保存到 localStorage
         localStorage.setItem('chansee_staff_config', JSON.stringify(STAFF_CONFIG));
         localStorage.setItem('chansee_workload_data', JSON.stringify(WORKLOAD_DATA));
         localStorage.setItem('chansee_kpi_history', JSON.stringify(KPI_HISTORY));
-        // 同步云端
         if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) {
           CloudBaseSync.saveAll();
         }
@@ -5210,9 +5186,9 @@ function importData() {
 }
 
 
+// ===== 项目运维调研 =====
 
-
-// 鍏ㄥ眬绛涢€夌姸鎬?
+// 全局筛选状态
 
 let SAT_FILTER = { projectId:'', scoreRange:'', evaluator:'' };
 
@@ -5228,7 +5204,7 @@ function renderSatisfaction(){
 
 
 
-  // 搴旂敤绛涢€?
+  // 应用筛选
 
   let filtered = [...SATISFACTION_DATA];
 
@@ -5246,9 +5222,9 @@ function renderSatisfaction(){
 
 
 
-  // 缁熻锛堝熀浜庡叏閮ㄦ暟鎹級
+  // 统计（基于全部数据）
 
-  const totalEvaluated = SATISFACTION_DATA.filter(s => s.status === '宸茶瘎瀹?).length;
+  const totalEvaluated = SATISFACTION_DATA.filter(s => s.status === '已评定').length;
 
   const avgScore = SATISFACTION_DATA.length ?
 
@@ -5266,11 +5242,11 @@ function renderSatisfaction(){
 
 
 
-  // 涓嬫媺閫夐」
+  // 下拉选项
 
   const projectOptions = PROJECTS.map(p =>
 
-    `<option value="${p.id}" ${SAT_FILTER.projectId===p.id?'selected':''}>${p.name}锛?{p.workplace}锛?/option>`
+    `<option value="${p.id}" ${SAT_FILTER.projectId===p.id?'selected':''}>${p.name}（${p.workplace}）</option>`
 
   ).join('');
 
@@ -5290,11 +5266,11 @@ function renderSatisfaction(){
 
     <div>
 
-      <div class="module-title">馃挴 椤圭洰杩愮淮璋冪爺</div>
+      <div class="module-title">💯 项目运维调研</div>
 
       <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">
 
-        瀹㈡湇绔笌椤圭洰绔殑娌熼€氭ˉ姊?路 鍙嶅悜淇冭繘鎴愰暱 路 ${isLeader ? '棰嗗瑙嗚锛氬彲璇勫畾鎵撳垎' : '鍥㈤槦瑙嗚锛氭煡鐪嬭瘎瀹氱粨鏋?}
+        客服端与项目端的沟通桥梁 · 反向促进成长 · ${isLeader ? '领导视角：可评定打分' : '团队视角：查看评定结果'}
 
       </div>
 
@@ -5302,13 +5278,13 @@ function renderSatisfaction(){
 
     <div class="module-actions">
 
-      ${isLeader||currentRole==='pm' ? '<button class="btn btn-primary btn-sm" onclick="showAddSatisfaction()">锛?鏂板璇勪及</button>' : ''}
+      ${isLeader||currentRole==='pm' ? '<button class="btn btn-primary btn-sm" onclick="showAddSatisfaction()">＋ 新增评估</button>' : ''}
 
-      <button class="btn btn-sm" onclick="exportSatisfaction()">馃摛 瀵煎嚭</button>
+      <button class="btn btn-sm" onclick="exportSatisfaction()">📤 导出</button>
 
-      ${isLeader||currentRole==='pm' ? '<button class="btn btn-sm" onclick="importSatisfaction()">馃摜 瀵煎叆</button>' : ''}
+      ${isLeader||currentRole==='pm' ? '<button class="btn btn-sm" onclick="importSatisfaction()">📥 导入</button>' : ''}
 
-      ${isLeader||currentRole==='pm' ? '<button class="btn btn-sm" onclick="showSatisfactionPermission()">馃攼 鏉冮檺璁剧疆</button>' : ''}
+      ${isLeader||currentRole==='pm' ? '<button class="btn btn-sm" onclick="showSatisfactionPermission()">🔐 权限设置</button>' : ''}
 
     </div>
 
@@ -5316,19 +5292,19 @@ function renderSatisfaction(){
 
 
 
-  <!-- 璇勫垎璇存槑 -->
+  <!-- 评分说明 -->
 
   <div class="card" style="margin-bottom:16px;padding:14px 18px;">
 
-    <div style="font-size:13px;font-weight:500;margin-bottom:8px;">馃搵 璇勫垎鏈哄埗璇存槑</div>
+    <div style="font-size:13px;font-weight:500;margin-bottom:8px;">📋 评分机制说明</div>
 
     <div style="font-size:12px;color:var(--c-text-2);line-height:2;">
 
-      <div>馃煝 <b>瀵瑰锛堥」鐩柟锛?/b>锛氬彧璁板綍鎰熷彈鎻忚堪锛堥潪甯告弧鎰?婊℃剰/涓€鑸?涓嶆弧鎰忥級锛?b>涓嶅睍绀哄垎鍊?/b>锛岀敱涓婄骇棰嗗涓庨」鐩矡閫氬悗濉啓</div>
+      <div>🟢 <b>对外（项目方）</b>：只记录感受描述（非常满意/满意/一般/不满意），<b>不展示分值</b>，由上级领导与项目沟通后填写</div>
 
-      <div>馃數 <b>瀵瑰唴锛堜笂绾ц瘎瀹氾級</b>锛氫笂绾у熀浜庢矡閫氬唴瀹?+ 鏍￠獙鐪熶吉锛岀粰鍑?<b>10 / 8 / 6 / 3 / 0</b> 浜旀。璇勫垎</div>
+      <div>🔵 <b>对内（上级评定）</b>：上级基于沟通内容 + 校验真伪，给出 <b>10 / 8 / 6 / 3 / 0</b> 五档评分</div>
 
-      <div>馃煛 <b>鏍稿績鐩殑</b>锛氬府鍔╁憳宸ユ彁鑳芥彁鏁堬紝鏀硅繘涓嶈冻锛?b>涓嶆槸鎯╃綒宸ュ叿</b>锛屾槸鍙嬪ソ鍗忎綔鐨勬ˉ姊?/div>
+      <div>🟡 <b>核心目的</b>：帮助员工提能提效，改进不足，<b>不是惩罚工具</b>，是友好协作的桥梁</div>
 
     </div>
 
@@ -5336,13 +5312,13 @@ function renderSatisfaction(){
 
 
 
-  <!-- 缁熻鍗＄墖 -->
+  <!-- 统计卡片 -->
 
   <div class="stats-grid" style="margin-bottom:16px;">
 
     <div class="stat-card">
 
-      <div class="stat-label">宸茶瘎浼?/div>
+      <div class="stat-label">已评估</div>
 
       <div class="stat-value">${totalEvaluated}</div>
 
@@ -5350,7 +5326,7 @@ function renderSatisfaction(){
 
     <div class="stat-card">
 
-      <div class="stat-label">骞冲潎鍒?/div>
+      <div class="stat-label">平均分</div>
 
       <div class="stat-value" style="color:${avgScore>=8?'var(--c-green)':avgScore>=6?'var(--c-yellow)':'var(--c-red)'}">${avgScore}</div>
 
@@ -5358,7 +5334,7 @@ function renderSatisfaction(){
 
     <div class="stat-card">
 
-      <div class="stat-label">10鍒嗭紙浼樼锛?/div>
+      <div class="stat-label">10分（优秀）</div>
 
       <div class="stat-value" style="color:var(--c-green)">${dist10}</div>
 
@@ -5366,7 +5342,7 @@ function renderSatisfaction(){
 
     <div class="stat-card">
 
-      <div class="stat-label">8鍒嗭紙鑹ソ锛?/div>
+      <div class="stat-label">8分（良好）</div>
 
       <div class="stat-value" style="color:var(--c-green)">${dist8}</div>
 
@@ -5374,7 +5350,7 @@ function renderSatisfaction(){
 
     <div class="stat-card">
 
-      <div class="stat-label">6鍒嗭紙涓€鑸級</div>
+      <div class="stat-label">6分（一般）</div>
 
       <div class="stat-value" style="color:var(--c-yellow)">${dist6}</div>
 
@@ -5382,7 +5358,7 @@ function renderSatisfaction(){
 
     <div class="stat-card">
 
-      <div class="stat-label">3鍒?0鍒?/div>
+      <div class="stat-label">3分/0分</div>
 
       <div class="stat-value" style="color:var(--c-red)">${dist3+dist0}</div>
 
@@ -5392,15 +5368,15 @@ function renderSatisfaction(){
 
 
 
-  <!-- 绛涢€夋爮 -->
+  <!-- 筛选栏 -->
 
   <div class="sat-filter-bar card" style="margin-bottom:16px;padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
 
-    <span style="font-size:12px;color:var(--c-text-3);font-weight:500;">绛涢€夋潯浠讹細</span>
+    <span style="font-size:12px;color:var(--c-text-3);font-weight:500;">筛选条件：</span>
 
     <select class="form-select form-select-sm" id="sat-filter-project" onchange="SAT_FILTER.projectId=this.value;renderSatisfaction()" style="max-width:200px;">
 
-      <option value="">鍏ㄩ儴椤圭洰</option>
+      <option value="">全部项目</option>
 
       ${projectOptions}
 
@@ -5408,35 +5384,35 @@ function renderSatisfaction(){
 
     <select class="form-select form-select-sm" id="sat-filter-score" onchange="SAT_FILTER.scoreRange=this.value;renderSatisfaction()" style="max-width:160px;">
 
-      <option value="">鍏ㄩ儴寰楀垎</option>
+      <option value="">全部得分</option>
 
-      <option value="10-10" ${SAT_FILTER.scoreRange==='10-10'?'selected':''}>10鍒?浼樼</option>
+      <option value="10-10" ${SAT_FILTER.scoreRange==='10-10'?'selected':''}>10分 优秀</option>
 
-      <option value="8-9" ${SAT_FILTER.scoreRange==='8-9'?'selected':''}>8鍒?鑹ソ</option>
+      <option value="8-9" ${SAT_FILTER.scoreRange==='8-9'?'selected':''}>8分 良好</option>
 
-      <option value="6-7" ${SAT_FILTER.scoreRange==='6-7'?'selected':''}>6鍒?涓€鑸?/option>
+      <option value="6-7" ${SAT_FILTER.scoreRange==='6-7'?'selected':''}>6分 一般</option>
 
-      <option value="0-5" ${SAT_FILTER.scoreRange==='0-5'?'selected':''}>0-5鍒?闇€鏀硅繘</option>
+      <option value="0-5" ${SAT_FILTER.scoreRange==='0-5'?'selected':''}>0-5分 需改进</option>
 
     </select>
 
     <select class="form-select form-select-sm" id="sat-filter-evaluator" onchange="SAT_FILTER.evaluator=this.value;renderSatisfaction()" style="max-width:160px;">
 
-      <option value="">鍏ㄩ儴璇勫畾浜?/option>
+      <option value="">全部评定人</option>
 
       ${evaluatorOptions}
 
     </select>
 
-    <button class="btn btn-sm" onclick="SAT_FILTER={projectId:'',scoreRange:'',evaluator:''};renderSatisfaction()" style="color:var(--c-text-3);">娓呴櫎绛涢€?/button>
+    <button class="btn btn-sm" onclick="SAT_FILTER={projectId:'',scoreRange:'',evaluator:''};renderSatisfaction()" style="color:var(--c-text-3);">清除筛选</button>
 
-    <span style="margin-left:auto;font-size:12px;color:var(--c-text-3);">鍏?${filtered.length} 鏉¤褰?/span>
+    <span style="margin-left:auto;font-size:12px;color:var(--c-text-3);">共 ${filtered.length} 条记录</span>
 
   </div>
 
 
 
-  <!-- 璇勪及鍒楄〃 -->
+  <!-- 评估列表 -->
 
   <div class="card">
 
@@ -5446,27 +5422,27 @@ function renderSatisfaction(){
 
         <tr>
 
-          <th>椤圭洰</th>
+          <th>项目</th>
 
-          <th>鍛ㄦ湡</th>
+          <th>周期</th>
 
-          <th>椤圭洰缁煎悎鎰熷彈</th>
+          <th>项目综合感受</th>
 
-          <th>涓氬姟琛ㄧ幇</th>
+          <th>业务表现</th>
 
-          <th>涓撲笟搴?/th>
+          <th>专业度</th>
 
-          <th>鎵ц鍔?/th>
+          <th>执行力</th>
 
-          <th>娌熼€氶厤鍚?/th>
+          <th>沟通配合</th>
 
-          <th>棰嗗璇勫垎</th>
+          <th>领导评分</th>
 
-          <th>涓婄骇璇勮/鎬荤粨</th>
+          <th>上级评语/总结</th>
 
-          <th>鐘舵€?/th>
+          <th>状态</th>
 
-          <th>鎿嶄綔</th>
+          <th>操作</th>
 
         </tr>
 
@@ -5484,15 +5460,15 @@ function renderSatisfaction(){
 
                            s.leaderScore >= 6 ? 'var(--c-yellow)' : 'var(--c-red)';
 
-          const scoreLabel = s.leaderScore === 10 ? '浼樼' :
+          const scoreLabel = s.leaderScore === 10 ? '优秀' :
 
-                           s.leaderScore === 8 ? '鑹ソ' :
+                           s.leaderScore === 8 ? '良好' :
 
-                           s.leaderScore === 6 ? '涓€鑸? :
+                           s.leaderScore === 6 ? '一般' :
 
-                           s.leaderScore === 3 ? '闇€鏀硅繘' : '涓嶅悎鏍?;
+                           s.leaderScore === 3 ? '需改进' : '不合格';
 
-          const commentPreview = s.leaderComment ? (s.leaderComment.length > 15 ? s.leaderComment.slice(0,15) + '鈥? : s.leaderComment) : '鈥?;
+          const commentPreview = s.leaderComment ? (s.leaderComment.length > 15 ? s.leaderComment.slice(0,15) + '…' : s.leaderComment) : '—';
 
           return `
 
@@ -5502,23 +5478,23 @@ function renderSatisfaction(){
 
             <td>${s.period}</td>
 
-            <td><span class="badge ${s.projectFeedback.overall==='闈炲父婊℃剰'?'badge-green':s.projectFeedback.overall==='婊℃剰'?'badge-green':'badge-yellow'}">${s.projectFeedback.overall}</span></td>
+            <td><span class="badge ${s.projectFeedback.overall==='非常满意'?'badge-green':s.projectFeedback.overall==='满意'?'badge-green':'badge-yellow'}">${s.projectFeedback.overall}</span></td>
 
-            <td>${s.projectFeedback.busiLima2sPerf.length > 10 ? s.projectFeedback.busiLima2sPerf.slice(0,10) + '鈥? : s.projectFeedback.busiLima2sPerf}</td>
+            <td>${s.projectFeedback.busiLima2sPerf.length > 10 ? s.projectFeedback.busiLima2sPerf.slice(0,10) + '…' : s.projectFeedback.busiLima2sPerf}</td>
 
-            <td>${s.projectFeedback.professionalism.length > 8 ? s.projectFeedback.professionalism.slice(0,8) + '鈥? : s.projectFeedback.professionalism}</td>
+            <td>${s.projectFeedback.professionalism.length > 8 ? s.projectFeedback.professionalism.slice(0,8) + '…' : s.projectFeedback.professionalism}</td>
 
-            <td>${s.projectFeedback.execution.length > 8 ? s.projectFeedback.execution.slice(0,8) + '鈥? : s.projectFeedback.execution}</td>
+            <td>${s.projectFeedback.execution.length > 8 ? s.projectFeedback.execution.slice(0,8) + '…' : s.projectFeedback.execution}</td>
 
             <td>${s.projectFeedback.communication.frequency}</td>
 
-            <td><span style="font-weight:700;color:${scoreColor};font-size:15px;">${s.leaderScore}鍒?/span> <span style="font-size:11px;color:${scoreColor};">${scoreLabel}</span></td>
+            <td><span style="font-weight:700;color:${scoreColor};font-size:15px;">${s.leaderScore}分</span> <span style="font-size:11px;color:${scoreColor};">${scoreLabel}</span></td>
 
-            <td title="${s.leaderComment || '鏆傛棤璇勮'}"><span style="font-size:12px;color:var(--c-text-2);">${commentPreview}</span></td>
+            <td title="${s.leaderComment || '暂无评语'}"><span style="font-size:12px;color:var(--c-text-2);">${commentPreview}</span></td>
 
-            <td><span class="badge ${s.status==='宸茶瘎瀹??'badge-green':'badge-yellow'}">${s.status}</span></td>
+            <td><span class="badge ${s.status==='已评定'?'badge-green':'badge-yellow'}">${s.status}</span></td>
 
-            <td><button class="btn btn-sm" onclick="event.stopPropagation();showSatisfactionDetail(${s.id})">鏌ョ湅</button></td>
+            <td><button class="btn btn-sm" onclick="event.stopPropagation();showSatisfactionDetail(${s.id})">查看</button></td>
 
           </tr>`;
 
@@ -5528,7 +5504,7 @@ function renderSatisfaction(){
 
     </table>
 
-    ${filtered.length === 0 ? '<div class="empty-state"><div class="empty-icon">馃摥</div><p>娌℃湁绗﹀悎鏉′欢鐨勮瘎浼拌褰?/p></div>' : ''}
+    ${filtered.length === 0 ? '<div class="empty-state"><div class="empty-icon">📭</div><p>没有符合条件的评估记录</p></div>' : ''}
 
   </div>`;
 
@@ -5550,53 +5526,53 @@ function showSatisfactionDetail(id){
 
   const body = document.getElementById("modal-body");
 
-  document.getElementById("modal-title").textContent = "婊℃剰搴﹁瘎浼拌鎯?路 " + (p ? p.name : s.projectId);
+  document.getElementById("modal-title").textContent = "满意度评估详情 · " + (p ? p.name : s.projectId);
 
   
 
   const scoreColor = s.leaderScore >= 8 ? 'var(--c-green)' : s.leaderScore >= 6 ? 'var(--c-yellow)' : 'var(--c-red)';
 
-  const scoreLabel = s.leaderScore === 10 ? '浼樼锛堣秴鍑洪鏈燂級' : 
+  const scoreLabel = s.leaderScore === 10 ? '优秀（超出预期）' : 
 
-                   s.leaderScore === 8 ? '鑹ソ锛堣揪鏍囷級' : 
+                   s.leaderScore === 8 ? '良好（达标）' : 
 
-                   s.leaderScore === 6 ? '涓€鑸紙闇€鏀硅繘锛? : 
+                   s.leaderScore === 6 ? '一般（需改进）' : 
 
-                   s.leaderScore === 3 ? '杈冨樊锛堥噸鐐瑰叧娉級' : '涓嶅悎鏍硷紙绔嬪嵆鏀硅繘锛?;
+                   s.leaderScore === 3 ? '较差（重点关注）' : '不合格（立即改进）';
 
   
 
   body.innerHTML = `
 
-    <!-- 椤圭洰淇℃伅 -->
+    <!-- 项目信息 -->
 
     <div class="detail-grid" style="margin-bottom:16px;">
 
-      <div class="detail-item"><div class="detail-label">鍏宠仈椤圭洰</div><div class="detail-value">${p ? p.name : '鏈煡'}</div></div>
+      <div class="detail-item"><div class="detail-label">关联项目</div><div class="detail-value">${p ? p.name : '未知'}</div></div>
 
-      <div class="detail-item"><div class="detail-label">璇勪及鍛ㄦ湡</div><div class="detail-value">${s.period}</div></div>
+      <div class="detail-item"><div class="detail-label">评估周期</div><div class="detail-value">${s.period}</div></div>
 
-      <div class="detail-item"><div class="detail-label">璇勫畾浜?/div><div class="detail-value">${s.evaluatedBy}</div></div>
+      <div class="detail-item"><div class="detail-label">评定人</div><div class="detail-value">${s.evaluatedBy}</div></div>
 
-      <div class="detail-item"><div class="detail-label">璇勫畾鏃ユ湡</div><div class="detail-value">${s.evaluatedAt}</div></div>
+      <div class="detail-item"><div class="detail-label">评定日期</div><div class="detail-value">${s.evaluatedAt}</div></div>
 
     </div>
 
 
 
-    <!-- 椤圭洰鏂规劅鍙楋紙瀵瑰锛屼笉灞曠ず鍒嗗€硷級 -->
+    <!-- 项目方感受（对外，不展示分值） -->
 
     <div style="background:var(--c-bg);padding:14px 16px;border-radius:var(--radius);margin-bottom:16px;">
 
-      <div style="font-size:13px;font-weight:500;margin-bottom:10px;color:var(--c-text-2);">馃棧锔?椤圭洰鏂规劅鍙楋紙瀵瑰锛屼笉灞曠ず鍒嗗€硷級</div>
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px;color:var(--c-text-2);">🗣️ 项目方感受（对外，不展示分值）</div>
 
       
 
       <div style="margin-bottom:10px;">
 
-        <div style="font-size:12px;color:var(--c-text-3);">缁煎悎鎰熷彈</div>
+        <div style="font-size:12px;color:var(--c-text-3);">综合感受</div>
 
-        <div style="font-size:14px;font-weight:500;margin-top:2px;"><span class="badge ${s.projectFeedback.overall==='闈炲父婊℃剰'?'badge-green':s.projectFeedback.overall==='婊℃剰'?'badge-green':'badge-yellow'}">${s.projectFeedback.overall}</span></div>
+        <div style="font-size:14px;font-weight:500;margin-top:2px;"><span class="badge ${s.projectFeedback.overall==='非常满意'?'badge-green':s.projectFeedback.overall==='满意'?'badge-green':'badge-yellow'}">${s.projectFeedback.overall}</span></div>
 
       </div>
 
@@ -5606,7 +5582,7 @@ function showSatisfactionDetail(id){
 
         <div style="background:var(--c-surface);padding:8px 10px;border-radius:8px;">
 
-          <div style="font-size:11px;color:var(--c-text-3);">鍥㈤槦涓氬姟琛ㄧ幇</div>
+          <div style="font-size:11px;color:var(--c-text-3);">团队业务表现</div>
 
           <div style="font-size:12px;margin-top:2px;">${s.projectFeedback.busiLima2sPerf}</div>
 
@@ -5614,7 +5590,7 @@ function showSatisfactionDetail(id){
 
         <div style="background:var(--c-surface);padding:8px 10px;border-radius:8px;">
 
-          <div style="font-size:11px;color:var(--c-text-3);">鍥㈤槦涓撲笟搴?/div>
+          <div style="font-size:11px;color:var(--c-text-3);">团队专业度</div>
 
           <div style="font-size:12px;margin-top:2px;">${s.projectFeedback.professionalism}</div>
 
@@ -5622,7 +5598,7 @@ function showSatisfactionDetail(id){
 
         <div style="background:var(--c-surface);padding:8px 10px;border-radius:8px;">
 
-          <div style="font-size:11px;color:var(--c-text-3);">鍥㈤槦鎵ц鍔?/div>
+          <div style="font-size:11px;color:var(--c-text-3);">团队执行力</div>
 
           <div style="font-size:12px;margin-top:2px;">${s.projectFeedback.execution}</div>
 
@@ -5630,7 +5606,7 @@ function showSatisfactionDetail(id){
 
         <div style="background:var(--c-surface);padding:8px 10px;border-radius:8px;">
 
-          <div style="font-size:11px;color:var(--c-text-3);">椋庨櫓绠℃帶</div>
+          <div style="font-size:11px;color:var(--c-text-3);">风险管控</div>
 
           <div style="font-size:12px;margin-top:2px;">${s.projectFeedback.riskControl}</div>
 
@@ -5642,9 +5618,9 @@ function showSatisfactionDetail(id){
 
       <div style="background:var(--c-surface);padding:8px 10px;border-radius:8px;margin-bottom:8px;">
 
-        <div style="font-size:11px;color:var(--c-text-3);">姹囨姤鑳藉姏</div>
+        <div style="font-size:11px;color:var(--c-text-3);">汇报能力</div>
 
-        <div style="font-size:12px;margin-top:2px;">鏃舵晥鎬э細${s.projectFeedback.reporting.timeliLima2s} 锝?鍑嗙‘鎬э細${s.projectFeedback.reporting.accuracy} 锝?鍏ㄩ潰鎬э細${s.projectFeedback.reporting.completeLima2s}</div>
+        <div style="font-size:12px;margin-top:2px;">时效性：${s.projectFeedback.reporting.timeliLima2s} ｜ 准确性：${s.projectFeedback.reporting.accuracy} ｜ 全面性：${s.projectFeedback.reporting.completeLima2s}</div>
 
       </div>
 
@@ -5652,9 +5628,9 @@ function showSatisfactionDetail(id){
 
       <div style="background:var(--c-surface);padding:8px 10px;border-radius:8px;">
 
-        <div style="font-size:11px;color:var(--c-text-3);">娌熼€氶厤鍚?/div>
+        <div style="font-size:11px;color:var(--c-text-3);">沟通配合</div>
 
-        <div style="font-size:12px;margin-top:2px;">娌熼€氶鐜囷細${s.projectFeedback.communication.frequency} 锝?鐞嗚В鑳藉姏锛?{s.projectFeedback.communication.understanding} 锝?淇℃伅鍚屾锛?{s.projectFeedback.communication.sync}</div>
+        <div style="font-size:12px;margin-top:2px;">沟通频率：${s.projectFeedback.communication.frequency} ｜ 理解能力：${s.projectFeedback.communication.understanding} ｜ 信息同步：${s.projectFeedback.communication.sync}</div>
 
       </div>
 
@@ -5662,21 +5638,21 @@ function showSatisfactionDetail(id){
 
 
 
-    <!-- 涓婄骇璇勫畾锛堝鍐咃級 -->
+    <!-- 上级评定（对内） -->
 
     <div style="background:var(--c-yellow-bg);padding:14px 16px;border-radius:var(--radius);margin-bottom:16px;">
 
-      <div style="font-size:13px;font-weight:500;margin-bottom:10px;color:var(--c-yellow);">馃敀 涓婄骇璇勫畾锛堝鍐咃紝浠呭洟闃熷彲瑙侊級</div>
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px;color:var(--c-yellow);">🔒 上级评定（对内，仅团队可见）</div>
 
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;">
 
-        <div style="font-size:32px;font-weight:800;color:${scoreColor};">${s.leaderScore}鍒?/div>
+        <div style="font-size:32px;font-weight:800;color:${scoreColor};">${s.leaderScore}分</div>
 
         <div>
 
           <div style="font-size:14px;font-weight:500;color:${scoreColor};">${scoreLabel}</div>
 
-          <div style="font-size:12px;color:var(--c-text-2);margin-top:2px;">璇勫垎浜猴細${s.evaluatedBy} 锝?${s.evaluatedAt}</div>
+          <div style="font-size:12px;color:var(--c-text-2);margin-top:2px;">评分人：${s.evaluatedBy} ｜ ${s.evaluatedAt}</div>
 
         </div>
 
@@ -5684,7 +5660,7 @@ function showSatisfactionDetail(id){
 
       <div style="background:var(--c-surface);padding:10px 12px;border-radius:8px;">
 
-        <div style="font-size:12px;color:var(--c-text-3);">璇勫畾鎰忚锛堝府鍔╂彁鑳芥彁鏁堬級</div>
+        <div style="font-size:12px;color:var(--c-text-3);">评定意见（帮助提能提效）</div>
 
         <div style="font-size:13px;margin-top:4px;line-height:1.6;">${s.leaderComment}</div>
 
@@ -5694,23 +5670,23 @@ function showSatisfactionDetail(id){
 
 
 
-    ${isLeader && s.status !== '宸茶瘎瀹? ? `
+    ${isLeader && s.status !== '已评定' ? `
 
     <div class="form-group">
 
-      <label class="form-label">棰嗗璇勫垎锛?0/8/6/3/0锛?/label>
+      <label class="form-label">领导评分（10/8/6/3/0）</label>
 
       <select class="form-select" id="s-score" style="max-width:200px;">
 
-        <option value="10" ${s.leaderScore===10?'selected':''}>10鍒?- 浼樼锛堣秴鍑洪鏈燂級</option>
+        <option value="10" ${s.leaderScore===10?'selected':''}>10分 - 优秀（超出预期）</option>
 
-        <option value="8" ${s.leaderScore===8?'selected':''}>8鍒?- 鑹ソ锛堣揪鏍囷級</option>
+        <option value="8" ${s.leaderScore===8?'selected':''}>8分 - 良好（达标）</option>
 
-        <option value="6" ${s.leaderScore===6?'selected':''}>6鍒?- 涓€鑸紙闇€鏀硅繘锛?/option>
+        <option value="6" ${s.leaderScore===6?'selected':''}>6分 - 一般（需改进）</option>
 
-        <option value="3" ${s.leaderScore===3?'selected':''}>3鍒?- 杈冨樊锛堥噸鐐瑰叧娉級</option>
+        <option value="3" ${s.leaderScore===3?'selected':''}>3分 - 较差（重点关注）</option>
 
-        <option value="0" ${s.leaderScore===0?'selected':''}>0鍒?- 涓嶅悎鏍硷紙绔嬪嵆鏀硅繘锛?/option>
+        <option value="0" ${s.leaderScore===0?'selected':''}>0分 - 不合格（立即改进）</option>
 
       </select>
 
@@ -5718,23 +5694,23 @@ function showSatisfactionDetail(id){
 
     <div class="form-group">
 
-      <label class="form-label">璇勫畾鎰忚锛堝府鍔╂彁鑳芥彁鏁堬紝闈炴儵缃氾級</label>
+      <label class="form-label">评定意见（帮助提能提效，非惩罚）</label>
 
-      <textarea class="form-textarea" id="s-comment" placeholder="璁板綍鍏蜂綋鏀硅繘寤鸿銆佹彁鑳芥柟鍚?>${s.leaderComment}</textarea>
+      <textarea class="form-textarea" id="s-comment" placeholder="记录具体改进建议、提能方向">${s.leaderComment}</textarea>
 
     </div>
 
     <div class="form-actions">
 
-      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">鍙栨秷</button>
+      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">取消</button>
 
-      <button class="btn btn-primary" onclick="doUpdateSatisfaction(${s.id})">纭璇勫畾</button>
+      <button class="btn btn-primary" onclick="doUpdateSatisfaction(${s.id})">确认评定</button>
 
     </div>` : 
 
     `<div class="form-actions">
 
-      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">鍏抽棴</button>
+      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">关闭</button>
 
     </div>`}
 
@@ -5760,7 +5736,7 @@ function doUpdateSatisfaction(id){
 
   s.leaderComment = comment;
 
-  s.status = '宸茶瘎瀹?;
+  s.status = '已评定';
 
   s.evaluatedAt = new Date().toISOString().slice(0,10);
 
@@ -5768,7 +5744,7 @@ function doUpdateSatisfaction(id){
 
   renderModule("satisfaction");
 
-  alert("璇勫畾宸蹭繚瀛橈紒璇勫垎锛? + score + "鍒哱n鎰忚宸茶褰曪紝灏嗙敤浜庡府鍔╁憳宸ユ彁鑳芥彁鏁堛€?);
+  alert("评定已保存！评分：" + score + "分\n意见已记录，将用于帮助员工提能提效。");
 
 }
 
@@ -5778,19 +5754,19 @@ function showAddSatisfaction(){
 
   const body = document.getElementById("modal-body");
 
-  document.getElementById("modal-title").textContent = "锛?鏂板婊℃剰搴﹁瘎浼?;
+  document.getElementById("modal-title").textContent = "＋ 新增满意度评估";
 
-  const projectOptions = PROJECTS.map(p => `<option value="${p.id}">${p.name}锛?{p.workplace}锛?/option>`).join("");
+  const projectOptions = PROJECTS.map(p => `<option value="${p.id}">${p.name}（${p.workplace}）</option>`).join("");
 
   body.innerHTML = `
 
     <div class="form-group">
 
-      <label class="form-label">鍏宠仈椤圭洰 *</label>
+      <label class="form-label">关联项目 *</label>
 
       <select class="form-select" id="sf-project">
 
-        <option value="">-- 璇烽€夋嫨 --</option>
+        <option value="">-- 请选择 --</option>
 
         ${projectOptions}
 
@@ -5800,9 +5776,9 @@ function showAddSatisfaction(){
 
     <div class="form-group">
 
-      <label class="form-label">璇勪及鍛ㄦ湡 *</label>
+      <label class="form-label">评估周期 *</label>
 
-      <input class="form-input" id="sf-period" value="2026-05" placeholder="濡傦細2026-05">
+      <input class="form-input" id="sf-period" value="2026-05" placeholder="如：2026-05">
 
     </div>
 
@@ -5810,23 +5786,23 @@ function showAddSatisfaction(){
 
     <div style="background:var(--c-bg);padding:12px 14px;border-radius:var(--radius);margin-bottom:14px;">
 
-      <div style="font-size:13px;font-weight:500;margin-bottom:10px;color:var(--c-text-2);">馃棧锔?椤圭洰鏂规劅鍙楋紙鐢变笂绾т笌椤圭洰娌熼€氬悗濉啓锛屼笉灞曠ず鍒嗗€硷級</div>
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px;color:var(--c-text-2);">🗣️ 项目方感受（由上级与项目沟通后填写，不展示分值）</div>
 
       
 
       <div class="form-group">
 
-        <label class="form-label">缁煎悎鎰熷彈</label>
+        <label class="form-label">综合感受</label>
 
         <select class="form-select" id="sf-overall">
 
-          <option>闈炲父婊℃剰</option>
+          <option>非常满意</option>
 
-          <option>婊℃剰</option>
+          <option>满意</option>
 
-          <option>涓€鑸?/option>
+          <option>一般</option>
 
-          <option>涓嶆弧鎰?/option>
+          <option>不满意</option>
 
         </select>
 
@@ -5838,17 +5814,17 @@ function showAddSatisfaction(){
 
         <div class="form-group">
 
-          <label class="form-label">鍥㈤槦涓氬姟琛ㄧ幇</label>
+          <label class="form-label">团队业务表现</label>
 
-          <input class="form-input" id="sf-biz" placeholder="鎻忚堪椤圭洰鏂规劅鍙?>
+          <input class="form-input" id="sf-biz" placeholder="描述项目方感受">
 
         </div>
 
         <div class="form-group">
 
-          <label class="form-label">鍥㈤槦涓撲笟搴?/label>
+          <label class="form-label">团队专业度</label>
 
-          <input class="form-input" id="sf-pro" placeholder="鎻忚堪椤圭洰鏂规劅鍙?>
+          <input class="form-input" id="sf-pro" placeholder="描述项目方感受">
 
         </div>
 
@@ -5860,17 +5836,17 @@ function showAddSatisfaction(){
 
         <div class="form-group">
 
-          <label class="form-label">鍥㈤槦鎵ц鍔?/label>
+          <label class="form-label">团队执行力</label>
 
-          <input class="form-input" id="sf-exec" placeholder="鎻忚堪椤圭洰鏂规劅鍙?>
+          <input class="form-input" id="sf-exec" placeholder="描述项目方感受">
 
         </div>
 
         <div class="form-group">
 
-          <label class="form-label">椋庨櫓绠℃帶</label>
+          <label class="form-label">风险管控</label>
 
-          <input class="form-input" id="sf-risk" placeholder="鎻忚堪椤圭洰鏂规劅鍙?>
+          <input class="form-input" id="sf-risk" placeholder="描述项目方感受">
 
         </div>
 
@@ -5880,25 +5856,25 @@ function showAddSatisfaction(){
 
       <div class="form-group">
 
-        <label class="form-label">姹囨姤鏃舵晥鎬?/label>
+        <label class="form-label">汇报时效性</label>
 
-        <input class="form-input" id="sf-rep-time" placeholder="鎻忚堪椤圭洰鏂规劅鍙?>
-
-      </div>
-
-      <div class="form-group">
-
-        <label class="form-label">姹囨姤鍑嗙‘鎬?/label>
-
-        <input class="form-input" id="sf-rep-acc" placeholder="鎻忚堪椤圭洰鏂规劅鍙?>
+        <input class="form-input" id="sf-rep-time" placeholder="描述项目方感受">
 
       </div>
 
       <div class="form-group">
 
-        <label class="form-label">姹囨姤鍏ㄩ潰鎬?/label>
+        <label class="form-label">汇报准确性</label>
 
-        <input class="form-input" id="sf-rep-full" placeholder="鎻忚堪椤圭洰鏂规劅鍙?>
+        <input class="form-input" id="sf-rep-acc" placeholder="描述项目方感受">
+
+      </div>
+
+      <div class="form-group">
+
+        <label class="form-label">汇报全面性</label>
+
+        <input class="form-input" id="sf-rep-full" placeholder="描述项目方感受">
 
       </div>
 
@@ -5906,25 +5882,25 @@ function showAddSatisfaction(){
 
       <div class="form-group">
 
-        <label class="form-label">娌熼€氶鐜囨劅鍙?/label>
+        <label class="form-label">沟通频率感受</label>
 
-        <input class="form-input" id="sf-comm-freq" placeholder="闈炲父婊℃剰/婊℃剰/涓€鑸?涓嶆弧鎰?>
-
-      </div>
-
-      <div class="form-group">
-
-        <label class="form-label">娌熼€氱悊瑙ｆ劅鍙?/label>
-
-        <input class="form-input" id="sf-comm-und" placeholder="鎻忚堪椤圭洰鏂规劅鍙?>
+        <input class="form-input" id="sf-comm-freq" placeholder="非常满意/满意/一般/不满意">
 
       </div>
 
       <div class="form-group">
 
-        <label class="form-label">娲诲姩淇℃伅鍚屾鎰熷彈</label>
+        <label class="form-label">沟通理解感受</label>
 
-        <input class="form-input" id="sf-comm-sync" placeholder="鎻忚堪椤圭洰鏂规劅鍙?>
+        <input class="form-input" id="sf-comm-und" placeholder="描述项目方感受">
+
+      </div>
+
+      <div class="form-group">
+
+        <label class="form-label">活动信息同步感受</label>
+
+        <input class="form-input" id="sf-comm-sync" placeholder="描述项目方感受">
 
       </div>
 
@@ -5934,9 +5910,9 @@ function showAddSatisfaction(){
 
     <div style="background:var(--c-yellow-bg);padding:12px 14px;border-radius:var(--radius);margin-bottom:14px;">
 
-      <div style="font-size:13px;font-weight:500;margin-bottom:10px;color:var(--c-yellow);">馃敀 涓婄骇璇勫畾锛堝悗缁～鍐欙紝鏈鍙殏瀛橀」鐩劅鍙楋級</div>
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px;color:var(--c-yellow);">🔒 上级评定（后续填写，本次可暂存项目感受）</div>
 
-      <div style="font-size:12px;color:var(--c-text-2);">棰嗗璇勫垎鍜岃瘎瀹氭剰瑙佸彲鍦ㄤ笌椤圭洰娌熼€氬悗琛ュ厖濉啓銆?/div>
+      <div style="font-size:12px;color:var(--c-text-2);">领导评分和评定意见可在与项目沟通后补充填写。</div>
 
     </div>
 
@@ -5944,9 +5920,9 @@ function showAddSatisfaction(){
 
     <div class="form-actions">
 
-      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">鍙栨秷</button>
+      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">取消</button>
 
-      <button class="btn btn-primary" onclick="doAddSatisfaction()">淇濆瓨锛堝緟璇勫畾锛?/button>
+      <button class="btn btn-primary" onclick="doAddSatisfaction()">保存（待评定）</button>
 
     </div>`;
 
@@ -5962,7 +5938,7 @@ function doAddSatisfaction(){
 
   const period = document.getElementById("sf-period").value;
 
-  if(!pid || !period) { alert("璇峰～鍐欏繀濉」"); return; }
+  if(!pid || !period) { alert("请填写必填项"); return; }
 
   const p = PROJECTS.find(pp => pp.id === pid);
 
@@ -5976,35 +5952,35 @@ function doAddSatisfaction(){
 
     projectFeedback: {
 
-      busiLima2sPerf: document.getElementById("sf-biz").value || "寰呭～鍐?,
+      busiLima2sPerf: document.getElementById("sf-biz").value || "待填写",
 
-      professionalism: document.getElementById("sf-pro").value || "寰呭～鍐?,
+      professionalism: document.getElementById("sf-pro").value || "待填写",
 
-      execution: document.getElementById("sf-exec").value || "寰呭～鍐?,
+      execution: document.getElementById("sf-exec").value || "待填写",
 
       reporting: { 
 
-        timeliLima2s: document.getElementById("sf-rep-time").value || "寰呭～鍐?, 
+        timeliLima2s: document.getElementById("sf-rep-time").value || "待填写", 
 
-        accuracy: document.getElementById("sf-rep-acc").value || "寰呭～鍐?, 
+        accuracy: document.getElementById("sf-rep-acc").value || "待填写", 
 
-        completeLima2s: document.getElementById("sf-rep-full").value || "寰呭～鍐? 
+        completeLima2s: document.getElementById("sf-rep-full").value || "待填写" 
 
       },
 
-      riskControl: document.getElementById("sf-risk").value || "寰呭～鍐?,
+      riskControl: document.getElementById("sf-risk").value || "待填写",
 
       communication: { 
 
-        frequency: document.getElementById("sf-comm-freq").value || "寰呭～鍐?, 
+        frequency: document.getElementById("sf-comm-freq").value || "待填写", 
 
-        understanding: document.getElementById("sf-comm-und").value || "寰呭～鍐?, 
+        understanding: document.getElementById("sf-comm-und").value || "待填写", 
 
-        sync: document.getElementById("sf-comm-sync").value || "寰呭～鍐? 
+        sync: document.getElementById("sf-comm-sync").value || "待填写" 
 
       },
 
-      overall: document.getElementById("sf-overall").value || "婊℃剰"
+      overall: document.getElementById("sf-overall").value || "满意"
 
     },
 
@@ -6016,7 +5992,7 @@ function doAddSatisfaction(){
 
     evaluatedAt: "",
 
-    status: "寰呰瘎瀹?
+    status: "待评定"
 
   });
 
@@ -6024,16 +6000,16 @@ function doAddSatisfaction(){
 
   renderModule("satisfaction");
 
-  alert("婊℃剰搴﹁瘎浼板凡鍒涘缓锛乗n椤圭洰鎰熷彈宸茶褰曪紝寰呬笂绾т笌椤圭洰娌熼€氬悗琛ュ厖璇勫畾鎵撳垎銆?);
+  alert("满意度评估已创建！\n项目感受已记录，待上级与项目沟通后补充评定打分。");
 
 }
 
 
 
-// ===== 婊℃剰搴﹁瘎浼?- 瀵煎嚭 =====
+// ===== 满意度评估 - 导出 =====
 
 function exportSatisfaction(){
-  const headers = ['椤圭洰','鍛ㄦ湡','椤圭洰缁煎悎鎰熷彈','涓氬姟琛ㄧ幇','涓撲笟搴?,'鎵ц鍔?,'姹囨姤鏃舵晥鎬?,'姹囨姤鍑嗙‘鎬?,'姹囨姤鍏ㄩ潰鎬?,'椋庨櫓绠℃帶','娌熼€氶鐜?,'娌熼€氱悊瑙?,'淇℃伅鍚屾','棰嗗璇勫垎','涓婄骇璇勮','璇勫畾浜?,'璇勫畾鏃ユ湡','鐘舵€?];
+  const headers = ['项目','周期','项目综合感受','业务表现','专业度','执行力','汇报时效性','汇报准确性','汇报全面性','风险管控','沟通频率','沟通理解','信息同步','领导评分','上级评语','评定人','评定日期','状态'];
   const rows = SATISFACTION_DATA.map(s => {
     const p = PROJECTS.find(pp => pp.id === s.projectId);
     return [
@@ -6057,7 +6033,7 @@ function exportSatisfaction(){
       s.status
     ];
   });
-  showExportDialog(headers, rows, `椤圭洰杩愮淮璋冪爺_${new Date().toISOString().slice(0,10)}`, '椤圭洰杩愮淮璋冪爺');
+  showExportDialog(headers, rows, `项目运维调研_${new Date().toISOString().slice(0,10)}`, '项目运维调研');
 }
 
 
@@ -6065,29 +6041,29 @@ function importSatisfaction(){
 
   const body = document.getElementById("modal-body");
 
-  document.getElementById("modal-title").textContent = "馃摜 瀵煎叆婊℃剰搴﹁瘎浼?;
+  document.getElementById("modal-title").textContent = "📥 导入满意度评估";
 
   body.innerHTML = `
 
     <div style="font-size:13px;color:var(--c-text-2);margin-bottom:14px;line-height:1.8;">
 
-      <div>馃搵 <b>瀵煎叆璇存槑锛?/b></div>
+      <div>📋 <b>导入说明：</b></div>
 
-      <div>鏀寔 CSV / XLSX 鏍煎紡锛屾枃浠跺瓧娈甸『搴忎笉闄愶紝鍙傝€冨鍑烘枃浠躲€?/div>
+      <div>支持 CSV / XLSX 格式，文件字段顺序不限，参考导出文件。</div>
 
       <div style="background:var(--c-bg);padding:8px 12px;border-radius:6px;margin-top:6px;font-size:12px;">
 
-        椤圭洰ID / 鍛ㄦ湡 / 缁煎悎鎰熷彈 / 涓氬姟琛ㄧ幇 / 涓撲笟搴?/ 鎵ц鍔?/ 姹囨姤鏃舵晥鎬?/ 姹囨姤鍑嗙‘鎬?/ 姹囨姤鍏ㄩ潰鎬?/ 椋庨櫓绠℃帶 / 娌熼€氶鐜?/ 娌熼€氱悊瑙?/ 淇℃伅鍚屾 / 棰嗗璇勫垎 / 涓婄骇璇勮 / 鐘舵€?
+        项目ID / 周期 / 综合感受 / 业务表现 / 专业度 / 执行力 / 汇报时效性 / 汇报准确性 / 汇报全面性 / 风险管控 / 沟通频率 / 沟通理解 / 信息同步 / 领导评分 / 上级评语 / 状态
 
       </div>
 
-      <div style="margin-top:8px;">涔熷彲涓嬭浇褰撳墠鏁版嵁浣滀负妯℃澘鍙傝€冿紙鐐瑰嚮"瀵煎嚭"鎸夐挳锛夈€?/div>
+      <div style="margin-top:8px;">也可下载当前数据作为模板参考（点击"导出"按钮）。</div>
 
     </div>
 
     <div class="form-group">
 
-      <label class="form-label">閫夋嫨鏂囦欢锛?csv锛?/label>
+      <label class="form-label">选择文件（.csv）</label>
 
       <input type="file" id="sat-import-file" accept=".csv,.xlsx,.xls" class="form-input" style="padding:6px 10px;">
 
@@ -6095,9 +6071,9 @@ function importSatisfaction(){
 
     <div class="form-actions">
 
-      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">鍙栨秷</button>
+      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">取消</button>
 
-      <button class="btn btn-primary" onclick="doImportSatisfaction()">寮€濮嬪鍏?/button>
+      <button class="btn btn-primary" onclick="doImportSatisfaction()">开始导入</button>
 
     </div>`;
 
@@ -6111,38 +6087,38 @@ function doImportSatisfaction(){
 
   const fileInput = document.getElementById("sat-import-file");
 
-  if(!fileInput || !fileInput.files.length){ alert("璇峰厛閫夋嫨鏂囦欢"); return; }
+  if(!fileInput || !fileInput.files.length){ alert("请先选择文件"); return; }
 
   const file = fileInput.files[0];
   const ext = (file.name || '').split('.').pop().toLowerCase();
 
   if (ext === 'xlsx' || ext === 'xls') {
-    // Excel 鏍煎紡锛氱敤 SheetJS 瑙ｆ瀽
+    // Excel 格式：用 SheetJS 解析
     const reader = new FileReader();
     reader.onload = function(e) {
       try {
         const wb = XLSX.read(e.target.result, { type: 'array' });
         const ws = wb.Sheets[wb.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
-        if (!rows || rows.length < 2) { alert("鏂囦欢鍐呭涓虹┖鎴栦粎鏈夎〃澶?); return; }
+        if (!rows || rows.length < 2) { alert("文件内容为空或仅有表头"); return; }
         processSatisfactionRows(rows);
-      } catch(err) { alert("瑙ｆ瀽Excel澶辫触锛? + err.message); }
+      } catch(err) { alert("解析Excel失败：" + err.message); }
     };
     reader.readAsArrayBuffer(file);
   } else {
-    // CSV 鏍煎紡锛氬師鏈夐€昏緫
+    // CSV 格式：原有逻辑
     const reader = new FileReader();
     reader.onload = function(e){
       try {
         const text = e.target.result;
         const lines = text.replace(/^\uFEFF/,'').split('\n').map(l => l.trim()).filter(Boolean);
-        if(lines.length < 2){ alert("鏂囦欢鍐呭涓虹┖鎴栦粎鏈夎〃澶?); return; }
-        // CSV 杞垚浜岀淮鏁扮粍鏍煎紡锛岃窡 Excel 缁熶竴
+        if(lines.length < 2){ alert("文件内容为空或仅有表头"); return; }
+        // CSV 转成二维数组格式，跟 Excel 统一
         const rows = lines.map(function(line) {
           return line.split(',').map(v => v.replace(/^"|"$/g,'').trim());
         });
         processSatisfactionRows(rows);
-      } catch(err){ alert("瀵煎叆澶辫触锛? + err.message); }
+      } catch(err){ alert("导入失败：" + err.message); }
     };
     reader.readAsText(file, 'UTF-8');
   }
@@ -6155,8 +6131,8 @@ function processSatisfactionRows(rows) {
   for(let i=1;i<rows.length;i++){
     const vals = rows[i];
     if(vals.length < 3) continue;
-    const period = vals[headers.indexOf('鍛ㄦ湡')] || vals[1] || '';
-    const projectName = vals[headers.indexOf('椤圭洰')] || vals[0] || '';
+    const period = vals[headers.indexOf('周期')] || vals[1] || '';
+    const projectName = vals[headers.indexOf('项目')] || vals[0] || '';
     const p = PROJECTS.find(pp => pp.name === projectName);
     if(!p) continue;
     SATISFACTION_DATA.push({
@@ -6164,52 +6140,52 @@ function processSatisfactionRows(rows) {
       projectId: p.id,
       period: period,
       projectFeedback: {
-        overall: vals[headers.indexOf('椤圭洰缁煎悎鎰熷彈')] || '婊℃剰',
-        busiLima2sPerf: vals[headers.indexOf('涓氬姟琛ㄧ幇')] || '寰呭～鍐?,
-        professionalism: vals[headers.indexOf('涓撲笟搴?)] || '寰呭～鍐?,
-        execution: vals[headers.indexOf('鎵ц鍔?)] || '寰呭～鍐?,
+        overall: vals[headers.indexOf('项目综合感受')] || '满意',
+        busiLima2sPerf: vals[headers.indexOf('业务表现')] || '待填写',
+        professionalism: vals[headers.indexOf('专业度')] || '待填写',
+        execution: vals[headers.indexOf('执行力')] || '待填写',
         reporting: {
-          timeliLima2s: vals[headers.indexOf('姹囨姤鏃舵晥鎬?)] || '寰呭～鍐?,
-          accuracy: vals[headers.indexOf('姹囨姤鍑嗙‘鎬?)] || '寰呭～鍐?,
-          completeLima2s: vals[headers.indexOf('姹囨姤鍏ㄩ潰鎬?)] || '寰呭～鍐?
+          timeliLima2s: vals[headers.indexOf('汇报时效性')] || '待填写',
+          accuracy: vals[headers.indexOf('汇报准确性')] || '待填写',
+          completeLima2s: vals[headers.indexOf('汇报全面性')] || '待填写'
         },
-        riskControl: vals[headers.indexOf('椋庨櫓绠℃帶')] || '寰呭～鍐?,
+        riskControl: vals[headers.indexOf('风险管控')] || '待填写',
         communication: {
-          frequency: vals[headers.indexOf('娌熼€氶鐜?)] || '寰呭～鍐?,
-          understanding: vals[headers.indexOf('娌熼€氱悊瑙?)] || '寰呭～鍐?,
-          sync: vals[headers.indexOf('淇℃伅鍚屾')] || '寰呭～鍐?
+          frequency: vals[headers.indexOf('沟通频率')] || '待填写',
+          understanding: vals[headers.indexOf('沟通理解')] || '待填写',
+          sync: vals[headers.indexOf('信息同步')] || '待填写'
         }
       },
-      leaderScore: parseInt(vals[headers.indexOf('棰嗗璇勫垎')]) || 0,
-      leaderComment: vals[headers.indexOf('涓婄骇璇勮')] || '',
-      evaluatedBy: vals[headers.indexOf('璇勫畾浜?)] || currentRole,
-      evaluatedAt: vals[headers.indexOf('璇勫畾鏃ユ湡')] || new Date().toISOString().slice(0,10),
-      status: vals[headers.indexOf('鐘舵€?)] || '寰呰瘎瀹?
+      leaderScore: parseInt(vals[headers.indexOf('领导评分')]) || 0,
+      leaderComment: vals[headers.indexOf('上级评语')] || '',
+      evaluatedBy: vals[headers.indexOf('评定人')] || currentRole,
+      evaluatedAt: vals[headers.indexOf('评定日期')] || new Date().toISOString().slice(0,10),
+      status: vals[headers.indexOf('状态')] || '待评定'
     });
     importCount++;
   }
   document.getElementById("modal-overlay").classList.add("hidden");
   renderModule("satisfaction");
-  alert(`瀵煎叆瀹屾垚锛佸叡鎴愬姛瀵煎叆 ${importCount} 鏉¤瘎浼拌褰曘€俙);
+  alert(`导入完成！共成功导入 ${importCount} 条评估记录。`);
 }
 
 
 
-// ===== 婊℃剰搴﹁瘎浼?- 鏉冮檺璁剧疆锛堝脊绐楋級=====
+// ===== 满意度评估 - 权限设置（弹窗）=====
 
 function showSatisfactionPermission(){
 
-  const ROLE_NAMES = {leader:'涓婄骇棰嗗',pm:'椤圭洰缁忕悊',exec:'鎵ц鍥㈤槦',staff:'椤圭洰浜哄憳'};
+  const ROLE_NAMES = {leader:'上级领导',pm:'项目经理',exec:'执行团队',staff:'项目人员'};
 
   const canRead = (role) => {
 
-    if(role==='leader') return '鍏ㄩ儴椤圭洰锛堝彧璇?+ 璇勫畾鎵撳垎锛?;
+    if(role==='leader') return '全部项目（只读 + 评定打分）';
 
-    if(role==='pm') return '璐熻矗椤圭洰锛堣鍐欙級+ 璺ㄨ亴鍦哄悓绫伙紙鍙锛?;
+    if(role==='pm') return '负责项目（读写）+ 跨职场同类（只读）';
 
-    if(role==='exec') return '璐熻矗椤圭洰锛堣鍐欙級锛屽叾浠栧悓閮ㄩ棬锛堝彧璇伙級';
+    if(role==='exec') return '负责项目（读写），其他同部门（只读）';
 
-    if(role==='staff') return '鎵€鍙備笌椤圭洰锛堝彧璇伙級';
+    if(role==='staff') return '所参与项目（只读）';
 
     return '';
 
@@ -6217,15 +6193,15 @@ function showSatisfactionPermission(){
 
   const body = document.getElementById("modal-body");
 
-  document.getElementById("modal-title").textContent = "馃攼 婊℃剰搴﹁瘎浼?- 鏉冮檺璁剧疆";
+  document.getElementById("modal-title").textContent = "🔐 满意度评估 - 权限设置";
 
   body.innerHTML = `
 
     <div style="font-size:13px;color:var(--c-text-2);margin-bottom:16px;line-height:1.8;">
 
-      <div>馃搵 <b>妯″潡鏉冮檺璇存槑锛?/b></div>
+      <div>📋 <b>模块权限说明：</b></div>
 
-      <div>婊℃剰搴﹁瘎浼版ā鍧楁秹鍙?b>椤圭洰鏂规劅鍙楋紙瀵瑰锛?/b>涓?b>涓婄骇璇勫畾锛堝鍐咃級</b>锛屾潈闄愰渶涓ユ牸鍖哄垎銆?/div>
+      <div>满意度评估模块涉及<b>项目方感受（对外）</b>与<b>上级评定（对内）</b>，权限需严格区分。</div>
 
     </div>
 
@@ -6233,51 +6209,51 @@ function showSatisfactionPermission(){
 
     <div class="card" style="margin-bottom:14px;padding:14px 16px;">
 
-      <div style="font-size:13px;font-weight:500;margin-bottom:10px;">瑙掕壊鏉冮檺鏄庣粏</div>
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px;">角色权限明细</div>
 
       <table class="data-table">
 
-        <thead><tr><th>瑙掕壊</th><th>鏌ョ湅鑼冨洿</th><th>鎿嶄綔鏉冮檺</th></tr></thead>
+        <thead><tr><th>角色</th><th>查看范围</th><th>操作权限</th></tr></thead>
 
         <tbody>
 
           <tr>
 
-            <td><span class="badge badge-blue">涓婄骇棰嗗</span></td>
+            <td><span class="badge badge-blue">上级领导</span></td>
 
-            <td>鍏ㄩ儴椤圭洰璇勪及璁板綍</td>
+            <td>全部项目评估记录</td>
 
-            <td>鏂板璇勪及 路 璇勫畾鎵撳垎 路 缂栬緫璇勮 路 瀵煎嚭 路 瀵煎叆 路 鏉冮檺绠＄悊</td>
-
-          </tr>
-
-          <tr>
-
-            <td><span class="badge badge-green">椤圭洰缁忕悊</span></td>
-
-            <td>璐熻矗椤圭洰 + 璺ㄨ亴鍦哄悓绫婚」鐩?/td>
-
-            <td>鏂板璇勪及锛堝～鍐欓」鐩劅鍙楋級路 鏌ョ湅璇勫畾缁撴灉 路 瀵煎嚭</td>
+            <td>新增评估 · 评定打分 · 编辑评语 · 导出 · 导入 · 权限管理</td>
 
           </tr>
 
           <tr>
 
-            <td><span class="badge badge-yellow">鎵ц鍥㈤槦</span></td>
+            <td><span class="badge badge-green">项目经理</span></td>
 
-            <td>璐熻矗椤圭洰</td>
+            <td>负责项目 + 跨职场同类项目</td>
 
-            <td>鏌ョ湅璐熻矗椤圭洰鐨勮瘎瀹氱粨鏋滃拰璇勮 路 瀵煎嚭</td>
+            <td>新增评估（填写项目感受）· 查看评定结果 · 导出</td>
 
           </tr>
 
           <tr>
 
-            <td><span class="badge badge-gray">椤圭洰浜哄憳</span></td>
+            <td><span class="badge badge-yellow">执行团队</span></td>
 
-            <td>鎵€鍙備笌椤圭洰</td>
+            <td>负责项目</td>
 
-            <td>鏌ョ湅鏈汉鍙備笌椤圭洰鐨勮瘎瀹氱粨鏋滐紙浠呮煡鐪嬶級</td>
+            <td>查看负责项目的评定结果和评语 · 导出</td>
+
+          </tr>
+
+          <tr>
+
+            <td><span class="badge badge-gray">项目人员</span></td>
+
+            <td>所参与项目</td>
+
+            <td>查看本人参与项目的评定结果（仅查看）</td>
 
           </tr>
 
@@ -6291,17 +6267,17 @@ function showSatisfactionPermission(){
 
     <div class="card" style="margin-bottom:14px;padding:14px 16px;background:var(--c-yellow-bg);">
 
-      <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--c-yellow);">鈿狅笍 鏁版嵁瀹夊叏鎻愰啋</div>
+      <div style="font-size:13px;font-weight:500;margin-bottom:8px;color:var(--c-yellow);">⚠️ 数据安全提醒</div>
 
       <div style="font-size:12px;color:var(--c-text-2);line-height:2;">
 
-        <div>鈥?椤圭洰鏂规劅鍙楀唴瀹?b>涓嶅澶栧睍绀哄垎鍊?/b>锛屼粎涓婄骇鍙煡鐪嬪畬鏁磋瘎瀹氱粨鏋?/div>
+        <div>• 项目方感受内容<b>不对外展示分值</b>，仅上级可查看完整评定结果</div>
 
-        <div>鈥?椤圭洰浜哄憳锛堟湭鏉ュ紑鏀撅級浠呭彲鏌ョ湅鏈汉鍙備笌椤圭洰鐨勮瘎瀹氱粨鏋滐紝<b>涓嶅彲鏌ョ湅鍏朵粬椤圭洰</b></div>
+        <div>• 项目人员（未来开放）仅可查看本人参与项目的评定结果，<b>不可查看其他项目</b></div>
 
-        <div>鈥?瀵煎嚭鏂囦欢鍖呭惈瀹屾暣璇勫畾鎰忚锛岃娉ㄦ剰鏂囦欢鍒嗗彂鑼冨洿</div>
+        <div>• 导出文件包含完整评定意见，请注意文件分发范围</div>
 
-        <div>鈥?寤鸿瀹氭湡澶囦唤璇勪及鏁版嵁锛堜娇鐢ㄥ鍑哄姛鑳斤級</div>
+        <div>• 建议定期备份评估数据（使用导出功能）</div>
 
       </div>
 
@@ -6311,7 +6287,7 @@ function showSatisfactionPermission(){
 
     <div class="form-actions">
 
-      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">鍏抽棴</button>
+      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">关闭</button>
 
     </div>`;
 
@@ -6321,76 +6297,76 @@ function showSatisfactionPermission(){
 
 
 
-// ===== 绯荤粺鐢ㄦ埛绠＄悊锛堢敤鎴峰鎵圭鐞嗭級 =====
+// ===== 系统用户管理（用户审批管理） =====
 
 let notificationFilter = "all";
 
 function renderNotifications(){
   if (!isAdmin()) {
-    return `<div class="empty-state"><div class="empty-icon">&#x1F512;</div><p>浠呯鐞嗗憳鍙闂妯″潡</p></div>`;
+    return `<div class="empty-state"><div class="empty-icon">&#x1F512;</div><p>仅管理员可访问此模块</p></div>`;
   }
 
   const filtered = notificationFilter === "all" ? USERS : USERS.filter(u => {
-    if (notificationFilter === "pending") return u.status === "寰呭鏍?;
-    if (notificationFilter === "active") return u.status === "宸叉縺娲?;
-    if (notificationFilter === "rejected") return u.status === "宸叉嫆缁?;
+    if (notificationFilter === "pending") return u.status === "待审核";
+    if (notificationFilter === "active") return u.status === "已激活";
+    if (notificationFilter === "rejected") return u.status === "已拒绝";
     return true;
   });
 
   const statusBadge = {
-    "宸叉縺娲?: "badge-green",
-    "寰呭鏍?: "badge-yellow",
-    "宸叉嫆缁?: "badge-red",
-    "宸茬鐢?: "badge-gray"
+    "已激活": "badge-green",
+    "待审核": "badge-yellow",
+    "已拒绝": "badge-red",
+    "已禁用": "badge-gray"
   };
 
   const roleBadge = {
-    "瓒呯骇绠＄悊鍛?: "badge-purple",
-    "绠＄悊鍛?: "badge-blue",
-    "瀹㈡湇鎬荤洃": "badge-orange",
-    "瀹㈡湇缁忕悊": "badge-primary",
-    "瀹㈡湇涓荤": "badge-yellow",
-    "瀹㈡湇缁勯暱": "badge-green",
-    "椤圭洰浼欎即": "badge-gray",
-    "鎶€鏈紮浼?: "badge-gray",
-    "椋庢帶浼欎即": "badge-gray"
+    "超级管理员": "badge-purple",
+    "管理员": "badge-blue",
+    "客服总监": "badge-orange",
+    "客服经理": "badge-primary",
+    "客服主管": "badge-yellow",
+    "客服组长": "badge-green",
+    "项目伙伴": "badge-gray",
+    "技术伙伴": "badge-gray",
+    "风控伙伴": "badge-gray"
   };
 
   return `<div class="module-header">
     <div>
-      <div class="module-title">&#x1F514; 绯荤粺鐢ㄦ埛绠＄悊</div>
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">绠＄悊绯荤粺鐢ㄦ埛锛屽鎵规敞鍐岀敵璇凤紝缁存姢璐﹀彿鐘舵€?/div>
+      <div class="module-title">&#x1F514; 系统用户管理</div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">管理系统用户，审批注册申请，维护账号状态</div>
     </div>
     <div class="module-actions">
-      <button class="btn btn-sm btn-primary" onclick="showAddUser()">&#xFF0B; 鏂板鐢ㄦ埛</button>
+      <button class="btn btn-sm btn-primary" onclick="showAddUser()">&#xFF0B; 新增用户</button>
     </div>
   </div>
 
   <div style="display:flex;gap:8px;margin-bottom:16px;">
-    <button class="btn btn-sm ${notificationFilter==='all'?'btn-primary':''}" onclick="setNotificationFilter('all')">鍏ㄩ儴(${USERS.length})</button>
-    <button class="btn btn-sm ${notificationFilter==='pending'?'btn-primary':''}" style="background:var(--c-yellow-bg);color:var(--c-yellow);border-color:var(--c-yellow)" onclick="setNotificationFilter('pending')">寰呭鏍?${USERS.filter(u=>u.status==='寰呭鏍?).length})</button>
-    <button class="btn btn-sm ${notificationFilter==='active'?'btn-primary':''}" style="background:var(--c-green-bg);color:var(--c-green);border-color:var(--c-green)" onclick="setNotificationFilter('active')">宸叉縺娲?${USERS.filter(u=>u.status==='宸叉縺娲?).length})</button>
-    <button class="btn btn-sm ${notificationFilter==='rejected'?'btn-primary':''}" style="background:var(--c-red-bg);color:var(--c-red);border-color:var(--c-red)" onclick="setNotificationFilter('rejected')">宸叉嫆缁?${USERS.filter(u=>u.status==='宸叉嫆缁?).length})</button>
+    <button class="btn btn-sm ${notificationFilter==='all'?'btn-primary':''}" onclick="setNotificationFilter('all')">全部(${USERS.length})</button>
+    <button class="btn btn-sm ${notificationFilter==='pending'?'btn-primary':''}" style="background:var(--c-yellow-bg);color:var(--c-yellow);border-color:var(--c-yellow)" onclick="setNotificationFilter('pending')">待审核(${USERS.filter(u=>u.status==='待审核').length})</button>
+    <button class="btn btn-sm ${notificationFilter==='active'?'btn-primary':''}" style="background:var(--c-green-bg);color:var(--c-green);border-color:var(--c-green)" onclick="setNotificationFilter('active')">已激活(${USERS.filter(u=>u.status==='已激活').length})</button>
+    <button class="btn btn-sm ${notificationFilter==='rejected'?'btn-primary':''}" style="background:var(--c-red-bg);color:var(--c-red);border-color:var(--c-red)" onclick="setNotificationFilter('rejected')">已拒绝(${USERS.filter(u=>u.status==='已拒绝').length})</button>
   </div>
 
   <div class="card">
     <table class="data-table">
       <thead>
         <tr>
-          <th>鐢ㄦ埛</th>
-          <th>鐢ㄦ埛鍚?/th>
-          <th>瑙掕壊</th>
-          <th>鐘舵€?/th>
-          <th>娉ㄥ唽鏃堕棿</th>
-          <th>鑱旂郴鏂瑰紡</th>
-          <th>瀹℃壒浜?/th>
-          <th>鎿嶄綔</th>
+          <th>用户</th>
+          <th>用户名</th>
+          <th>角色</th>
+          <th>状态</th>
+          <th>注册时间</th>
+          <th>联系方式</th>
+          <th>审批人</th>
+          <th>操作</th>
         </tr>
       </thead>
       <tbody>
         ${filtered.map(u => `
           <tr>
-            <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--c-primary-light);color:var(--c-primary);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;">${u.name ? u.name.charAt(0) : '?'}</div><span style="font-weight:500;">${u.name || '鏈懡鍚?}</span></div></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--c-primary-light);color:var(--c-primary);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;">${u.name ? u.name.charAt(0) : '?'}</div><span style="font-weight:500;">${u.name || '未命名'}</span></div></td>
             <td>${u.username}</td>
             <td><span class="badge ${roleBadge[u.role]||'badge-gray'}">${u.role}</span></td>
             <td><span class="badge ${statusBadge[u.status]||'badge-gray'}">${u.status}</span></td>
@@ -6398,22 +6374,22 @@ function renderNotifications(){
             <td><div style="font-size:12px;color:var(--c-text-2);">${u.phone}<br/>${u.email}</div></td>
             <td>${u.approvedBy || "&#x2014;"}</td>
             <td class="actions">
-              ${u.status === "寰呭鏍? ? `
-                <button class="btn btn-sm btn-primary" onclick="approveUser('${u.id}', '鍚屾剰')">鍚屾剰</button>
-                <button class="btn btn-sm" style="background:var(--c-red-bg);color:var(--c-red);border-color:var(--c-red);" onclick="approveUser('${u.id}', '鎷掔粷')">鎷掔粷</button>
-                <button class="btn btn-sm" onclick="approveUser('${u.id}', '蹇界暐')">蹇界暐</button>
+              ${u.status === "待审核" ? `
+                <button class="btn btn-sm btn-primary" onclick="approveUser('${u.id}', '同意')">同意</button>
+                <button class="btn btn-sm" style="background:var(--c-red-bg);color:var(--c-red);border-color:var(--c-red);" onclick="approveUser('${u.id}', '拒绝')">拒绝</button>
+                <button class="btn btn-sm" onclick="approveUser('${u.id}', '忽略')">忽略</button>
               ` : `
-                <button class="btn btn-sm" onclick="editUserRole('${u.id}')">鏀硅鑹?/button>
-                <button class="btn btn-sm" onclick="resetUserPassword('${u.id}')">閲嶇疆瀵嗙爜</button>
-                ${u.status !== "宸茬鐢? ? `<button class="btn btn-sm" style="background:var(--c-yellow-bg);color:var(--c-yellow);border-color:var(--c-yellow);" onclick="disableUser('${u.id}')">绂佺敤</button>` : `<button class="btn btn-sm btn-primary" onclick="enableUser('${u.id}')">鍚敤</button>`}
-                ${isSuperAdmin() ? `<button class="btn btn-sm" style="background:var(--c-red-bg);color:var(--c-red);border-color:var(--c-red);" onclick="deleteUser('${u.id}')">鍒犻櫎</button>` : ""}
+                <button class="btn btn-sm" onclick="editUserRole('${u.id}')">改角色</button>
+                <button class="btn btn-sm" onclick="resetUserPassword('${u.id}')">重置密码</button>
+                ${u.status !== "已禁用" ? `<button class="btn btn-sm" style="background:var(--c-yellow-bg);color:var(--c-yellow);border-color:var(--c-yellow);" onclick="disableUser('${u.id}')">禁用</button>` : `<button class="btn btn-sm btn-primary" onclick="enableUser('${u.id}')">启用</button>`}
+                ${isSuperAdmin() ? `<button class="btn btn-sm" style="background:var(--c-red-bg);color:var(--c-red);border-color:var(--c-red);" onclick="deleteUser('${u.id}')">删除</button>` : ""}
               `}
             </td>
           </tr>
         `).join("")}
       </tbody>
     </table>
-    ${filtered.length === 0 ? `<div style="text-align:center;padding:40px;color:var(--c-text-3);">鏆傛棤绗﹀悎鏉′欢鐨勭敤鎴?/div>` : ""}
+    ${filtered.length === 0 ? `<div style="text-align:center;padding:40px;color:var(--c-text-3);">暂无符合条件的用户</div>` : ""}
   </div>
   `;
 }
@@ -6426,20 +6402,20 @@ function setNotificationFilter(filter){
 function approveUser(userId, action){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  if (action === "鍚屾剰") {
-    user.status = "宸叉縺娲?;
+  if (action === "同意") {
+    user.status = "已激活";
     user.approvedBy = currentUser ? currentUser.name : "admin";
-    // 鏂扮敤鎴烽粯璁よ鑹蹭负"鏂扮敤鎴?锛屾墍鏈夋潈闄愬彧璇?
-    if (!user.role) user.role = "鏂扮敤鎴?;
+    // 新用户默认角色为"新用户"，所有权限只读
+    if (!user.role) user.role = "新用户";
     saveUsers();
-    alert(`宸插悓鎰?${user.name} 鐨勬敞鍐岀敵璇凤紝璐﹀彿宸叉縺娲汇€俙);
-  } else if (action === "鎷掔粷") {
-    user.status = "宸叉嫆缁?;
+    alert(`已同意 ${user.name} 的注册申请，账号已激活。`);
+  } else if (action === "拒绝") {
+    user.status = "已拒绝";
     user.approvedBy = currentUser ? currentUser.name : "admin";
     saveUsers();
-    alert(`宸叉嫆缁?${user.name} 鐨勬敞鍐岀敵璇枫€俙);
-  } else if (action === "蹇界暐") {
-    alert(`宸插拷鐣?${user.name} 鐨勬敞鍐岀敵璇凤紝璇ョ敵璇蜂粛淇濈暀鍦ㄥ緟瀹℃牳鍒楄〃涓€俙);
+    alert(`已拒绝 ${user.name} 的注册申请。`);
+  } else if (action === "忽略") {
+    alert(`已忽略 ${user.name} 的注册申请，该申请仍保留在待审核列表中。`);
     return;
   }
   renderModule("notifications");
@@ -6448,28 +6424,28 @@ function approveUser(userId, action){
 function editUserRole(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  const roles = ["瀹㈡湇缁勯暱","瀹㈡湇涓荤","瀹㈡湇缁忕悊","瀹㈡湇鎬荤洃","绠＄悊鍛?,"椤圭洰浼欎即","鎶€鏈紮浼?,"椋庢帶浼欎即"];
+  const roles = ["客服组长","客服主管","客服经理","客服总监","管理员","项目伙伴","技术伙伴","风控伙伴"];
   const roleOptions = roles.map(r => `<option value="${r}" ${r===user.role?'selected':''}>${r}</option>`).join('');
 
   const modalHtml = `
     <div class="modal-overlay" id="role-modal-overlay" onclick="if(event.target===this)closeRoleModal()">
       <div class="modal-box" style="max-width:320px;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,0.15);">
         <div class="modal-header" style="padding:12px 16px;border-bottom:1px solid #f1f5f9;">
-          <div style="font-size:13px;font-weight:600;color:var(--c-text);">淇敼瑙掕壊</div>
+          <div style="font-size:13px;font-weight:600;color:var(--c-text);">修改角色</div>
           <button class="modal-close" onclick="closeRoleModal()" style="font-size:18px;color:#94a3b8;">&times;</button>
         </div>
         <div class="modal-body" style="padding:16px;">
-          <div style="margin-bottom:10px;font-size:12px;color:#94a3b8;">涓?<strong style="color:var(--c-primary);">${user.name}</strong> 閫夋嫨鏂拌鑹?/div>
+          <div style="margin-bottom:10px;font-size:12px;color:#94a3b8;">为 <strong style="color:var(--c-primary);">${user.name}</strong> 选择新角色</div>
           <div style="position:relative;">
             <select id="role-select-input" style="width:100%;padding:8px 28px 8px 10px;font-size:12px;color:var(--c-text);border:1px solid #e2e8f0;border-radius:6px;background:#fff;appearance:none;cursor:pointer;outline:none;transition:border-color 0.2s;">
               ${roleOptions}
             </select>
-            <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:10px;color:#94a3b8;">鈻?/div>
+            <div style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:10px;color:#94a3b8;">▼</div>
           </div>
         </div>
         <div class="modal-footer" style="padding:10px 16px 14px;gap:8px;">
-          <button class="btn" onclick="closeRoleModal()" style="padding:6px 14px;font-size:12px;border-radius:6px;background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;">鍙栨秷</button>
-          <button class="btn btn-primary" onclick="confirmEditRole('${userId}')" style="padding:6px 14px;font-size:12px;border-radius:6px;">纭畾</button>
+          <button class="btn" onclick="closeRoleModal()" style="padding:6px 14px;font-size:12px;border-radius:6px;background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;">取消</button>
+          <button class="btn btn-primary" onclick="confirmEditRole('${userId}')" style="padding:6px 14px;font-size:12px;border-radius:6px;">确定</button>
         </div>
       </div>
     </div>`;
@@ -6490,7 +6466,7 @@ function confirmEditRole(userId){
   if(newRole && newRole !== user.role){
     user.role = newRole;
     saveUsers();
-    alert(`宸蹭慨鏀?${user.name} 鐨勮鑹蹭负锛?{newRole}`);
+    alert(`已修改 ${user.name} 的角色为：${newRole}`);
     renderModule("notifications");
   }
   closeRoleModal();
@@ -6499,21 +6475,21 @@ function confirmEditRole(userId){
 function resetUserPassword(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  const newPwd = prompt(`閲嶇疆 ${user.name} 鐨勫瘑鐮侊細\n璇疯緭鍏ユ柊瀵嗙爜锛堣嚦灏?浣嶏級锛歚);
+  const newPwd = prompt(`重置 ${user.name} 的密码：\n请输入新密码（至少6位）：`);
   if (newPwd && newPwd.length >= 6) {
     user.password = newPwd;
-    alert(`宸查噸缃?${user.name} 鐨勫瘑鐮併€俙);
+    alert(`已重置 ${user.name} 的密码。`);
   } else if (newPwd) {
-    alert("瀵嗙爜闀垮害涓嶈冻6浣?);
+    alert("密码长度不足6位");
   }
 }
 
 function disableUser(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  if (user.role === "瓒呯骇绠＄悊鍛?) { alert("涓嶈兘绂佺敤瓒呯骇绠＄悊鍛?); return; }
-  if (confirm(`纭畾瑕佺鐢ㄧ敤鎴?${user.name} 鍚楋紵`)) {
-    user.status = "宸茬鐢?;
+  if (user.role === "超级管理员") { alert("不能禁用超级管理员"); return; }
+  if (confirm(`确定要禁用用户 ${user.name} 吗？`)) {
+    user.status = "已禁用";
     saveUsers();
     renderModule("notifications");
   }
@@ -6522,7 +6498,7 @@ function disableUser(userId){
 function enableUser(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  user.status = "宸叉縺娲?;
+  user.status = "已激活";
   saveUsers();
   renderModule("notifications");
 }
@@ -6530,8 +6506,8 @@ function enableUser(userId){
 function deleteUser(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  if (user.role === "瓒呯骇绠＄悊鍛?) { alert("涓嶈兘鍒犻櫎瓒呯骇绠＄悊鍛?); return; }
-  if (confirm(`纭畾瑕佸垹闄ょ敤鎴?${user.name} 鍚楋紵姝ゆ搷浣滀笉鍙仮澶嶃€俙)) {
+  if (user.role === "超级管理员") { alert("不能删除超级管理员"); return; }
+  if (confirm(`确定要删除用户 ${user.name} 吗？此操作不可恢复。`)) {
     const idx = USERS.findIndex(u => u.id === userId);
     if (idx > -1) USERS.splice(idx, 1);
     saveUsers();
@@ -6540,18 +6516,18 @@ function deleteUser(userId){
 }
 
 function showAddUser(){
-  if (!isAdmin()) { alert("浠呯鐞嗗憳鍙柊澧炵敤鎴?); return; }
-  const name = prompt("鐢ㄦ埛濮撳悕锛?);
+  if (!isAdmin()) { alert("仅管理员可新增用户"); return; }
+  const name = prompt("用户姓名：");
   if (!name) return;
-  const username = prompt("鐧诲綍璐﹀彿锛?);
-  if (!username || USERS.some(u => u.username === username)) { alert("璐﹀彿涓虹┖鎴栧凡瀛樺湪"); return; }
-  const password = prompt("鍒濆瀵嗙爜锛?);
+  const username = prompt("登录账号：");
+  if (!username || USERS.some(u => u.username === username)) { alert("账号为空或已存在"); return; }
+  const password = prompt("初始密码：");
   if (!password) return;
-  const role = prompt("瑙掕壊锛堝鏈嶇粍闀?瀹㈡湇涓荤/瀹㈡湇缁忕悊/瀹㈡湇鎬荤洃/绠＄悊鍛橈級锛?) || "瀹㈡湇缁勯暱";
+  const role = prompt("角色（客服组长/客服主管/客服经理/客服总监/管理员）：") || "客服组长";
   const newUser = {
     id: "U" + String(USERS.length + 1).padStart(3, "0"),
     name, username, password, role,
-    status: "宸叉縺娲?, registerTime: new Date().toISOString().slice(0, 10),
+    status: "已激活", registerTime: new Date().toISOString().slice(0, 10),
     phone: "", email: "", approvedBy: currentUser ? currentUser.name : "admin", remark: ""
   };
   USERS.push(newUser);
@@ -6559,9 +6535,9 @@ function showAddUser(){
 }
 
 function renderPermissions(){
-  // 闃插尽鎬ф鏌?
+  // 防御性检查
   if (typeof ROLES === "undefined") {
-    document.getElementById("module-content").innerHTML = '<div style="padding:40px;text-align:center;color:red;">閿欒锛歊OLES 鏈畾涔?/div>';
+    document.getElementById("module-content").innerHTML = '<div style="padding:40px;text-align:center;color:red;">错误：ROLES 未定义</div>';
     return;
   }
   if (typeof rolePermissions === "undefined") {
@@ -6569,52 +6545,52 @@ function renderPermissions(){
   }
 
   const allModules = [
-    {key:"dashboard", name:"椤圭洰鎬昏鐪嬫澘"},
-    {key:"archive", name:"椤圭洰鍩虹妗ｆ"},
-    {key:"target", name:"鐩爣涓庢潈璐ｇ鐞?},
-    {key:"cost", name:"鎴愭湰涓庡埄娑︾鐞?},
-    {key:"operation", name:"鏈嶅姟涓庤繘搴﹁拷韪?},
-    {key:"issue", name:"闂涓庤棰樺崗浣?},
-    {key:"knowledge", name:"鏍稿績鐭ヨ瘑鑳介噺姹?},
-    {key:"handover", name:"椤圭洰鎵挎帴瑙勮寖"},
-    {key:"satisfaction", name:"椤圭洰杩愮淮璋冪爺"},
-    {key:"permissions", name:"绯荤粺鏉冮檺绠＄悊"}
+    {key:"dashboard", name:"项目总览看板"},
+    {key:"archive", name:"项目基础档案"},
+    {key:"target", name:"目标与权责管理"},
+    {key:"cost", name:"成本与利润管理"},
+    {key:"operation", name:"服务与进度追踪"},
+    {key:"issue", name:"问题与课题协作"},
+    {key:"knowledge", name:"核心知识能量池"},
+    {key:"handover", name:"项目承接规范"},
+    {key:"satisfaction", name:"项目运维调研"},
+    {key:"permissions", name:"系统权限管理"}
   ];
 
-  // 鏉冮檺鏍囩棰滆壊
+  // 权限标签颜色
   const pColor = {write:"#16a34a", read:"#2563eb", hidden:"#9ca3af"};
 
   let html = `
     <div class="module-header">
       <div>
-        <div class="module-title">鈿欙笍 绯荤粺鏉冮檺绠＄悊</div>
-        <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">涓?涓鑹茬郴缁熸€ч厤缃悇鍔熻兘妯″潡鐨勮闂潈闄?/div>
+        <div class="module-title">⚙️ 系统权限管理</div>
+        <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">为9个角色系统性配置各功能模块的访问权限</div>
       </div>
       <div class="module-actions">
-        <button class="btn btn-sm" onclick="batchSetPermission()" style="background:#f0f9ff;border:1px solid #bae6fd;">鎵归噺璁剧疆</button>
-        <button class="btn btn-primary btn-sm" onclick="resetPermissions()">鎭㈠榛樿</button>
-        <button class="btn btn-sm" onclick="exportPermissions()">瀵煎嚭閰嶇疆</button>
-        <button class="btn btn-sm" onclick="importPermissions()">瀵煎叆閰嶇疆</button>
+        <button class="btn btn-sm" onclick="batchSetPermission()" style="background:#f0f9ff;border:1px solid #bae6fd;">批量设置</button>
+        <button class="btn btn-primary btn-sm" onclick="resetPermissions()">恢复默认</button>
+        <button class="btn btn-sm" onclick="exportPermissions()">导出配置</button>
+        <button class="btn btn-sm" onclick="importPermissions()">导入配置</button>
       </div>
     </div>
 
-    <!-- 鏉冮檺鍥句緥 -->
+    <!-- 权限图例 -->
     <div class="card" style="padding:10px 16px;margin-bottom:12px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
-      <span style="font-size:12px;color:var(--c-text-3);">鏉冮檺鍥句緥锛?/span>
-      <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#dcfce7;color:#16a34a;">鈼?璇诲啓</span>
-      <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#dbeafe;color:#2563eb;">鈼?鍙</span>
-      <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#f3f4f6;color:#9ca3af;">鈼?闅愯棌</span>
-      <span style="font-size:11px;color:var(--c-text-3);margin-left:auto;">鐐瑰嚮鍗曞厓鏍煎彲蹇€熷垏鎹㈡潈闄愶紝鎴栦娇鐢ㄤ笅鎷夎彍鍗曠簿纭€夋嫨</span>
+      <span style="font-size:12px;color:var(--c-text-3);">权限图例：</span>
+      <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#dcfce7;color:#16a34a;">● 读写</span>
+      <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#dbeafe;color:#2563eb;">● 只读</span>
+      <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#f3f4f6;color:#9ca3af;">● 隐藏</span>
+      <span style="font-size:11px;color:var(--c-text-3);margin-left:auto;">点击单元格可快速切换权限，或使用下拉菜单精确选择</span>
     </div>
 
     <div class="card" style="overflow-x:auto;">
       <table class="data-table permissions-table" style="min-width:900px;">
         <thead>
           <tr>
-            <th style="min-width:100px;position:sticky;left:0;background:var(--c-card);z-index:1;">瑙掕壊锛兼ā鍧?/th>
+            <th style="min-width:100px;position:sticky;left:0;background:var(--c-card);z-index:1;">角色＼模块</th>
             ${allModules.map(m => {
-              // 琛ㄥご鏄剧ず锛氬幓鎺?椤圭洰"鍓嶇紑浠ヨ妭鐪佺┖闂达紝浣嗕繚鐣欐牳蹇冭瘝
-              let short = m.name.replace("椤圭洰","").replace("鏍稿績鐭ヨ瘑鑳介噺姹?,"鐭ヨ瘑鑳介噺姹?);
+              // 表头显示：去掉"项目"前缀以节省空间，但保留核心词
+              let short = m.name.replace("项目","").replace("核心知识能量池","知识能量池");
               return `<th style="text-align:center;font-size:11px;min-width:72px;padding:6px 2px;" title="${m.name}">${short}</th>`;
             }).join('')}
           </tr>
@@ -6629,14 +6605,14 @@ function renderPermissions(){
                 return `<td style="text-align:center;padding:4px 2px;cursor:pointer;"
                           data-role="${role}" data-key="${m.key}"
                           onclick="cyclePermission(event.currentTarget)"
-                          title="鐐瑰嚮鍒囨崲鏉冮檺锛堝綋鍓嶏細${p==="write"?"璇诲啓":p==="read"?"鍙":"闅愯棌"}锛?>
+                          title="点击切换权限（当前：${p==="write"?"读写":p==="read"?"只读":"隐藏"}）">
                   <select onchange="updatePermissionFromSelect(this)"
                           data-role="${role}" data-key="${m.key}"
                           onclick="event.stopPropagation()"
                           style="padding:2px 2px;font-size:11px;border:1px solid ${color};border-radius:4px;background:${p==="write"?"#dcfce7":p==="read"?"#dbeafe":"#f3f4f6"};color:${color};cursor:pointer;width:52px;">
-                    <option value="write" ${p==="write"?"selected":""}>璇诲啓</option>
-                    <option value="read" ${p==="read"?"selected":""}>鍙</option>
-                    <option value="hidden" ${p==="hidden"?"selected":""}>闅愯棌</option>
+                    <option value="write" ${p==="write"?"selected":""}>读写</option>
+                    <option value="read" ${p==="read"?"selected":""}>只读</option>
+                    <option value="hidden" ${p==="hidden"?"selected":""}>隐藏</option>
                   </select>
                 </td>`;
               }).join('')}
@@ -6646,9 +6622,9 @@ function renderPermissions(){
       </table>
     </div>
 
-    <!-- 鎸夎鑹叉煡鐪嬫潈闄愬崱鐗?-->
+    <!-- 按角色查看权限卡片 -->
     <div style="margin-top:16px;">
-      <div style="font-size:13px;font-weight:500;color:var(--c-text-2);margin-bottom:8px;">馃攳 鎸夎鑹叉煡鐪嬫潈闄愭憳瑕?/div>
+      <div style="font-size:13px;font-weight:500;color:var(--c-text-2);margin-bottom:8px;">🔍 按角色查看权限摘要</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
         ${ROLES.map(role => {
           const perms = rolePermissions[role] || {};
@@ -6659,9 +6635,9 @@ function renderPermissions(){
             <div class="card" style="padding:10px 14px;">
               <div style="font-weight:500;font-size:13px;margin-bottom:6px;">${role}</div>
               <div style="display:flex;gap:8px;font-size:11px;">
-                <span style="color:#16a34a;">璇诲啓${writeCount}</span>
-                <span style="color:#2563eb;">鍙${readCount}</span>
-                <span style="color:#9ca3af;">闅愯棌${hiddenCount}</span>
+                <span style="color:#16a34a;">读写${writeCount}</span>
+                <span style="color:#2563eb;">只读${readCount}</span>
+                <span style="color:#9ca3af;">隐藏${hiddenCount}</span>
               </div>
             </div>`;
         }).join('')}
@@ -6669,66 +6645,66 @@ function renderPermissions(){
     </div>
 
     <div class="card" style="margin-top:16px;padding:14px 18px;">
-      <div style="font-size:13px;font-weight:500;margin-bottom:8px;">馃搵 鏉冮檺璇存槑</div>
+      <div style="font-size:13px;font-weight:500;margin-bottom:8px;">📋 权限说明</div>
       <ul style="font-size:12px;color:var(--c-text-2);line-height:1.8;">
-        <li><b style="color:#16a34a;">璇诲啓</b>锛氬彲浠ユ煡鐪嬪拰缂栬緫璇ユā鍧楃殑鎵€鏈夊唴瀹?/li>
-        <li><b style="color:#2563eb;">鍙</b>锛氬彧鑳芥煡鐪嬭妯″潡鐨勫唴瀹癸紝涓嶈兘缂栬緫</li>
-        <li><b style="color:#9ca3af;">闅愯棌</b>锛氳妯″潡瀵硅瑙掕壊涓嶅彲瑙侊紝宸︿晶瀵艰埅鏍忎笉鏄剧ず</li>
-        <li>鏉冮檺閰嶇疆鑷姩淇濆瓨鍒版祻瑙堝櫒鏈湴瀛樺偍锛屾竻闄ゆ祻瑙堝櫒鏁版嵁浼氶噸缃负榛樿</li>
+        <li><b style="color:#16a34a;">读写</b>：可以查看和编辑该模块的所有内容</li>
+        <li><b style="color:#2563eb;">只读</b>：只能查看该模块的内容，不能编辑</li>
+        <li><b style="color:#9ca3af;">隐藏</b>：该模块对该角色不可见，左侧导航栏不显示</li>
+        <li>权限配置自动保存到浏览器本地存储，清除浏览器数据会重置为默认</li>
       </ul>
     </div>`;
 
-  // 涓嶅啀鐩存帴鎿嶄綔 innerHTML锛屾敼涓鸿繑鍥?html 瀛楃涓诧紙涓庡叾浠栨覆鏌撳嚱鏁颁竴鑷达級
+  // 不再直接操作 innerHTML，改为返回 html 字符串（与其他渲染函数一致）
   return html;
 }
 
-// ===== 椤圭洰闅惧害璇勪及锛堜紭鍖栫増锛?====
-// 璁＄畻绠＄悊鍩哄噯鍒嗭紙鏍规嵁绠＄悊绛夌骇锛?
+// ===== 项目难度评估（优化版）=====
+// 计算管理基准分（根据管理等级）
 function getManagementBenchmark(level) {
   if (!level) return 35;
-  if (level.includes('缁勯暱-1')) return 35;
-  if (level.includes('缁勯暱-2')) return 45;
-  if (level.includes('缁勯暱-3')) return 55;
-  if (level.includes('涓荤')) return 70;
-  if (level.includes('缁忕悊')) return 90;
-  if (level.includes('鍩硅甯?)) return 30;
+  if (level.includes('组长-1')) return 35;
+  if (level.includes('组长-2')) return 45;
+  if (level.includes('组长-3')) return 55;
+  if (level.includes('主管')) return 70;
+  if (level.includes('经理')) return 90;
+  if (level.includes('培训师')) return 30;
   return 35;
 }
 
-// 璁＄畻閫傞厤搴︼紙鐧惧垎姣旓級
+// 计算适配度（百分比）
 function calcCompatibility(projectScore, managementBenchmark) {
   const diff = Math.abs(projectScore - managementBenchmark);
   const compatibility = Math.max(0, Math.min(100, 100 - diff * 1.25));
   return Math.round(compatibility);
 }
 
-// 鑾峰彇閫傞厤搴︽。浣?
+// 获取适配度档位
 function getCompatibilityBand(pct) {
-  if (pct < 60) return { label: '<60% 涓嶅尮閰?, color: '#f5222d', bg: '#fff1f0' };
-  if (pct < 80) return { label: '60%-80% 鍩烘湰鍖归厤', color: '#fa8c16', bg: '#fff7e6' };
-  return { label: '80%-100% 楂樺害鍖归厤', color: '#52c41a', bg: '#f6ffed' };
+  if (pct < 60) return { label: '<60% 不匹配', color: '#f5222d', bg: '#fff1f0' };
+  if (pct < 80) return { label: '60%-80% 基本匹配', color: '#fa8c16', bg: '#fff7e6' };
+  return { label: '80%-100% 高度匹配', color: '#52c41a', bg: '#f6ffed' };
 }
 
-// 鑾峰彇闅惧害绛夌骇
+// 获取难度等级
 function getDifficultyLevel(score) {
-  if (score <= 40) return { label: '浣庨毦搴?, color: '#52c41a', cls: 'low' };
-  if (score <= 50) return { label: '涓綆闅惧害', color: '#1890ff', cls: 'mid-low' };
-  if (score <= 60) return { label: '涓珮闅惧害', color: '#faad14', cls: 'mid-high' };
-  if (score <= 80) return { label: '楂橀毦搴?, color: '#fa8c16', cls: 'high' };
-  return { label: '瓒呴珮闅惧害', color: '#f5222d', cls: 'extreme' };
+  if (score <= 40) return { label: '低难度', color: '#52c41a', cls: 'low' };
+  if (score <= 50) return { label: '中低难度', color: '#1890ff', cls: 'mid-low' };
+  if (score <= 60) return { label: '中高难度', color: '#faad14', cls: 'mid-high' };
+  if (score <= 80) return { label: '高难度', color: '#fa8c16', cls: 'high' };
+  return { label: '超高难度', color: '#f5222d', cls: 'extreme' };
 }
 
-// 娓叉煋椤圭洰闅惧害璇勪及椤甸潰锛堜紭鍖栫増锛?
+// 渲染项目难度评估页面（优化版）
 function renderAssessment(){
-  // 鏁版嵁鍑嗗
-  let groups = GROUPS_DATA.filter(g => g.month === '7鏈? && g.group && !g.group.includes('瀹氶噺鎸囨爣'));
-  let assessments = ASSESSMENTS_DATA.filter(a => a.month === '7鏈? && a.group && !a.month.includes('渚濇嵁'));
+  // 数据准备
+  let groups = GROUPS_DATA.filter(g => g.month === '7月' && g.group && !g.group.includes('定量指标'));
+  let assessments = ASSESSMENTS_DATA.filter(a => a.month === '7月' && a.group && !a.month.includes('依据'));
   const deptFilter = document.getElementById('asmt-dept-filter') ? document.getElementById('asmt-dept-filter').value : '';
   const mgrFilter = document.getElementById('asmt-mgr-filter') ? document.getElementById('asmt-mgr-filter').value : '';
   if (deptFilter) assessments = assessments.filter(a => a.dept === deptFilter);
   if (mgrFilter) assessments = assessments.filter(a => a.manager === mgrFilter);
 
-  // 缁熻鍗＄墖鏁版嵁
+  // 统计卡片数据
   let highDiff = 0, midDiff = 0, lowDiff = 0;
   let highMgr = 0, midMgr = 0, lowMgr = 0;
   let totalCompat = 0, compatCount = 0;
@@ -6749,122 +6725,122 @@ function renderAssessment(){
   const avgCompat = compatCount > 0 ? Math.round(totalCompat / compatCount) : 0;
   const compatBand = getCompatibilityBand(avgCompat);
 
-  // ===== 寮€濮嬫覆鏌?=====
-  let html = `<div class="page-header"><h2>馃搳 椤圭洰闅惧害璇勪及</h2>
+  // ===== 开始渲染 =====
+  let html = `<div class="page-header"><h2>📊 项目难度评估</h2>
     <div class="page-actions">
-      <button class="btn btn-sm" onclick="importAssessment()">馃摜 瀵煎叆</button>
-      <button class="btn btn-sm" onclick="exportAssessment()">馃摛 瀵煎嚭</button>
-      <button class="btn btn-sm btn-primary" onclick="showCompareModal()">馃攧 鑷敱瀵规瘮</button>
+      <button class="btn btn-sm" onclick="importAssessment()">📥 导入</button>
+      <button class="btn btn-sm" onclick="exportAssessment()">📤 导出</button>
+      <button class="btn btn-sm btn-primary" onclick="showCompareModal()">🔄 自由对比</button>
     </div>
   </div>`;
-  html += `<div style="margin:12px 0 8px;color:#888;font-size:13px;">鏁版嵁鏉ユ簮锛氱粍鍒熀纭€淇℃伅 + 绠＄悊闅惧害璇勪及琛紙2026骞?鏈堬級</div>`;
+  html += `<div style="margin:12px 0 8px;color:#888;font-size:13px;">数据来源：组别基础信息 + 管理难度评估表（2026年7月）</div>`;
 
-  // 绛涢€夋爮锛堜娇鐢ㄧ郴缁熺粺涓€鐨?filter-bar-v4 瑙勮寖锛?
+  // 筛选栏（使用系统统一的 filter-bar-v4 规范）
   html += `<div class="filter-bar-v4">`;
   html += `<div class="filter-row-v4">`;
   html += `  <div style="display:flex;align-items:center;gap:6px;">`;
-  html += `    <span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">绛涢€夐」鐩?/span>`;
+  html += `    <span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">筛选项目</span>`;
   html += `    <select id="asmt-dept-filter" class="fb-select">`;
-  html += `      <option value="">鍏ㄩ儴</option>`;
+  html += `      <option value="">全部</option>`;
   [...new Set(assessments.map(a => a.dept))].filter(Boolean).forEach(d => {
     html += `      <option value="${d}">${d}</option>`;
   });
   html += `    </select>`;
   html += `  </div>`;
   html += `  <div style="display:flex;align-items:center;gap:6px;">`;
-  html += `    <span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">绛涢€夌鐞嗕汉</span>`;
+  html += `    <span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">筛选管理人</span>`;
   html += `    <select id="asmt-mgr-filter" class="fb-select">`;
-  html += `      <option value="">鍏ㄩ儴</option>`;
+  html += `      <option value="">全部</option>`;
   assessments.map(a => a.manager).filter((v,i, a) => v && a.indexOf(v) === i).forEach(m => {
     html += `      <option value="${m}">${m}</option>`;
   });
   html += `    </select>`;
   html += `  </div>`;
   html += `  <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">`;
-  html += `    <button class="btn btn-sm btn-primary" onclick="renderAssessment()">馃攳 纭畾</button>`;
+  html += `    <button class="btn btn-sm btn-primary" onclick="renderAssessment()">🔍 确定</button>`;
   html += `  </div>`;
   html += `</div></div>`;
 
-  // ===== 鍗＄墖鍖?=====
+  // ===== 卡片区 =====
   html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">`;
-  // 鍗＄墖1锛氶珮闅惧害椤圭洰
+  // 卡片1：高难度项目
   html += `  <div class="stat-card" style="background:#fff1f0;border:1px solid #ffa39e;border-radius:10px;padding:16px;">`;
-  html += `    <div style="font-size:12px;color:#f5222d;margin-bottom:4px;">馃敶 楂橀毦搴﹂」鐩?/div>`;
+  html += `    <div style="font-size:12px;color:#f5222d;margin-bottom:4px;">🔴 高难度项目</div>`;
   html += `    <div style="font-size:24px;font-weight:700;color:#f5222d;">${highDiff}</div>`;
-  html += `    <div style="font-size:12px;color:#888;">鍗犳瘮 ${assessments.length>0?Math.round(highDiff/assessments.length*100):0}%</div>`;
+  html += `    <div style="font-size:12px;color:#888;">占比 ${assessments.length>0?Math.round(highDiff/assessments.length*100):0}%</div>`;
   html += `  </div>`;
-  // 鍗＄墖2锛氫腑闅惧害椤圭洰
+  // 卡片2：中难度项目
   html += `  <div class="stat-card" style="background:#fff7e6;border:1px solid #ffd591;border-radius:10px;padding:16px;">`;
-  html += `    <div style="font-size:12px;color:#fa8c16;margin-bottom:4px;">馃煛 涓毦搴﹂」鐩?/div>`;
+  html += `    <div style="font-size:12px;color:#fa8c16;margin-bottom:4px;">🟡 中难度项目</div>`;
   html += `    <div style="font-size:24px;font-weight:700;color:#fa8c16;">${midDiff}</div>`;
-  html += `    <div style="font-size:12px;color:#888;">鍗犳瘮 ${assessments.length>0?Math.round(midDiff/assessments.length*100):0}%</div>`;
+  html += `    <div style="font-size:12px;color:#888;">占比 ${assessments.length>0?Math.round(midDiff/assessments.length*100):0}%</div>`;
   html += `  </div>`;
-  // 鍗＄墖3锛氫綆闅惧害椤圭洰
+  // 卡片3：低难度项目
   html += `  <div class="stat-card" style="background:#f6ffed;border:1px solid #b7eb8f;border-radius:10px;padding:16px;">`;
-  html += `    <div style="font-size:12px;color:#52c41a;margin-bottom:4px;">馃煝 浣庨毦搴﹂」鐩?/div>`;
+  html += `    <div style="font-size:12px;color:#52c41a;margin-bottom:4px;">🟢 低难度项目</div>`;
   html += `    <div style="font-size:24px;font-weight:700;color:#52c41a;">${lowDiff}</div>`;
-  html += `    <div style="font-size:12px;color:#888;">鍗犳瘮 ${assessments.length>0?Math.round(lowDiff/assessments.length*100):0}%</div>`;
+  html += `    <div style="font-size:12px;color:#888;">占比 ${assessments.length>0?Math.round(lowDiff/assessments.length*100):0}%</div>`;
   html += `  </div>`;
   html += `</div>`;
 
-  // 绗簩鎺掑崱鐗囷細绠＄悊鑳藉姏鍒嗗竷
+  // 第二排卡片：管理能力分布
   html += `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">`;
-  // 鍗＄墖4锛氱鐞嗚兘鍔涢珮
+  // 卡片4：管理能力高
   html += `  <div class="stat-card" style="background:#e6f7ff;border:1px solid #91d5ff;border-radius:10px;padding:16px;">`;
-  html += `    <div style="font-size:12px;color:#1890ff;margin-bottom:4px;">馃數 绠＄悊鑳藉姏楂?/div>`;
+  html += `    <div style="font-size:12px;color:#1890ff;margin-bottom:4px;">🔵 管理能力高</div>`;
   html += `    <div style="font-size:24px;font-weight:700;color:#1890ff;">${highMgr}</div>`;
-  html += `    <div style="font-size:12px;color:#888;">涓荤/缁忕悊绾?/div>`;
+  html += `    <div style="font-size:12px;color:#888;">主管/经理级</div>`;
   html += `  </div>`;
-  // 鍗＄墖5锛氱鐞嗚兘鍔涗腑
+  // 卡片5：管理能力中
   html += `  <div class="stat-card" style="background:#fff7e6;border:1px solid #ffd591;border-radius:10px;padding:16px;">`;
-  html += `    <div style="font-size:12px;color:#fa8c16;margin-bottom:4px;">馃煛 绠＄悊鑳藉姏涓?/div>`;
+  html += `    <div style="font-size:12px;color:#fa8c16;margin-bottom:4px;">🟡 管理能力中</div>`;
   html += `    <div style="font-size:24px;font-weight:700;color:#fa8c16;">${midMgr}</div>`;
-  html += `    <div style="font-size:12px;color:#888;">缁勯暱2/3绾?/div>`;
+  html += `    <div style="font-size:12px;color:#888;">组长2/3级</div>`;
   html += `  </div>`;
-  // 鍗＄墖6锛氱鐞嗚兘鍔涗綆
+  // 卡片6：管理能力低
   html += `  <div class="stat-card" style="background:#fff1f0;border:1px solid #ffa39e;border-radius:10px;padding:16px;">`;
-  html += `    <div style="font-size:12px;color:#f5222d;margin-bottom:4px;">馃敶 绠＄悊鑳藉姏浣?/div>`;
+  html += `    <div style="font-size:12px;color:#f5222d;margin-bottom:4px;">🔴 管理能力低</div>`;
   html += `    <div style="font-size:24px;font-weight:700;color:#f5222d;">${lowMgr}</div>`;
-  html += `    <div style="font-size:12px;color:#888;">缁勯暱1绾?鍩硅甯?/div>`;
+  html += `    <div style="font-size:12px;color:#888;">组长1级/培训师</div>`;
   html += `  </div>`;
   html += `</div>`;
 
-  // 缁煎悎閫傞厤搴﹀ぇ鍗＄墖
+  // 综合适配度大卡片
   html += `<div style="background:${compatBand.bg};border:2px solid ${compatBand.color};border-radius:12px;padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:24px;">`;
   html += `  <div style="font-size:48px;font-weight:800;color:${compatBand.color};">${avgCompat}%</div>`;
   html += `  <div>`;
-  html += `    <div style="font-size:16px;font-weight:600;color:${compatBand.color};">缁煎悎閫傞厤搴?路 ${compatBand.label}</div>`;
-  html += `    <div style="font-size:12px;color:#888;margin-top:4px;">鍩轰簬${compatCount}涓粍鍒殑绠＄悊闅惧害涓庣鐞嗚兘鍔涘尮閰嶅害璇勪及</div>`;
+  html += `    <div style="font-size:16px;font-weight:600;color:${compatBand.color};">综合适配度 · ${compatBand.label}</div>`;
+  html += `    <div style="font-size:12px;color:#888;margin-top:4px;">基于${compatCount}个组别的管理难度与管理能力匹配度评估</div>`;
   html += `  </div>`;
   html += `</div>`;
 
-  // ===== Tab鍒囨崲鍖?=====
+  // ===== Tab切换区 =====
   html += `<div style="display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid #e8e8e8;">`;
-  html += `  <div id="tab-match" onclick="switchAssessTab('match')" style="padding:10px 20px;cursor:pointer;font-size:14px;font-weight:600;color:#1a73e8;border-bottom:2px solid #1a73e8;margin-bottom:-2px;">馃搳 鍖归厤搴︽槑缁?/div>`;
-  html += `  <div id="tab-project" onclick="switchAssessTab('project')" style="padding:10px 20px;cursor:pointer;font-size:14px;color:#888;">馃搵 椤圭洰寰楀垎鏄庣粏</div>`;
-  html += `  <div id="tab-management" onclick="switchAssessTab('management')" style="padding:10px 20px;cursor:pointer;font-size:14px;color:#888;">馃懁 绠＄悊鑳藉姏璇勫畾鏄庣粏</div>`;
+  html += `  <div id="tab-match" onclick="switchAssessTab('match')" style="padding:10px 20px;cursor:pointer;font-size:14px;font-weight:600;color:#1a73e8;border-bottom:2px solid #1a73e8;margin-bottom:-2px;">📊 匹配度明细</div>`;
+  html += `  <div id="tab-project" onclick="switchAssessTab('project')" style="padding:10px 20px;cursor:pointer;font-size:14px;color:#888;">📋 项目得分明细</div>`;
+  html += `  <div id="tab-management" onclick="switchAssessTab('management')" style="padding:10px 20px;cursor:pointer;font-size:14px;color:#888;">👤 管理能力评定明细</div>`;
   html += `</div>`;
 
-  // Tab鍐呭鍖?
+  // Tab内容区
   html += `<div id="assess-tab-content">`;
-  // 榛樿鏄剧ず鍖归厤搴︽槑缁?
+  // 默认显示匹配度明细
   html += renderMatchDetail(assessments);
   html += `</div>`;
 
-  // 鍘熸湁璇存槑鍖哄潡锛堜繚鐣欙級
-  html += `<div class="card" style="margin-top:20px;"><div class="card-header">馃搵 绠＄悊闅惧害璇勪及璇存槑</div><div style="padding:12px;font-size:13px;line-height:2;">`;
-  html += `  <p><b>璇勪及鏂规硶锛?/b>瀹氶噺鎸囨爣鏉冮噸70% + 瀹氭€у洜绱犳潈閲?0%锛屽悎璁?00鍒嗐€?/p>`;
-  html += `  <p><b>瀹氶噺鎸囨爣锛堝叡70鍒嗭級锛?/b>绠＄悊鍗婂緞(瀹㈡湇浜烘暟/绠＄悊閰嶆瘮)銆佹柊鍛樺伐鍗犳瘮銆佺鐞嗛厤姣斻€侀」鐩鎺ユ暟閲忋€佸簵閾哄鐩橀娆°€佸搧鐗屼粙鍏ユ繁搴︺€佹眹鎶ラ娆?/p>`;
-  html += `  <p><b>瀹氭€у洜绱狅紙鍏?0鍒嗭紝姣忛」鏈€楂?鍒嗭級锛?/b>涓氬姟澶嶆潅搴︺€佽法骞冲彴绠＄悊銆佸搧鐗屾巿鏉冪瓑绾с€佸鏈嶆祦鍔ㄦ€с€佹妧鑳藉煿璁渶姹傘€佺郴缁?宸ュ叿澶嶆潅搴︺€佸璇夊鐞嗛毦搴︺€佺獊鍙戜簨浠跺搷搴?/p>`;
-  html += `  <p><b>闅惧害璇勭骇鍙傝€冿細</b>鈮?0鍒?缁勯暱1绾?| 41-50鍒?缁勯暱2绾?| 51-60鍒?缁勯暱3绾?| 61-80鍒?涓荤绾?| 锛?0鍒?缁忕悊绾?/p>`;
-  html += `  <p><b>宸紓濂栧姳锛?/b>鍩哄噯鍒嗗樊鍊?-10鍒嗏啋500鍏?| 11-15鍒嗏啋1000鍏?| 16-20鍒嗏啋1500鍏?/p>`;
-  html += `  <p><b>閫傞厤搴﹁绠楋細</b>鏍规嵁椤圭洰闅惧害寰楀垎涓庣鐞嗙瓑绾у熀鍑嗗垎宸€艰绠楀尮閰嶅害锛岋紲60%涓嶅尮閰?| 60%-80%鍩烘湰鍖归厤 | 80%-100%楂樺害鍖归厤</p>`;
+  // 原有说明区块（保留）
+  html += `<div class="card" style="margin-top:20px;"><div class="card-header">📋 管理难度评估说明</div><div style="padding:12px;font-size:13px;line-height:2;">`;
+  html += `  <p><b>评估方法：</b>定量指标权重70% + 定性因素权重30%，合计100分。</p>`;
+  html += `  <p><b>定量指标（共70分）：</b>管理半径(客服人数/管理配比)、新员工占比、管理配比、项目对接数量、店铺复盘频次、品牌介入深度、汇报频次</p>`;
+  html += `  <p><b>定性因素（共30分，每项最高3分）：</b>业务复杂度、跨平台管理、品牌授权等级、客服流动性、技能培训需求、系统/工具复杂度、客诉处理难度、突发事件响应</p>`;
+  html += `  <p><b>难度评级参考：</b>≤40分=组长1级 | 41-50分=组长2级 | 51-60分=组长3级 | 61-80分=主管级 | ＞80分=经理级</p>`;
+  html += `  <p><b>差异奖励：</b>基准分差值5-10分→500元 | 11-15分→1000元 | 16-20分→1500元</p>`;
+  html += `  <p><b>适配度计算：</b>根据项目难度得分与管理等级基准分差值计算匹配度，＜60%不匹配 | 60%-80%基本匹配 | 80%-100%高度匹配</p>`;
   html += `</div></div>`;
 
   return html;
 }
 
-// Tab鍒囨崲
+// Tab切换
 function switchAssessTab(tab) {
   ['tab-match','tab-project','tab-management'].forEach(id => {
     const el = document.getElementById(id);
@@ -6880,7 +6856,7 @@ function switchAssessTab(tab) {
     activeEl.style.borderBottom = '2px solid #1a73e8';
     activeEl.style.fontWeight = '600';
   }
-  const assessments = ASSESSMENTS_DATA.filter(a => a.month === '7鏈? && a.group && !a.month.includes('渚濇嵁'));
+  const assessments = ASSESSMENTS_DATA.filter(a => a.month === '7月' && a.group && !a.month.includes('依据'));
   const content = document.getElementById('assess-tab-content');
   if (!content) return;
   if (tab === 'match') content.innerHTML = renderMatchDetail(assessments);
@@ -6888,12 +6864,12 @@ function switchAssessTab(tab) {
   else if (tab === 'management') content.innerHTML = renderManagementDetail(assessments);
 }
 
-// 鍖归厤搴︽槑缁嗚〃
+// 匹配度明细表
 function renderMatchDetail(assessments) {
-  let html = `<div class="card"><div class="card-header">馃搳 椤圭洰-绠＄悊鍖归厤搴︽槑缁?/div><div class="table-wrap"><table class="data-table">`;
+  let html = `<div class="card"><div class="card-header">📊 项目-管理匹配度明细</div><div class="table-wrap"><table class="data-table">`;
   html += `  <thead><tr>`;
-  html += `    <th>搴忓彿</th><th>缁勫埆</th><th>绠＄悊浜?/th><th>椤圭洰闅惧害鍒?/th><th>绠＄悊鍩哄噯鍒?/th>`;
-  html += `    <th>鍖归厤搴?/th><th>妗ｄ綅</th><th>鎿嶄綔</th>`;
+  html += `    <th>序号</th><th>组别</th><th>管理人</th><th>项目难度分</th><th>管理基准分</th>`;
+  html += `    <th>匹配度</th><th>档位</th><th>操作</th>`;
   html += `  </tr></thead><tbody>`;
   let idx = 0;
   assessments.forEach(a => {
@@ -6910,20 +6886,20 @@ function renderMatchDetail(assessments) {
     html += `  <td>${bench}</td>`;
     html += `  <td style="font-weight:700;color:${band.color};">${compat}%</td>`;
     html += `  <td style="background:${band.bg};color:${band.color};padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500;">${band.label}</td>`;
-    html += `  <td><button class="btn btn-sm" onclick="showGroupDetail('${a.group}')">鏌ョ湅鏄庣粏</button></td>`;
+    html += `  <td><button class="btn btn-sm" onclick="showGroupDetail('${a.group}')">查看明细</button></td>`;
     html += `</tr>`;
   });
   html += `  </tbody></table></div></div>`;
   return html;
 }
 
-// 椤圭洰寰楀垎鏄庣粏锛堢淮搴︽媶瑙ｏ級
+// 项目得分明细（维度拆解）
 function renderProjectDetail(assessments) {
-  let html = `<div class="card"><div class="card-header">馃搵 椤圭洰闅惧害寰楀垎鏄庣粏锛堝畾閲?瀹氭€э級</div><div class="table-wrap"><table class="data-table">`;
+  let html = `<div class="card"><div class="card-header">📋 项目难度得分明细（定量+定性）</div><div class="table-wrap"><table class="data-table">`;
   html += `  <thead><tr>`;
-  html += `    <th>缁勫埆</th><th>绠＄悊浜?/th><th>瀹氶噺寰楀垎</th><th>瀹氭€у緱鍒?/th><th>鎬诲垎</th>`;
-  html += `    <th>涓氬姟澶嶆潅搴?/th><th>璺ㄥ钩鍙?/th><th>鍝佺墝鎺堟潈</th><th>娴佸姩鎬?/th>`;
-  html += `    <th>鎶€鑳藉煿璁?/th><th>绯荤粺澶嶆潅搴?/th><th>瀹㈣瘔闅惧害</th><th>绐佸彂浜嬩欢</th>`;
+  html += `    <th>组别</th><th>管理人</th><th>定量得分</th><th>定性得分</th><th>总分</th>`;
+  html += `    <th>业务复杂度</th><th>跨平台</th><th>品牌授权</th><th>流动性</th>`;
+  html += `    <th>技能培训</th><th>系统复杂度</th><th>客诉难度</th><th>突发事件</th>`;
   html += `  </tr></thead><tbody>`;
   assessments.forEach(a => {
     const score = a.totalScore || 0;
@@ -6942,17 +6918,17 @@ function renderProjectDetail(assessments) {
   return html;
 }
 
-// 绠＄悊鑳藉姏璇勫畾鏄庣粏
+// 管理能力评定明细
 function renderManagementDetail(assessments) {
-  let html = `<div class="card"><div class="card-header">馃懁 绠＄悊鑳藉姏璇勫畾鏄庣粏</div><div class="table-wrap"><table class="data-table">`;
+  let html = `<div class="card"><div class="card-header">👤 管理能力评定明细</div><div class="table-wrap"><table class="data-table">`;
   html += `  <thead><tr>`;
-  html += `    <th>绠＄悊浜?/th><th>绠＄悊绛夌骇</th><th>鍩哄噯鍒?/th><th>閫傞厤搴?/th><th>妗ｄ綅</th>`;
-  html += `    <th>璐熻矗缁勫埆鏁?/th><th>鎿嶄綔</th>`;
+  html += `    <th>管理人</th><th>管理等级</th><th>基准分</th><th>适配度</th><th>档位</th>`;
+  html += `    <th>负责组别数</th><th>操作</th>`;
   html += `  </tr></thead><tbody>`;
-  // 鎸夌鐞嗕汉鑱氬悎
+  // 按管理人聚合
   const mgrMap = {};
   assessments.forEach(a => {
-    const mgr = a.manager || '鏈垎閰?;
+    const mgr = a.manager || '未分配';
     if (!mgrMap[mgr]) mgrMap[mgr] = { level: a.level, groups: [], bench: getManagementBenchmark(a.level) };
     mgrMap[mgr].groups.push(a);
   });
@@ -6967,15 +6943,15 @@ function renderManagementDetail(assessments) {
     html += `  <td>${info.bench}</td>`;
     html += `  <td style="font-weight:700;color:${band.color};">${compat}%</td>`;
     html += `  <td style="background:${band.bg};color:${band.color};padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500;">${band.label}</td>`;
-    html += `  <td>${info.groups.length}涓粍鍒?/td>`;
-    html += `  <td><button class="btn btn-sm" onclick="alert('绠＄悊浜鸿鎯呭姛鑳藉紑鍙戜腑')">鏌ョ湅璇︽儏</button></td>`;
+    html += `  <td>${info.groups.length}个组别</td>`;
+    html += `  <td><button class="btn btn-sm" onclick="alert('管理人详情功能开发中')">查看详情</button></td>`;
     html += `</tr>`;
   });
   html += `  </tbody></table></div></div>`;
   return html;
 }
 
-// 瀵煎叆璇勪及鎶ュ憡
+// 导入评估报告
 function importAssessment() {
   const input = document.createElement('input');
   input.type = 'file';
@@ -6992,7 +6968,7 @@ function importAssessment() {
           const ws = wb.Sheets[wb.SheetNames[0]];
           var rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
           processAssessmentRows(rows);
-        } catch(err) { alert("瑙ｆ瀽Excel澶辫触锛? + err.message); }
+        } catch(err) { alert("解析Excel失败：" + err.message); }
       };
       reader.readAsArrayBuffer(file);
     } else {
@@ -7017,9 +6993,9 @@ function processAssessmentRows(rows) {
     var vals = rows[i];
     var groupName = (vals[0]||'').toString().trim();
     if (!groupName) continue;
-    let target = ASSESSMENTS_DATA.find(a => a.group === groupName && a.month === '7鏈?);
+    let target = ASSESSMENTS_DATA.find(a => a.group === groupName && a.month === '7月');
     if (!target) {
-      target = { month:'7鏈?, dept:(vals[1]||'').toString().trim(), group:groupName, manager:(vals[2]||'').toString().trim(), level:(vals[3]||'').toString().trim(), totalScore:0, quantScore:0, qualScore:0 };
+      target = { month:'7月', dept:(vals[1]||'').toString().trim(), group:groupName, manager:(vals[2]||'').toString().trim(), level:(vals[3]||'').toString().trim(), totalScore:0, quantScore:0, qualScore:0 };
       ASSESSMENTS_DATA.push(target);
     }
     target.totalScore = parseFloat(vals[4]) || 0;
@@ -7029,44 +7005,44 @@ function processAssessmentRows(rows) {
   }
   saveAssessmentsData();
   renderModule('assessment');
-  alert("瀵煎叆瀹屾垚锛佸叡鎴愬姛瀵煎叆 " + importCount + " 鏉¤瘎浼拌褰曘€?);
+  alert("导入完成！共成功导入 " + importCount + " 条评估记录。");
 }
 
-// 鑷敱瀵规瘮寮圭獥
+// 自由对比弹窗
 function showCompareModal() {
   let body = `<div style="font-size:13px;line-height:2;">`;
-  body += `<p>璇烽€夋嫨瑕佸姣旂殑缁勫埆锛堝彲澶氶€夛級锛?/p>`;
+  body += `<p>请选择要对比的组别（可多选）：</p>`;
   body += `<div id="compare-checkboxes" style="display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;">`;
-  const groups = ASSESSMENTS_DATA.filter(a => a.month === '7鏈? && a.group && !a.month.includes('渚濇嵁'));
+  const groups = ASSESSMENTS_DATA.filter(a => a.month === '7月' && a.group && !a.month.includes('依据'));
   groups.forEach(a => {
     body += `<label style="cursor:pointer;font-size:13px;"><input type="checkbox" class="compare-cb" value="${a.group}" style="margin-right:4px;">${a.group}</label>`;
   });
   body += `</div>`;
   body += `<div id="compare-result" style="margin-top:12px;"></div>`;
   body += `<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">`;
-  body += `  <button class="btn" onclick="closeModal()">鍙栨秷</button>`;
-  body += `  <button class="btn btn-primary" onclick="runAssessmentCompare()">寮€濮嬪姣?/button>`;
+  body += `  <button class="btn" onclick="closeModal()">取消</button>`;
+  body += `  <button class="btn btn-primary" onclick="runAssessmentCompare()">开始对比</button>`;
   body += `</div>`;
   body += `</div>`;
-  showModal('馃攧 鑷敱瀵规瘮妯℃嫙', body);
+  showModal('🔄 自由对比模拟', body);
 }
 
-// 鎵ц瀵规瘮
+// 执行对比
 function runAssessmentCompare() {
   const cbs = document.querySelectorAll('.compare-cb:checked');
-  if (cbs.length < 2) { alert('璇疯嚦灏戦€夋嫨2涓粍鍒繘琛屽姣?); return; }
+  if (cbs.length < 2) { alert('请至少选择2个组别进行对比'); return; }
   const groups = Array.from(cbs).map(cb => cb.value);
   let html = `<div>`;
-  html += `<div style="font-size:14px;font-weight:600;margin-bottom:12px;">瀵规瘮缁撴灉锛堝叡${groups.length}涓粍鍒級</div>`;
+  html += `<div style="font-size:14px;font-weight:600;margin-bottom:12px;">对比结果（共${groups.length}个组别）</div>`;
   html += `<table class="data-table" style="font-size:12px;">`;
-  html += `<thead><tr><th>鎸囨爣</th>${groups.map(g=>`<th>${g}</th>`).join('')}</tr></thead>`;
+  html += `<thead><tr><th>指标</th>${groups.map(g=>`<th>${g}</th>`).join('')}</tr></thead>`;
   html += `<tbody>`;
-  const headers = ['鎬诲垎','瀹氶噺寰楀垎','瀹氭€у緱鍒?,'閫傞厤搴?];
+  const headers = ['总分','定量得分','定性得分','适配度'];
   const keys = ['totalScore','quantScore','qualScore','compat'];
   headers.forEach((h,i) => {
     html += `<tr><td><b>${h}</b></td>`;
     groups.forEach(gName => {
-      const a = ASSESSMENTS_DATA.find(x => x.group === gName && x.month === '7鏈?);
+      const a = ASSESSMENTS_DATA.find(x => x.group === gName && x.month === '7月');
       if (!a) { html += `<td>-</td>`; return; }
       if (keys[i] === 'compat') {
         const bench = getManagementBenchmark(a.level);
@@ -7092,30 +7068,30 @@ function showGroupDetail(groupName){
   if(!g && !a) return;
   let body = `<div style="font-size:13px;line-height:2;">`;
   if(g){
-    body += `<p><b>缁勫埆锛?/b>${g.group}锝?b>绠＄悊浜猴細</b>${g.manager}锝?b>绛夌骇锛?/b>${g.level}</p>`;
-    body += `<p><b>瀹㈡湇浜烘暟锛?/b>${g.totalStaff}锝?b>绠＄悊+璐ㄥ煿锛?/b>${g.managTrainSum}锝?b>绠＄悊閰嶆瘮锛?/b>${g.managRatio?g.managRatio.toFixed(2):0}:1</p>`;
-    body += `<p><b>搴楅摵鏁帮細</b>${g.shopCount}锝?b>鍝佺被锛?/b>${g.categoryCount}锝?b>骞冲彴锛?/b>${g.platformCount}锝?b>鏂板憳宸?3鏈堝唴)锛?/b>${g.new3m}</p>`;
+    body += `<p><b>组别：</b>${g.group}｜<b>管理人：</b>${g.manager}｜<b>等级：</b>${g.level}</p>`;
+    body += `<p><b>客服人数：</b>${g.totalStaff}｜<b>管理+质培：</b>${g.managTrainSum}｜<b>管理配比：</b>${g.managRatio?g.managRatio.toFixed(2):0}:1</p>`;
+    body += `<p><b>店铺数：</b>${g.shopCount}｜<b>品类：</b>${g.categoryCount}｜<b>平台：</b>${g.platformCount}｜<b>新员工(3月内)：</b>${g.new3m}</p>`;
   }
   if(a){
     const bench = getManagementBenchmark(a.level);
     const compat = calcCompatibility(a.totalScore||0, bench);
     const band = getCompatibilityBand(compat);
-    body += `<hr><p><b>鎬诲垎锛?/b>${a.totalScore?a.totalScore.toFixed(1):0}锝?b>瀹氶噺锛?/b>${a.quantScore?a.quantScore.toFixed(1):0}锝?b>瀹氭€э細</b>${a.qualScore?a.qualScore.toFixed(1):0}</p>`;
-    body += `<p><b>绠＄悊鍩哄噯鍒嗭細</b>${bench}锝?b>閫傞厤搴︼細</b><span style="color:${band.color};font-weight:700;">${compat}%</span> <span style="background:${band.bg};color:${band.color};padding:2px 8px;border-radius:4px;font-size:12px;">${band.label}</span></p>`;
-    body += `<p><b>瀹氭€у垎椤癸紙姣忛」0-3鍒嗭級锛?/b>涓氬姟澶嶆潅搴?{a.qual1}锝滆法骞冲彴${a.qual2}锝滃搧鐗屾巿鏉?{a.qual3}锝滄祦鍔ㄦ€?{a.qual4}锝滃煿璁渶姹?{a.qual5}锝滅郴缁熷鏉傚害${a.qual6}锝滃璇夐毦搴?{a.qual7}锝滅獊鍙戜簨浠?{a.qual8}</p>`;
+    body += `<hr><p><b>总分：</b>${a.totalScore?a.totalScore.toFixed(1):0}｜<b>定量：</b>${a.quantScore?a.quantScore.toFixed(1):0}｜<b>定性：</b>${a.qualScore?a.qualScore.toFixed(1):0}</p>`;
+    body += `<p><b>管理基准分：</b>${bench}｜<b>适配度：</b><span style="color:${band.color};font-weight:700;">${compat}%</span> <span style="background:${band.bg};color:${band.color};padding:2px 8px;border-radius:4px;font-size:12px;">${band.label}</span></p>`;
+    body += `<p><b>定性分项（每项0-3分）：</b>业务复杂度${a.qual1}｜跨平台${a.qual2}｜品牌授权${a.qual3}｜流动性${a.qual4}｜培训需求${a.qual5}｜系统复杂度${a.qual6}｜客诉难度${a.qual7}｜突发事件${a.qual8}</p>`;
   }
   body += `<hr><div style="display:flex;gap:8px;justify-content:flex-end;">`;
-  body += `  <button class="btn btn-sm" onclick="alert('缂栬緫鍔熻兘寮€鍙戜腑')">鉁忥笍 缂栬緫</button>`;
-  body += `  <button class="btn btn-sm" style="color:#f5222d;border-color:#f5222d;" onclick="if(confirm('纭畾鍒犻櫎璇ョ粍鍒殑璇勪及璁板綍锛?)){alert('鍒犻櫎鍔熻兘寮€鍙戜腑');}">馃棏锔?鍒犻櫎</button>`;
+  body += `  <button class="btn btn-sm" onclick="alert('编辑功能开发中')">✏️ 编辑</button>`;
+  body += `  <button class="btn btn-sm" style="color:#f5222d;border-color:#f5222d;" onclick="if(confirm('确定删除该组别的评估记录？')){alert('删除功能开发中');}">🗑️ 删除</button>`;
   body += `</div></div>`;
-  showModal(groupName + ' - 闅惧害璇勪及璇︽儏', body);
+  showModal(groupName + ' - 难度评估详情', body);
 }
 
 
-// 瀵煎嚭璇勪及鎶ュ憡
+// 导出评估报告
 function exportAssessment(){
   try {
-    const headers = ['椤圭洰缂栧彿','椤圭洰鍚嶇О','璇勪及鍛ㄦ湡','闅惧害璇勫垎','涓氬姟澶嶆潅搴?,'鏃堕棿鍘嬪姏','娌熼€氳兘鍔?,'鎶€鑳藉尮閰?,'椋庨櫓绛夌骇','璇勪及浜?,'璇勪及鏃ユ湡','澶囨敞'];
+    const headers = ['项目编号','项目名称','评估周期','难度评分','业务复杂度','时间压力','沟通能力','技能匹配','风险等级','评估人','评估日期','备注'];
     const rows = ASSESSMENTS_DATA.map(a => {
       const p = PROJECTS.find(pp => pp.id === a.projectId);
       return [
@@ -7124,9 +7100,9 @@ function exportAssessment(){
         a.skillMatch||'', a.riskLevel||'', a.evaluator||'', a.date||'', a.notes||''
       ];
     });
-    showExportDialog(headers, rows, `椤圭洰闅惧害璇勪及_${new Date().toISOString().slice(0,10)}`, '椤圭洰闅惧害璇勪及');
+    showExportDialog(headers, rows, `项目难度评估_${new Date().toISOString().slice(0,10)}`, '项目难度评估');
   } catch(e) {
-    alert('瀵煎嚭澶辫触锛? + e.message);
+    alert('导出失败：' + e.message);
   }
 }
 function cyclePermission(tdEl) {
@@ -7139,7 +7115,7 @@ function cyclePermission(tdEl) {
   renderPermissions();
 }
 
-// 鏇存柊鏉冮檺閰嶇疆
+// 更新权限配置
 function updatePermission(role, module, permission) {
   if (!rolePermissions[role]) {
     rolePermissions[role] = {};
@@ -7148,26 +7124,26 @@ function updatePermission(role, module, permission) {
   savePermissions();
 }
 
-// 涓嬫媺鑿滃崟瑙﹀彂
+// 下拉菜单触发
 function updatePermissionFromSelect(sel) {
   const role = sel.dataset.role;
   const key = sel.dataset.key;
   updatePermission(role, key, sel.value);
 }
 
-// 鎵归噺璁剧疆锛氫负鏌愪釜瑙掕壊鎵归噺璁剧疆鎵€鏈夋ā鍧楁潈闄?
+// 批量设置：为某个角色批量设置所有模块权限
 function batchSetPermission() {
-  const role = prompt("璇疯緭鍏ヨ鎵归噺璁剧疆鐨勮鑹插悕绉帮細\n锛堢鐞嗗€欓€夈€佸鏈嶇粍闀裤€佸鏈嶄富绠°€佸鏈嶇粡鐞嗐€佸鏈嶆€荤洃銆佺鐞嗗憳銆侀」鐩紮浼淬€佹妧鏈紮浼淬€侀鎺т紮浼达級");
-  if (!role || ROLES.indexOf(role) < 0) { alert("瑙掕壊鍚嶇О涓嶆纭?); return; }
-  const val = prompt("璇烽€夋嫨瑕佽缃殑鏉冮檺锛堣緭鍏ユ暟瀛楋級锛歕n1 = 璇诲啓\n2 = 鍙\n3 = 闅愯棌");
-  if (!val || (val!=="1" && val!=="2" && val!=="3")) { alert("杈撳叆涓嶆纭?); return; }
+  const role = prompt("请输入要批量设置的角色名称：\n（管理候选、客服组长、客服主管、客服经理、客服总监、管理员、项目伙伴、技术伙伴、风控伙伴）");
+  if (!role || ROLES.indexOf(role) < 0) { alert("角色名称不正确"); return; }
+  const val = prompt("请选择要设置的权限（输入数字）：\n1 = 读写\n2 = 只读\n3 = 隐藏");
+  if (!val || (val!=="1" && val!=="2" && val!=="3")) { alert("输入不正确"); return; }
   const perm = val==="1" ? "write" : val==="2" ? "read" : "hidden";
   MODULE_KEYS.forEach(m => updatePermission(role, m, perm));
   renderPermissions();
-  alert("宸蹭负銆? + role + "銆嶆壒閲忚缃墍鏈夋ā鍧椾负銆? + (perm==="write"?"璇诲啓":perm==="read"?"鍙":"闅愯棌") + "銆?);
+  alert("已为「" + role + "」批量设置所有模块为「" + (perm==="write"?"读写":perm==="read"?"只读":"隐藏") + "」");
 }
 
-// 瀵煎叆鏉冮檺閰嶇疆
+// 导入权限配置
 function importPermissions() {
   const input = document.createElement("input");
   input.type = "file";
@@ -7179,18 +7155,18 @@ function importPermissions() {
     reader.onload = function(e) {
       try {
         const data = JSON.parse(e.target.result);
-        // 楠岃瘉缁撴瀯
+        // 验证结构
         let valid = true;
         ROLES.forEach(r => {
           if (!data[r]) valid = false;
         });
-        if (!valid) { alert("閰嶇疆鏂囦欢鏍煎紡涓嶆纭紝缂哄皯閮ㄥ垎瑙掕壊鏁版嵁"); return; }
+        if (!valid) { alert("配置文件格式不正确，缺少部分角色数据"); return; }
         rolePermissions = data;
         savePermissions();
         renderPermissions();
-        alert("鏉冮檺閰嶇疆瀵煎叆鎴愬姛锛?);
+        alert("权限配置导入成功！");
       } catch(ex) {
-        alert("鏂囦欢瑙ｆ瀽澶辫触锛? + ex.message);
+        alert("文件解析失败：" + ex.message);
       }
     };
     reader.readAsText(file);
@@ -7198,17 +7174,17 @@ function importPermissions() {
   input.click();
 }
 
-// 鎭㈠榛樿鏉冮檺
+// 恢复默认权限
 function resetPermissions() {
-  if (confirm("纭畾瑕佹仮澶嶉粯璁ゆ潈闄愰厤缃悧锛熷綋鍓嶈嚜瀹氫箟閰嶇疆灏嗕涪澶便€?)) {
+  if (confirm("确定要恢复默认权限配置吗？当前自定义配置将丢失。")) {
     rolePermissions = {...DEFAULT_PERMISSIONS};
     savePermissions();
     renderPermissions();
-    alert("宸叉仮澶嶉粯璁ゆ潈闄愰厤缃?);
+    alert("已恢复默认权限配置");
   }
 }
 
-// 瀵煎嚭鏉冮檺閰嶇疆
+// 导出权限配置
 function exportPermissions() {
   const json = JSON.stringify(rolePermissions, null, 2);
   const blob = new Blob([json], {type:"application/json"});
@@ -7219,15 +7195,15 @@ function exportPermissions() {
   a.click();
   URL.revokeObjectURL(url);
 }
-// ===== 瀹㈡湇缁╂晥鐪嬫澘 =====
-// ===== 缁╂晥璁＄畻杈呭姪鍑芥暟 =====
+// ===== 客服绩效看板 =====
+// ===== 绩效计算辅助函数 =====
 
-// 璁＄畻缁╂晥鍩烘暟锛堣瘯鐢ㄦ湡1400锛岃浆姝?700锛?
+// 计算绩效基数（试用期1400，转正1700）
 function getBaseSalary(status) {
-  return status === '璇曠敤鏈? ? 1400 : 1700;
+  return status === '试用期' ? 1400 : 1700;
 }
 
-// 璁＄畻缁╂晥鍒嗘暟锛堝熀浜庢潈閲嶉厤缃紝80%~120%锛?
+// 计算绩效分数（基于权重配置，80%~120%）
 function calcPerformanceScore(agent, month) {
   var weights = PERFORMANCE_WEIGHTS[month];
   if (!weights) return 1.0;
@@ -7235,14 +7211,14 @@ function calcPerformanceScore(agent, month) {
   var w = weights[type];
   if (!w) return 1.0;
   
-  // 璁＄畻鍚勯」鎸囨爣寰楀垎锛堟爣鍑嗗寲鍒?~1锛屽啀鏄犲皠鍒?.8~1.2锛?
+  // 计算各项指标得分（标准化到0~1，再映射到0.8~1.2）
   var score = 0;
   var totalWeight = 0;
   var monthAgents = AGENT_PERFORMANCE.filter(a => a.month === month);
   
-  if (type === '鍞墠' || type === '缁煎悎') {
+  if (type === '售前' || type === '综合') {
     if (w.salesAmount && agent.salesAmount > 0) {
-      var salesPool = monthAgents.filter(a => a.agentType === '鍞墠' || a.agentType === '缁煎悎');
+      var salesPool = monthAgents.filter(a => a.agentType === '售前' || a.agentType === '综合');
       var salesValues = salesPool.map(a => a.salesAmount || 0).filter(v => v > 0);
       if (salesValues.length > 0) {
         var maxSales = Math.max(...salesValues);
@@ -7252,7 +7228,7 @@ function calcPerformanceScore(agent, month) {
       }
     }
     if (w.conversionRate && agent.conversionRate > 0) {
-      var convValues = monthAgents.filter(a => a.agentType === '鍞墠' || a.agentType === '缁煎悎').map(a => a.conversionRate || 0).filter(v => v > 0);
+      var convValues = monthAgents.filter(a => a.agentType === '售前' || a.agentType === '综合').map(a => a.conversionRate || 0).filter(v => v > 0);
       if (convValues.length > 0) {
         var maxConv = Math.max(...convValues);
         var convScore = (agent.conversionRate / maxConv) * 0.4 + 0.8;
@@ -7262,9 +7238,9 @@ function calcPerformanceScore(agent, month) {
     }
   }
   
-  if (type === '鍞悗' || type === '缁煎悎') {
+  if (type === '售后' || type === '综合') {
     if (w.workVolume && agent.workVolume > 0) {
-      var workPool = monthAgents.filter(a => a.agentType === '鍞悗' || a.agentType === '缁煎悎');
+      var workPool = monthAgents.filter(a => a.agentType === '售后' || a.agentType === '综合');
       var workValues = workPool.map(a => a.workVolume || 0).filter(v => v > 0);
       if (workValues.length > 0) {
         var maxWork = Math.max(...workValues);
@@ -7280,7 +7256,7 @@ function calcPerformanceScore(agent, month) {
     }
   }
   
-  // 閫氱敤鎸囨爣
+  // 通用指标
   if (w.responseTime && agent.responseTime > 0) {
     var respValues = monthAgents.map(a => a.responseTime || 9999).filter(v => v > 0);
     if (respValues.length > 1) {
@@ -7297,37 +7273,37 @@ function calcPerformanceScore(agent, month) {
     totalWeight += w.csat;
   }
   
-  // 褰掍竴鍖?
+  // 归一化
   if (totalWeight > 0) {
     score = score / (totalWeight / 100);
   }
   
-  // 闄愬埗80%~120%
+  // 限制80%~120%
   return Math.max(0.8, Math.min(1.2, score));
 }
 
-// 璁＄畻鐡滃垎閲戦
+// 计算瓜分金额
 function calcShareAmount(agent, month) {
   var group = agent.group || '';
   var loadData = GROUP_LOAD_RATIO.find(g => g.group === group && g.month === month);
   var loadRatio = loadData ? (parseFloat(loadData.loadRatio) || 1.0) : 1.0;
   
-  // 璁＄畻缁勬€诲熀鏁?
+  // 计算组总基数
   var groupAgents = AGENT_PERFORMANCE.filter(a => a.group === group && a.month === month);
   var totalBase = groupAgents.reduce((s, a) => s + getBaseSalary(a.status), 0);
   var totalPool = totalBase * loadRatio;
   
-  // 鎸夌被鍨嬪垎閰?
-  if (agent.agentType === '鍞墠') {
-    var totalSales = groupAgents.filter(a => a.agentType === '鍞墠').reduce((s, a) => s + a.salesAmount, 0);
+  // 按类型分配
+  if (agent.agentType === '售前') {
+    var totalSales = groupAgents.filter(a => a.agentType === '售前').reduce((s, a) => s + a.salesAmount, 0);
     if (totalSales === 0) return 0;
-    return (agent.salesAmount / totalSales) * (totalPool * 0.6);  // 鍞墠鍒?0%姹犲瓙
-  } else if (agent.agentType === '鍞悗') {
-    var totalWork = groupAgents.filter(a => a.agentType === '鍞悗').reduce((s, a) => s + a.workVolume, 0);
+    return (agent.salesAmount / totalSales) * (totalPool * 0.6);  // 售前分60%池子
+  } else if (agent.agentType === '售后') {
+    var totalWork = groupAgents.filter(a => a.agentType === '售后').reduce((s, a) => s + a.workVolume, 0);
     if (totalWork === 0) return 0;
-    return (agent.workVolume / totalWork) * (totalPool * 0.6);  // 鍞悗鍒?0%姹犲瓙
+    return (agent.workVolume / totalWork) * (totalPool * 0.6);  // 售后分60%池子
   } else {
-    // 缁煎悎锛氭寜閿€鍞+宸ヤ綔閲忕患鍚堝崰姣?
+    // 综合：按销售额+工作量综合占比
     var totalSalesAll = groupAgents.reduce((s, a) => s + a.salesAmount, 0);
     var totalWorkAll = groupAgents.reduce((s, a) => s + a.workVolume, 0);
     var share = 0;
@@ -7337,14 +7313,14 @@ function calcShareAmount(agent, month) {
   }
 }
 
-// 璁＄畻鏈€缁堢哗鏁?
+// 计算最终绩效
 function calcFinalPerformance(agent, month) {
   var score = calcPerformanceScore(agent, month);
   var share = calcShareAmount(agent, month);
   return share * score + agent.reward - agent.penalty;
 }
 
-// ===== 瀹㈡湇缁╂晥鐪嬫澘锛堥噸鍐欙級=====
+// ===== 客服绩效看板（重写）=====
 function renderPerformance() {
   var monthFilter = document.getElementById('pf-month')?.value || '2026-05';
   var projectFilter = document.getElementById('pf-project')?.value || 'all';
@@ -7359,44 +7335,44 @@ function renderPerformance() {
     return true;
   });
   
-  var html = `<div class="page-header"><h2>馃搱 瀹㈡湇缁╂晥鐪嬫澘</h2></div>`;
+  var html = `<div class="page-header"><h2>📈 客服绩效看板</h2></div>`;
 
-  // 绛涢€夋爮锛堜娇鐢ㄧ郴缁熺粺涓€鐨?filter-bar-v4 瑙勮寖锛?
+  // 筛选栏（使用系统统一的 filter-bar-v4 规范）
   html += `<div class="filter-bar-v4">`;
   html += `<div class="filter-row-v4">`;
 
-  // 绛涢€夐」 + 鏍囩
+  // 筛选项 + 标签
   html += `<div style="display:flex;align-items:center;gap:6px;">`;
-  html += `<span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">椤圭洰</span>`;
-  html += `<select id="pf-project" class="fb-select"><option value="all">鍏ㄩ儴椤圭洰</option>${PROJECTS.map(p=>`<option value="${p.id}" ${projectFilter===p.id?'selected':''}>${p.name}</option>`).join('')}</select>`;
+  html += `<span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">项目</span>`;
+  html += `<select id="pf-project" class="fb-select"><option value="all">全部项目</option>${PROJECTS.map(p=>`<option value="${p.id}" ${projectFilter===p.id?'selected':''}>${p.name}</option>`).join('')}</select>`;
   html += `</div>`;
 
   html += `<div style="display:flex;align-items:center;gap:6px;">`;
-  html += `<span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">鏈堜唤</span>`;
+  html += `<span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">月份</span>`;
   html += `<select id="pf-month" class="fb-select"><option value="2026-05" ${monthFilter==='2026-05'?'selected':''}>2026-05</option><option value="2026-04" ${monthFilter==='2026-04'?'selected':''}>2026-04</option></select>`;
   html += `</div>`;
 
   html += `<div style="display:flex;align-items:center;gap:6px;">`;
-  html += `<span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">绫诲瀷</span>`;
-  html += `<select id="pf-type" class="fb-select"><option value="all">鍏ㄩ儴绫诲瀷</option><option value="鍞墠" ${typeFilter==='鍞墠'?'selected':''}>鍞墠</option><option value="鍞悗" ${typeFilter==='鍞悗'?'selected':''}>鍞悗</option><option value="缁煎悎" ${typeFilter==='缁煎悎'?'selected':''}>缁煎悎</option></select>`;
+  html += `<span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">类型</span>`;
+  html += `<select id="pf-type" class="fb-select"><option value="all">全部类型</option><option value="售前" ${typeFilter==='售前'?'selected':''}>售前</option><option value="售后" ${typeFilter==='售后'?'selected':''}>售后</option><option value="综合" ${typeFilter==='综合'?'selected':''}>综合</option></select>`;
   html += `</div>`;
 
   html += `<div style="display:flex;align-items:center;gap:6px;">`;
-  html += `<span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">缁勫埆</span>`;
-  html += `<select id="pf-group" class="fb-select"><option value="all">鍏ㄩ儴缁勫埆</option>${[...new Set(AGENT_PERFORMANCE.map(a=>a.group))].map(g=>`<option value="${g}" ${groupFilter===g?'selected':''}>${g}</option>`).join('')}</select>`;
+  html += `<span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">组别</span>`;
+  html += `<select id="pf-group" class="fb-select"><option value="all">全部组别</option>${[...new Set(AGENT_PERFORMANCE.map(a=>a.group))].map(g=>`<option value="${g}" ${groupFilter===g?'selected':''}>${g}</option>`).join('')}</select>`;
   html += `</div>`;
 
-  // 鎿嶄綔鎸夐挳锛堝彸渚у榻愶級
+  // 操作按钮（右侧对齐）
   html += `<div style="margin-left:auto;display:flex;gap:8px;align-items:center;">`;
-  html += `<button class="btn btn-sm btn-primary" onclick="renderModule('performance')">馃攳 鏌ヨ</button>`;
-  html += `<button class="btn btn-sm" onclick="importPerformance()">馃摜 瀵煎叆</button>`;
-  html += `<button class="btn btn-sm" onclick="exportPerformance()">馃摛 瀵煎嚭</button>`;
-  html += `<button class="btn btn-sm btn-primary" onclick="addAgentPerformance()">鉃?鏂板</button>`;
+  html += `<button class="btn btn-sm btn-primary" onclick="renderModule('performance')">🔍 查询</button>`;
+  html += `<button class="btn btn-sm" onclick="importPerformance()">📥 导入</button>`;
+  html += `<button class="btn btn-sm" onclick="exportPerformance()">📤 导出</button>`;
+  html += `<button class="btn btn-sm btn-primary" onclick="addAgentPerformance()">➕ 新增</button>`;
   html += `</div>`;
 
   html += `</div></div>`;
   
-  // 缁╂晥鎬绘睜姒傝
+  // 绩效总池概览
   var groups = {};
   data.forEach(a => {
     if (!groups[a.group]) groups[a.group] = {agents: [], baseTotal: 0, loadRatio: 1.0, pool: 0};
@@ -7412,51 +7388,51 @@ function renderPerformance() {
   var totalBase = Object.values(groups).reduce((s, g) => s + g.baseTotal, 0);
   
   html += `<div class="metrics-grid">`;
-  html += `<div class="metric-card metric-card-kpi"><div class="metric-value">${data.length}</div><div class="metric-label">鍙傝瘎鍧愬腑鏁?/div></div>`;
-  html += `<div class="metric-card metric-card-kpi"><div class="metric-value">楼${totalBase.toLocaleString()}</div><div class="metric-label">缁╂晥鍩烘暟鎬诲拰</div></div>`;
-  html += `<div class="metric-card metric-card-kpi"><div class="metric-value">${(totalBase>0? (totalPool/totalBase*100).toFixed(0)+'%':'-')}</div><div class="metric-label">骞冲潎璐熻嵎姣?/div></div>`;
-  html += `<div class="metric-card metric-card-kpi"><div class="metric-value">楼${totalPool.toLocaleString()}</div><div class="metric-label">缁╂晥鎬绘睜</div></div>`;
+  html += `<div class="metric-card metric-card-kpi"><div class="metric-value">${data.length}</div><div class="metric-label">参评坐席数</div></div>`;
+  html += `<div class="metric-card metric-card-kpi"><div class="metric-value">¥${totalBase.toLocaleString()}</div><div class="metric-label">绩效基数总和</div></div>`;
+  html += `<div class="metric-card metric-card-kpi"><div class="metric-value">${(totalBase>0? (totalPool/totalBase*100).toFixed(0)+'%':'-')}</div><div class="metric-label">平均负荷比</div></div>`;
+  html += `<div class="metric-card metric-card-kpi"><div class="metric-value">¥${totalPool.toLocaleString()}</div><div class="metric-label">绩效总池</div></div>`;
   html += `</div>`;
   
-  // 缁勫埆璐熻嵎姣旈厤缃紙鍙姌鍙狅級
-  html += `<div class="card"><div class="card-title" style="cursor:pointer;" onclick="toggleLoadRatioConfig()">馃搳 缁勫埆璐熻嵎姣旈厤缃紙鐐瑰嚮灞曞紑/鏀惰捣锛?/div>`;
+  // 组别负荷比配置（可折叠）
+  html += `<div class="card"><div class="card-title" style="cursor:pointer;" onclick="toggleLoadRatioConfig()">📊 组别负荷比配置（点击展开/收起）</div>`;
   html += `<div id="load-ratio-config" style="display:none;margin-top:12px;">`;
   Object.keys(groups).forEach(g => {
     html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--c-bg);border-radius:6px;">`;
-    html += `<span style="font-size:13px;color:var(--c-text);">${g}锛?/span>`;
+    html += `<span style="font-size:13px;color:var(--c-text);">${g}：</span>`;
     html += `<input type="number" step="0.01" value="${groups[g].loadRatio}" style="width:60px;padding:4px 6px;border:1px solid var(--c-border);border-radius:4px;" onchange="updateGroupLoadRatio('${g}','${monthFilter}',this.value)">`;
-    html += `<span style="font-size:12px;color:var(--c-text-3);">鍊?/span>`;
+    html += `<span style="font-size:12px;color:var(--c-text-3);">倍</span>`;
     html += `</div>`;
   });
   html += `</div></div>`;
   
-  // 鎸囨爣鏉冮噸閰嶇疆
+  // 指标权重配置
   var weights = PERFORMANCE_WEIGHTS[monthFilter] || {};
-  html += `<div class="card"><div class="card-title" style="cursor:pointer;" onclick="toggleWeightConfig()">馃搳 鎸囨爣鏉冮噸閰嶇疆锛堢偣鍑诲睍寮€/鏀惰捣锛?/div>`;
+  html += `<div class="card"><div class="card-title" style="cursor:pointer;" onclick="toggleWeightConfig()">📊 指标权重配置（点击展开/收起）</div>`;
   html += `<div id="weight-config" style="display:none;margin-top:12px;">`;
-  ['鍞墠','鍞悗','缁煎悎'].forEach(type => {
+  ['售前','售后','综合'].forEach(type => {
     var w = weights[type] || {};
     html += `<div style="margin-bottom:12px;padding:10px;background:var(--c-bg);border-radius:6px;">`;
-    html += `<div style="font-size:13px;font-weight:600;color:var(--c-text);margin-bottom:8px;">${type}瀹㈡湇</div>`;
+    html += `<div style="font-size:13px;font-weight:600;color:var(--c-text);margin-bottom:8px;">${type}客服</div>`;
     html += `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">`;
-    if (type === '鍞墠' || type === '缁煎悎') {
-      html += `閿€鍞鏉冮噸锛?input type="number" value="${w.salesAmount||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','salesAmount',this.value)">% `;
-      html += `杞寲鐜囨潈閲嶏細<input type="number" value="${w.conversionRate||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','conversionRate',this.value)">% `;
+    if (type === '售前' || type === '综合') {
+      html += `销售额权重：<input type="number" value="${w.salesAmount||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','salesAmount',this.value)">% `;
+      html += `转化率权重：<input type="number" value="${w.conversionRate||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','conversionRate',this.value)">% `;
     }
-    if (type === '鍞悗' || type === '缁煎悎') {
-      html += `宸ヤ綔閲忔潈閲嶏細<input type="number" value="${w.workVolume||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','workVolume',this.value)">% `;
-      html += `瑙ｅ喅鐜囨潈閲嶏細<input type="number" value="${w.firstResolveRate||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','firstResolveRate',this.value)">% `;
+    if (type === '售后' || type === '综合') {
+      html += `工作量权重：<input type="number" value="${w.workVolume||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','workVolume',this.value)">% `;
+      html += `解决率权重：<input type="number" value="${w.firstResolveRate||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','firstResolveRate',this.value)">% `;
     }
-    html += `鍝嶅簲鏃堕棿鏉冮噸锛?input type="number" value="${w.responseTime||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','responseTime',this.value)">% `;
-    html += `婊℃剰搴︽潈閲嶏細<input type="number" value="${w.csat||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','csat',this.value)">%`;
+    html += `响应时间权重：<input type="number" value="${w.responseTime||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','responseTime',this.value)">% `;
+    html += `满意度权重：<input type="number" value="${w.csat||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','csat',this.value)">%`;
     html += `</div></div>`;
   });
-  html += `<button class="btn btn-primary" onclick="savePerformanceWeights()" style="margin-top:8px;">淇濆瓨鏉冮噸閰嶇疆</button>`;
+  html += `<button class="btn btn-primary" onclick="savePerformanceWeights()" style="margin-top:8px;">保存权重配置</button>`;
   html += `</div></div>`;
   
-  // 鍧愬腑缁╂晥鏄庣粏琛?
-  html += `<div class="card"><div class="card-title">鍧愬腑缁╂晥鏄庣粏锛?{data.length}浜猴級</div><table class="data-table">`;
-  html += `<thead><tr><th>缁勫埆</th><th>椤圭洰</th><th>鍧愬腑</th><th>绫诲瀷</th><th>鐘舵€?/th><th>鍩烘暟</th><th>閿€鍞</th><th>杞寲鐜?/th><th>宸ヤ綔閲?/th><th>瑙ｅ喅鐜?/th><th>鍝嶅簲鏃堕暱</th><th>CSAT</th><th>缁╂晥鍒嗘暟</th><th>鐡滃垎閲戦</th><th>濂?鎯?/th><th>鏈€缁堢哗鏁?/th><th>鎿嶄綔</th></tr></thead><tbody>`;
+  // 坐席绩效明细表
+  html += `<div class="card"><div class="card-title">坐席绩效明细（${data.length}人）</div><table class="data-table">`;
+  html += `<thead><tr><th>组别</th><th>项目</th><th>坐席</th><th>类型</th><th>状态</th><th>基数</th><th>销售额</th><th>转化率</th><th>工作量</th><th>解决率</th><th>响应时长</th><th>CSAT</th><th>绩效分数</th><th>瓜分金额</th><th>奖/惩</th><th>最终绩效</th><th>操作</th></tr></thead><tbody>`;
   
   data.forEach(a => {
     var p = PROJECTS.find(pp => pp.id === a.projectId);
@@ -7469,10 +7445,10 @@ function renderPerformance() {
     html += `<td>${a.group || '-'}</td>`;
     html += `<td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${p?p.name:''}">${p?p.name:a.projectId || '-'}</td>`;
     html += `<td>${a.agentName || '-'}</td>`;
-    html += `<td><select value="${a.agentType || '鍞墠'}" onchange="updateAgentType(${a.id},this.value)" style="padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;"><option value="鍞墠" ${a.agentType==='鍞墠'?'selected':''}>鍞墠</option><option value="鍞悗" ${a.agentType==='鍞悗'?'selected':''}>鍞悗</option><option value="缁煎悎" ${a.agentType==='缁煎悎'?'selected':''}>缁煎悎</option></select></td>`;
-    html += `<td>${a.status || '杞'}</td>`;
-    html += `<td>楼${base}</td>`;
-    html += `<td>${a.salesAmount > 0 ? '楼'+a.salesAmount.toLocaleString():'-'}</td>`;
+    html += `<td><select value="${a.agentType || '售前'}" onchange="updateAgentType(${a.id},this.value)" style="padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;"><option value="售前" ${a.agentType==='售前'?'selected':''}>售前</option><option value="售后" ${a.agentType==='售后'?'selected':''}>售后</option><option value="综合" ${a.agentType==='综合'?'selected':''}>综合</option></select></td>`;
+    html += `<td>${a.status || '转正'}</td>`;
+    html += `<td>¥${base}</td>`;
+    html += `<td>${a.salesAmount > 0 ? '¥'+a.salesAmount.toLocaleString():'-'}</td>`;
     html += `<td>${a.conversionRate > 0 ? a.conversionRate+'%':'-'}</td>`;
     html += `<td>${a.workVolume > 0 ? a.workVolume:'-'}</td>`;
     html += `<td>${a.firstResolveRate > 0 ? a.firstResolveRate+'%':'-'}</td>`;
@@ -7480,29 +7456,29 @@ function renderPerformance() {
     html += `<td style="color:${a.csat >= 4.5 ? 'var(--c-green)':'var(--c-red)'}">${a.csat || '-'}</td>`;
     var scorePct = (score * 100).toFixed(0);
     html += `<td style="color:${score >= 1.0 ? 'var(--c-green)':'var(--c-red)'}">${scorePct}%</td>`;
-    html += `<td>楼${isNaN(share) ? '0' : share.toFixed(0)}</td>`;
+    html += `<td>¥${isNaN(share) ? '0' : share.toFixed(0)}</td>`;
     html += `<td><div style="display:flex;gap:4px;align-items:center;"><input type="number" value="${a.reward || 0}" style="width:56px;padding:3px 6px;border:1px solid var(--c-border);border-radius:4px;font-size:13px;" onchange="updateAgentReward(${a.id},this.value)"><span style="color:var(--c-text-3);font-size:12px;">/</span><input type="number" value="${a.penalty || 0}" style="width:56px;padding:3px 6px;border:1px solid var(--c-border);border-radius:4px;font-size:13px;" onchange="updateAgentPenalty(${a.id},this.value)"></div></td>`;
-    html += `<td style="font-weight:600;color:var(--c-primary);">楼${(isNaN(final) ? '0' : final.toFixed(0))}</td>`;
-    html += `<td><button class="btn btn-sm" onclick="editAgentPerformance(${a.id})">缂栬緫</button> <button class="btn btn-sm btn-danger" onclick="deleteAgentPerformance(${a.id})">鍒犻櫎</button></td>`;
+    html += `<td style="font-weight:600;color:var(--c-primary);">¥${(isNaN(final) ? '0' : final.toFixed(0))}</td>`;
+    html += `<td><button class="btn btn-sm" onclick="editAgentPerformance(${a.id})">编辑</button> <button class="btn btn-sm btn-danger" onclick="deleteAgentPerformance(${a.id})">删除</button></td>`;
     html += `</tr>`;
   });
   
   html += `</tbody></table></div>`;
   
-  // 璁＄畻璇存槑
+  // 计算说明
   html += `<div style="margin-top:16px;padding:12px;background:var(--c-bg);border-radius:8px;font-size:12px;color:var(--c-text-3);line-height:1.8;">`;
-  html += `<div style="font-weight:600;margin-bottom:6px;">馃搵 璁＄畻閫昏緫璇存槑锛?/div>`;
-  html += `<div>1. 缁╂晥鍩烘暟锛氳瘯鐢ㄦ湡楼1400锛岃浆姝Ｂ?700</div>`;
-  html += `<div>2. 缁╂晥鎬绘睜 = 缁勫埆鎵€鏈変汉鍩烘暟鎬诲拰 脳 缁勫埆璐熻嵎姣?/div>`;
-  html += `<div>3. 缁╂晥鍒嗘暟锛氭寜鎸囨爣鏉冮噸璁＄畻锛岃寖鍥?0%~120%</div>`;
-  html += `<div>4. 鍞墠鐡滃垎锛氭寜閿€鍞鍗犳瘮锛涘敭鍚庣摐鍒嗭細鎸夊伐浣滈噺鍗犳瘮锛涚患鍚堬細鎸夐攢鍞?宸ヤ綔閲忕患鍚堝崰姣?/div>`;
-  html += `<div>5. 鏈€缁堢哗鏁?= 鐡滃垎閲戦 脳 缁╂晥鍒嗘暟 + 濂栧姳 - 鎯╃綒</div>`;
+  html += `<div style="font-weight:600;margin-bottom:6px;">📋 计算逻辑说明：</div>`;
+  html += `<div>1. 绩效基数：试用期¥1400，转正¥1700</div>`;
+  html += `<div>2. 绩效总池 = 组别所有人基数总和 × 组别负荷比</div>`;
+  html += `<div>3. 绩效分数：按指标权重计算，范围80%~120%</div>`;
+  html += `<div>4. 售前瓜分：按销售额占比；售后瓜分：按工作量占比；综合：按销售+工作量综合占比</div>`;
+  html += `<div>5. 最终绩效 = 瓜分金额 × 绩效分数 + 奖励 - 惩罚</div>`;
   html += `</div>`;
   
   return html;
 }
 
-// 鍒囨崲璐熻嵎姣旈厤缃樉绀?闅愯棌
+// 切换负荷比配置显示/隐藏
 function toggleLoadRatioConfig() {
   var el = document.getElementById('load-ratio-config');
   if (el) {
@@ -7510,10 +7486,10 @@ function toggleLoadRatioConfig() {
   }
 }
 
-// 鏇存柊缁勫埆璐熻嵎姣?
+// 更新组别负荷比
 function updateGroupLoadRatio(group, month, value) {
   var ratio = parseFloat(value);
-  if (isNaN(ratio) || ratio < 0) { alert('璐熻嵎姣斿繀椤绘槸姝ｆ暟'); return; }
+  if (isNaN(ratio) || ratio < 0) { alert('负荷比必须是正数'); return; }
   var idx = GROUP_LOAD_RATIO.findIndex(g => g.group === group && g.month === month);
   if (idx >= 0) {
     GROUP_LOAD_RATIO[idx].loadRatio = ratio;
@@ -7524,21 +7500,21 @@ function updateGroupLoadRatio(group, month, value) {
   renderModule('performance');
 }
 
-// 鏇存柊鎸囨爣鏉冮噸
+// 更新指标权重
 function updateWeight(month, type, indicator, value) {
   if (!PERFORMANCE_WEIGHTS[month]) PERFORMANCE_WEIGHTS[month] = {};
   if (!PERFORMANCE_WEIGHTS[month][type]) PERFORMANCE_WEIGHTS[month][type] = {};
   PERFORMANCE_WEIGHTS[month][type][indicator] = parseInt(value) || 0;
 }
 
-// 淇濆瓨鏉冮噸閰嶇疆
+// 保存权重配置
 function savePerformanceWeights() {
   saveAgentPerformance();
-  alert('鉁?鏉冮噸閰嶇疆宸蹭繚瀛?);
+  alert('✅ 权重配置已保存');
   renderModule('performance');
 }
 
-// 鍒囨崲鏉冮噸閰嶇疆鏄剧ず/闅愯棌
+// 切换权重配置显示/隐藏
 function toggleWeightConfig() {
   var el = document.getElementById('weight-config');
   if (el) {
@@ -7546,7 +7522,7 @@ function toggleWeightConfig() {
   }
 }
 
-// 鏇存柊瀹㈡湇绫诲瀷
+// 更新客服类型
 function updateAgentType(id, newType) {
   var agent = AGENT_PERFORMANCE.find(a => a.id === id);
   if (agent) {
@@ -7556,7 +7532,7 @@ function updateAgentType(id, newType) {
   }
 }
 
-// 鏇存柊濂栧姳
+// 更新奖励
 function updateAgentReward(id, value) {
   var agent = AGENT_PERFORMANCE.find(a => a.id === id);
   if (agent) {
@@ -7565,7 +7541,7 @@ function updateAgentReward(id, value) {
   }
 }
 
-// 鏇存柊鎯╃綒
+// 更新惩罚
 function updateAgentPenalty(id, value) {
   var agent = AGENT_PERFORMANCE.find(a => a.id === id);
   if (agent) {
@@ -7574,17 +7550,17 @@ function updateAgentPenalty(id, value) {
   }
 }
 
-// 鏂板鍧愬腑缁╂晥鏁版嵁
+// 新增坐席绩效数据
 function addAgentPerformance() {
   var month = document.getElementById('pf-month')?.value || '2026-05';
   var newId = AGENT_PERFORMANCE.length > 0 ? Math.max(...AGENT_PERFORMANCE.map(a => a.id)) + 1 : 1;
   var newAgent = {
     id: newId,
     projectId: PROJECTS.length > 0 ? PROJECTS[0].id : '',
-    agentName: '鏂板潗甯?,
-    group: 'A缁?,
-    status: '杞',
-    agentType: '鍞墠',
+    agentName: '新坐席',
+    group: 'A组',
+    status: '转正',
+    agentType: '售前',
     month: month,
     salesAmount: 0,
     conversionRate: 0,
@@ -7601,34 +7577,34 @@ function addAgentPerformance() {
   renderModule('performance');
 }
 
-// 缂栬緫鍧愬腑缁╂晥鏁版嵁
+// 编辑坐席绩效数据
 function editAgentPerformance(id) {
   var agent = AGENT_PERFORMANCE.find(a => a.id === id);
   if (!agent) return;
   
   var html = `<div style="padding:16px;">`;
-  html += `<div style="margin-bottom:12px;"><label>鍧愬腑濮撳悕锛?/label><input type="text" id="edit-agent-name" value="${agent.agentName}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>缁勫埆锛?/label><input type="text" id="edit-agent-group" value="${agent.group}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>鐘舵€侊細</label><select id="edit-agent-status" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"><option value="璇曠敤鏈? ${agent.status==='璇曠敤鏈??'selected':''}>璇曠敤鏈?/option><option value="杞" ${agent.status==='杞'?'selected':''}>杞</option></select></div>`;
-  html += `<div style="margin-bottom:12px;"><label>瀹㈡湇绫诲瀷锛?/label><select id="edit-agent-type" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"><option value="鍞墠" ${agent.agentType==='鍞墠'?'selected':''}>鍞墠</option><option value="鍞悗" ${agent.agentType==='鍞悗'?'selected':''}>鍞悗</option><option value="缁煎悎" ${agent.agentType==='缁煎悎'?'selected':''}>缁煎悎</option></select></div>`;
-  html += `<div style="margin-bottom:12px;"><label>閿€鍞锛?/label><input type="number" id="edit-agent-sales" value="${agent.salesAmount}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>杞寲鐜?%)锛?/label><input type="number" step="0.1" id="edit-agent-conv" value="${agent.conversionRate}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>宸ヤ綔閲忥細</label><input type="number" id="edit-agent-work" value="${agent.workVolume}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>涓€娆℃€цВ鍐崇巼(%)锛?/label><input type="number" step="0.1" id="edit-agent-resolve" value="${agent.firstResolveRate}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>骞冲潎鍝嶅簲鏃堕暱(s)锛?/label><input type="number" id="edit-agent-resp" value="${agent.responseTime}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>CSAT锛?/label><input type="number" step="0.1" id="edit-agent-csat" value="${agent.csat}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>鏈嶅姟閲忥細</label><input type="number" id="edit-agent-sv" value="${agent.serviceVolume}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>濂栧姳(楼)锛?/label><input type="number" id="edit-agent-reward" value="${agent.reward}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>鎯╃綒(楼)锛?/label><input type="number" id="edit-agent-penalty" value="${agent.penalty}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>坐席姓名：</label><input type="text" id="edit-agent-name" value="${agent.agentName}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>组别：</label><input type="text" id="edit-agent-group" value="${agent.group}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>状态：</label><select id="edit-agent-status" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"><option value="试用期" ${agent.status==='试用期'?'selected':''}>试用期</option><option value="转正" ${agent.status==='转正'?'selected':''}>转正</option></select></div>`;
+  html += `<div style="margin-bottom:12px;"><label>客服类型：</label><select id="edit-agent-type" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"><option value="售前" ${agent.agentType==='售前'?'selected':''}>售前</option><option value="售后" ${agent.agentType==='售后'?'selected':''}>售后</option><option value="综合" ${agent.agentType==='综合'?'selected':''}>综合</option></select></div>`;
+  html += `<div style="margin-bottom:12px;"><label>销售额：</label><input type="number" id="edit-agent-sales" value="${agent.salesAmount}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>转化率(%)：</label><input type="number" step="0.1" id="edit-agent-conv" value="${agent.conversionRate}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>工作量：</label><input type="number" id="edit-agent-work" value="${agent.workVolume}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>一次性解决率(%)：</label><input type="number" step="0.1" id="edit-agent-resolve" value="${agent.firstResolveRate}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>平均响应时长(s)：</label><input type="number" id="edit-agent-resp" value="${agent.responseTime}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>CSAT：</label><input type="number" step="0.1" id="edit-agent-csat" value="${agent.csat}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>服务量：</label><input type="number" id="edit-agent-sv" value="${agent.serviceVolume}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>奖励(¥)：</label><input type="number" id="edit-agent-reward" value="${agent.reward}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
+  html += `<div style="margin-bottom:12px;"><label>惩罚(¥)：</label><input type="number" id="edit-agent-penalty" value="${agent.penalty}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
   html += `<div style="display:flex;gap:8px;justify-content:flex-end;">`;
-  html += `<button class="btn" onclick="closeModal()">鍙栨秷</button>`;
-  html += `<button class="btn btn-primary" onclick="saveAgentEdit(${agent.id})">淇濆瓨</button>`;
+  html += `<button class="btn" onclick="closeModal()">取消</button>`;
+  html += `<button class="btn btn-primary" onclick="saveAgentEdit(${agent.id})">保存</button>`;
   html += `</div></div>`;
   
-  showModal('缂栬緫鍧愬腑缁╂晥', html);
+  showModal('编辑坐席绩效', html);
 }
 
-// 淇濆瓨缂栬緫
+// 保存编辑
 function saveAgentEdit(id) {
   var agent = AGENT_PERFORMANCE.find(a => a.id === id);
   if (!agent) return;
@@ -7650,9 +7626,9 @@ function saveAgentEdit(id) {
   renderModule('performance');
 }
 
-// 鍒犻櫎鍧愬腑缁╂晥鏁版嵁
+// 删除坐席绩效数据
 function deleteAgentPerformance(id) {
-  if (!confirm('纭畾鍒犻櫎璇ュ潗甯殑缁╂晥鏁版嵁锛?)) return;
+  if (!confirm('确定删除该坐席的绩效数据？')) return;
   var idx = AGENT_PERFORMANCE.findIndex(a => a.id === id);
   if (idx >= 0) {
     AGENT_PERFORMANCE.splice(idx, 1);
@@ -7661,7 +7637,7 @@ function deleteAgentPerformance(id) {
   }
 }
 
-// 瀵煎叆缁╂晥鏁版嵁
+// 导入绩效数据
 function importPerformance() {
   var input = document.createElement('input');
   input.type = 'file';
@@ -7678,7 +7654,7 @@ function importPerformance() {
           var ws = wb.Sheets[wb.SheetNames[0]];
           var rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
           processPerformanceRows(rows);
-        } catch(err) { alert("瑙ｆ瀽Excel澶辫触锛? + err.message); }
+        } catch(err) { alert("解析Excel失败：" + err.message); }
       };
       reader.readAsArrayBuffer(file);
     } else {
@@ -7696,7 +7672,7 @@ function importPerformance() {
 }
 
 function processPerformanceRows(rows) {
-  if (!rows || rows.length < 2) { alert("鏂囦欢鍐呭涓虹┖鎴栦粎鏈夎〃澶?); return; }
+  if (!rows || rows.length < 2) { alert("文件内容为空或仅有表头"); return; }
   for (var i = 1; i < rows.length; i++) {
     if (!rows[i] || rows[i].length < 2) continue;
     var vals = rows[i];
@@ -7706,9 +7682,9 @@ function processPerformanceRows(rows) {
       id: newId + i,
       projectId: String(vals[0] || ''),
       agentName: String(vals[1] || ''),
-      group: String(vals[2] || 'A缁?),
-      status: String(vals[3] || '杞'),
-      agentType: String(vals[4] || '鍞墠'),
+      group: String(vals[2] || 'A组'),
+      status: String(vals[3] || '转正'),
+      agentType: String(vals[4] || '售前'),
       month: month,
       salesAmount: parseFloat(vals[5]) || 0,
       conversionRate: parseFloat(vals[6]) || 0,
@@ -7724,44 +7700,44 @@ function processPerformanceRows(rows) {
   }
   saveAgentPerformance();
   renderModule('performance');
-  alert("瀵煎叆鎴愬姛锛佸叡瀵煎叆 " + (rows.length - 1) + " 鏉℃暟鎹?);
+  alert("导入成功！共导入 " + (rows.length - 1) + " 条数据");
 }
 
-// 瀵煎嚭缁╂晥鏁版嵁锛堥噸鍐欙級
+// 导出绩效数据（重写）
 function exportPerformance() {
   var monthFilter = document.getElementById('pf-month')?.value || '2026-05';
   var data = AGENT_PERFORMANCE.filter(a => a.month === monthFilter);
-  var headers = ['缁勫埆','椤圭洰','鍧愬腑濮撳悕','瀹㈡湇绫诲瀷','鐘舵€?,'缁╂晥鍩烘暟','閿€鍞','杞寲鐜?%)','宸ヤ綔閲?,'瑙ｅ喅鐜?%)','鍝嶅簲鏃堕暱(s)','CSAT','鏈嶅姟閲?,'缁╂晥鍒嗘暟','鐡滃垎閲戦','濂栧姳','鎯╃綒','鏈€缁堢哗鏁?];
+  var headers = ['组别','项目','坐席姓名','客服类型','状态','绩效基数','销售额','转化率(%)','工作量','解决率(%)','响应时长(s)','CSAT','服务量','绩效分数','瓜分金额','奖励','惩罚','最终绩效'];
   var rows = data.map(a => {
     var p = PROJECTS.find(pp => pp.id === a.projectId);
     var base = getBaseSalary(a.status);
     var score = calcPerformanceScore(a, monthFilter);
     var share = calcShareAmount(a, monthFilter);
     var final = calcFinalPerformance(a, monthFilter);
-    return [a.group, p?p.name:a.projectId, a.agentName, a.agentType, a.status, '楼'+base, a.salesAmount, a.conversionRate, a.workVolume, a.firstResolveRate, a.responseTime, a.csat, a.serviceVolume, (score*100).toFixed(0)+'%', '楼'+share.toFixed(0), '楼'+a.reward, '楼'+a.penalty, '楼'+final.toFixed(0)];
+    return [a.group, p?p.name:a.projectId, a.agentName, a.agentType, a.status, '¥'+base, a.salesAmount, a.conversionRate, a.workVolume, a.firstResolveRate, a.responseTime, a.csat, a.serviceVolume, (score*100).toFixed(0)+'%', '¥'+share.toFixed(0), '¥'+a.reward, '¥'+a.penalty, '¥'+final.toFixed(0)];
   });
-  showExportDialog(headers, rows, `瀹㈡湇缁╂晥_${monthFilter}`, '瀹㈡湇缁╂晥鐪嬫澘');
+  showExportDialog(headers, rows, `客服绩效_${monthFilter}`, '客服绩效看板');
 }
 
 
-// ===== 椤圭洰椋庨櫓棰勮姹?=====// ===== 椤圭洰椋庨櫓棰勮姹?=====
+// ===== 项目风险预警池 =====// ===== 项目风险预警池 =====
 function renderRisk(){
-  let html = `<div class="page-header"><h2>鈿狅笍 椤圭洰椋庨櫓棰勮姹?/h2>
-    <button class="btn btn-primary" onclick="exportRisk()">馃摛 瀵煎嚭</button>
+  let html = `<div class="page-header"><h2>⚠️ 项目风险预警池</h2>
+    <button class="btn btn-primary" onclick="exportRisk()">📤 导出</button>
   </div>`;
 
   const groups = [
-    {key:'鍋ュ悍鐘舵€?, icon:'馃彞', color:'#ef4444', bg:'#fef2f2', desc:'鍋ュ悍鐘舵€佽繛缁紓甯?},
-    {key:'SLA瓒呮爣', icon:'鈴憋笍', color:'#f59e0b', bg:'#fffbeb', desc:'鏈嶅姟绛夌骇鍗忚瓒呮爣'},
-    {key:'鎴愭湰瓒呮敮', icon:'馃捀', color:'#ef4444', bg:'#fef2f2', desc:'鎴愭湰瓒呭嚭棰勭畻鎺у埗'},
-    {key:'婊℃剰搴︿笅婊?, icon:'馃搲', color:'#f59e0b', bg:'#fffbeb', desc:'瀹㈡埛婊℃剰搴︿笅闄?}
+    {key:'健康状态', icon:'🏥', color:'#ef4444', bg:'#fef2f2', desc:'健康状态连续异常'},
+    {key:'SLA超标', icon:'⏱️', color:'#f59e0b', bg:'#fffbeb', desc:'服务等级协议超标'},
+    {key:'成本超支', icon:'💸', color:'#ef4444', bg:'#fef2f2', desc:'成本超出预算控制'},
+    {key:'满意度下滑', icon:'📉', color:'#f59e0b', bg:'#fffbeb', desc:'客户满意度下降'}
   ];
 
   html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">`;
   groups.forEach(g => {
     const items = RISK_ALERTS.filter(r => r.riskType === g.key);
-    const high = items.filter(r => r.severity.includes('馃敶')).length;
-    const mid = items.filter(r => r.severity.includes('馃煛')).length;
+    const high = items.filter(r => r.severity.includes('🔴')).length;
+    const mid = items.filter(r => r.severity.includes('🟡')).length;
     html += `<div class="risk-card" onclick="toggleRiskCard(this)" style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;overflow:hidden;transition:all 0.3s ease;" data-open="false">
       <div style="padding:16px;display:flex;align-items:center;justify-content:space-between;">
         <div style="display:flex;align-items:center;gap:12px;">
@@ -7773,27 +7749,27 @@ function renderRisk(){
         </div>
         <div style="text-align:right;">
           <div style="font-size:22px;font-weight:700;color:${g.color};">${items.length}</div>
-          <div style="font-size:11px;color:#94a3b8;">涓」鐩?/div>
+          <div style="font-size:11px;color:#94a3b8;">个项目</div>
         </div>
       </div>
       <div style="padding:0 16px 12px;display:flex;gap:8px;flex-wrap:wrap;">
-        ${high > 0 ? `<span style="font-size:11px;color:#ef4444;background:#fef2f2;padding:2px 8px;border-radius:4px;font-weight:500;">馃敶 楂橀闄?${high}</span>` : ''}
-        ${mid > 0 ? `<span style="font-size:11px;color:#f59e0b;background:#fffbeb;padding:2px 8px;border-radius:4px;font-weight:500;">馃煛 涓闄?${mid}</span>` : ''}
-        ${items.length === 0 ? '<span style="font-size:11px;color:#22c55e;background:#f0fdf4;padding:2px 8px;border-radius:4px;font-weight:500;">鉁?鏃犻闄?/span>' : ''}
+        ${high > 0 ? `<span style="font-size:11px;color:#ef4444;background:#fef2f2;padding:2px 8px;border-radius:4px;font-weight:500;">🔴 高风险 ${high}</span>` : ''}
+        ${mid > 0 ? `<span style="font-size:11px;color:#f59e0b;background:#fffbeb;padding:2px 8px;border-radius:4px;font-weight:500;">🟡 中风险 ${mid}</span>` : ''}
+        ${items.length === 0 ? '<span style="font-size:11px;color:#22c55e;background:#f0fdf4;padding:2px 8px;border-radius:4px;font-weight:500;">✅ 无风险</span>' : ''}
       </div>
       <div class="risk-detail" style="max-height:0;overflow:hidden;transition:max-height 0.35s ease;">
         <div style="padding:0 16px 16px;">
           ${items.length > 0 ? `<table class="data-table" style="font-size:12px;">
-            <thead><tr><th>椤圭洰</th><th>涓ラ噸绋嬪害</th><th>瑙﹀彂鎸囨爣</th><th>鐘舵€?/th></tr></thead>
+            <thead><tr><th>项目</th><th>严重程度</th><th>触发指标</th><th>状态</th></tr></thead>
             <tbody>
               ${items.map(r => `<tr>
                 <td><a href="#" class="table-link" onclick="event.stopPropagation();showProjectDetail('${r.projectId}');return false;">${r.projectName}</a></td>
                 <td>${r.severity}</td>
                 <td>${r.indicator}</td>
-                <td><span class="badge ${r.status==='鏈鐞??'status-red':r.status==='澶勭悊涓??'status-yellow':'status-green'}">${r.status}</span></td>
+                <td><span class="badge ${r.status==='未处理'?'status-red':r.status==='处理中'?'status-yellow':'status-green'}">${r.status}</span></td>
               </tr>`).join('')}
             </tbody>
-          </table>` : '<div style="text-align:center;color:#94a3b8;padding:16px;font-size:13px;">鏆傛棤椋庨櫓椤圭洰</div>'}
+          </table>` : '<div style="text-align:center;color:#94a3b8;padding:16px;font-size:13px;">暂无风险项目</div>'}
         </div>
       </div>
     </div>`;
@@ -7816,7 +7792,7 @@ function toggleRiskCard(el){
   }
 }
 
-// ===== 涓汉鍩虹璁剧疆 =====
+// ===== 个人基础设置 =====
 function renderProfile(){
   const rowStyle = 'display:flex;align-items:center;padding:14px 0;border-bottom:1px solid #f1f5f9;';
   const labelStyle = 'width:90px;font-size:14px;color:#334155;flex-shrink:0;';
@@ -7827,147 +7803,147 @@ function renderProfile(){
   const u = currentUser || {};
   const userInDb = USERS.find(x => x.id === u.id) || {};
   const avatar = u.avatar || userInDb.avatar || "";
-  const nickname = u.nickname || userInDb.nickname || u.name || "鏈缃?;
-  const position = u.position || userInDb.position || u.role || "鏈缃?;
+  const nickname = u.nickname || userInDb.nickname || u.name || "未设置";
+  const position = u.position || userInDb.position || u.role || "未设置";
   const birthday = u.birthday || userInDb.birthday || "";
   const phone = u.phone || userInDb.phone || "--";
   const email = u.email || userInDb.email || "--";
   const wechatBound = u.wechatBound || userInDb.wechatBound || true;
   const keepStatus = u.keepStatus || userInDb.keepStatus || false;
 
-  let html = `<div class="page-header"><h2>馃懁 涓汉鍩虹璁剧疆</h2></div>`;
+  let html = `<div class="page-header"><h2>👤 个人基础设置</h2></div>`;
 
   html += `<div style="display:flex;gap:20px;flex-wrap:wrap;">`;
 
-  // 宸︿晶鍖哄煙
+  // 左侧区域
   html += `<div style="flex:1;min-width:360px;max-width:680px;">`;
 
-  // 鍩虹淇℃伅鍗＄墖
+  // 基础信息卡片
   html += `<div class="card profile-card">
     <div class="profile-card-title">
-      <span class="profile-card-icon">馃摑</span>鍩虹淇℃伅
+      <span class="profile-card-icon">📝</span>基础信息
     </div>
 
-    <!-- 涓汉澶村儚 -->
+    <!-- 个人头像 -->
     <div style="${rowStyle}">
-      <div style="${labelStyle}" class="profile-field-label">涓汉澶村儚</div>
+      <div style="${labelStyle}" class="profile-field-label">个人头像</div>
       <div style="display:flex;align-items:center;flex:1;gap:16px;">
         <div id="profile-avatar-preview" class="profile-avatar-preview"
           style="${avatar ? 'background-image:url('+avatar+');color:transparent;' : ''}">
-          ${avatar ? '' : '馃懁'}
+          ${avatar ? '' : '👤'}
         </div>
         <div>
-          <span style="${linkStyle}" ${linkHover} onclick="document.getElementById('profile-avatar-input').click()">鏇存崲澶村儚</span>
+          <span style="${linkStyle}" ${linkHover} onclick="document.getElementById('profile-avatar-input').click()">更换头像</span>
           <input type="file" id="profile-avatar-input" style="display:none;" accept="image/jpeg,image/jpg,image/png,image/gif" onchange="handleAvatarUpload(this)">
-          <div style="font-size:12px;color:#94a3b8;margin-top:4px;">鏀寔 jpg銆乸ng銆乬if锛屾渶澶?5M</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:4px;">支持 jpg、png、gif，最大 5M</div>
         </div>
       </div>
     </div>
 
-    <!-- 鏄电О -->
+    <!-- 昵称 -->
     <div style="${rowStyle}" id="profile-nickname-row">
-      <div style="${labelStyle}" class="profile-field-label">鏄电О</div>
+      <div style="${labelStyle}" class="profile-field-label">昵称</div>
       <div style="${valueStyle}" id="profile-nickname-value">${nickname}</div>
-      <span style="${linkStyle}" ${linkHover} onclick="editProfileNickname()">淇敼</span>
+      <span style="${linkStyle}" ${linkHover} onclick="editProfileNickname()">修改</span>
     </div>
 
-    <!-- 鐢熸棩 -->
+    <!-- 生日 -->
     <div style="${rowStyle}" id="profile-birthday-row">
-      <div style="${labelStyle}" class="profile-field-label">鐢熸棩</div>
+      <div style="${labelStyle}" class="profile-field-label">生日</div>
       <div style="${valueStyle}" id="profile-birthday-value">${birthday || "--"}</div>
-      <span style="${linkStyle}" ${linkHover} onclick="editProfileBirthday()">淇敼</span>
+      <span style="${linkStyle}" ${linkHover} onclick="editProfileBirthday()">修改</span>
     </div>
 
-    <!-- 鑱屼綅 -->
+    <!-- 职位 -->
     <div style="${rowStyle}" id="profile-position-row">
-      <div style="${labelStyle}" class="profile-field-label">鑱屼綅</div>
+      <div style="${labelStyle}" class="profile-field-label">职位</div>
       <div style="${valueStyle}" id="profile-position-value">${position}</div>
-      <span style="${linkStyle}" ${linkHover} onclick="editProfilePosition()">淇敼</span>
+      <span style="${linkStyle}" ${linkHover} onclick="editProfilePosition()">修改</span>
     </div>
 
-    <!-- 鍝佺墝 -->
+    <!-- 品牌 -->
     <div style="${rowStyle}" id="profile-brand-row">
-      <div style="${labelStyle}" class="profile-field-label">鍝佺墝</div>
+      <div style="${labelStyle}" class="profile-field-label">品牌</div>
       <div style="${valueStyle}" id="profile-brand-value">${u.brand || userInDb.brand || "Chanseen CloudHub"}</div>
-      <span style="${linkStyle}" ${linkHover} onclick="editProfileBrand()">淇敼</span>
+      <span style="${linkStyle}" ${linkHover} onclick="editProfileBrand()">修改</span>
     </div>
 
-    <!-- 鎵嬫満鍙?-->
+    <!-- 手机号 -->
     <div style="${rowStyle}" id="profile-phone-row">
-      <div style="${labelStyle}" class="profile-field-label">鎵嬫満鍙?/div>
+      <div style="${labelStyle}" class="profile-field-label">手机号</div>
       <div style="${valueStyle}" id="profile-phone-value">${phone}</div>
-      <span style="${linkStyle}" ${linkHover} onclick="editProfilePhone()">淇敼</span>
+      <span style="${linkStyle}" ${linkHover} onclick="editProfilePhone()">修改</span>
     </div>
 
-    <!-- 閭 -->
+    <!-- 邮箱 -->
     <div style="${rowStyle}" id="profile-email-row">
-      <div style="${labelStyle}" class="profile-field-label">閭</div>
+      <div style="${labelStyle}" class="profile-field-label">邮箱</div>
       <div style="${valueStyle}" id="profile-email-value">${email}</div>
-      <span style="${linkStyle}" ${linkHover} onclick="editProfileEmail()">淇敼</span>
+      <span style="${linkStyle}" ${linkHover} onclick="editProfileEmail()">修改</span>
     </div>
 
-    <!-- 寰俊 -->
+    <!-- 微信 -->
     <div style="${rowStyle}">
-      <div style="${labelStyle}" class="profile-field-label">寰俊</div>
-      <div style="${valueStyle}">${wechatBound ? '宸茬粦瀹? : '鏈粦瀹?}</div>
-      <span style="${linkStyle}" ${linkHover} onclick="toggleWechatBind()">${wechatBound ? '瑙ｇ粦' : '缁戝畾'}</span>
+      <div style="${labelStyle}" class="profile-field-label">微信</div>
+      <div style="${valueStyle}">${wechatBound ? '已绑定' : '未绑定'}</div>
+      <span style="${linkStyle}" ${linkHover} onclick="toggleWechatBind()">${wechatBound ? '解绑' : '绑定'}</span>
     </div>
 
-    <!-- 鐧诲綍瀵嗙爜 -->
+    <!-- 登录密码 -->
     <div style="${rowStyle}border-bottom:none;">
-      <div style="${labelStyle}" class="profile-field-label">鐧诲綍瀵嗙爜</div>
+      <div style="${labelStyle}" class="profile-field-label">登录密码</div>
       <div style="${valueStyle}">********</div>
-      <span style="${linkStyle}" ${linkHover} onclick="showChangePasswordModal()">淇敼</span>
+      <span style="${linkStyle}" ${linkHover} onclick="showChangePasswordModal()">修改</span>
     </div>
   </div>`;
 
-  // 鏇村鎿嶄綔鍗＄墖
+  // 更多操作卡片
   html += `<div class="card profile-card" style="margin-top:16px;">
     <div class="profile-card-title">
-      <span class="profile-card-icon">鈿欙笍</span>鏇村鎿嶄綔
+      <span class="profile-card-icon">⚙️</span>更多操作
     </div>
 
-    <!-- 绂诲紑鍥㈤槦 -->
+    <!-- 离开团队 -->
     <div style="${rowStyle}border-bottom:none;flex-direction:column;align-items:flex-start;gap:10px;padding-bottom:0;">
       <div style="display:flex;align-items:center;gap:8px;width:100%;">
-        <div style="${labelStyle}" class="profile-field-label">绂诲紑鍥㈤槦</div>
+        <div style="${labelStyle}" class="profile-field-label">离开团队</div>
         <div style="flex:1;"></div>
       </div>
       <div style="font-size:13px;color:#ef4444;background:#fef2f2;padding:10px 14px;border-radius:6px;width:100%;border:1px solid #fecaca;">
-        鈿狅笍 涓€鏃︾寮€鍥㈤槦锛屾偍鍦ㄦ鍥㈤槦鐨勪竴鍒囪褰曞皢鏃犳硶鏌ョ湅锛?
+        ⚠️ 一旦离开团队，您在此团队的一切记录将无法查看！
       </div>
       <div style="display:flex;gap:12px;margin-top:4px;">
-        <button class="btn profile-btn-danger" onclick="leaveTeam()">绂诲紑鍥㈤槦</button>
-        <button class="btn profile-btn-plain" onclick="alert('绉讳氦宸ヤ綔鍔熻兘璇疯仈绯荤鐞嗗憳澶勭悊')">绉讳氦宸ヤ綔</button>
+        <button class="btn profile-btn-danger" onclick="leaveTeam()">离开团队</button>
+        <button class="btn profile-btn-plain" onclick="alert('移交工作功能请联系管理员处理')">移交工作</button>
       </div>
     </div>
   </div>`;
 
-  // 澶囦唤涓庢仮澶嶅崱鐗?
+  // 备份与恢复卡片
   html += `<div class="card profile-card" style="margin-top:16px;">
     <div class="profile-card-title">
-      <span class="profile-card-icon">馃捑</span>澶囦唤涓庢仮澶?
+      <span class="profile-card-icon">💾</span>备份与恢复
     </div>
-    <div style="font-size:13px;color:#64748b;margin-bottom:12px;">瀹氭湡澶囦唤鏁版嵁鍒版湰鍦版枃浠讹紝娓呯悊娴忚鍣ㄦ暟鎹墠璇峰姟蹇呭浠斤紒</div>
+    <div style="font-size:13px;color:#64748b;margin-bottom:12px;">定期备份数据到本地文件，清理浏览器数据前请务必备份！</div>
     <div style="display:flex;gap:10px;">
-      <button class="btn btn-primary" onclick="backupAllData()" style="flex:1;">馃捑 涓€閿浠?/button>
-      <button class="btn" onclick="triggerRestore()" style="flex:1;">鈾伙笍 鎭㈠鏁版嵁</button>
+      <button class="btn btn-primary" onclick="backupAllData()" style="flex:1;">💾 一键备份</button>
+      <button class="btn" onclick="triggerRestore()" style="flex:1;">♻️ 恢复数据</button>
     </div>
   </div>`;
-  html += `</div>`; // 宸︿晶缁撴潫
+  html += `</div>`; // 左侧结束
 
-  // 鍙充晶鍖哄煙
+  // 右侧区域
   html += `<div style="flex:1;min-width:300px;max-width:420px;display:flex;flex-direction:column;gap:16px;">`;
 
-  // 璐︽埛瀹夊叏绛夌骇
+  // 账户安全等级
   const safeScore = (phone !== "--" ? 25 : 0) + (email !== "--" ? 25 : 0) + (wechatBound ? 20 : 0) + 30;
   const safeColor = safeScore >= 80 ? '#22c55e' : safeScore >= 60 ? '#f59e0b' : '#ef4444';
-  const safeText = safeScore >= 80 ? '鑹ソ' : safeScore >= 60 ? '涓€鑸? : '杈冧綆';
+  const safeText = safeScore >= 80 ? '良好' : safeScore >= 60 ? '一般' : '较低';
   const dashArray = Math.round(safeScore / 100 * 226) + ' 226';
 
   html += `<div class="card profile-card">
     <div class="profile-card-title">
-      <span class="profile-card-icon">馃攼</span>璐︽埛瀹夊叏
+      <span class="profile-card-icon">🔐</span>账户安全
     </div>
     <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
       <div style="position:relative;width:80px;height:80px;">
@@ -7978,39 +7954,39 @@ function renderProfile(){
         </svg>
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;">
           <div style="font-size:20px;font-weight:700;color:${safeColor};">${safeScore}</div>
-          <div style="font-size:11px;color:#94a3b8;">鍒?/div>
+          <div style="font-size:11px;color:#94a3b8;">分</div>
         </div>
       </div>
       <div style="flex:1;">
-        <div style="font-size:15px;font-weight:600;color:#1e293b;">瀹夊叏绛夌骇锛?{safeText}</div>
-        <div style="font-size:12px;color:#64748b;margin-top:4px;">${safeScore < 100 ? '瀹屽杽淇℃伅鍙彁鍗囧畨鍏ㄧ瓑绾? : '鎮ㄧ殑璐︽埛瀹夊叏绛夌骇寰堥珮'}</div>
+        <div style="font-size:15px;font-weight:600;color:#1e293b;">安全等级：${safeText}</div>
+        <div style="font-size:12px;color:#64748b;margin-top:4px;">${safeScore < 100 ? '完善信息可提升安全等级' : '您的账户安全等级很高'}</div>
       </div>
     </div>
     <div class="profile-safe-list">
       <div class="profile-safe-item">
         <span class="profile-safe-dot" style="background:#22c55e;"></span>
-        <span class="profile-safe-label">鐧诲綍瀵嗙爜</span>
-        <span class="profile-safe-status ok">宸茶缃?/span>
+        <span class="profile-safe-label">登录密码</span>
+        <span class="profile-safe-status ok">已设置</span>
       </div>
       <div class="profile-safe-item">
         <span class="profile-safe-dot" style="background:${phone !== "--" ? '#22c55e' : '#94a3b8'};"></span>
-        <span class="profile-safe-label">鎵嬫満缁戝畾</span>
-        <span class="profile-safe-status ${phone !== "--" ? 'ok' : 'warn'}">${phone !== "--" ? '宸茬粦瀹? : '鏈粦瀹?}</span>
+        <span class="profile-safe-label">手机绑定</span>
+        <span class="profile-safe-status ${phone !== "--" ? 'ok' : 'warn'}">${phone !== "--" ? '已绑定' : '未绑定'}</span>
       </div>
       <div class="profile-safe-item">
         <span class="profile-safe-dot" style="background:${email !== "--" ? '#22c55e' : '#94a3b8'};"></span>
-        <span class="profile-safe-label">閭缁戝畾</span>
-        <span class="profile-safe-status ${email !== "--" ? 'ok' : 'warn'}">${email !== "--" ? '宸茬粦瀹? : '鏈粦瀹?}</span>
+        <span class="profile-safe-label">邮箱绑定</span>
+        <span class="profile-safe-status ${email !== "--" ? 'ok' : 'warn'}">${email !== "--" ? '已绑定' : '未绑定'}</span>
       </div>
       <div class="profile-safe-item">
         <span class="profile-safe-dot" style="background:${wechatBound ? '#22c55e' : '#94a3b8'};"></span>
-        <span class="profile-safe-label">寰俊缁戝畾</span>
-        <span class="profile-safe-status ${wechatBound ? 'ok' : 'warn'}">${wechatBound ? '宸茬粦瀹? : '鏈粦瀹?}</span>
+        <span class="profile-safe-label">微信绑定</span>
+        <span class="profile-safe-status ${wechatBound ? 'ok' : 'warn'}">${wechatBound ? '已绑定' : '未绑定'}</span>
       </div>
     </div>
   </div>`;
 
-  // 鏈€杩戠櫥褰曪紙鍔ㄦ€佹覆鏌撶湡瀹炶褰曪級
+  // 最近登录（动态渲染真实记录）
   var loginLogs = [];
   try {
     loginLogs = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]');
@@ -8018,11 +7994,11 @@ function renderProfile(){
   
   html += '<div class="card profile-card">' +
     '<div class="profile-card-title">' +
-      '<span class="profile-card-icon">馃搷</span>鏈€杩戠櫥褰? +
+      '<span class="profile-card-icon">📍</span>最近登录' +
     '</div>';
   
   if (loginLogs.length === 0) {
-    html += '<div style="text-align:center;color:#94a3b8;padding:20px 0;font-size:13px;">鏆傛棤鐧诲綍璁板綍</div>';
+    html += '<div style="text-align:center;color:#94a3b8;padding:20px 0;font-size:13px;">暂无登录记录</div>';
   } else {
     html += '<div class="profile-login-list">';
     
@@ -8031,7 +8007,7 @@ function renderProfile(){
     for (var li = 0; li < loginLogs.length && li < 5; li++) {
       var log = loginLogs[li];
       var isCurrent = (log.sessionId === currentSessionId);
-      var deviceIcon = log.device === 'mobile' ? '馃摫' : '馃枼锔?;
+      var deviceIcon = log.device === 'mobile' ? '📱' : '🖥️';
       var iconBg = isCurrent ? '#dbeafe' : (log.device === 'mobile' ? '#dcfce7' : '#f3f4f6');
       var iconColor = isCurrent ? '#3b82f6' : (log.device === 'mobile' ? '#22c55e' : '#6b7280');
       var timeStr = log.loginTime ? new Date(log.loginTime).toLocaleString('zh-CN') : '--';
@@ -8041,13 +8017,13 @@ function renderProfile(){
           '<div class="profile-login-icon" style="background:' + iconBg + ';color:' + iconColor + ';">' + deviceIcon + '</div>' +
           '<div>' +
             '<div class="profile-login-name">' + log.browser + ' / ' + log.os + '</div>' +
-            '<div class="profile-login-ip">璐﹀彿: ' + log.username + '</div>' +
+            '<div class="profile-login-ip">账号: ' + log.username + '</div>' +
           '</div>' +
         '</div>' +
         '<div class="profile-login-meta">' +
-          (isCurrent ? '<span class="profile-login-badge">褰撳墠鍦ㄧ嚎</span>' : '') +
-          (currentUser && currentUser.role === '瓒呯骇绠＄悊鍛? && !isCurrent ? 
-            '<span style="color:#ef4444;font-size:12px;cursor:pointer;margin-right:8px;" onclick="if(confirm(\'纭畾寮哄埗閫€鍑鸿璁惧鍚楋紵\'))forceLogoutSession(\'' + log.sessionId + '\')">寮哄埗閫€鍑?/span>' : '') +
+          (isCurrent ? '<span class="profile-login-badge">当前在线</span>' : '') +
+          (currentUser && currentUser.role === '超级管理员' && !isCurrent ? 
+            '<span style="color:#ef4444;font-size:12px;cursor:pointer;margin-right:8px;" onclick="if(confirm(\'确定强制退出该设备吗？\'))forceLogoutSession(\'' + log.sessionId + '\')">强制退出</span>' : '') +
           '<div class="profile-login-time">' + timeStr + '</div>' +
         '</div>' +
       '</div>';
@@ -8058,24 +8034,24 @@ function renderProfile(){
   
   html += '</div>';
 
-  html += `</div>`; // 鍙充晶缁撴潫
-  html += `</div>`; // 鎬诲鍣ㄧ粨鏉?
+  html += `</div>`; // 右侧结束
+  html += `</div>`; // 总容器结束
 
   return html;
 }
 
-// ===== 娴忚鍣?绯荤粺/璁惧妫€娴?=====
+// ===== 浏览器/系统/设备检测 =====
 function detectDeviceInfo() {
   var ua = navigator.userAgent || '';
-  var browser = '鏈煡娴忚鍣?;
-  var os = '鏈煡绯荤粺';
+  var browser = '未知浏览器';
+  var os = '未知系统';
   var device = 'desktop';
 
-  // 妫€娴嬫祻瑙堝櫒
-  if (ua.indexOf('QQBrowser') !== -1 || ua.indexOf('QQ娴忚鍣?) !== -1) {
-    browser = 'QQ娴忚鍣?;
+  // 检测浏览器
+  if (ua.indexOf('QQBrowser') !== -1 || ua.indexOf('QQ浏览器') !== -1) {
+    browser = 'QQ浏览器';
   } else if (ua.indexOf('MicroMessenger') !== -1 || ua.indexOf('WeChat') !== -1) {
-    browser = '寰俊娴忚鍣?;
+    browser = '微信浏览器';
   } else if (ua.indexOf('Edg') !== -1) {
     browser = 'Edge';
   } else if (ua.indexOf('Chrome') !== -1 && ua.indexOf('Safari') !== -1) {
@@ -8088,7 +8064,7 @@ function detectDeviceInfo() {
     browser = 'Opera';
   }
 
-  // 妫€娴嬫搷浣滅郴缁?
+  // 检测操作系统
   if (ua.indexOf('Windows') !== -1) {
     os = 'Windows';
   } else if (ua.indexOf('Mac OS') !== -1 || ua.indexOf('Macintosh') !== -1) {
@@ -8103,7 +8079,7 @@ function detectDeviceInfo() {
     device = 'mobile';
   }
 
-  // 妫€娴嬭澶囩被鍨嬶紙琛ュ厖鍒ゆ柇锛?
+  // 检测设备类型（补充判断）
   if (window.innerWidth <= 768) {
     device = 'mobile';
   }
@@ -8111,7 +8087,7 @@ function detectDeviceInfo() {
   return { browser: browser, os: os, device: device };
 }
 
-// ===== 璁板綍鐧诲綍淇℃伅 =====
+// ===== 记录登录信息 =====
 function recordLogin() {
   try {
     var authStr = localStorage.getItem('chanseen_auth');
@@ -8120,7 +8096,7 @@ function recordLogin() {
     var username = auth.user?.username || auth.user?.name || 'admin';
     var info = detectDeviceInfo();
 
-    // 鐢熸垚鍞竴浼氳瘽ID锛堝瓨鍦╯essionStorage锛岄〉闈㈠叧闂氨澶辨晥锛?
+    // 生成唯一会话ID（存在sessionStorage，页面关闭就失效）
     var sessionId = sessionStorage.getItem('chansee_session_id');
     if (!sessionId) {
       sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -8138,29 +8114,29 @@ function recordLogin() {
       forceLogout: false
     };
 
-    // 淇濆瓨鍒?localStorage锛坙ogin_logs 闆嗗悎锛?
+    // 保存到 localStorage（login_logs 集合）
     var logs = [];
     try {
       logs = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]');
     } catch(e) {}
-    logs.unshift(loginRecord);  // 鏈€鏂扮殑鍦ㄥ墠闈?
-    // 鍙繚鐣欐渶杩?0鏉?
+    logs.unshift(loginRecord);  // 最新的在前面
+    // 只保留最近20条
     if (logs.length > 20) logs = logs.slice(0, 20);
     localStorage.setItem('chansee_login_logs', JSON.stringify(logs));
 
-    // 鍚屾鍒颁簯绔?
+    // 同步到云端
     if (window.CloudBaseSync) {
       try { window.CloudBaseSync.saveAll(); } catch(e) {}
     }
 
-    // 鍚屾椂鎶婂綋鍓?sessionId 瀛樺埌 chansee_current_session锛岀敤浜?褰撳墠鍦ㄧ嚎"鍒ゆ柇
+    // 同时把当前 sessionId 存到 chansee_current_session，用于"当前在线"判断
     localStorage.setItem('chansee_current_session', sessionId);
   } catch(e) {
-    console.warn('[鐧诲綍璁板綍] 淇濆瓨澶辫触锛?, e);
+    console.warn('[登录记录] 保存失败：', e);
   }
 }
 
-// ===== 妫€鏌ユ槸鍚﹁寮哄埗閫€鍑?=====
+// ===== 检查是否被强制退出 =====
 function checkForceLogout() {
   try {
     var sessionId = sessionStorage.getItem('chansee_session_id');
@@ -8168,24 +8144,24 @@ function checkForceLogout() {
     var logs = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]');
     var myLog = logs.find(function(l) { return l.sessionId === sessionId; });
     if (myLog && myLog.forceLogout) {
-      // 琚己鍒堕€€鍑猴紒娓呴櫎鐧诲綍鐘舵€侊紝璺冲洖鐧诲綍椤?
+      // 被强制退出！清除登录状态，跳回登录页
       localStorage.removeItem('chanseen_auth');
       sessionStorage.removeItem('chansee_session_id');
       localStorage.removeItem('chansee_current_session');
-      alert('鎮ㄧ殑璐﹀彿宸插湪鍏朵粬璁惧琚己鍒堕€€鍑虹櫥褰曘€?);
+      alert('您的账号已在其他设备被强制退出登录。');
       location.reload();
     }
   } catch(e) {}
 }
 
-// 姣忛殧60绉掓鏌ヤ竴娆℃槸鍚﹁寮哄埗閫€鍑?
+// 每隔60秒检查一次是否被强制退出
 setInterval(function() {
   if (typeof currentUser !== 'undefined' && currentUser && currentUser.id) {
     checkForceLogout();
   }
 }, 60000);
 
-// ===== 寮哄埗閫€鍑烘煇涓細璇濓紙绠＄悊鍛樺姛鑳斤級=====
+// ===== 强制退出某个会话（管理员功能）=====
 function forceLogoutSession(sessionId) {
   if (!sessionId) return;
   try {
@@ -8197,28 +8173,28 @@ function forceLogoutSession(sessionId) {
       }
     }
     localStorage.setItem('chansee_login_logs', JSON.stringify(logs));
-    // 鍚屾鍒颁簯绔?
+    // 同步到云端
     if (window.CloudBaseSync) {
       try { window.CloudBaseSync.saveAll(); } catch(e) {}
     }
-    showToast('宸插己鍒堕€€鍑鸿璁惧');
-    // 閲嶆柊娓叉煋涓汉璁剧疆椤甸潰
+    showToast('已强制退出该设备');
+    // 重新渲染个人设置页面
     if (typeof renderProfile === 'function') {
       document.getElementById('app-content').innerHTML = renderProfile();
     }
   } catch(e) {
-    console.warn('[寮哄埗閫€鍑篯 鎿嶄綔澶辫触锛?, e);
+    console.warn('[强制退出] 操作失败：', e);
   }
 }
 function handleAvatarUpload(input) {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { alert("鍥剧墖澶у皬瓒呰繃 5M锛岃閫夋嫨鏇村皬鐨勫浘鐗?); return; }
+  if (file.size > 5 * 1024 * 1024) { alert("图片大小超过 5M，请选择更小的图片"); return; }
   const reader = new FileReader();
   reader.onload = function(e) {
     const img = new Image();
     img.onload = function() {
-      // 鍘嬬缉锛氭渶澶ц竟闀?200px锛孞PEG 璐ㄩ噺 0.8
+      // 压缩：最大边长 200px，JPEG 质量 0.8
       const maxSize = 200;
       let w = img.width, h = img.height;
       if (w > h) { if (w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; } }
@@ -8233,75 +8209,75 @@ function handleAvatarUpload(input) {
       const preview = document.getElementById("profile-avatar-preview");
       if (preview) { preview.style.backgroundImage = `url(${compressedDataUrl})`; preview.textContent = ""; }
       updateUserDisplay();
-      showToast("澶村儚鏇存崲鎴愬姛");
+      showToast("头像更换成功");
     };
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
 
-// 閫氱敤锛氬皢鏌愯鍙樹负缂栬緫妯″紡
+// 通用：将某行变为编辑模式
 function enterEditMode(rowId, label, inputId, inputType, currentValue, saveFn) {
   const rowEl = document.getElementById(rowId);
   if (!rowEl) return;
   rowEl.innerHTML = `
     <div style="width:90px;font-size:14px;color:#334155;flex-shrink:0;">${label}</div>
     <input type="${inputType}" id="${inputId}" value="${currentValue}" style="flex:1;padding:6px 10px;font-size:14px;border:1.5px solid #bfdbfe;border-radius:6px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#bfdbfe'" onkeydown="if(event.key==='Enter')${saveFn}()">
-    <button type="button" style="color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;font-weight:500;background:none;border:1.5px solid #3b82f6;border-radius:6px;padding:4px 14px;" onclick="${saveFn}()">淇濆瓨</button>
-    <span style="color:#94a3b8;font-size:13px;cursor:pointer;margin-left:8px;flex-shrink:0;" onclick="renderModule('profile')">鍙栨秷</span>
+    <button type="button" style="color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;font-weight:500;background:none;border:1.5px solid #3b82f6;border-radius:6px;padding:4px 14px;" onclick="${saveFn}()">保存</button>
+    <span style="color:#94a3b8;font-size:13px;cursor:pointer;margin-left:8px;flex-shrink:0;" onclick="renderModule('profile')">取消</span>
   `;
   setTimeout(() => { const el = document.getElementById(inputId); if(el){ el.focus(); el.select(); } }, 50);
 }
 
-// 鏄电О缂栬緫
+// 昵称编辑
 function editProfileNickname() {
   const el = document.getElementById("profile-nickname-value");
   if (!el) return;
-  enterEditMode("profile-nickname-row", "鏄电О", "profile-nickname-input", "text", el.textContent, "saveProfileNickname");
+  enterEditMode("profile-nickname-row", "昵称", "profile-nickname-input", "text", el.textContent, "saveProfileNickname");
 }
 function saveProfileNickname() {
   const input = document.getElementById("profile-nickname-input");
   if (!input) return;
   const val = input.value.trim();
-  if (!val) { alert("鏄电О涓嶈兘涓虹┖"); return; }
+  if (!val) { alert("昵称不能为空"); return; }
   const btn = input.parentElement.querySelector("button");
-  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "淇濆瓨涓?; }
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   if (currentUser) {
     currentUser.nickname = val;
     currentUser.name = val;
   }
   persistCurrentUser();
-  updateUserDisplay(); // 鍚屾鍒锋柊鍙充笂瑙?
-  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "淇濆瓨"; }
+  updateUserDisplay(); // 同步刷新右上角
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "保存"; }
   renderModule("profile");
-  showToast("鏄电О淇敼鎴愬姛");
+  showToast("昵称修改成功");
 }
 
-// 鑱屼綅缂栬緫
+// 职位编辑
 function editProfilePosition() {
   const el = document.getElementById("profile-position-value");
   if (!el) return;
-  enterEditMode("profile-position-row", "鑱屼綅", "profile-position-input", "text", el.textContent, "saveProfilePosition");
+  enterEditMode("profile-position-row", "职位", "profile-position-input", "text", el.textContent, "saveProfilePosition");
 }
 function saveProfilePosition() {
   const input = document.getElementById("profile-position-input");
   if (!input) return;
   const val = input.value.trim();
   const btn = input.parentElement.querySelector("button");
-  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "淇濆瓨涓?; }
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   if (currentUser) currentUser.position = val;
   persistCurrentUser();
-  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "淇濆瓨"; }
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "保存"; }
   renderModule("profile");
-  showToast("鑱屼綅淇敼鎴愬姛");
+  showToast("职位修改成功");
 }
 
-// 鐢熸棩缂栬緫
+// 生日编辑
 function editProfileBirthday() {
   const el = document.getElementById("profile-birthday-value");
   if (!el) return;
   const current = el.textContent === "--" ? "" : el.textContent;
-  enterEditMode("profile-birthday-row", "鐢熸棩", "profile-birthday-input", "date", current, "saveProfileBirthday");
+  enterEditMode("profile-birthday-row", "生日", "profile-birthday-input", "date", current, "saveProfileBirthday");
 }
 function saveProfileBirthday() {
   const input = document.getElementById("profile-birthday-input");
@@ -8310,65 +8286,65 @@ function saveProfileBirthday() {
   if (currentUser) currentUser.birthday = val;
   persistCurrentUser();
   renderModule("profile");
-  showToast("鐢熸棩淇敼鎴愬姛");
+  showToast("生日修改成功");
 }
 
-// 鎵嬫満鍙风紪杈?
+// 手机号编辑
 function editProfilePhone() {
   const el = document.getElementById("profile-phone-value");
   if (!el) return;
   const current = el.textContent === "--" ? "" : el.textContent;
-  enterEditMode("profile-phone-row", "鎵嬫満鍙?, "profile-phone-input", "tel", current, "saveProfilePhone");
+  enterEditMode("profile-phone-row", "手机号", "profile-phone-input", "tel", current, "saveProfilePhone");
 }
 function saveProfilePhone() {
   const input = document.getElementById("profile-phone-input");
   if (!input) return;
   const val = input.value.trim();
-  if (val && !/^1[3-9]\d{9}$/.test(val)) { alert("璇疯緭鍏ユ纭殑鎵嬫満鍙?); return; }
+  if (val && !/^1[3-9]\d{9}$/.test(val)) { alert("请输入正确的手机号"); return; }
   if (currentUser) currentUser.phone = val || "";
   persistCurrentUser();
   renderModule("profile");
-  showToast(val ? "鎵嬫満鍙蜂慨鏀规垚鍔? : "鎵嬫満鍙峰凡娓呯┖");
+  showToast(val ? "手机号修改成功" : "手机号已清空");
 }
 
-// 閭缂栬緫
+// 邮箱编辑
 function editProfileEmail() {
   const el = document.getElementById("profile-email-value");
   if (!el) return;
   const current = el.textContent === "--" ? "" : el.textContent;
-  enterEditMode("profile-email-row", "閭", "profile-email-input", "email", current, "saveProfileEmail");
+  enterEditMode("profile-email-row", "邮箱", "profile-email-input", "email", current, "saveProfileEmail");
 }
 function saveProfileEmail() {
   const input = document.getElementById("profile-email-input");
   if (!input) return;
   const val = input.value.trim();
-  if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { alert("璇疯緭鍏ユ纭殑閭鍦板潃"); return; }
+  if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { alert("请输入正确的邮箱地址"); return; }
   if (currentUser) currentUser.email = val || "";
   persistCurrentUser();
   renderModule("profile");
-  showToast(val ? "閭淇敼鎴愬姛" : "閭宸叉竻绌?);
+  showToast(val ? "邮箱修改成功" : "邮箱已清空");
 }
 
-// 寰俊缁戝畾/瑙ｇ粦
+// 微信绑定/解绑
 function toggleWechatBind() {
   const current = currentUser && currentUser.wechatBound;
   if (current) {
-    if (!confirm("纭畾瑕佽В缁戝井淇″悧锛?)) return;
+    if (!confirm("确定要解绑微信吗？")) return;
     if (currentUser) currentUser.wechatBound = false;
-    showToast("寰俊宸茶В缁?);
+    showToast("微信已解绑");
   } else {
     if (currentUser) currentUser.wechatBound = true;
-    showToast("寰俊缁戝畾鎴愬姛");
+    showToast("微信绑定成功");
   }
   persistCurrentUser();
   renderModule("profile");
 }
 
-// 鍝佺墝缂栬緫
+// 品牌编辑
 function editProfileBrand() {
   const el = document.getElementById("profile-brand-value");
   if (!el) return;
-  enterEditMode("profile-brand-row", "鍝佺墝", "profile-brand-input", "text", el.textContent, "saveProfileBrand");
+  enterEditMode("profile-brand-row", "品牌", "profile-brand-input", "text", el.textContent, "saveProfileBrand");
 }
 function saveProfileBrand() {
   const input = document.getElementById("profile-brand-input");
@@ -8377,21 +8353,21 @@ function saveProfileBrand() {
   if (currentUser) currentUser.brand = val;
   persistCurrentUser();
   renderModule("profile");
-  showToast("鍝佺墝淇敼鎴愬姛");
+  showToast("品牌修改成功");
 }
 
-// 淇濇寔褰撳墠鐘舵€佸垏鎹?
+// 保持当前状态切换
 function toggleKeepStatus(checkbox) {
   if (currentUser) currentUser.keepStatus = checkbox.checked;
   persistCurrentUser();
-  // 鍗虫椂鏇存柊鏂囧瓧锛屼笉绛夊緟閲嶆柊娓叉煋锛堝湪鍚屼竴浣嶇疆浠呮敼鍙樻枃瀛楋級
+  // 即时更新文字，不等待重新渲染（在同一位置仅改变文字）
   const container = checkbox.closest(".profile-toggle-row") || checkbox.closest('[style*="flex:1"]');
   const statusText = container ? container.querySelector(".keep-status-text") : null;
-  if (statusText) statusText.textContent = checkbox.checked ? "宸插紑鍚? : "宸插叧闂?;
-  showToast(checkbox.checked ? "淇濇寔褰撳墠鐘舵€佸凡寮€鍚? : "淇濇寔褰撳墠鐘舵€佸凡鍏抽棴");
+  if (statusText) statusText.textContent = checkbox.checked ? "已开启" : "已关闭";
+  showToast(checkbox.checked ? "保持当前状态已开启" : "保持当前状态已关闭");
 }
 
-// 淇敼瀵嗙爜寮圭獥
+// 修改密码弹窗
 function showChangePasswordModal() {
   const modal = document.getElementById("change-password-modal");
   if (modal) {
@@ -8410,21 +8386,21 @@ function doChangePassword() {
   const oldPwd = document.getElementById("cp-old").value;
   const newPwd = document.getElementById("cp-new").value;
   const confirm = document.getElementById("cp-confirm").value;
-  if (!oldPwd || !newPwd || !confirm) { alert("璇峰～鍐欏畬鏁?); return; }
+  if (!oldPwd || !newPwd || !confirm) { alert("请填写完整"); return; }
   const btn = document.querySelector("#change-password-modal .btn-primary");
-  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "淇濆瓨涓?; }
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
-  if (!userInDb || userInDb.password !== oldPwd) { alert("鍘熷瘑鐮佷笉姝ｇ‘"); return; }
-  if (newPwd.length < 6) { alert("鏂板瘑鐮佽嚦灏?浣?); return; }
-  if (newPwd !== confirm) { alert("涓ゆ杈撳叆鐨勬柊瀵嗙爜涓嶄竴鑷?); return; }
+  if (!userInDb || userInDb.password !== oldPwd) { alert("原密码不正确"); return; }
+  if (newPwd.length < 6) { alert("新密码至少6位"); return; }
+  if (newPwd !== confirm) { alert("两次输入的新密码不一致"); return; }
   userInDb.password = newPwd;
   if (currentUser) { currentUser.password = newPwd; localStorage.setItem("chansee_current_user", JSON.stringify(currentUser)); }
   saveUsers();
-  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "纭淇敼"; }
-  showToast("瀵嗙爜淇敼鎴愬姛锛岃鐗㈣鏂板瘑鐮?);
+  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "确认修改"; }
+  showToast("密码修改成功，请牢记新密码");
   hideChangePasswordModal();
 }
-// 蹇樿瀵嗙爜鍔熻兘
+// 忘记密码功能
 let forgotVerifyCode = '';
 let forgotTargetUser = null;
 
@@ -8452,7 +8428,7 @@ function hideForgotPassword() {
 
 function sendVerifyCode() {
   const contact = document.getElementById('forgot-contact').value.trim();
-  if (!contact) { alert('璇疯緭鍏ユ墜鏈哄彿鎴栭偖绠?); return; }
+  if (!contact) { alert('请输入手机号或邮箱'); return; }
   
   // Find user by phone or email
   const user = USERS.find(u => 
@@ -8461,7 +8437,7 @@ function sendVerifyCode() {
     u.username === contact
   );
   
-  if (!user) { alert('鏈壘鍒拌璐﹀彿锛岃纭鎵嬫満鍙?閭鏄惁姝ｇ‘'); return; }
+  if (!user) { alert('未找到该账号，请确认手机号/邮箱是否正确'); return; }
   
   forgotTargetUser = user;
   // Generate 6-digit verification code
@@ -8477,23 +8453,23 @@ function sendVerifyCode() {
   document.getElementById('forgot-step-1').style.display = 'none';
   document.getElementById('forgot-step-2').style.display = 'block';
   
-  showToast('妯℃嫙楠岃瘉鐮佸凡鐢熸垚锛岃鏌ョ湅寮圭獥鍐呮彁绀?);
+  showToast('模拟验证码已生成，请查看弹窗内提示');
 }
 
 function toggleForgotNewPwd() {
   const inp = document.getElementById('forgot-new-pwd');
   const eye = document.getElementById('forgot-new-pwd-eye');
   if (!inp || !eye) return;
-  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '馃憗锔?; }
-  else { inp.type = 'password'; eye.textContent = '馃檲'; }
+  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '👁️'; }
+  else { inp.type = 'password'; eye.textContent = '🙈'; }
 }
 
 function toggleForgotConfirmPwd() {
   const inp = document.getElementById('forgot-confirm-pwd');
   const eye = document.getElementById('forgot-confirm-pwd-eye');
   if (!inp || !eye) return;
-  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '馃憗锔?; }
-  else { inp.type = 'password'; eye.textContent = '馃檲'; }
+  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '👁️'; }
+  else { inp.type = 'password'; eye.textContent = '🙈'; }
 }
 
 function resetPassword() {
@@ -8501,86 +8477,86 @@ function resetPassword() {
   const newPwd = document.getElementById('forgot-new-pwd').value;
   const confirmPwd = document.getElementById('forgot-confirm-pwd').value;
   
-  if (!code) { alert('璇疯緭鍏ラ獙璇佺爜'); return; }
-  if (code !== forgotVerifyCode) { alert('楠岃瘉鐮侀敊璇?); return; }
-  if (!newPwd || newPwd.length < 6) { alert('鏂板瘑鐮佽嚦灏?浣?); return; }
-  if (newPwd !== confirmPwd) { alert('涓ゆ杈撳叆鐨勬柊瀵嗙爜涓嶄竴鑷?); return; }
-  if (!forgotTargetUser) { alert('鎿嶄綔瓒呮椂锛岃閲嶆柊鎿嶄綔'); hideForgotPassword(); return; }
+  if (!code) { alert('请输入验证码'); return; }
+  if (code !== forgotVerifyCode) { alert('验证码错误'); return; }
+  if (!newPwd || newPwd.length < 6) { alert('新密码至少6位'); return; }
+  if (newPwd !== confirmPwd) { alert('两次输入的新密码不一致'); return; }
+  if (!forgotTargetUser) { alert('操作超时，请重新操作'); hideForgotPassword(); return; }
   
   // Update password
   forgotTargetUser.password = newPwd;
   if (currentUser && forgotTargetUser.id === currentUser.id) { currentUser.password = newPwd; localStorage.setItem("chansee_current_user", JSON.stringify(currentUser)); }
   saveUsers();
   
-  showToast('瀵嗙爜閲嶇疆鎴愬姛锛岃浣跨敤鏂板瘑鐮佺櫥褰?);
+  showToast('密码重置成功，请使用新密码登录');
   hideForgotPassword();
 }
 
 
 
-// 绂诲紑鍥㈤槦
+// 离开团队
 function leaveTeam() {
-  if (!confirm("鈿狅笍 纭畾瑕佺寮€鍥㈤槦鍚楋紵绂诲紑鍚庢偍灏嗘棤娉曟煡鐪嬫鍥㈤槦鐨勪换浣曡褰曪紒")) return;
-  if (!confirm("鍐嶆纭锛氭偍鐪熺殑瑕佺寮€鍥㈤槦鍚楋紵姝ゆ搷浣滀笉鍙挙閿€銆?)) return;
+  if (!confirm("⚠️ 确定要离开团队吗？离开后您将无法查看此团队的任何记录！")) return;
+  if (!confirm("再次确认：您真的要离开团队吗？此操作不可撤销。")) return;
   const btn = document.querySelector(".profile-btn-danger");
-  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "澶勭悊涓?; }
+  if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "处理中"; }
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
   if (userInDb) {
-    userInDb.status = "宸茬鐢?;
-    userInDb.remark = "鐢ㄦ埛涓诲姩绂诲紑鍥㈤槦";
+    userInDb.status = "已禁用";
+    userInDb.remark = "用户主动离开团队";
   }
-  showToast("鎮ㄥ凡绂诲紑鍥㈤槦");
+  showToast("您已离开团队");
   setTimeout(() => logout(), 800);
 }
 
 function exportRisk(){
-  const headers = ['椤圭洰缂栧彿','棰勮绫诲瀷','椋庨櫓绛夌骇','闂鎻忚堪','鍙戠幇鏃ユ湡','璐熻矗浜?,'鐘舵€?,'瑙ｅ喅鏃ユ湡'];
+  const headers = ['项目编号','预警类型','风险等级','问题描述','发现日期','负责人','状态','解决日期'];
   const rows = RISK_ALERTS.map(r => [
     r.projectId, r.type||'', r.level||'', r.description||'',
     r.foundDate||'', r.owner||'', r.status||'', r.resolvedDate||''
   ]);
-  showExportDialog(headers, rows, `椤圭洰椋庨櫓棰勮_${new Date().toISOString().slice(0,10)}`, '椤圭洰椋庨櫓棰勮');
+  showExportDialog(headers, rows, `项目风险预警_${new Date().toISOString().slice(0,10)}`, '项目风险预警');
 }
 function renderComparison(){
-  let html = `<div class="page-header"><h2>馃搳 椤圭洰瀵规瘮鍒嗘瀽</h2>
-    <button class="btn" onclick="exportComparison()">瀵煎嚭瀵规瘮鎶ュ憡</button>
+  let html = `<div class="page-header"><h2>📊 项目对比分析</h2>
+    <button class="btn" onclick="exportComparison()">导出对比报告</button>
   </div>`;
 
-  // 椤圭洰閫夋嫨鍣紙澶氶€夛級
-  html += `<div class="card"><div class="card-title">閫夋嫨瀵规瘮椤圭洰锛堝彲澶氶€夛級</div>
+  // 项目选择器（多选）
+  html += `<div class="card"><div class="card-title">选择对比项目（可多选）</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">`;
   PROJECTS.forEach(p=>{
     html += `<label style="cursor:pointer"><input type="checkbox" class="compare-cb" value="${p.id}" style="margin-right:4px;">${p.name}</label>`;
   });
   html += `</div>
-    <button class="btn btn-primary" onclick="runComparison()">寮€濮嬪姣?/button>
+    <button class="btn btn-primary" onclick="runComparison()">开始对比</button>
   </div>`;
 
-  // 瀵规瘮缁撴灉瀹瑰櫒
+  // 对比结果容器
   html += `<div id="compare-result"></div>`;
   return html;
 }
 
 function runComparison(){
   const ids = Array.from(document.querySelectorAll('.compare-cb:checked')).map(cb=>cb.value);
-  if(ids.length<2){ alert('璇疯嚦灏戦€夋嫨2涓」鐩繘琛屽姣?); return; }
+  if(ids.length<2){ alert('请至少选择2个项目进行对比'); return; }
   const projects = ids.map(id=>PROJECTS.find(p=>p.id===id)).filter(Boolean);
 
-  let html = `<div class="card"><div class="card-title">馃搳 瀵规瘮缁撴灉锛堝叡${projects.length}涓」鐩級</div>
+  let html = `<div class="card"><div class="card-title">📊 对比结果（共${projects.length}个项目）</div>
     <table class="data-table">
-    <thead><tr><th>鎸囨爣</th>${projects.map(p=>'<th>'+p.name+'</th>').join('')}<th>宸€硷紙鏈€澶?鏈€灏忥級</th></tr></thead><tbody>`;
+    <thead><tr><th>指标</th>${projects.map(p=>'<th>'+p.name+'</th>').join('')}<th>差值（最大-最小）</th></tr></thead><tbody>`;
 
   const indicators = [
-    ['鎵€灞炶亴鍦?,'workplace'],
-    ['鏈嶅姟鍝佺墝','brand'],
-    ['缁忚惀妯″紡','serviceMode'],
-    ['FTE鐩爣','fteTarget'],
-    ['SLA鍝嶅簲(s)','slaResponse'],
-    ['SLA瑙ｅ喅(s)','slaResolve'],
-    ['鎴愭湰棰勭畻(涓?','costBudget'],
-    ['钀ユ敹鐩爣(涓?','revenue'],
-    ['鍒╂鼎鐜?%)','profitRate'],
-    ['鍋ュ悍鐘舵€?,'health'],
+    ['所属职场','workplace'],
+    ['服务品牌','brand'],
+    ['经营模式','serviceMode'],
+    ['FTE目标','fteTarget'],
+    ['SLA响应(s)','slaResponse'],
+    ['SLA解决(s)','slaResolve'],
+    ['成本预算(万)','costBudget'],
+    ['营收目标(万)','revenue'],
+    ['利润率(%)','profitRate'],
+    ['健康状态','health'],
   ];
 
   indicators.forEach(([label,key])=>{
@@ -8607,17 +8583,17 @@ function runComparison(){
 
   html += `</tbody></table></div>`;
 
-  // 闆疯揪鍥撅紙绠€鏄撴枃瀛楃増锛?
-  html += `<div class="card"><div class="card-title">馃搱 鍏抽敭鎸囨爣瀵规瘮</div><div style="display:flex;gap:16px;flex-wrap:wrap;">`;
+  // 雷达图（简易文字版）
+  html += `<div class="card"><div class="card-title">📈 关键指标对比</div><div style="display:flex;gap:16px;flex-wrap:wrap;">`;
   projects.forEach(p=>{
     const op = OPERATIONS.find(o=>o.projectId===p.id);
     html += `<div style="border:1px solid var(--c-border);border-radius:8px;padding:12px;min-width:180px;">
       <div style="font-weight:600;margin-bottom:8px;">${p.name}</div>
-      <div>鍝嶅簲鏃堕暱锛?{op?op.responseTime+'s':'-'}</div>
-      <div>CSAT锛?{op?op.csat:'-'}</div>
-      <div>瑙ｅ喅鐜囷細${op?op.resolutionRate+'%':'-'}</div>
-      <div>鍒╂鼎鐜囷細${p.profitRate}%</div>
-      <div>鍋ュ悍鐘舵€侊細${p.health}</div>
+      <div>响应时长：${op?op.responseTime+'s':'-'}</div>
+      <div>CSAT：${op?op.csat:'-'}</div>
+      <div>解决率：${op?op.resolutionRate+'%':'-'}</div>
+      <div>利润率：${p.profitRate}%</div>
+      <div>健康状态：${p.health}</div>
     </div>`;
   });
   html += `</div></div>`;
@@ -8626,12 +8602,11 @@ function runComparison(){
 }
 
 function exportComparison(){
-  const headers = ['瀵规瘮缁村害','椤圭洰A','椤圭洰B','宸紓鍒嗘瀽'];
+  const headers = ['对比维度','项目A','项目B','差异分析'];
   const rows = [];
-  showExportDialog(headers, rows, `鏁版嵁瀵规瘮_${new Date().toISOString().slice(0,10)}`, '鏁版嵁瀵规瘮');
+  showExportDialog(headers, rows, `数据对比_${new Date().toISOString().slice(0,10)}`, '数据对比');
 }
 function saveAssessmentsData() {
   try { localStorage.setItem('chansee_assessments', JSON.stringify(ASSESSMENTS_DATA)); } catch(e) {}
   if (typeof syncToCloud === 'function') syncToCloud('assessments', ASSESSMENTS_DATA);
 }
-
