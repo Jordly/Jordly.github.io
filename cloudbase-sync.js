@@ -164,7 +164,7 @@
       log('开始从云端加载所有数据...');
       _cb_syncing = true;  // 阻止 setItem 拦截器触发保存
 
-      // assessments、knowledge、risk_alerts 为可选集合：
+      // assessments、knowledge、risk_alerts、login_logs 为可选集合：
       // 如果云数据库里还没有这些集合，加载失败不阻止整体流程
       Promise.all([
         loadOne('projects', false),
@@ -172,7 +172,8 @@
         loadOne('goals', false),
         loadOne('assessments', true),
         loadOne('knowledge', true),
-        loadOne('risk_alerts', true)
+        loadOne('risk_alerts', true),
+        loadOne('login_logs', true)
       ]).then(function(results) {
         var projects = results[0];
         var users = results[1];
@@ -180,6 +181,7 @@
         var assess = results[3];
         var knowledge = results[4];
         var risks = results[5];
+        var loginLogs = results[6];
         var loaded = false;
 
         if (projects && projects.length > 0) {
@@ -211,6 +213,11 @@
           localStorage.setItem('chansee_risk_alerts', JSON.stringify(risks));
           loaded = true;
           log('已写入 localStorage: risk_alerts (' + risks.length + ' 条)');
+        }
+        if (loginLogs && loginLogs.length > 0) {
+          localStorage.setItem('chansee_login_logs', JSON.stringify(loginLogs));
+          loaded = true;
+          log('已写入 localStorage: login_logs (' + loginLogs.length + ' 条)');
         }
 
         _cb_syncing = false;  // 恢复拦截器
@@ -277,6 +284,7 @@
     var assess = [];
     var knowledge = [];
     var risks = [];
+    var loginLogs = [];
 
     try { projects = JSON.parse(localStorage.getItem('chansee_projects') || '[]'); } catch(e) {}
     try { users = JSON.parse(localStorage.getItem('chansee_users') || '[]'); } catch(e) {}
@@ -284,6 +292,7 @@
     try { assess = JSON.parse(localStorage.getItem('chansee_assessments') || '[]'); } catch(e) {}
     try { knowledge = JSON.parse(localStorage.getItem('chansee_knowledge') || '[]'); } catch(e) {}
     try { risks = JSON.parse(localStorage.getItem('chansee_risk_alerts') || '[]'); } catch(e) {}
+    try { loginLogs = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]'); } catch(e) {}
 
     // assessments、knowledge、risk_alerts 为可选集合：
     // 如果云数据库里还没有创建这些集合，保存失败也不影响整体结果

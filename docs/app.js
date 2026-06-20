@@ -544,6 +544,8 @@ async function checkLogin() {
           hideLoginModal();
           updateUserDisplay();
           setAppContentVisible(true);
+          // 登录成功后，记录登录信息
+          recordLogin();
           return true;
         } else {
           localStorage.removeItem('chanseen_auth');
@@ -7679,51 +7681,53 @@ function renderProfile(){
     </div>
   </div>`;
 
-  // 最近登录
-  html += `<div class="card profile-card">
-    <div class="profile-card-title">
-      <span class="profile-card-icon">📍</span>最近登录
-    </div>
-    <div class="profile-login-list">
-      <div class="profile-login-item current">
-        <div class="profile-login-device">
-          <div class="profile-login-icon" style="background:#dbeafe;color:#3b82f6;">🖥️</div>
-          <div>
-            <div class="profile-login-name">Chrome / Windows</div>
-            <div class="profile-login-ip">IP: 223.104.***.***</div>
-          </div>
-        </div>
-        <div class="profile-login-meta">
-          <span class="profile-login-badge">当前在线</span>
-          <div class="profile-login-time">2026-06-03 17:24</div>
-        </div>
-      </div>
-      <div class="profile-login-item">
-        <div class="profile-login-device">
-          <div class="profile-login-icon" style="background:#dbeafe;color:#3b82f6;">🖥️</div>
-          <div>
-            <div class="profile-login-name">Chrome / Windows</div>
-            <div class="profile-login-ip">IP: 223.104.***.***</div>
-          </div>
-        </div>
-        <div class="profile-login-meta">
-          <div class="profile-login-time">2026-06-01 18:45</div>
-        </div>
-      </div>
-      <div class="profile-login-item">
-        <div class="profile-login-device">
-          <div class="profile-login-icon" style="background:#dcfce7;color:#22c55e;">🍎</div>
-          <div>
-            <div class="profile-login-name">Safari / macOS</div>
-            <div class="profile-login-ip">IP: 117.136.***.***</div>
-          </div>
-        </div>
-        <div class="profile-login-meta">
-          <div class="profile-login-time">2026-05-30 09:12</div>
-        </div>
-      </div>
-    </div>
-  </div>`;
+  // 最近登录（动态渲染真实记录）
+  var loginLogs = [];
+  try {
+    loginLogs = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]');
+  } catch(e) {}
+  
+  html += '<div class="card profile-card">' +
+    '<div class="profile-card-title">' +
+      '<span class="profile-card-icon">📍</span>最近登录' +
+    '</div>';
+  
+  if (loginLogs.length === 0) {
+    html += '<div style="text-align:center;color:#94a3b8;padding:20px 0;font-size:13px;">暂无登录记录</div>';
+  } else {
+    html += '<div class="profile-login-list">';
+    
+    var currentSessionId = sessionStorage.getItem('chansee_session_id') || '';
+    
+    for (var li = 0; li < loginLogs.length && li < 5; li++) {
+      var log = loginLogs[li];
+      var isCurrent = (log.sessionId === currentSessionId);
+      var deviceIcon = log.device === 'mobile' ? '📱' : '🖥️';
+      var iconBg = isCurrent ? '#dbeafe' : (log.device === 'mobile' ? '#dcfce7' : '#f3f4f6');
+      var iconColor = isCurrent ? '#3b82f6' : (log.device === 'mobile' ? '#22c55e' : '#6b7280');
+      var timeStr = log.loginTime ? new Date(log.loginTime).toLocaleString('zh-CN') : '--';
+      
+      html += '<div class="profile-login-item' + (isCurrent ? ' current' : '') + '">' +
+        '<div class="profile-login-device">' +
+          '<div class="profile-login-icon" style="background:' + iconBg + ';color:' + iconColor + ';">' + deviceIcon + '</div>' +
+          '<div>' +
+            '<div class="profile-login-name">' + log.browser + ' / ' + log.os + '</div>' +
+            '<div class="profile-login-ip">账号: ' + log.username + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="profile-login-meta">' +
+          (isCurrent ? '<span class="profile-login-badge">当前在线</span>' : '') +
+          (currentUser && currentUser.role === '超级管理员' && !isCurrent ? 
+            '<span style="color:#ef4444;font-size:12px;cursor:pointer;margin-right:8px;" onclick="if(confirm(\'确定强制退出该设备吗？\'))forceLogoutSession(\'' + log.sessionId + '\')">强制退出</span>' : '') +
+          '<div class="profile-login-time">' + timeStr + '</div>' +
+        '</div>' +
+      '</div>';
+    }
+    
+    html += '</div>';
+  }
+  
+  html += '</div>';
 
   html += `</div>`; // 右侧结束
   html += `</div>`; // 总容器结束
@@ -7731,7 +7735,152 @@ function renderProfile(){
   return html;
 }
 
-// 头像上传处理（压缩后存储，避免 localStorage 超限）
+// ===== 浏览器/系统/设备检测 =====
+function detectDeviceInfo() {
+  var ua = navigator.userAgent || '';
+  var browser = '未知浏览器';
+  var os = '未知系统';
+  var device = 'desktop';
+
+  // 检测浏览器
+  if (ua.indexOf('QQBrowser') !== -1 || ua.indexOf('QQ浏览器') !== -1) {
+    browser = 'QQ浏览器';
+  } else if (ua.indexOf('MicroMessenger') !== -1 || ua.indexOf('WeChat') !== -1) {
+    browser = '微信浏览器';
+  } else if (ua.indexOf('Edg') !== -1) {
+    browser = 'Edge';
+  } else if (ua.indexOf('Chrome') !== -1 && ua.indexOf('Safari') !== -1) {
+    browser = 'Chrome';
+  } else if (ua.indexOf('Firefox') !== -1) {
+    browser = 'Firefox';
+  } else if (ua.indexOf('Safari') !== -1) {
+    browser = 'Safari';
+  } else if (ua.indexOf('Opera') !== -1 || ua.indexOf('OPR') !== -1) {
+    browser = 'Opera';
+  }
+
+  // 检测操作系统
+  if (ua.indexOf('Windows') !== -1) {
+    os = 'Windows';
+  } else if (ua.indexOf('Mac OS') !== -1 || ua.indexOf('Macintosh') !== -1) {
+    os = 'macOS';
+  } else if (ua.indexOf('Linux') !== -1) {
+    os = 'Linux';
+  } else if (ua.indexOf('Android') !== -1) {
+    os = 'Android';
+    device = 'mobile';
+  } else if (ua.indexOf('iPhone') !== -1 || ua.indexOf('iPad') !== -1) {
+    os = 'iOS';
+    device = 'mobile';
+  }
+
+  // 检测设备类型（补充判断）
+  if (window.innerWidth <= 768) {
+    device = 'mobile';
+  }
+
+  return { browser: browser, os: os, device: device };
+}
+
+// ===== 记录登录信息 =====
+function recordLogin() {
+  try {
+    var authStr = localStorage.getItem('chanseen_auth');
+    if (!authStr) return;
+    var auth = JSON.parse(authStr);
+    var username = auth.user?.username || auth.user?.name || 'admin';
+    var info = detectDeviceInfo();
+
+    // 生成唯一会话ID（存在sessionStorage，页面关闭就失效）
+    var sessionId = sessionStorage.getItem('chansee_session_id');
+    if (!sessionId) {
+      sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      sessionStorage.setItem('chansee_session_id', sessionId);
+    }
+
+    var loginRecord = {
+      _id: 'login_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+      username: username,
+      browser: info.browser,
+      os: info.os,
+      device: info.device,
+      loginTime: new Date().toISOString(),
+      sessionId: sessionId,
+      forceLogout: false
+    };
+
+    // 保存到 localStorage（login_logs 集合）
+    var logs = [];
+    try {
+      logs = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]');
+    } catch(e) {}
+    logs.unshift(loginRecord);  // 最新的在前面
+    // 只保留最近20条
+    if (logs.length > 20) logs = logs.slice(0, 20);
+    localStorage.setItem('chansee_login_logs', JSON.stringify(logs));
+
+    // 同步到云端
+    if (window.CloudBaseSync) {
+      try { window.CloudBaseSync.saveAll(); } catch(e) {}
+    }
+
+    // 同时把当前 sessionId 存到 chansee_current_session，用于"当前在线"判断
+    localStorage.setItem('chansee_current_session', sessionId);
+  } catch(e) {
+    console.warn('[登录记录] 保存失败：', e);
+  }
+}
+
+// ===== 检查是否被强制退出 =====
+function checkForceLogout() {
+  try {
+    var sessionId = sessionStorage.getItem('chansee_session_id');
+    if (!sessionId) return;
+    var logs = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]');
+    var myLog = logs.find(function(l) { return l.sessionId === sessionId; });
+    if (myLog && myLog.forceLogout) {
+      // 被强制退出！清除登录状态，跳回登录页
+      localStorage.removeItem('chanseen_auth');
+      sessionStorage.removeItem('chansee_session_id');
+      localStorage.removeItem('chansee_current_session');
+      alert('您的账号已在其他设备被强制退出登录。');
+      location.reload();
+    }
+  } catch(e) {}
+}
+
+// 每隔60秒检查一次是否被强制退出
+setInterval(function() {
+  if (typeof currentUser !== 'undefined' && currentUser && currentUser.id) {
+    checkForceLogout();
+  }
+}, 60000);
+
+// ===== 强制退出某个会话（管理员功能）=====
+function forceLogoutSession(sessionId) {
+  if (!sessionId) return;
+  try {
+    var logs = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]');
+    for (var i = 0; i < logs.length; i++) {
+      if (logs[i].sessionId === sessionId) {
+        logs[i].forceLogout = true;
+        break;
+      }
+    }
+    localStorage.setItem('chansee_login_logs', JSON.stringify(logs));
+    // 同步到云端
+    if (window.CloudBaseSync) {
+      try { window.CloudBaseSync.saveAll(); } catch(e) {}
+    }
+    showToast('已强制退出该设备');
+    // 重新渲染个人设置页面
+    if (typeof renderProfile === 'function') {
+      document.getElementById('app-content').innerHTML = renderProfile();
+    }
+  } catch(e) {
+    console.warn('[强制退出] 操作失败：', e);
+  }
+}
 function handleAvatarUpload(input) {
   const file = input.files[0];
   if (!file) return;
