@@ -24,6 +24,40 @@ async function processRequest(body) {
 
     const db = getDB();
 
+    // ===== 特殊处理：login_logs 集合（多条记录）=====
+    if (collection === 'login_logs') {
+      if (action === 'load') {
+        try {
+          const res = await db.collection(collection)
+            .orderBy('loginTime', 'desc')
+            .limit(50)
+            .get();
+          return { code: 0, data: res.data || [] };
+        } catch (e) {
+          return { code: 0, data: [] };
+        }
+      }
+
+      if (action === 'save') {
+        try {
+          // data 是登录记录数组，逐条保存到云端
+          for (const log of data) {
+            try {
+              // 先尝试更新（如果 _id 已存在）
+              await db.collection(collection).doc(log._id).update(log);
+            } catch (e) {
+              // 文档不存在，创建新文档
+              await db.collection(collection).add(log);
+            }
+          }
+          return { code: 0, message: '保存成功' };
+        } catch (e) {
+          return { code: -1, message: '保存失败: ' + e.message };
+        }
+      }
+    }
+
+    // ===== 原有逻辑：其他集合（单条记录）=====
     if (action === 'load') {
       try {
         // 查询所有文档，按 updateTime 降序取最新一条
