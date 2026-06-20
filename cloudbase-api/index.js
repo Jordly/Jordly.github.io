@@ -24,13 +24,15 @@ async function processRequest(body) {
 
     const db = getDB();
 
-    // ===== 特殊处理：login_logs 集合（多条记录）=====
-    if (collection === 'login_logs') {
+    // ===== 多条记录集合（login_logs、staff_config、workload_data、kpi_history、data_change_log、data_permissions）=====
+    const multiRecordCollections = ['login_logs', 'staff_config', 'workload_data', 'kpi_history', 'data_change_log', 'data_permissions'];
+    
+    if (multiRecordCollections.includes(collection)) {
       if (action === 'load') {
         try {
           const res = await db.collection(collection)
-            .orderBy('loginTime', 'desc')
-            .limit(50)
+            .orderBy('updatedAt', 'desc')
+            .limit(1000)
             .get();
           return { code: 0, data: res.data || [] };
         } catch (e) {
@@ -40,14 +42,14 @@ async function processRequest(body) {
 
       if (action === 'save') {
         try {
-          // data 是登录记录数组，逐条保存到云端
-          for (const log of data) {
+          // data 是数组，逐条保存到云端
+          for (const item of data) {
             try {
               // 先尝试更新（如果 _id 已存在）
-              await db.collection(collection).doc(log._id).update(log);
+              await db.collection(collection).doc(item._id).update(item);
             } catch (e) {
               // 文档不存在，创建新文档
-              await db.collection(collection).add(log);
+              await db.collection(collection).add(item);
             }
           }
           return { code: 0, message: '保存成功' };

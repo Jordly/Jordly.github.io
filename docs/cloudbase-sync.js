@@ -164,7 +164,7 @@
       log('开始从云端加载所有数据...');
       _cb_syncing = true;  // 阻止 setItem 拦截器触发保存
 
-      // assessments、knowledge、risk_alerts、login_logs 为可选集合：
+      // assessments、knowledge、risk_alerts、login_logs、staff_config、workload_data、kpi_history、data_change_log、data_permissions 为可选集合：
       // 如果云数据库里还没有这些集合，加载失败不阻止整体流程
       Promise.all([
         loadOne('projects', false),
@@ -173,7 +173,12 @@
         loadOne('assessments', true),
         loadOne('knowledge', true),
         loadOne('risk_alerts', true),
-        loadOne('login_logs', true)
+        loadOne('login_logs', true),
+        loadOne('staff_config', true),
+        loadOne('workload_data', true),
+        loadOne('kpi_history', true),
+        loadOne('data_change_log', true),
+        loadOne('data_permissions', true)
       ]).then(function(results) {
         var projects = results[0];
         var users = results[1];
@@ -182,6 +187,11 @@
         var knowledge = results[4];
         var risks = results[5];
         var loginLogs = results[6];
+        var staffConfig = results[7];
+        var workloadData = results[8];
+        var kpiHistory = results[9];
+        var dataChangeLog = results[10];
+        var dataPermissions = results[11];
         var loaded = false;
 
         if (projects && projects.length > 0) {
@@ -285,6 +295,11 @@
     var knowledge = [];
     var risks = [];
     var loginLogs = [];
+    var staffConfig = [];
+    var workloadData = [];
+    var kpiHistory = [];
+    var dataChangeLog = [];
+    var dataPermissions = [];
 
     try { projects = JSON.parse(localStorage.getItem('chansee_projects') || '[]'); } catch(e) {}
     try { users = JSON.parse(localStorage.getItem('chansee_users') || '[]'); } catch(e) {}
@@ -293,8 +308,13 @@
     try { knowledge = JSON.parse(localStorage.getItem('chansee_knowledge') || '[]'); } catch(e) {}
     try { risks = JSON.parse(localStorage.getItem('chansee_risk_alerts') || '[]'); } catch(e) {}
     try { loginLogs = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]'); } catch(e) {}
+    try { staffConfig = JSON.parse(localStorage.getItem('chansee_staff_config') || '[]'); } catch(e) {}
+    try { workloadData = JSON.parse(localStorage.getItem('chansee_workload_data') || '[]'); } catch(e) {}
+    try { kpiHistory = JSON.parse(localStorage.getItem('chansee_kpi_history') || '[]'); } catch(e) {}
+    try { dataChangeLog = JSON.parse(localStorage.getItem('chansee_data_change_log') || '[]'); } catch(e) {}
+    try { dataPermissions = JSON.parse(localStorage.getItem('chansee_data_permissions') || '[]'); } catch(e) {}
 
-    // assessments、knowledge、risk_alerts 为可选集合：
+    // assessments、knowledge、risk_alerts、login_logs、staff_config、workload_data、kpi_history、data_change_log、data_permissions 为可选集合：
     // 如果云数据库里还没有创建这些集合，保存失败也不影响整体结果
     Promise.all([
       saveOne('projects', projects),
@@ -303,7 +323,12 @@
       saveOne('assessments', assess),
       saveOne('knowledge', knowledge),
       saveOne('risk_alerts', risks),
-      saveOne('login_logs', loginLogs)
+      saveOne('login_logs', loginLogs),
+      saveOne('staff_config', staffConfig, true),
+      saveOne('workload_data', workloadData, true),
+      saveOne('kpi_history', kpiHistory, true),
+      saveOne('data_change_log', dataChangeLog, true),
+      saveOne('data_permissions', dataPermissions, true)
     ]).then(function(results) {
       var coreOk = results[0].ok && results[1].ok && results[2].ok;
       var optionalErrors = [];
@@ -311,6 +336,11 @@
       if (!results[4].ok) optionalErrors.push('knowledge:' + results[4].error);
       if (!results[5].ok) optionalErrors.push('risk_alerts:' + results[5].error);
       if (!results[6].ok) optionalErrors.push('login_logs:' + results[6].error);
+      if (!results[7].ok) optionalErrors.push('staff_config:' + results[7].error);
+      if (!results[8].ok) optionalErrors.push('workload_data:' + results[8].error);
+      if (!results[9].ok) optionalErrors.push('kpi_history:' + results[9].error);
+      if (!results[10].ok) optionalErrors.push('data_change_log:' + results[10].error);
+      if (!results[11].ok) optionalErrors.push('data_permissions:' + results[11].error);
 
       if (coreOk) {
         if (optionalErrors.length > 0) {
@@ -389,7 +419,12 @@
       key === 'chansee_assessments' ||
       key === 'chansee_knowledge' ||
       key === 'chansee_risk_alerts' ||
-      key === 'chansee_login_logs'
+      key === 'chansee_login_logs' ||
+      key === 'chansee_staff_config' ||
+      key === 'chansee_workload_data' ||
+      key === 'chansee_kpi_history' ||
+      key === 'chansee_data_change_log' ||
+      key === 'chansee_data_permissions'
     )) {
       markDirty(key);
     }

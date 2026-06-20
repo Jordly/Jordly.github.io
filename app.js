@@ -164,13 +164,13 @@ var DEFAULT_USERS = [
 ];
 
 var DEFAULT_PROJECTS = [
-  {id:"P001", name:"美妆旗舰店客服项目", brand:"兰蔻", category:"美妆", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"李明", pmHistory:[{name:"王芳", from:"2025-06", to:"2026-03", reason:"调岗"}], status:"优质健康店", startDate:"2025-04-01", endDate:"2026-12-31", base:"济南职场2F", platforms:"天猫,抖音", serviceHours:"09:00-24:00", fteTarget:30, slaResponse:120, slaResolve:360, costBudget:450000, revenue:520000, profitRate:13.5, health:"🟢"},
-  {id:"P002", name:"家电自营客服项目", brand:"美的", category:"家电", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"王强", pmHistory:[], status:"平稳常规店", startDate:"2025-01-15", endDate:"2026-12-31", base:"淄博职场1F", platforms:"京东,天猫", serviceHours:"08:00-22:00", fteTarget:45, slaResponse:90, slaResolve:300, costBudget:680000, revenue:750000, profitRate:9.3, health:"🟡"},
-  {id:"P003", name:"服装品牌客服外包", brand:"优衣库", category:"服装", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"李明", pmHistory:[{name:"赵丽", from:"2025-01", to:"2025-11", reason:"离职"}], status:"风险预警店", startDate:"2025-01-10", endDate:"2026-06-30", base:"杭州职场3F", platforms:"全平台", serviceHours:"08:00-24:00", fteTarget:60, slaResponse:60, slaResolve:240, costBudget:880000, revenue:920000, profitRate:4.3, health:"🔴"},
-  {id:"P004", name:"母婴用品客服项目", brand:"好孩子", category:"母婴", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"王强", pmHistory:[], status:"优质健康店", startDate:"2025-08-01", endDate:"2027-01-31", base:"济南职场2F", platforms:"天猫,京东,拼多多", serviceHours:"09:00-21:00", fteTarget:25, slaResponse:120, slaResolve:360, costBudget:320000, revenue:380000, profitRate:15.8, health:"🟢"},
-  {id:"P005", name:"食品生鲜客服项目", brand:"三只松鼠", category:"食品", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"李明", pmHistory:[{name:"孙磊", from:"2025-03", to:"2026-02", reason:"内部调换"}], status:"平稳常规店", startDate:"2025-03-01", endDate:"2026-08-31", base:"淄博职场1F", platforms:"天猫,抖音", serviceHours:"08:00-23:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:520000, revenue:600000, profitRate:13.3, health:"🟡"},
-  {id:"P006", name:"运动品牌客服项目", brand:"耐克", category:"运动", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"王强", pmHistory:[], status:"高危问题店", startDate:"2025-06-01", endDate:"2026-05-31", base:"杭州职场3F", platforms:"天猫,官网", serviceHours:"09:00-21:00", fteTarget:20, slaResponse:60, slaResolve:240, costBudget:280000, revenue:250000, profitRate:-10.7, health:"🔴"},
-  {id:"P007", name:"智能家居客服项目", brand:"小米", category:"智能硬件", serviceMode:"TP项目", workplace:"无锡", pm:"张伟", director:"李明", pmHistory:[], status:"优质健康店", startDate:"2026-03-01", endDate:"2027-02-28", base:"无锡职场1F", platforms:"天猫,京东,抖音", serviceHours:"09:00-22:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:420000, revenue:480000, profitRate:12.5, health:"🟢"}
+  {id:"P001", name:"美妆旗舰店客服项目", brand:"兰蔻", category:"美妆", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"李明", pmHistory:[{name:"王芳", from:"2025-06", to:"2026-03", reason:"调岗"}], status:"优质健康店", startDate:"2025-04-01", endDate:"2026-12-31", base:"济南职场2F", platforms:"天猫,抖音", serviceHours:"09:00-24:00", fteTarget:30, slaResponse:120, slaResolve:360, costBudget:450000, revenue:520000, profitRate:13.5, targetRate:95.0, healthScore:88, health:"🟢"},
+  {id:"P002", name:"家电自营客服项目", brand:"美的", category:"家电", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"王强", pmHistory:[], status:"平稳常规店", startDate:"2025-01-15", endDate:"2026-12-31", base:"淄博职场1F", platforms:"京东,天猫", serviceHours:"08:00-22:00", fteTarget:45, slaResponse:90, slaResolve:300, costBudget:680000, revenue:750000, profitRate:9.3, targetRate:92.0, healthScore:72, health:"🟡"},
+  {id:"P003", name:"服装品牌客服外包", brand:"优衣库", category:"服装", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"李明", pmHistory:[{name:"赵丽", from:"2025-01", to:"2025-11", reason:"离职"}], status:"风险预警店", startDate:"2025-01-10", endDate:"2026-06-30", base:"杭州职场3F", platforms:"全平台", serviceHours:"08:00-24:00", fteTarget:60, slaResponse:60, slaResolve:240, costBudget:880000, revenue:920000, profitRate:4.3, targetRate:88.0, healthScore:55, health:"🔴"},
+  {id:"P004", name:"母婴用品客服项目", brand:"好孩子", category:"母婴", serviceMode:"TP项目", workplace:"济南", pm:"张伟", director:"王强", pmHistory:[], status:"优质健康店", startDate:"2025-08-01", endDate:"2027-01-31", base:"济南职场2F", platforms:"天猫,京东,拼多多", serviceHours:"09:00-21:00", fteTarget:25, slaResponse:120, slaResolve:360, costBudget:320000, revenue:380000, profitRate:15.8, targetRate:96.0, healthScore:90, health:"🟢"},
+  {id:"P005", name:"食品生鲜客服项目", brand:"三只松鼠", category:"食品", serviceMode:"DP项目", workplace:"淄博", pm:"刘洋", director:"李明", pmHistory:[{name:"孙磊", from:"2025-03", to:"2026-02", reason:"内部调换"}], status:"平稳常规店", startDate:"2025-03-01", endDate:"2026-08-31", base:"淄博职场1F", platforms:"天猫,抖音", serviceHours:"08:00-23:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:520000, revenue:600000, profitRate:13.3, targetRate:93.0, healthScore:75, health:"🟡"},
+  {id:"P006", name:"运动品牌客服项目", brand:"耐克", category:"运动", serviceMode:"BPO项目", workplace:"杭州", pm:"陈静", director:"王强", pmHistory:[], status:"高危问题店", startDate:"2025-06-01", endDate:"2026-05-31", base:"杭州职场3F", platforms:"天猫,官网", serviceHours:"09:00-21:00", fteTarget:20, slaResponse:60, slaResolve:240, costBudget:280000, revenue:250000, profitRate:-10.7, targetRate:85.0, healthScore:40, health:"🔴"},
+  {id:"P007", name:"智能家居客服项目", brand:"小米", category:"智能硬件", serviceMode:"TP项目", workplace:"无锡", pm:"张伟", director:"李明", pmHistory:[], status:"优质健康店", startDate:"2026-03-01", endDate:"2027-02-28", base:"无锡职场1F", platforms:"天猫,京东,抖音", serviceHours:"09:00-22:00", fteTarget:35, slaResponse:90, slaResolve:300, costBudget:420000, revenue:480000, profitRate:12.5, targetRate:94.0, healthScore:85, health:"🟢"}
 ];
 
 // 初始化 USERS
@@ -247,6 +247,135 @@ var PROJECTS = [];
   }
   PERFORMANCE_WEIGHTS = JSON.parse(JSON.stringify(DEFAULT_PERFORMANCE_WEIGHTS || {}));
   safeSetItem('chansee_performance_weights', JSON.stringify(PERFORMANCE_WEIGHTS));
+})();
+
+// ===== 新增：看板数据模型 =====
+
+// 客服配置数据
+var DEFAULT_STAFF_CONFIG = [
+  {id:'SC001', role:'售前客服', count:68, pct:37, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'SC002', role:'售后客服', count:52, pct:28, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'SC003', role:'综合客服', count:45, pct:24, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'SC004', role:'客服管理', count:14, pct:8, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'SC005', role:'数据专员', count:7, pct:4, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'}
+];
+
+var STAFF_CONFIG = [];
+(function initStaffConfig() {
+  var raw = localStorage.getItem('chansee_staff_config');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      STAFF_CONFIG = JSON.parse(raw);
+      return;
+    } catch(e) {}
+  }
+  STAFF_CONFIG = JSON.parse(JSON.stringify(DEFAULT_STAFF_CONFIG));
+  safeSetItem('chansee_staff_config', JSON.stringify(STAFF_CONFIG));
+})();
+
+// 工作量数据
+var DEFAULT_WORKLOAD_DATA = [
+  {id:'WL001', name:'订单处理', count:625, ratio:100, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'WL002', name:'退款处理', count:342, ratio:55, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'WL003', name:'投诉处理', count:198, ratio:32, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'WL004', name:'换货跟进', count:156, ratio:25, workplace:'合肥', updatedAt:'2026-06-20', updatedBy:'admin'}
+];
+
+var WORKLOAD_DATA = [];
+(function initWorkloadData() {
+  var raw = localStorage.getItem('chansee_workload_data');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      WORKLOAD_DATA = JSON.parse(raw);
+      return;
+    } catch(e) {}
+  }
+  WORKLOAD_DATA = JSON.parse(JSON.stringify(DEFAULT_WORKLOAD_DATA));
+  safeSetItem('chansee_workload_data', JSON.stringify(WORKLOAD_DATA));
+})();
+
+// KPI历史数据
+var DEFAULT_KPI_HISTORY = [
+  {id:'KH001', date:'2026-01', revenue:450000, cost:380000, profitRate:1.18, targetRate:92.0, workplace:'all', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'KH002', date:'2026-02', revenue:480000, cost:400000, profitRate:1.20, targetRate:93.5, workplace:'all', updatedAt:'2026-06-20', updatedBy:'admin'},
+  {id:'KH003', date:'2026-03', revenue:520000, cost:420000, profitRate:1.19, targetRate:94.2, workplace:'all', updatedAt:'2026-06-20', updatedBy:'admin'}
+];
+
+var KPI_HISTORY = [];
+(function initKpiHistory() {
+  var raw = localStorage.getItem('chansee_kpi_history');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      KPI_HISTORY = JSON.parse(raw);
+      return;
+    } catch(e) {}
+  }
+  KPI_HISTORY = JSON.parse(JSON.stringify(DEFAULT_KPI_HISTORY));
+  safeSetItem('chansee_kpi_history', JSON.stringify(KPI_HISTORY));
+})();
+
+// 数据修改历史
+var DATA_CHANGE_LOG = [];
+(function initDataChangeLog() {
+  var raw = localStorage.getItem('chansee_data_change_log');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      DATA_CHANGE_LOG = JSON.parse(raw);
+      return;
+    } catch(e) {}
+  }
+  DATA_CHANGE_LOG = [];
+  safeSetItem('chansee_data_change_log', JSON.stringify(DATA_CHANGE_LOG));
+})();
+
+// 数据权限配置
+var DEFAULT_DATA_PERMISSIONS = [
+  {
+    role: '超级管理员',
+    permissions: {
+      PROJECTS: ['read', 'write', 'delete'],
+      OPERATIONS: ['read', 'write', 'delete'],
+      STAFF_CONFIG: ['read', 'write', 'delete'],
+      WORKLOAD_DATA: ['read', 'write', 'delete'],
+      KPI_HISTORY: ['read', 'write', 'delete'],
+      DATA_CHANGE_LOG: ['read', 'write', 'delete']
+    }
+  },
+  {
+    role: '管理员',
+    permissions: {
+      PROJECTS: ['read', 'write'],
+      OPERATIONS: ['read', 'write'],
+      STAFF_CONFIG: ['read', 'write'],
+      WORKLOAD_DATA: ['read', 'write'],
+      KPI_HISTORY: ['read', 'write'],
+      DATA_CHANGE_LOG: ['read']
+    }
+  },
+  {
+    role: '客服主管',
+    permissions: {
+      PROJECTS: ['read'],
+      OPERATIONS: ['read', 'write'],
+      STAFF_CONFIG: ['read'],
+      WORKLOAD_DATA: ['read', 'write'],
+      KPI_HISTORY: ['read'],
+      DATA_CHANGE_LOG: ['read']
+    }
+  }
+];
+
+var DATA_PERMISSIONS = [];
+(function initDataPermissions() {
+  var raw = localStorage.getItem('chansee_data_permissions');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      DATA_PERMISSIONS = JSON.parse(raw);
+      return;
+    } catch(e) {}
+  }
+  DATA_PERMISSIONS = JSON.parse(JSON.stringify(DEFAULT_DATA_PERMISSIONS));
+  safeSetItem('chansee_data_permissions', JSON.stringify(DATA_PERMISSIONS));
 })();
 
 // 初始化 RISK_ALERTS
