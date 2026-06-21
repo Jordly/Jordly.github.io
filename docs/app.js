@@ -8790,44 +8790,52 @@ function addChangeLog(tableName, recordId, fieldName, oldValue, newValue) {
   } catch(e) { console.error('addChangeLog error:', e); }
 }
 
-// 显示修改历史
+// 显示修改历史（复用系统弹窗）
 function showChangeLog() {
-  const html = `<div class="modal-overlay" onclick="if(event.target===this)closeChangeLog()">
-    <div class="modal" style="max-width:800px">
-      <div class="modal-title">📋 数据修改历史</div>
-      <div class="modal-body" style="max-height:70vh;overflow:auto">
-        ${DATA_CHANGE_LOG.length === 0 ? '<p style="color:#999">暂无修改记录</p>' : ''}
-        <table style="width:100%;font-size:13px;border-collapse:collapse">
-          <thead><tr style="background:#f5f5f5">
-            <th style="padding:6px;border:1px solid #ddd">时间</th>
-            <th style="padding:6px;border:1px solid #ddd">用户</th>
-            <th style="padding:6px;border:1px solid #ddd">数据表</th>
-            <th style="padding:6px;border:1px solid #ddd">字段</th>
-            <th style="padding:6px;border:1px solid #ddd">旧值</th>
-            <th style="padding:6px;border:1px solid #ddd">新值</th>
-          </tr></thead>
-          <tbody>
-            ${DATA_CHANGE_LOG.slice().reverse().slice(0, 100).map(l => `
-              <tr>
-                <td style="padding:6px;border:1px solid #ddd">${l.changedAt}</td>
-                <td style="padding:6px;border:1px solid #ddd">${l.changedBy}</td>
-                <td style="padding:6px;border:1px solid #ddd">${l.tableName}</td>
-                <td style="padding:6px;border:1px solid #ddd">${l.fieldName||'—'}</td>
-                <td style="padding:6px;border:1px solid #ddd;max-width:150px;overflow:hidden;text-overflow:ellipsis">${l.oldValue||'—'}</td>
-                <td style="padding:6px;border:1px solid #ddd;max-width:150px;overflow:hidden;text-overflow:ellipsis">${l.newValue||'—'}</td>
-              </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>
-      <div class="modal-footer">
-        <button class="btn" onclick="closeChangeLog()">关闭</button>
-      </div>
-    </div>
-  </div>`;
-  document.body.insertAdjacentHTML('beforeend', html);
+  var overlay = document.getElementById('modal-overlay');
+  var titleEl = document.getElementById('modal-title');
+  var bodyEl = document.getElementById('modal-body');
+  var footerEl = document.getElementById('modal-footer');
+  if (!overlay || !titleEl || !bodyEl) return;
+
+  var html = '';
+  if (DATA_CHANGE_LOG.length === 0) {
+    html += '<p style="color:#999;text-align:center;padding:30px 0">暂无修改记录</p>';
+    html += '<p style="color:#999;text-align:center;font-size:12px">在「数据管理」中修改数据后，修改记录会自动显示在这里</p>';
+  } else {
+    html += '<table style="width:100%;border-collapse:collapse;font-size:13px;">';
+    html += '<thead><tr style="background:var(--c-bg-2,#f5f5f5)">';
+    html += '<th style="padding:8px 6px;border:1px solid var(--c-border,#ddd);text-align:left">时间</th>';
+    html += '<th style="padding:8px 6px;border:1px solid var(--c-border,#ddd);text-align:left">用户</th>';
+    html += '<th style="padding:8px 6px;border:1px solid var(--c-border,#ddd);text-align:left">数据表</th>';
+    html += '<th style="padding:8px 6px;border:1px solid var(--c-border,#ddd);text-align:left">字段</th>';
+    html += '<th style="padding:8px 6px;border:1px solid var(--c-border,#ddd);text-align:left">旧值</th>';
+    html += '<th style="padding:8px 6px;border:1px solid var(--c-border,#ddd);text-align:left">新值</th>';
+    html += '</tr></thead><tbody>';
+
+    DATA_CHANGE_LOG.slice().reverse().slice(0, 100).forEach(function(l) {
+      html += '<tr>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd);white-space:nowrap">' + l.changedAt + '</td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd)">' + l.changedBy + '</td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd)">' + l.tableName + '</td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd)">' + (l.fieldName || '—') + '</td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd);max-width:150px;overflow:hidden;text-overflow:ellipsis">' + (l.oldValue || '—') + '</td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd);max-width:150px;overflow:hidden;text-overflow:ellipsis">' + (l.newValue || '—') + '</td>';
+      html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    html += '<p style="font-size:11px;color:#999;margin-top:10px">共 ' + DATA_CHANGE_LOG.length + ' 条记录（最多保留200条）</p>';
+  }
+
+  titleEl.textContent = '📋 数据修改历史';
+  bodyEl.innerHTML = html;
+  if (footerEl) footerEl.innerHTML = '<button class="btn" onclick="closeChangeLog()">关闭</button>';
+  overlay.classList.remove('hidden');
 }
+
 function closeChangeLog() {
-  const el = document.querySelector('.modal-overlay');
-  if (el) el.remove();
+  var overlay = document.getElementById('modal-overlay');
+  if (overlay) overlay.classList.add('hidden');
 }
 
