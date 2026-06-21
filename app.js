@@ -2595,6 +2595,7 @@ function renderDashboard(){
       <button class="btn btn-sm" onclick="downloadSampleData()">📄 下载示例数据</button>
       <button class="btn btn-sm" onclick="importData()">📂 导入数据</button>
       <button class="btn btn-sm" onclick="openDataManager()">⚙️ 数据管理</button>
+      <button class="btn btn-sm" onclick="showChangeLog()">📋 修改历史</button>
       <a href="#" class="btn btn-sm btn-primary" onclick="renderModule('comparison');return false;">📊 项目对比</a>
     </div>
   </div>
@@ -8684,6 +8685,7 @@ function updateStaffField(input) {
   if (field === 'count' || field === 'pct') val = parseInt(val) || 0;
   STAFF_CONFIG[idx][field] = val;
   localStorage.setItem('chansee_staff_config', JSON.stringify(STAFF_CONFIG));
+        addChangeLog('STAFF_CONFIG', STAFF_CONFIG[i]&&STAFF_CONFIG[i].id||'', field, oldVal, newValue);
   if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
   showToast('✅ 已保存');
 }
@@ -8691,6 +8693,7 @@ function updateStaffField(input) {
 function deleteStaffItem(idx) {
   STAFF_CONFIG.splice(idx, 1);
   localStorage.setItem('chansee_staff_config', JSON.stringify(STAFF_CONFIG));
+        addChangeLog('STAFF_CONFIG', id, 'DELETE', JSON.stringify(item), '');
   if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
   showToast('✅ 已删除');
   switchDataTab(0);
@@ -8699,6 +8702,7 @@ function deleteStaffItem(idx) {
 function addStaffItem() {
   STAFF_CONFIG.push({ id:'SC'+Date.now(), role:'新角色', count:0, pct:0, workplace:'all', updatedAt:new Date().toISOString().slice(0,10), updatedBy:(typeof CURRENT_USER!=='undefined'&&CURRENT_USER)?CURRENT_USER.username:'admin' });
   localStorage.setItem('chansee_staff_config', JSON.stringify(STAFF_CONFIG));
+        addChangeLog('STAFF_CONFIG', STAFF_CONFIG[STAFF_CONFIG.length-1].id, 'CREATE', '', JSON.stringify(STAFF_CONFIG[STAFF_CONFIG.length-1]));
   if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
   showToast('✅ 已新增');
   switchDataTab(0);
@@ -8711,6 +8715,7 @@ function updateWorkloadField(input) {
   if (field === 'count' || field === 'ratio') val = parseInt(val) || 0;
   WORKLOAD_DATA[idx][field] = val;
   localStorage.setItem('chansee_workload_data', JSON.stringify(WORKLOAD_DATA));
+        addChangeLog('WORKLOAD_DATA', WORKLOAD_DATA[i]&&WORKLOAD_DATA[i].id||'', field, oldVal, newValue);
   if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
   showToast('✅ 已保存');
 }
@@ -8718,6 +8723,7 @@ function updateWorkloadField(input) {
 function deleteWorkloadItem(idx) {
   WORKLOAD_DATA.splice(idx, 1);
   localStorage.setItem('chansee_workload_data', JSON.stringify(WORKLOAD_DATA));
+        addChangeLog('WORKLOAD_DATA', id, 'DELETE', JSON.stringify(item), '');
   if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
   showToast('✅ 已删除');
   switchDataTab(1);
@@ -8726,6 +8732,7 @@ function deleteWorkloadItem(idx) {
 function addWorkloadItem() {
   WORKLOAD_DATA.push({ id:'WL'+Date.now(), name:'新工作类型', count:0, ratio:0, workplace:'all', updatedAt:new Date().toISOString().slice(0,10), updatedBy:(typeof CURRENT_USER!=='undefined'&&CURRENT_USER)?CURRENT_USER.username:'admin' });
   localStorage.setItem('chansee_workload_data', JSON.stringify(WORKLOAD_DATA));
+        addChangeLog('WORKLOAD_DATA', WORKLOAD_DATA[WORKLOAD_DATA.length-1].id, 'CREATE', '', JSON.stringify(WORKLOAD_DATA[WORKLOAD_DATA.length-1]));
   if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
   showToast('✅ 已新增');
   switchDataTab(1);
@@ -8739,6 +8746,7 @@ function updateKpiField(input) {
   if (field === 'profitRate' || field === 'targetRate') val = parseFloat(val) || 0;
   KPI_HISTORY[idx][field] = val;
   localStorage.setItem('chansee_kpi_history', JSON.stringify(KPI_HISTORY));
+        addChangeLog('KPI_HISTORY', KPI_HISTORY[i]&&KPI_HISTORY[i].id||'', field, oldVal, newValue);
   if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
   showToast('✅ 已保存');
 }
@@ -8746,6 +8754,7 @@ function updateKpiField(input) {
 function deleteKpiItem(idx) {
   KPI_HISTORY.splice(idx, 1);
   localStorage.setItem('chansee_kpi_history', JSON.stringify(KPI_HISTORY));
+        addChangeLog('KPI_HISTORY', id, 'DELETE', JSON.stringify(item), '');
   if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
   showToast('✅ 已删除');
   switchDataTab(2);
@@ -8754,7 +8763,71 @@ function deleteKpiItem(idx) {
 function addKpiItem() {
   KPI_HISTORY.push({ id:'KH'+Date.now(), date:'2026-', revenue:0, cost:0, profitRate:0, targetRate:0, workplace:'all', updatedAt:new Date().toISOString().slice(0,10), updatedBy:(typeof CURRENT_USER!=='undefined'&&CURRENT_USER)?CURRENT_USER.username:'admin' });
   localStorage.setItem('chansee_kpi_history', JSON.stringify(KPI_HISTORY));
+        addChangeLog('KPI_HISTORY', KPI_HISTORY[KPI_HISTORY.length-1].id, 'CREATE', '', JSON.stringify(KPI_HISTORY[KPI_HISTORY.length-1]));
   if (typeof CloudBaseSync !== 'undefined' && CloudBaseSync.saveAll) CloudBaseSync.saveAll();
   showToast('✅ 已新增');
   switchDataTab(2);
 }
+
+// 记录数据修改历史
+function addChangeLog(tableName, recordId, fieldName, oldValue, newValue) {
+  try {
+    const user = (typeof CURRENT_USER !== 'undefined' && CURRENT_USER) ? CURRENT_USER.username : 'admin';
+    const log = {
+      id: 'LOG' + Date.now(),
+      tableName: tableName,
+      recordId: recordId || '',
+      fieldName: fieldName || '',
+      oldValue: String(oldValue || ''),
+      newValue: String(newValue || ''),
+      changedBy: user,
+      changedAt: new Date().toISOString().slice(0, 19).replace('T', ' ')
+    };
+    DATA_CHANGE_LOG.push(log);
+    // 只保留最近200条
+    if (DATA_CHANGE_LOG.length > 200) DATA_CHANGE_LOG.shift();
+    localStorage.setItem('chansee_data_change_log', JSON.stringify(DATA_CHANGE_LOG));
+  } catch(e) { console.error('addChangeLog error:', e); }
+}
+
+// 显示修改历史
+function showChangeLog() {
+  const html = `<div class="modal-overlay" onclick="if(event.target===this)closeChangeLog()">
+    <div class="modal" style="max-width:800px">
+      <div class="modal-title">📋 数据修改历史</div>
+      <div class="modal-body" style="max-height:70vh;overflow:auto">
+        ${DATA_CHANGE_LOG.length === 0 ? '<p style="color:#999">暂无修改记录</p>' : ''}
+        <table style="width:100%;font-size:13px;border-collapse:collapse">
+          <thead><tr style="background:#f5f5f5">
+            <th style="padding:6px;border:1px solid #ddd">时间</th>
+            <th style="padding:6px;border:1px solid #ddd">用户</th>
+            <th style="padding:6px;border:1px solid #ddd">数据表</th>
+            <th style="padding:6px;border:1px solid #ddd">字段</th>
+            <th style="padding:6px;border:1px solid #ddd">旧值</th>
+            <th style="padding:6px;border:1px solid #ddd">新值</th>
+          </tr></thead>
+          <tbody>
+            ${DATA_CHANGE_LOG.slice().reverse().slice(0, 100).map(l => `
+              <tr>
+                <td style="padding:6px;border:1px solid #ddd">${l.changedAt}</td>
+                <td style="padding:6px;border:1px solid #ddd">${l.changedBy}</td>
+                <td style="padding:6px;border:1px solid #ddd">${l.tableName}</td>
+                <td style="padding:6px;border:1px solid #ddd">${l.fieldName||'—'}</td>
+                <td style="padding:6px;border:1px solid #ddd;max-width:150px;overflow:hidden;text-overflow:ellipsis">${l.oldValue||'—'}</td>
+                <td style="padding:6px;border:1px solid #ddd;max-width:150px;overflow:hidden;text-overflow:ellipsis">${l.newValue||'—'}</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeChangeLog()">关闭</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+}
+function closeChangeLog() {
+  const el = document.querySelector('.modal-overlay');
+  if (el) el.remove();
+}
+
