@@ -1,0 +1,8 @@
+# 依赖目录（云函数部署时单独打包）
+cloudbase-api/node_modules/
+
+# 打包产物（太大，不提交git，用户手动上传到腾讯云）
+cloudbase-api.zip
+
+# 辅助脚本
+pack_api.js

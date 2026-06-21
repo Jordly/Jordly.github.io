@@ -4,6 +4,8 @@
   "description": "CS CloudHub 数据同步 API",
   "main": "index.js",
   "dependencies": {
-    "@cloudbase/node-sdk": "^3.18.1"
+    "@cloudbase/node-sdk": "^3.18.1",
+    "adm-zip": "^0.5.17",
+    "archiver": "^8.0.0"
   }
 }

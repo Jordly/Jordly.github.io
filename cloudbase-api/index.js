@@ -146,6 +146,21 @@ exports.main = async (event, context) => {
 };
 
 exports.main_handler = async (event, context) => {
+  // 处理 CORS 预检请求（OPTIONS）
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      isBase64Encoded: false,
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Max-Age': '86400'
+      },
+      body: JSON.stringify({ code: 0 })
+    };
+  }
+
   if (event.body) {
     const body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
     const result = await processRequest(body);
