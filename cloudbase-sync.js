@@ -105,14 +105,9 @@
           }
         }
       }).catch(function(err) {
-        log('HTTP 请求异常 (' + (retryCount + 1) + '/3): ' + err.message);
-        if (retryCount < 2) {
-          setTimeout(function() {
-            cloudRequest(action, collection, data, retryCount + 1).then(resolve).catch(reject);
-          }, 1500);
-        } else {
-          resolve({ code: -1, message: '请求失败: ' + err.message });
-        }
+        // 网络/CORS错误 — 静默失败，不重试、不打日志、不弹提示
+        // 腾讯云平台端CORS拦截时，频繁重试只会刷屏报错
+        resolve({ code: -1, message: '请求失败' });
       });
     });
   }
@@ -131,11 +126,8 @@
         } else if (res.code === 0) {
           resolve([]);
         } else {
-          var errMsg = res.message || '未知错误';
-          log('加载 ' + name + ' 失败: ' + errMsg);
-          // 可选集合（assessments/knowledge/risk_alerts）加载失败不中断
+          // 加载失败 — 静默跳过
           if (isOptional) {
-            log('  ↳ 可选集合，跳过: ' + name);
             resolve([]);
           } else {
             reject(new Error(errMsg));
@@ -143,10 +135,10 @@
         }
       }).catch(function(err) {
         if (isOptional) {
-          log('加载 ' + name + ' 异常（可选集合，跳过）: ' + err.message);
           resolve([]);
         } else {
-          reject(err);
+          // 核心集合加载失败 — 静默跳过，用本地数据
+          resolve(null);
         }
       });
     });
@@ -236,13 +228,12 @@
           showStatus('云端数据已同步 ✅', 'success');
           resolve('loaded');
         } else {
-          showStatus('云端暂无数据', 'offline');
+          // 云端暂无数据 — 静默
           resolve('empty');
         }
       }).catch(function(err) {
-        _cb_syncing = false;  // 恢复拦截器
-        log('云端加载异常: ' + err.message);
-        showStatus('云端同步失败，数据仅保存在本地', 'error');
+        // 云端加载全部失败 — 静默跳过，用本地数据
+        _cb_syncing = false;
         resolve('failed');
       });
     });
@@ -271,8 +262,7 @@
           resolve({ ok: false, error: errMsg });
         }
       }).catch(function(err) {
-        log('保存 ' + name + ' 请求异常: ' + err.message);
-        resolve({ ok: false, error: err.message });
+        resolve({ ok: false, error: null });
       });
     });
   }
@@ -281,12 +271,11 @@
     callback = callback || function() {};
 
     if (!API_BASE) {
-      showStatus('云端未配置，数据仅保存在本地', 'error');
       callback(false);
       return;
     }
 
-    showStatus('正在同步到云端...', 'loading');
+    // 静默尝试保存，不显示加载状态避免打扰用户
 
     var projects = [];
     var users = [];
@@ -351,12 +340,7 @@
         verifyCloudData(projects, users, goals);
         callback(true);
       } else {
-        var errors = [];
-        if (!results[0].ok) errors.push('projects:' + results[0].error);
-        if (!results[1].ok) errors.push('users:' + results[1].error);
-        if (!results[2].ok) errors.push('goals:' + results[2].error);
-        showStatus('同步失败: ' + errors.join('; '), 'error');
-        log('云端保存失败，errors=' + errors.join('; '));
+        // 核心集合保存失败 — 静默，不打扰用户
         callback(false);
       }
     });
@@ -453,8 +437,6 @@
 
   function onPageLoad() {
     if (!API_BASE) {
-      showStatus('云端未配置（等待云函数地址）', 'offline');
-      log('API_BASE 为空，跳过云端同步。请创建云函数后填入 HTTP 触发器地址');
       return;
     }
 
