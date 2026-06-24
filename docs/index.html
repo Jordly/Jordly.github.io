@@ -209,6 +209,18 @@
   <!-- 腾讯云开发 Web SDK（用于浏览器端直接连接云数据库，绕过CORS） -->
   <!-- 腾讯云 CloudBase Web SDK（官方CDN，国内稳定） -->
   <script src="https://static.cloudbase.net/cloudbase-js-sdk/latest/cloudbase.full.js"></script>
+  <!-- 内嵌诊断：检测SDK是否加载成功（页面底部显示结果） -->
+  <script>
+  (function(){
+    var d=document.createElement('div');
+    d.id='cb-sdk-test';
+    d.style.cssText='position:fixed;bottom:0;left:0;right:0;background:#1e293b;color:#e2e8f0;padding:12px 16px;font-size:13px;font-family:monospace;z-index:99999;border-top:3px solid #6366f1;';
+    var r=typeof cloudbase!=='undefined'?'✅ SDK已加载 (typeof='+typeof cloudbase+')':'❌ SDK未加载! typeof cloudbase='+typeof cloudbase+' (CDN不通或被拦截)';
+    d.innerHTML='<b>CloudBase SDK诊断:</b> '+r+'<br><span style="color:#94a3b8;font-size:11px;">CDN地址: static.cloudbase.net | 如果显示❌说明网络无法访问腾讯云CDN</span>';
+    document.body.appendChild(d);
+    if(typeof cloudbase!=='undefined'){setTimeout(function(){d.style.opacity='0';setTimeout(function(){d.style.display='none';},500);},8000);}
+  })();
+  </script>
   <script src="cloudbase-sync.js?v=20260624101200"></script>
   <script src="app.js?v=202606181055"></script>
   <script src="project-import-export.js?v=20260608010900"></script>
