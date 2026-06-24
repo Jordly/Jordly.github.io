@@ -206,53 +206,7 @@
 <div id="sidebar-overlay" class="sidebar-overlay hidden" onclick="closeMobileSidebar()"></div>
 
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-  <!-- 腾讯云 CloudBase Web SDK（通过 jsDelivr 从 GitHub 加载） -->
-  <script src="https://cdn.jsdelivr.net/gh/Jordly/Jordly.github.io@main/docs/cloudbase.full.js"></script>
-  <!-- ===== 云端连接诊断面板 ===== -->
-  <script>
-  (function(){
-    var panel = document.createElement('div');
-    panel.id = 'cb-diag-panel';
-    panel.style.cssText =
-      'position:fixed;bottom:60px;left:50%;transform:translateX(-50%);' +
-      'background:linear-gradient(135deg,#1e293b,#0f172a);color:#f1f5f9;' +
-      'padding:16px 24px;border-radius:12px;font-size:14px;font-family:Consolas,monospace;' +
-      'z-index:999999;border:2px solid #6366f1;box-shadow:0 8px 32px rgba(0,0,0,0.4);' +
-      'max-width:600px;width:90%;line-height:1.8;';
-    document.body.appendChild(panel);
-    function line(text, color) {
-      var d=document.createElement('div');d.style.color=color||'#94a3b8';d.style.padding='2px 0';
-      panel.appendChild(d);d.innerHTML=text;
-    }
-    function title(text) {
-      var d=document.createElement('div');
-      d.style.cssText='color:#a5b4fc;font-weight:bold;font-size:15px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #334155;';
-      panel.appendChild(d);d.textContent=text;
-    }
-    title('CloudBase 云端连接诊断');
-    line('开始检测... 请稍候', '#fbbf24');
-    setTimeout(function(){
-      var sdkOk = typeof cloudbase !== 'undefined';
-      line('[测试1] SDK加载: ' + (sdkOk ? '✅ 成功(typeof='+typeof cloudbase+')' : '❌ 失败(typeof cloudbase='+typeof cloudbase+')'), sdkOk ? '#4ade80' : '#f87171');
-      if (!sdkOk) { line('', ''); line('⛔ 根因：SDK未加载成功', '#f87171'); return; }
-      try {
-        var app = cloudbase.init({ env: 'cscloudhub-d0g983jba5ad192ca' }); var db = app.database();
-        line('[测试2] 应用初始化: ✅ 成功', '#4ade80');
-        line('[测试3] 匿名登录中...', '#fbbf24');
-        app.auth().signInAnonymously().then(function(){
-          line('[测试3] 匿名登录: ✅ 成功!', '#4ade80');
-          line('', ''); line('🎉 全部通过！正在同步...', '#4ade80');
-          setTimeout(function(){ panel.style.display='none'; }, 4000);
-          if(window.CloudBaseSync) window.CloudBaseSync.loadAll();
-        }).catch(function(err){
-          line('[测试3] 匿名登录: ❌ '+err.message, '#f87171');
-          line('→ 腾讯云控制台→环境设置→登录方式→开启匿名登录', '#fbbf24');
-        });
-      } catch(e) { line('[测试2] 初始化异常: ❌ '+e.message, '#f87171'); }
-    }, 500);
-  })();
-  </script>
-  <script src="cloudbase-sync.js?v=20260624120000"></script>
+  <script src="cloudbase-sync.js?v=20260621001"></script>
   <script src="app.js?v=202606181055"></script>
   <script src="project-import-export.js?v=20260608010900"></script>
   <script src="premium-enhancements.js?v=20260608010900"></script>
