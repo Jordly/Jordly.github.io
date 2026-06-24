@@ -9,8 +9,36 @@
   var _ready = false;
   var _initError = null;
   var statusEl = null;
+  var diagEl = null;   // 诊断面板
   var _cb_syncing = false;
   var _dirtyTimer = null;
+
+  // ===== 诊断面板（写入页面DOM，截图可见）=====
+
+  function createDiagPanel() {
+    if (diagEl) return;
+    diagEl = document.createElement('div');
+    diagEl.id = 'cb-diag';
+    diagEl.style.cssText =
+      'position:fixed;bottom:0;left:0;right:0;z-index:99999;' +
+      'background:linear-gradient(135deg,#1e293b,#334155);color:#e2e8f0;' +
+      'padding:10px 16px;font-size:12px;font-family:monospace;' +
+      'border-top:2px solid #6366f1;display:none;';
+    document.body.appendChild(diagEl);
+  }
+
+  function diag(msg, ok) {
+    createDiagPanel();
+    var line = document.createElement('div');
+    line.style.cssText = ok === true ? 'color:#4ade80' : (ok === false ? 'color:#f87171' : '#94a3b8');
+    line.textContent = (ok === true ? '\u2705 ' : (ok === false ? '\u274C ' : '\u25B6 ')) + msg;
+    diagEl.appendChild(line);
+    diagEl.style.display = 'block';
+  }
+
+  function clearDiag() {
+    if (diagEl) { diagEl.innerHTML = ''; diagEl.style.display = 'none'; }
+  }
 
   // ===== 工具函数 =====
 
@@ -25,9 +53,10 @@
       statusEl = document.createElement('div');
       statusEl.id = 'cloudbase-status';
       statusEl.style.cssText = 'position:fixed;top:50px;right:16px;z-index:9999;' +
-        'padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;' +
-        'display:flex;align-items:center;gap:6px;' +
-        'box-shadow:0 2px 8px rgba(0,0,0,0.12);transition:all 0.3s;pointer-events:none;';
+        'padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;' +
+        'display:flex;align-items:center;gap:6px;max-width:420px;' +
+        'box-shadow:0 4px 12px rgba(0,0,0,0.18);transition:all 0.3s;pointer-events:none;' +
+        'word-break:break-all;line-height:1.4;';
       document.body.appendChild(statusEl);
     }
 
@@ -46,7 +75,8 @@
     statusEl.style.opacity = '1';
 
     clearTimeout(statusEl._hideTimer);
-    if (type !== 'loading') {
+    // error类型不自动消失，其他类型4秒后消失
+    if (type !== 'error') {
       statusEl._hideTimer = setTimeout(function() {
         statusEl.style.opacity = '0';
         setTimeout(function() {
@@ -60,38 +90,52 @@
 
   function initSDK() {
     return new Promise(function(resolve) {
+      clearDiag();
+      diag('开始诊断云端连接...');
+
       // 第1步：检查 SDK 是否加载成功
+      diag('第1步: 检查SDK是否加载...');
       if (typeof cloudbase === 'undefined' || !cloudbase.init) {
-        _initError = 'SDK未加载（CDN被墙或网络不通）';
+        _initError = 'SDK未加载(CDN不通)';
+        diag('第1步失败: typeof cloudbase=' + typeof cloudbase, false);
         console.error('[CloudBase] 错误: ' + _initError);
-        console.error('[CloudBase] 提示: 请检查网络，或联系开发者更换CDN源');
+        console.error('[CloudBase] 详细: typeof cloudbase=' + typeof cloudbase);
+        console.error('[CloudBase] 请检查网络是否能访问 static.cloudbase.net');
         resolve(false);
         return;
       }
+      diag('第1步OK: SDK已加载 (cloudbase.init=' + typeof cloudbase.init + ')', true);
       console.log('[CloudBase] 第1步OK: SDK加载成功');
 
       // 第2步：初始化应用
+      diag('第2步: 初始化应用 (env=' + ENV_ID + ')...');
       try {
         app = cloudbase.init({ env: ENV_ID });
         db = app.database();
+        diag('第2步OK: 应用初始化成功', true);
         console.log('[CloudBase] 第2步OK: 应用初始化成功, 环境=' + ENV_ID);
       } catch(e) {
-        _initError = '初始化失败: ' + e.message;
+        _initError = '初始化异常: ' + e.message;
+        diag('第2步失败: ' + e.message, false);
         console.error('[CloudBase] 第2步失败: ' + _initError);
         resolve(false);
         return;
       }
 
       // 第3步：匿名登录
+      diag('第3步: 匿名登录...');
       var auth = app.auth();
       auth.signInAnonymously().then(function() {
         _ready = true;
+        diag('第3步OK: 匿名登录成功 \u2705', true);
         console.log('[CloudBase] 第3步OK: 匿名登录成功');
+        setTimeout(clearDiag, 3000);
         resolve(true);
       }).catch(function(err) {
-        _initError = '匿名登录失败(' + err.name + '): ' + err.message;
+        _initError = '登录失败(' + err.name + '): ' + err.message;
+        diag('第3步失败: [' + err.name + '] ' + err.message, false);
         console.error('[CloudBase] 第3步失败: ' + _initError);
-        console.error('[CloudBase] 提示: 请到腾讯云控制台→环境设置→登录方式，确认"匿名登录"已开启');
+        console.error('[CloudBase] 解决办法: 腾讯云控制台->环境设置->登录方式->开启匿名登录');
         resolve(false);
       });
     });
