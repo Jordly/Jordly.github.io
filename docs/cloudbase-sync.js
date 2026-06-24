@@ -60,34 +60,40 @@
 
   function initSDK() {
     return new Promise(function(resolve) {
-      // 检查 SDK 是否加载成功
+      // 第1步：检查 SDK 是否加载成功
       if (typeof cloudbase === 'undefined' || !cloudbase.init) {
-        _initError = 'CloudBase SDK 未加载（请检查网络或CDN）';
-        log(_initError);
+        _initError = 'SDK未加载（CDN被墙或网络不通）';
+        console.error('[CloudBase] 错误: ' + _initError);
+        console.error('[CloudBase] 提示: 请检查网络，或联系开发者更换CDN源');
+        resolve(false);
+        return;
+      }
+      console.log('[CloudBase] 第1步OK: SDK加载成功');
+
+      // 第2步：初始化应用
+      try {
+        app = cloudbase.init({ env: ENV_ID });
+        db = app.database();
+        console.log('[CloudBase] 第2步OK: 应用初始化成功, 环境=' + ENV_ID);
+      } catch(e) {
+        _initError = '初始化失败: ' + e.message;
+        console.error('[CloudBase] 第2步失败: ' + _initError);
         resolve(false);
         return;
       }
 
-      try {
-        app = cloudbase.init({ env: ENV_ID });
-        db = app.database();
-
-        // 使用匿名登录
-        var auth = app.auth();
-        auth.signInAnonymously().then(function() {
-          _ready = true;
-          log('CloudBase SDK 初始化成功（匿名登录）');
-          resolve(true);
-        }).catch(function(err) {
-          _initError = '匿名登录失败: ' + err.message;
-          log(_initError);
-          resolve(false);
-        });
-      } catch(e) {
-        _initError = 'SDK初始化失败: ' + e.message;
-        log(_initError);
+      // 第3步：匿名登录
+      var auth = app.auth();
+      auth.signInAnonymously().then(function() {
+        _ready = true;
+        console.log('[CloudBase] 第3步OK: 匿名登录成功');
+        resolve(true);
+      }).catch(function(err) {
+        _initError = '匿名登录失败(' + err.name + '): ' + err.message;
+        console.error('[CloudBase] 第3步失败: ' + _initError);
+        console.error('[CloudBase] 提示: 请到腾讯云控制台→环境设置→登录方式，确认"匿名登录"已开启');
         resolve(false);
-      }
+      });
     });
   }
 
@@ -152,7 +158,7 @@
     return new Promise(function(resolve) {
       initSDK().then(function(ok) {
         if (!ok) {
-          showStatus('\u26A0\uFE0F 云端连接失败', 'error');
+          showStatus('\u26A0\uFE0F 云端连接失败: ' + (_initError || '未知'), 'error');
           resolve('failed');
           return;
         }
