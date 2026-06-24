@@ -4,10 +4,16 @@
 
 (function() {
   // ============================================================
+  // 离线模式开关：true = 只使用本地浏览器存储，不连接云端
+  // 改为 false 即可重新开启云端同步（需要先配置 API_BASE 和跨域白名单）
+  // ============================================================
+  var OFFLINE_MODE = true;
+
+  // ============================================================
   // ⚠️ 重要：创建云函数后，请把 HTTP 触发器地址填入这里
   // 格式类似：https://xxx.ap-shanghai.tcb.qcloud.com/csCloudHubAPI
   // ============================================================
-  var API_BASE = 'https://cscloudhub-d0g983jba5ad192ca-1440977102.ap-shanghai.app.tcloudbase.com/api';
+  var API_BASE = '';  // 离线模式下设为空，开启云端同步时再填写
 
   var AUTH_TOKEN = 'cscloudhub-2026-secret-key';
   var statusEl = null;
@@ -397,7 +403,7 @@
 
   // 标记数据已变更（防抖，2秒后自动保存）
   function markDirty(key) {
-    if (!API_BASE) return;
+    if (OFFLINE_MODE || !API_BASE) return;
     log('数据已变更: ' + key + '，准备同步到云端...');
     clearTimeout(_dirtyTimer);
     _dirtyTimer = setTimeout(function() {
@@ -452,6 +458,12 @@
   // ===== 页面加载时自动同步 =====
 
   function onPageLoad() {
+    // 离线模式：不执行任何云端操作，不显示提示
+    if (OFFLINE_MODE) {
+      log('离线模式已开启，所有数据保存在本地浏览器');
+      return;
+    }
+
     if (!API_BASE) {
       showStatus('云端未配置（等待云函数地址）', 'offline');
       log('API_BASE 为空，跳过云端同步。请创建云函数后填入 HTTP 触发器地址');
