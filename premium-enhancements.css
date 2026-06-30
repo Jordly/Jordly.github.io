@@ -2745,9 +2745,9 @@
 }
 
 .filter-row-v4-second {
-  background: linear-gradient(180deg, #fafbfc 0%, #f4f6f8 100%) !important;
-  border-style: dashed !important;
-  border-color: #d0d7de !important;
+  background: linear-gradient(135deg, rgba(11,155,150,0.04) 0%, rgba(59,130,246,0.03) 50%, rgba(139,92,246,0.02) 100%) !important;
+  border-style: solid !important;
+  border-color: rgba(11,155,150,0.15) !important;
 }
 
 .fb-divider {
@@ -2758,40 +2758,40 @@
   flex-shrink: 0 !important;
 }
 
-/* 普通下拉 */
+/* 普通下拉 — 极光色调 */
 .fb-select {
   padding: 7px 28px 7px 12px !important;
   font-size: 13px !important;
   border-radius: 10px !important;
-  border: 1px solid #d0d7de !important;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  border: 1px solid rgba(11,155,150,0.25) !important;
+  background: linear-gradient(135deg, rgba(11,155,150,0.06) 0%, rgba(59,130,246,0.04) 50%, rgba(139,92,246,0.03) 100%) !important;
   color: #334155 !important;
   cursor: pointer !important;
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%230B9B96' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
   background-position: right 10px center !important;
   background-size: 10px !important;
-  transition: all 0.25s ease !important;
+  transition: all 0.3s ease !important;
   min-width: 90px !important;
   max-width: 140px !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+  box-shadow: 0 1px 3px rgba(11,155,150,0.08) !important;
 }
 
 .fb-select:hover {
-  border-color: #2563eb !important;
-  background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%) !important;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08), 0 2px 4px rgba(37, 99, 235, 0.06) !important;
+  border-color: rgba(11,155,150,0.5) !important;
+  background: linear-gradient(135deg, rgba(11,155,150,0.12) 0%, rgba(59,130,246,0.08) 50%, rgba(139,92,246,0.06) 100%) !important;
+  box-shadow: 0 0 0 3px rgba(11,155,150,0.1), 0 4px 8px rgba(11,155,150,0.08) !important;
 }
 
 .fb-select:focus {
-  border-color: #2563eb !important;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+  border-color: rgba(11,155,150,0.6) !important;
+  box-shadow: 0 0 0 3px rgba(11,155,150,0.15) !important;
   outline: none !important;
 }
 
@@ -2818,7 +2818,7 @@
   flex-shrink: 0 !important;
 }
 
-/* 搜索触发按钮 */
+/* 搜索触发按钮 — 极光色调 */
 .fb-search-trigger {
   display: inline-flex !important;
   align-items: center !important;
@@ -2826,15 +2826,15 @@
   padding: 7px 28px 7px 12px !important;
   font-size: 13px !important;
   border-radius: 10px !important;
-  border: 1px solid #d0d7de !important;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  border: 1px solid rgba(11,155,150,0.25) !important;
+  background: linear-gradient(135deg, rgba(11,155,150,0.06) 0%, rgba(59,130,246,0.04) 50%, rgba(139,92,246,0.03) 100%) !important;
   color: #334155 !important;
   cursor: pointer !important;
-  transition: all 0.25s ease !important;
+  transition: all 0.3s ease !important;
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%230B9B96' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
   background-position: right 10px center !important;
   background-size: 10px !important;
@@ -2844,24 +2844,24 @@
   overflow: hidden !important;
   text-overflow: ellipsis !important;
   user-select: none !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+  box-shadow: 0 1px 3px rgba(11,155,150,0.08) !important;
 }
 
 .fb-search-trigger:hover {
-  border-color: #2563eb !important;
-  background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%) !important;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08), 0 2px 4px rgba(37, 99, 235, 0.06) !important;
+  border-color: rgba(11,155,150,0.5) !important;
+  background: linear-gradient(135deg, rgba(11,155,150,0.12) 0%, rgba(59,130,246,0.08) 50%, rgba(139,92,246,0.06) 100%) !important;
+  box-shadow: 0 0 0 3px rgba(11,155,150,0.1), 0 4px 8px rgba(11,155,150,0.08) !important;
 }
 
 .fb-search-trigger.active {
-  border-color: #2563eb !important;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+  border-color: rgba(11,155,150,0.6) !important;
+  box-shadow: 0 0 0 3px rgba(11,155,150,0.15) !important;
 }
 
 .fb-search-trigger.has-value {
-  color: #1d4ed8 !important;
-  background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%) !important;
-  border-color: #2563eb !important;
+  color: #0b9b96 !important;
+  background: linear-gradient(135deg, rgba(11,155,150,0.1) 0%, rgba(59,130,246,0.06) 100%) !important;
+  border-color: rgba(11,155,150,0.4) !important;
   font-weight: 500 !important;
 }
 
@@ -3051,26 +3051,69 @@
   padding: 7px 14px !important;
   font-size: 13px !important;
   border-radius: 10px !important;
-  border: 1.5px dashed #cbd5e1 !important;
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
-  color: #64748b !important;
+  border: 1.5px solid rgba(11,155,150,0.3) !important;
+  background: linear-gradient(135deg, rgba(11,155,150,0.08) 0%, rgba(59,130,246,0.05) 100%) !important;
+  color: #0b9b96 !important;
   cursor: pointer !important;
-  transition: all 0.25s ease !important;
+  transition: all 0.3s ease !important;
   white-space: nowrap !important;
   margin-left: auto !important;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+  box-shadow: 0 1px 3px rgba(11,155,150,0.08) !important;
 }
 
 .fb-adv-btn:hover {
-  border-color: #2563eb !important;
+  border-color: rgba(11,155,150,0.6) !important;
   border-style: solid !important;
-  color: #2563eb !important;
-  background: linear-gradient(180deg, #ffffff 0%, #eff6ff 100%) !important;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08), 0 2px 4px rgba(37, 99, 235, 0.06) !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%) !important;
+  box-shadow: 0 0 0 3px rgba(11,155,150,0.15), 0 4px 8px rgba(11,155,150,0.12) !important;
+}
+
+.fb-adv-btn.active {
+  border-color: rgba(11,155,150,0.6) !important;
+  border-style: solid !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%) !important;
 }
 
 .fb-adv-btn svg {
   flex-shrink: 0 !important;
+}
+
+/* 高级筛选展开状态 */
+.fb-adv-btn-active {
+  border-color: rgba(11,155,150,0.6) !important;
+  border-style: solid !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%) !important;
+  box-shadow: 0 0 0 3px rgba(11,155,150,0.15), 0 4px 8px rgba(11,155,150,0.12) !important;
+}
+
+/* 筛选栏美化：第一行（4个框，稍窄），第二行（5个框，稍宽） */
+.filter-row-v4-full:not(.filter-row-v4-advanced) .fb-select {
+  flex: 1 !important;
+  max-width: 240px !important;
+  min-width: 80px !important;
+}
+.filter-row-v4-full.filter-row-v4-advanced .fb-select,
+.filter-row-v4-full.filter-row-v4-advanced .fb-search-trigger,
+.filter-row-v4-full.filter-row-v4-advanced .fb-search-wrap {
+  flex: 1 !important;
+  max-width: none !important;
+  min-width: 80px !important;
+}
+/* 第一行的搜索触发器也限制宽度 */
+.filter-row-v4-full:not(.filter-row-v4-advanced) .fb-search-trigger {
+  flex: 1 !important;
+  max-width: 240px !important;
+  min-width: 80px !important;
+}
+/* 高级筛选面板（第二行）默认隐藏 */
+.filter-row-v4-advanced {
+  display: none !important;
+}
+.filter-row-v4-advanced.show {
+  display: flex !important;
 }
 
 /* ===== 导入对话框样式 ===== */
@@ -3832,6 +3875,69 @@
   background: #97C459;
 }
 
+/* ===== 问题与课题协作 - 双标签药丸切换 ===== */
+.issue-tab-pill {
+  padding: 10px 28px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  border-radius: 24px !important;
+  cursor: pointer !important;
+  user-select: none;
+  border: 2px solid transparent;
+  transition: all 0.3s ease !important;
+  letter-spacing: 0.5px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+}
+.issue-tab-pill.issue-tab-active {
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15) !important;
+  transform: translateY(-1px) !important;
+}
+.issue-tab-pill.issue-tab-inactive {
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+}
+.issue-tab-pill.issue-tab-inactive:hover {
+  background: #e2e8f0 !important;
+  color: #475569 !important;
+  transform: translateY(-1px) !important;
+}
+.issue-tab-pill.issue-tab-issue.issue-tab-active {
+  background: linear-gradient(135deg, #0ABAB5, #06b6d4) !important;
+  box-shadow: 0 4px 14px rgba(10,186,181,0.3) !important;
+}
+.issue-tab-pill.issue-tab-topic.issue-tab-active {
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa) !important;
+  box-shadow: 0 4px 14px rgba(139,92,246,0.3) !important;
+}
+
+/* ===== 问题与课题协作 - 课题状态标签紫色 ===== */
+.issue-badge-purple {
+  background: rgba(139,92,246,0.12);
+  color: #7c3aed;
+}
+
+/* ===== 问题与课题协作 - 课题表格行悬停 ===== */
+.topic-row {
+  transition: all 0.15s;
+}
+.topic-row:hover {
+  background: linear-gradient(90deg, rgba(11,155,150,0.04), rgba(139,92,246,0.04));
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+
+/* ===== 系统权限管理 - 模块行悬停 ===== */
+.perm-mod-row {
+  transition: background 0.15s;
+}
+.perm-mod-row:hover {
+  background: #f8fafc;
+}
+.perm-mod-row:hover .perm-mod-name {
+  color: #0f766e;
+}
+
 
 /* ===== 核心知识能量池 - kyp-* 样式 ===== */
 
@@ -4223,5 +4329,301 @@
   width: 8px; height: 8px;
   border-radius: 2px;
   margin-right: 0;
+}
+
+/* ========================================
+   系统数据管理 - 卡片式目录 + 详情页
+   ======================================== */
+
+/* 卡片网格 */
+.sd-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 900px) {
+  .sd-cards-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .sd-cards-grid { grid-template-columns: 1fr; }
+}
+
+/* 单张卡片 */
+.sd-card {
+  border-radius: 14px;
+  background: #fff;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  border: 1px solid rgba(11,155,150,0.12);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.sd-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(11,155,150,0.15);
+  border-color: rgba(11,155,150,0.3);
+}
+
+/* 卡片内部 */
+.sd-card-inner {
+  padding: 28px 22px;
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+}
+.sd-card-inner::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  opacity: 0.1;
+}
+.sd-card-inner::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  left: -30px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  opacity: 0.06;
+}
+
+/* 卡片配色 */
+.sd-card-clr1::before { background: #0B9B96; }
+.sd-card-clr1::after { background: #0B9B96; }
+.sd-card-clr1 .sd-card-icon { background: linear-gradient(135deg, rgba(11,155,150,0.15), rgba(11,155,150,0.05)); color: #0B9B96; }
+.sd-card-clr1 .sd-card-count { background: rgba(11,155,150,0.1); color: #0B9B96; }
+.sd-card-clr1 .sd-card-inner { background: linear-gradient(160deg, rgba(11,155,150,0.03) 0%, #fff 40%); }
+
+.sd-card-clr2::before { background: #3B82F6; }
+.sd-card-clr2::after { background: #3B82F6; }
+.sd-card-clr2 .sd-card-icon { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)); color: #3B82F6; }
+.sd-card-clr2 .sd-card-count { background: rgba(59,130,246,0.1); color: #3B82F6; }
+.sd-card-clr2 .sd-card-inner { background: linear-gradient(160deg, rgba(59,130,246,0.03) 0%, #fff 40%); }
+
+.sd-card-clr3::before { background: #8B5CF6; }
+.sd-card-clr3::after { background: #8B5CF6; }
+.sd-card-clr3 .sd-card-icon { background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05)); color: #8B5CF6; }
+.sd-card-clr3 .sd-card-count { background: rgba(139,92,246,0.1); color: #8B5CF6; }
+.sd-card-clr3 .sd-card-inner { background: linear-gradient(160deg, rgba(139,92,246,0.03) 0%, #fff 40%); }
+
+/* 卡片图标 */
+.sd-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  font-size: 22px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+
+/* 卡片标题 */
+.sd-card-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 10px;
+  letter-spacing: 0.3px;
+}
+
+/* 记录数标签 */
+.sd-card-count {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* 描述文本 */
+.sd-card-desc {
+  font-size: 12px;
+  color: #9ca3af;
+  line-height: 1.6;
+  flex: 1;
+}
+
+/* ========================================
+   总览看板 - 近期动态时间线
+   ======================================== */
+
+.tl-container {
+  position: relative;
+}
+
+/* 单条事件 */
+.tl-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 8px 0;
+  position: relative;
+  transition: background 0.15s ease;
+  border-radius: 6px;
+}
+.tl-item:hover {
+  background: rgba(11,155,150,0.03);
+}
+
+/* 时间线圆点 */
+.tl-dot {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 13px;
+  margin-right: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+/* 时间线竖线 */
+.tl-line {
+  position: absolute;
+  left: 30px;
+  top: 34px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(11,155,150,0.25), rgba(11,155,150,0.05));
+}
+
+/* 事件内容 */
+.tl-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* 时间标签 */
+.tl-time {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+/* 事件类型标签 */
+.tl-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+/* 事件标题 */
+.tl-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1f2937;
+  line-height: 1.4;
+}
+
+/* 事件详情 */
+.tl-detail {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* ========================================
+   近期动态 - 极光流动光带装饰
+   ======================================== */
+
+/* 右侧装饰容器 */
+.tl-decoration {
+  flex-shrink: 0;
+  width: 200px;
+  position: relative;
+  min-height: 160px;
+}
+
+/* 流动光带 - 通用 */
+.tl-flow {
+  position: absolute;
+  right: 0;
+  left: 0;
+  border-radius: 50%;
+  animation: tlFlowDrift 8s ease-in-out infinite;
+}
+
+/* 第1条 - 粗、蒂芙尼绿、底部 */
+.tl-flow-1 {
+  top: 35%;
+  height: 6px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(11,155,150,0.12) 8%,
+    rgba(11,155,150,0.55) 25%,
+    rgba(11,155,150,0.7) 40%,
+    rgba(11,155,150,0.35) 65%,
+    transparent 100%
+  );
+  animation-delay: 0s;
+  filter: blur(4px);
+}
+
+/* 第2条 - 中粗、青蓝、中上 */
+.tl-flow-2 {
+  top: 52%;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(59,130,246,0.1) 10%,
+    rgba(59,130,246,0.5) 30%,
+    rgba(139,92,246,0.55) 50%,
+    rgba(59,130,246,0.2) 75%,
+    transparent 100%
+  );
+  animation-delay: -2s;
+  filter: blur(3px);
+}
+
+/* 第3条 - 中细、紫色调、偏下 */
+.tl-flow-3 {
+  top: 68%;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(139,92,246,0.1) 15%,
+    rgba(139,92,246,0.5) 35%,
+    rgba(11,155,150,0.35) 55%,
+    transparent 100%
+  );
+  animation-delay: -4s;
+  filter: blur(2.5px);
+}
+
+/* 第4条 - 细、底色光晕、中间浮动 */
+.tl-flow-4 {
+  top: 45%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(11,155,150,0.06) 18%,
+    rgba(59,130,246,0.25) 40%,
+    rgba(139,92,246,0.15) 60%,
+    transparent 100%
+  );
+  animation-delay: -6s;
+  opacity: 0.5;
+  filter: blur(1.5px);
+}
+
+/* 波浪流动动画 */
+@keyframes tlFlowDrift {
+  0%   { transform: translateX(20px) translateY(0px) scaleX(0.8); opacity: 0.2; }
+  30%  { transform: translateX(-10px) translateY(8px) scaleX(1.1); opacity: 0.75; }
+  60%  { transform: translateX(-25px) translateY(-6px) scaleX(1.0); opacity: 0.5; }
+  100% { transform: translateX(20px) translateY(0px) scaleX(0.8); opacity: 0.2; }
 }
 

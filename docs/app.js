@@ -29,14 +29,22 @@ var OPERATIONS = [];
 
 var DEFAULT_ISSUES = [
 
-  {id:1, projectId:"P002", projectName:"家电自营客服项目", type:"整改", desc:"连续两周满意度低于目标值4.7", priority:"重要", owner:"刘洋", assignee:"刘洋", status:"处理中", source:"监控预警", responsibility:"承接方", createdAt:"2026-05-15", solution:""},
+  {id:1, projectId:"P002", projectName:"家电自营客服项目", category:"问题", type:"整改", desc:"连续两周满意度低于目标值4.7", background:"4月下旬起满意度持续下滑，主要集中在外呼环节", rootCause:"新员工话术培训不达标，质检反馈未及时跟进", priority:"重要", owner:"刘洋", assignee:"刘洋", status:"处理中", source:"监控预警", responsibility:"承接方", createdAt:"2026-05-15", solution:"", milestone:"6月初已完成全员话术培训", outcome:"", participants:"刘洋,王强"},
 
-  {id:2, projectId:"P003", projectName:"服装品牌客服外包", type:"客诉", desc:"大促期间系统崩溃导致回复超时，品牌方投诉", priority:"紧急", owner:"陈静", assignee:"陈静", status:"待验收", source:"品牌反馈", responsibility:"共同", createdAt:"2026-05-10", solution:"已搭建备用会话分配机制，增加熔断保护"},
+  {id:2, projectId:"P003", projectName:"服装品牌客服外包", category:"问题", type:"客诉", desc:"大促期间系统崩溃导致回复超时，品牌方投诉", background:"5月10日大促首日系统承载超限，平均响应延迟达8分钟", rootCause:"未提前做高并发压测，自动扩容策略未生效", priority:"紧急", owner:"陈静", assignee:"陈静", status:"待验收", source:"品牌反馈", responsibility:"共同", createdAt:"2026-05-10", solution:"已搭建备用会话分配机制，增加熔断保护", milestone:"已部署备用通道", outcome:"品牌认同改进方案", participants:"陈静,技术部"},
 
-  {id:3, projectId:"P006", projectName:"运动品牌客服项目", type:"优化", desc:"项目利润率持续为负，需重新核算成本结构", priority:"紧急", owner:"陈静", assignee:"王强", status:"待处理", source:"财务预警", responsibility:"承接方", createdAt:"2026-05-20", solution:""},
+  {id:3, projectId:"P006", projectName:"运动品牌客服项目", category:"问题", type:"优化", desc:"项目利润率持续为负，需重新核算成本结构", background:"连续3个月利润率为负，裁员后效率未提升", rootCause:"固定人力成本过高，项目收入增长跟不上成本增长", priority:"紧急", owner:"陈静", assignee:"王强", status:"待处理", source:"财务预警", responsibility:"承接方", createdAt:"2026-05-20", solution:"", milestone:"", outcome:"", participants:""},
 
-  {id:4, projectId:"P001", projectName:"美妆旗舰店客服项目", type:"优化", desc:"大促预案需要更新，去年双11出现人手不足", priority:"一般", owner:"张伟", assignee:"张伟", status:"已关闭", source:"人工上报", responsibility:"承接方", createdAt:"2026-04-01", solution:"已完成大促人力预案，增加20%临时人力储备"},
+  {id:4, projectId:"P001", projectName:"美妆旗舰店客服项目", category:"问题", type:"优化", desc:"大促预案需要更新，去年双11出现人手不足", background:"去年双11当天咨询量激增300%，人力储备严重不足", rootCause:"预案未考虑极端流量场景，临时增援不及", priority:"一般", owner:"张伟", assignee:"张伟", status:"已关闭", source:"人工上报", responsibility:"承接方", createdAt:"2026-04-01", solution:"已完成大促人力预案，增加20%临时人力储备", milestone:"预案评审通过", outcome:"已纳入年度SOP", participants:"张伟,李明"},
 
+  // 课题（无 projectId，非项目维度）
+  {id:5, projectId:"", projectName:"", category:"课题", type:"流程优化", desc:"客服响应速度提升计划", background:"当前平均响应时间28s，目标降至20s以内", rootCause:"流程节点多、系统切换耗时", priority:"重要", owner:"张伟", assignee:"张伟", status:"进行中", source:"内部立项", responsibility:"承接方", createdAt:"2026-05-01", solution:"优化工单流转路径，引入快捷回复模板", milestone:"完成流程梳理", outcome:"响应时间已降至22s", participants:"张伟,李明,技术部"},
+
+  {id:6, projectId:"", projectName:"", category:"课题", type:"调研诊断", desc:"新职场团队融入与效能评估", background:"无锡职场3月启用，团队新人占比60%", rootCause:"跨地域管理导致沟通效率低", priority:"重要", owner:"刘洋", assignee:"刘洋", status:"进行中", source:"管理层指派", responsibility:"承接方", createdAt:"2026-05-10", solution:"定期跨职场交流会+导师制", milestone:"完成首月评估报告", outcome:"新人留存率提升15%", participants:"刘洋,HR"},
+
+  {id:7, projectId:"", projectName:"", category:"课题", type:"销售提升", desc:"客单价提升专项方案", background:"部分项目客单价低于行业平均水平10-15%", rootCause:"客服推荐意识薄弱，缺乏激励机制", priority:"一般", owner:"陈静", assignee:"陈静", status:"未开始", source:"内部立项", responsibility:"承接方", createdAt:"2026-05-15", solution:"建立客服推荐话术库+阶梯提成方案", milestone:"", outcome:"", participants:""},
+
+  {id:8, projectId:"", projectName:"", category:"课题", type:"服务升级", desc:"24h智能客服辅助系统搭建", background:"夜间咨询占比22%但全由人工值守，成本高且体验差", rootCause:"缺少智能IVR和自动应答能力", priority:"一般", owner:"王强", assignee:"王强", status:"未开始", source:"管理层指派", responsibility:"承接方", createdAt:"2026-05-20", solution:"调研主流AI客服方案，搭建试点", milestone:"", outcome:"", participants:"王强,技术部"}
 ];
 var ISSUES = [];
 
@@ -155,7 +163,7 @@ function safeSetItem(key, value) {
 
 // 默认用户数据（只在首次初始化时使用）
 var DEFAULT_USERS = [
-  {id:"U001", name:"系统创建者", username:"admin", role:"超级管理员", status:"已激活", registerTime:"2025-01-01", password:"admin123", phone:"138****0001", email:"admin@chanseen.com", approvedBy:"system", remark:"系统初始化超级管理员"},
+  {id:"U001", name:"系统创建者", nickname:"Jordly", username:"admin", role:"超级管理员", status:"已激活", registerTime:"2025-01-01", password:"admin123", phone:"18510084943", email:"zhoudongli@xcxd.com", birthday:"1991-12-18", position:"客服", workplace:"济南/淄博/杭州", approvedBy:"system", remark:"系统初始化超级管理员"},
   {id:"U002", name:"王管理", username:"wangadmin", role:"管理员", status:"已激活", registerTime:"2025-03-15", password:"wang456", phone:"139****1111", email:"wang@chanseen.com", approvedBy:"admin", remark:""},
   {id:"U003", name:"李组长", username:"lilead", role:"客服组长", status:"待审核", registerTime:"2026-05-20", password:"li789", phone:"137****2222", email:"li@chanseen.com", approvedBy:"", remark:"新入职申请"},
   {id:"U004", name:"张主管", username:"zhangsup", role:"客服主管", status:"已拒绝", registerTime:"2026-05-18", password:"zhang000", phone:"136****3333", email:"zhang@chanseen.com", approvedBy:"wangadmin", remark:"信息不完整"},
@@ -516,6 +524,41 @@ function setAppContentVisible(visible) {
 }
 
 async function checkLogin() {
+  // === 🚀 快速通行路径：如果 chanseen_auth 有效，直接秒进，不走复杂逻辑 ===
+  try {
+    var _faStr = localStorage.getItem('chanseen_auth');
+    if (_faStr) {
+      var _fa = JSON.parse(_faStr);
+      var _ma = _fa.remember ? 604800000 : 3600000;
+      if (_fa.token && (Date.now() - _fa.loginAt) < _ma) {
+        var _user = USERS.find(function(u){ return u.id === (_fa.user && _fa.user.id) || u.username === (_fa.user && _fa.user.username); }) || USERS[0];
+        if (_user) {
+          currentUser = {
+            id: _user.id || 'U001',
+            username: _user.username || 'admin',
+            name: _user.name || _user.nickname || '系统创建者',
+            role: _user.role || '超级管理员',
+            avatar: _user.avatar || '',
+            position: _user.position || '客服总监',
+            brand: _user.brand || 'Chanseen',
+            nickname: _user.nickname || _user.name || '系统创建者',
+            birthday: _user.birthday || '',
+            phone: _user.phone || '',
+            email: _user.email || ''
+          };
+          currentRole = currentUser.role || '超级管理员';
+          hideLoginModal();
+          updateUserDisplay();
+          setAppContentVisible(true);
+          console.log('checkLogin 快速通行成功');
+          return true;
+        }
+      }
+    }
+  } catch(_fe) {
+    console.warn('checkLogin 快速通行失败，走完整路径:', _fe);
+  }
+
   try {
     // 先检查 login.html 的登录状态
     const authStr = localStorage.getItem('chanseen_auth');
@@ -745,6 +788,39 @@ async function checkLogin() {
       return true;
     }
   } catch(e) {
+    console.warn('checkLogin 异常:', e);
+    // 【兜底修复】主流程出错但 chanseen_auth 仍然有效 → 简化登录，不弹登录框
+    try {
+      var _authStr = localStorage.getItem('chanseen_auth');
+      if (_authStr) {
+        var _auth = JSON.parse(_authStr);
+        var _maxAge = _auth.remember ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
+        if (_auth.token && (Date.now() - _auth.loginAt) < _maxAge) {
+          var _u = USERS.find(function(u){ return u.username === (_auth.user && _auth.user.username); }) || USERS[0] || {};
+          currentUser = {
+            id: _u.id || (_auth.user && _auth.user.id) || 'U001',
+            username: _u.username || (_auth.user && _auth.user.username) || 'admin',
+            name: _u.name || _u.nickname || '系统创建者',
+            role: _u.role || (_auth.user && _auth.user.role) || '超级管理员',
+            avatar: _u.avatar || '',
+            position: _u.position || '客服总监',
+            brand: _u.brand || 'Chanseen',
+            nickname: _u.nickname || _u.name || '系统创建者',
+            birthday: _u.birthday || '',
+            phone: _u.phone || '',
+            email: _u.email || ''
+          };
+          currentRole = currentUser.role || '超级管理员';
+          hideLoginModal();
+          updateUserDisplay();
+          setAppContentVisible(true);
+          console.warn('checkLogin 已通过兜底方案完成登录');
+          return true;
+        }
+      }
+    } catch(_e) {
+      console.warn('checkLogin 兜底也失败:', _e);
+    }
   }
   currentUser = null;
   setAppContentVisible(false);
@@ -757,7 +833,7 @@ function updateUserDisplay() {
   const el = document.getElementById("user-display");
   if (!el) return;
   if (!currentUser) { el.innerHTML = ""; return; }
-  const firstChar = currentUser.name ? currentUser.name.charAt(0) : "?";
+  const displayName = currentUser.nickname || currentUser.name || "?";
   const avatar = currentUser.avatar || "";
   const avatarHtml = avatar
     ? `<div class="user-avatar" style="background-image:url(${avatar});background-size:cover;background-position:center;color:transparent;">${firstChar}</div>`
@@ -768,13 +844,13 @@ function updateUserDisplay() {
   el.innerHTML = `
     <div class="user-avatar-wrap" onclick="toggleUserMenu(event)">
       ${avatarHtml}
-      <span class="user-name">${currentUser.name}</span>
+      <span class="user-name">${displayName}</span>
       <span class="user-arrow">▼</span>
       <div class="user-dropdown" id="user-dropdown">
         <div class="user-dropdown-header">
           ${dropdownAvatarHtml}
           <div>
-            <div class="user-dropdown-name">${currentUser.name}</div>
+            <div class="user-dropdown-name">${displayName}</div>
             <div class="user-dropdown-role">${currentUser.role}</div>
           </div>
         </div>
@@ -1653,73 +1729,222 @@ const HEALTH_DATA = [
 // ===== 角色与权限系统 =====
 
 const ROLES = [
-  "管理候选", "客服组长", "客服主管", "客服经理", "客服总监",
-  "管理员", "项目伙伴", "技术伙伴", "风控伙伴", "新用户"
+  "超级管理员", "管理员", "客服总监", "客服经理", "客服主管", "项目伙伴"
 ];
 
-// 默认权限配置：每个角色对各模块的权限（read=只读, write=读写, hidden=隐藏）
-// 全局模块 key 列表（供 batchSetPermission 等函数使用）
-const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","permissions","notifications","performance","risk","profile"];
+const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","performance","risk","systemData","permissions","notifications","profile"];
 
-const DEFAULT_PERMISSIONS = {
-  "管理候选": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
-  "客服组长": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
-  "客服主管": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"read", permissions:"read", notifications:"read", performance:"write", risk:"read", profile:"write" },
-  "客服经理": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"read", notifications:"read", performance:"write", risk:"write", profile:"write" },
-  "客服总监": { dashboard:"read", archive:"write", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
-  "管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
-  "超级管理员": { dashboard:"write", archive:"write", target:"write", cost:"write", operation:"write", issue:"write", knowledge:"write", handover:"write", satisfaction:"write", permissions:"write", notifications:"write", performance:"write", risk:"write", profile:"write" },
-  "项目伙伴": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
-  "技术伙伴": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"write", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
-  "风控伙伴": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"write", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" },
-  "新用户": { dashboard:"read", archive:"read", target:"read", cost:"read", operation:"read", issue:"read", knowledge:"read", handover:"read", satisfaction:"read", permissions:"read", notifications:"read", performance:"read", risk:"read", profile:"write" }
+const MODULE_GROUPS = {
+  project: { label:"项目运营中心", keys:["dashboard","archive","target","cost","operation"] },
+  collab: { label:"团队赋能中心", keys:["issue","knowledge","risk"] },
+  tools: { label:"支撑工具箱", keys:["handover","satisfaction","performance"] },
+  system: { label:"系统管理与配置", keys:["systemData","permissions","notifications","profile"] }
 };
 
-// 当前角色（默认：管理候选）
-let currentRole = "管理候选";
+const MODULE_NAMES = {
+  dashboard:"项目总览看板", archive:"项目基础档案", target:"目标与权责管理", cost:"成本与利润管理",
+  operation:"服务与进度追踪", issue:"问题与课题协作", knowledge:"核心知识能量池", risk:"风险监控与预警",
+  handover:"项目承接规范", satisfaction:"项目运维调研", performance:"客服绩效看板",
+  systemData:"系统数据管理", permissions:"系统权限管理", notifications:"系统用户管理", profile:"个人设置与帮助"
+};
+
+const MODULE_ACTIONS = {
+  dashboard:    { visible:1, view:1, edit:1, import:1, export:1, manage:0, scope:1 },
+  archive:      { visible:1, view:1, edit:1, import:1, export:1, manage:0, scope:1 },
+  target:       { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
+  cost:         { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
+  operation:    { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:1 },
+  issue:        { visible:1, view:1, edit:1, import:0, export:0, manage:0, scope:1 },
+  knowledge:    { visible:1, view:1, edit:1, import:1, export:1, manage:0, scope:0 },
+  risk:         { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
+  handover:     { visible:1, view:1, edit:1, import:0, export:0, manage:0, scope:0 },
+  satisfaction: { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
+  performance:  { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
+  systemData:   { visible:1, view:1, edit:1, import:1, export:1, manage:0, scope:0 },
+  permissions:  { visible:1, view:0, edit:1, import:0, export:0, manage:1, scope:0 },
+  notifications:{ visible:1, view:1, edit:1, import:0, export:0, manage:0, scope:0 },
+  profile:      { visible:1, view:0, edit:1, import:0, export:0, manage:0, scope:0 }
+};
+
+function permObj(v,ed,im,ex,mg,sc){
+  var o = { visible:v||false, view:v||false };
+  if(ed!==undefined) o.edit=ed; else o.edit=v||false;
+  o.import=im||false; o.export=ex||false; o.manage=mg||false;
+  o.scope=sc||'all'; return o;
+}
+var ALL  = permObj(true,true,true,true,true,'all');
+var EDIT = permObj(true,true,false,true,false,'all');
+var VIEW = permObj(true,false,false,true,false,'all');
+var VOWN = permObj(true,false,false,true,false,'own');
+var RO   = permObj(true,false,false,false,false,'own');
+var HIDE = permObj(false,false,false,false,false,'all');
+var MGR  = permObj(true,true,false,false,true,'all');
+
+const DEFAULT_PERMISSIONS = {
+  "超级管理员": {
+    dashboard:ALL, archive:ALL, target:ALL, cost:ALL, operation:ALL,
+    issue:ALL, knowledge:ALL, risk:ALL, handover:ALL, satisfaction:ALL,
+    performance:ALL, systemData:ALL, permissions:MGR, notifications:EDIT, profile:EDIT
+  },
+  "管理员": {
+    dashboard:EDIT, archive:EDIT, target:EDIT, cost:EDIT, operation:EDIT,
+    issue:EDIT, knowledge:EDIT, risk:EDIT, handover:EDIT, satisfaction:EDIT,
+    performance:EDIT, systemData:EDIT, permissions:HIDE, notifications:EDIT, profile:EDIT
+  },
+  "客服总监": {
+    dashboard:VIEW, archive:VIEW, target:VIEW, cost:VIEW, operation:VIEW,
+    issue:VIEW, knowledge:VIEW, risk:VIEW, handover:VIEW, satisfaction:VIEW,
+    performance:VIEW, systemData:VIEW, permissions:HIDE, notifications:VIEW, profile:EDIT
+  },
+  "客服经理": {
+    dashboard:EDIT, archive:EDIT, target:EDIT, cost:EDIT, operation:EDIT,
+    issue:EDIT, knowledge:EDIT, risk:EDIT, handover:EDIT, satisfaction:EDIT,
+    performance:EDIT, systemData:VIEW, permissions:HIDE, notifications:VIEW, profile:EDIT
+  },
+  "客服主管": {
+    dashboard:VOWN, archive:VOWN, target:VOWN, cost:VOWN, operation:permObj(true,true,false,true,false,'own'),
+    issue:permObj(true,true,false,false,false,'own'), knowledge:EDIT, risk:VOWN,
+    handover:VOWN, satisfaction:VOWN, performance:VOWN,
+    systemData:HIDE, permissions:HIDE, notifications:VIEW, profile:EDIT
+  },
+  "项目伙伴": {
+    dashboard:RO, archive:RO, target:HIDE, cost:HIDE, operation:RO,
+    issue:permObj(true,true,false,false,false,'own'), knowledge:VIEW, risk:HIDE,
+    handover:HIDE, satisfaction:HIDE, performance:HIDE,
+    systemData:HIDE, permissions:HIDE, notifications:HIDE, profile:EDIT
+  }
+};
+
+let currentRole = "客服总监";
 let currentModule = "dashboard";
 let currentHealthFilter = "all";
 
-// 从localStorage加载权限配置（如果有的话）
 let rolePermissions = {};
-try {
-  const saved = localStorage.getItem("chansee_permissions");
-  rolePermissions = saved ? JSON.parse(saved) : {...DEFAULT_PERMISSIONS};
-} catch(e) {
-  rolePermissions = {...DEFAULT_PERMISSIONS};
-}
+(function initRolePermissions(){
+  try {
+    var saved = localStorage.getItem("chansee_permissions");
+    rolePermissions = saved ? JSON.parse(saved) : {};
+    var needsMigration = false;
+    var keys = Object.keys(rolePermissions);
+    // 检测是否有旧格式（字符串权限值）
+    for(var k=0; k<keys.length; k++){
+      var perms = rolePermissions[keys[k]];
+      if(typeof perms !== 'object' || perms === null){ needsMigration=true; break; }
+      var mks = Object.keys(perms);
+      for(var m=0; m<mks.length; m++){
+        if(typeof perms[mks[m]] === 'string'){ needsMigration=true; break; }
+      }
+      if(needsMigration) break;
+    }
+    // 检测是否缺少任何当前角色
+    if(!needsMigration){
+      for(var ri=0; ri<ROLES.length; ri++){
+        if(!rolePermissions[ROLES[ri]]){ needsMigration=true; break; }
+      }
+    }
+    if(Object.keys(rolePermissions).length === 0 || needsMigration){
+      // 默认数据打底
+      var merged = JSON.parse(JSON.stringify(DEFAULT_PERMISSIONS));
+      // 将旧数据中的字符串格式转换为对象格式后合并
+      for(var rk in rolePermissions){
+        if(rolePermissions.hasOwnProperty(rk) && typeof rolePermissions[rk] === 'object' && rolePermissions[rk] !== null){
+          // 转换该角色下所有模块的字符串权限为对象格式
+          var oldRolePerms = {};
+          var moduleKeys = Object.keys(rolePermissions[rk]);
+          for(var mi=0; mi<moduleKeys.length; mi++){
+            var mk = moduleKeys[mi];
+            var mv = rolePermissions[rk][mk];
+            if(typeof mv === 'string'){
+              if(mv === 'write') oldRolePerms[mk] = {visible:true,view:true,edit:true,import:false,export:true,manage:false,scope:'all'};
+              else if(mv === 'read') oldRolePerms[mk] = {visible:true,view:true,edit:false,import:false,export:true,manage:false,scope:'all'};
+              else oldRolePerms[mk] = {visible:false,view:false,edit:false,import:false,export:false,manage:false,scope:'all'};
+            } else {
+              oldRolePerms[mk] = mv;
+            }
+          }
+          if(merged[rk]){
+            // 合并：默认数据打底，旧数据覆盖（但只覆盖有数据的模块）
+            for(var omk in oldRolePerms){
+              if(oldRolePerms.hasOwnProperty(omk)) merged[rk][omk] = oldRolePerms[omk];
+            }
+          } else {
+            merged[rk] = oldRolePerms;
+          }
+        }
+      }
+      rolePermissions = merged;
+      try { localStorage.setItem("chansee_permissions", JSON.stringify(rolePermissions)); } catch(e){}
+    }
+  } catch(e) {
+    rolePermissions = JSON.parse(JSON.stringify(DEFAULT_PERMISSIONS));
+  }
+})();
 
-// 保存权限配置到localStorage
-function savePermissions() {
-  localStorage.setItem("chansee_permissions", JSON.stringify(rolePermissions));
-}
-
-// 获取当前角色对某个模块的权限
 function getPermission(module) {
-  const p = rolePermissions[currentRole];
-  if (!p) return "hidden";
-  return p[module] || "hidden";
+  var rp = rolePermissions[currentRole];
+  if (!rp) return { visible:false, view:false, edit:false, import:false, export:false, manage:false, scope:'all' };
+  var mp = rp[module];
+  if (typeof mp === 'string') {
+    if (mp === 'write') return { visible:true, view:true, edit:true, import:false, export:true, manage:false, scope:'all' };
+    if (mp === 'read')  return { visible:true, view:true, edit:false, import:false, export:true, manage:false, scope:'all' };
+    return { visible:false, view:false, edit:false, import:false, export:false, manage:false, scope:'all' };
+  }
+  if (mp && typeof mp === 'object') return {
+    visible: mp.visible!==false, view: mp.view!==false,
+    edit: mp.edit===true, import: mp.import===true,
+    export: mp.export===true, manage: mp.manage===true,
+    scope: mp.scope || 'all'
+  };
+  return { visible:false, view:false, edit:false, import:false, export:false, manage:false, scope:'all' };
 }
 
-// 检查当前角色是否可以编辑某个模块
-function canEditModule(module) {
-  return getPermission(module) === "write";
-}
-
-// 检查当前角色是否可以查看某个模块
-function canViewModule(module) {
-  const p = getPermission(module);
-  return p === "write" || p === "read";
-}
+function canEditModule(module) { return getPermission(module).edit === true; }
+function canViewModule(module) { var p = getPermission(module); return p.visible === true && p.view === true; }
 
 // ===== 初始化 =====
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   try {
     initNav();
     initModal();
+
+    // === 🚀 从 login.html 跳转过来时，直接信任登录凭证，不走 checkLogin 复杂逻辑 ===
+    var _isFromLogin = window.location.search.indexOf('from=login') !== -1;
+    if (_isFromLogin) {
+      try {
+        var _authStr = localStorage.getItem('chanseen_auth');
+        if (_authStr) {
+          var _auth = JSON.parse(_authStr);
+          var _maxAge = _auth.remember ? 604800000 : 3600000;
+          if (_auth.token && (Date.now() - _auth.loginAt) < _maxAge) {
+            var _u = USERS.find(function(u){ return u.id === (_auth.user && _auth.user.id) || u.username === (_auth.user && _auth.user.username); }) || USERS[0] || {};
+            currentUser = {
+              id: _u.id || 'U001', username: _u.username || 'admin',
+              name: _u.name || _u.nickname || '系统创建者', role: _u.role || '超级管理员',
+              avatar: _u.avatar || '', position: _u.position || '客服总监',
+              brand: _u.brand || 'Chanseen', nickname: _u.nickname || _u.name || '系统创建者',
+              birthday: _u.birthday || '', phone: _u.phone || '', email: _u.email || ''
+            };
+            currentRole = currentUser.role || '超级管理员';
+            hideLoginModal();
+            updateUserDisplay();
+            setAppContentVisible(true);
+            if (window.history.replaceState) window.history.replaceState({}, document.title, 'index.html');
+            // 继续渲染界面
+            document.querySelectorAll(".nav-section").forEach(function(sec,idx){
+              var arrow = sec.querySelector('.section-arrow');
+              if(idx===0){ sec.classList.remove("collapsed"); if(arrow) arrow.textContent = '▼'; }
+              else { sec.classList.add("collapsed"); if(arrow) arrow.textContent = '▶'; }
+            });
+            renderModule("dashboard");
+            return;
+          }
+        }
+      } catch(_fe) { /* fast fail → 走下方正常 checkLogin */ }
+    }
+
     // 登录检查：未登录则只显示登录框，不初始化主界面
-    const loggedIn = checkLogin();
+    const loggedIn = await checkLogin();
     if (!loggedIn) return;
     // 默认：只展开第一个分组，其余折叠
     document.querySelectorAll(".nav-section").forEach((sec,idx) => {
@@ -1961,7 +2186,7 @@ function renderModule(module){
   try {
     currentModule = module;
     const area = document.getElementById("module-content");
-    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
+    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, systemData:renderSystemData, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
     area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
     bindEvents();
   } catch(e) {
@@ -2049,14 +2274,6 @@ function renderFilterBar() {
   statuses.forEach(function(s){ row1 += '<option value="'+s+'"'+(filterState.status===s?' selected':'')+'>'+s+'</option>'; });
   row1 += '</select>';
 
-  row1 += '<select class="fb-select" id="filter-health" onchange="setFilter(\'health\',this.value)" title="健康度">';
-  row1 += '<option value="" disabled selected hidden>健康度 ▼</option>';
-  row1 += '<option value="all"'+(filterState.health==='all'?' selected':'')+'>全部</option>';
-  healths.forEach(function(h){
-    var label = h==='🟢'?'🟢 健康':h==='🟡'?'🟡 预警':'🔴 风险';
-    row1 += '<option value="'+h+'"'+(filterState.health===h?' selected':'')+'>'+label+'</option>';
-  });
-  row1 += '</select>';
   row1 += '</div>';
 
   // 自定义时间
@@ -2068,8 +2285,8 @@ function renderFilterBar() {
       '</div>';
   }
 
-  // 第二行：搜索下拉
-  var row2 = '<div class="filter-row-v4 filter-row-v4-second">';
+  // 第二行：搜索下拉（默认隐藏）
+  var row2 = '<div class="filter-row-v4 filter-row-v4-second" id="filter-row-advanced" style="display:none;">';
 
   // 平台
   var pfLabel = '平台 ▼';
@@ -2130,11 +2347,22 @@ function renderFilterBar() {
     '</div>';
   row2 += '</div>';
 
-  // 高级筛选按钮
-  row2 += '<button class="fb-adv-btn" onclick="alert(\'高级筛选 - 待开发\')">高级筛选</button>';
+  // 高级筛选切换按钮
+  var isAdvVisible = window._advFilterVisible || false;
+  row2 += '<button class="fb-adv-btn '+(isAdvVisible?'fb-adv-btn-active':'')+'" onclick="toggleAdvancedFilter()">'+(isAdvVisible?'收起筛选':'高级筛选')+'</button>';
   row2 += '</div>';
 
   return '<div class="filter-bar-v4">' + tagsHtml + row1 + customTimeHtml + row2 + '</div>';
+}
+
+// 高级筛选切换
+function toggleAdvancedFilter() {
+  var el = document.getElementById('filter-row-advanced');
+  if (!el) return;
+  var isVisible = el.style.display !== 'none';
+  el.style.display = isVisible ? 'none' : 'flex';
+  window._advFilterVisible = !isVisible;
+  renderModule(currentModule);
 }
 
 // ----- 筛选栏 v4 辅助函数 -----
@@ -2489,7 +2717,7 @@ function canEdit(){
 }
 
 function canViewAll(){
-  return currentRole === "管理员" || currentRole === "管理候选";
+  return currentRole === "超级管理员" || currentRole === "管理员" || currentRole === "客服总监";
 }
 
 
@@ -2569,16 +2797,29 @@ function renderDashboard(){
   // 满意度细分维度（模拟数据）
   const dimScores = {comm:4.5, exec:4.7, collab:4.3};
 
-  // KPI sparkline 数据（模拟）
-    var _trendRev = calculateKpiTrend('revenue');
+  // KPI 趋势数据（从 KPI_HISTORY 计算）
+  var _trendRev = calculateKpiTrend('revenue');
   var _trendCost = calculateKpiTrend('cost');
   var _trendProfit = calculateKpiTrend('profitRate');
   var _trendTarget = calculateKpiTrend('targetRate');
+
+  // KPI 数据从 KPI_HISTORY 读取
+  var lastKpi = KPI_HISTORY && KPI_HISTORY.length > 0 ? KPI_HISTORY[KPI_HISTORY.length-1] : null;
+  var kpiRevenue = lastKpi ? (lastKpi.revenue/10000).toFixed(1)+'万' : (totalRevenue/10000).toFixed(1)+'万';
+  var kpiCost = lastKpi ? (lastKpi.cost/10000).toFixed(1)+'万' : (totalCost/10000).toFixed(1)+'万';
+  var kpiProfit = lastKpi ? lastKpi.profitRate.toFixed(2) : avgProfit;
+  var kpiTarget = lastKpi ? lastKpi.targetRate+'%' : '--';
+
+  // KPI sparkline 数据（从 KPI_HISTORY 动态生成）
+  var spRev = generateSparklinePath('revenue');
+  var spCost = generateSparklinePath('cost');
+  var spProfit = generateSparklinePath('profitRate');
+  var spTarget = generateSparklinePath('targetRate');
   const kpiCards = [
-    {label:'月度总销售额', value:isNaN(totalRevenue)?'0.0万':(totalRevenue/10000).toFixed(1)+'万', trend:_trendRev.trend, trendUp:_trendRev.trendUp, areaColor:_trendRev.areaColor, strokeColor:_trendRev.strokeColor, path:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,40 24,36 T 44,32 T 64,28 T 84,24 T 104,20'},
-    {label:'月度总成本', value:isNaN(totalCost)?'0.0万':(totalCost/10000).toFixed(1)+'万', trend:_trendCost.trend, trendUp:_trendCost.trendUp, areaColor:_trendCost.areaColor, strokeColor:_trendCost.strokeColor, path:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,38 24,36 T 44,34 T 64,36 T 84,32 T 104,28'},
-    {label:'项目费效比', value:'1.19', trend:_trendProfit.trend, trendUp:_trendProfit.trendUp, areaColor:_trendProfit.areaColor, strokeColor:_trendProfit.strokeColor, path:'M 4,42 Q 14,40 24,38 T 44,36 T 64,32 T 84,30 T 104,26 L 104,50 L 4,50 Z', strokePath:'M 4,42 Q 14,40 24,38 T 44,36 T 64,32 T 84,30 T 104,26'},
-    {label:'目标达成率', value:'94.2%', trend:_trendTarget.trend, trendUp:_trendTarget.trendUp, areaColor:_trendTarget.areaColor, strokeColor:_trendTarget.strokeColor, path:'M 4,44 Q 14,42 24,40 T 44,38 T 64,36 T 84,34 T 104,30 L 104,50 L 4,50 Z', strokePath:'M 4,44 Q 14,42 24,40 T 44,38 T 64,36 T 84,34 T 104,30'},
+    {label:'月度总销售额', value:kpiRevenue, trend:_trendRev.trend, trendUp:_trendRev.trendUp, areaColor:_trendRev.areaColor, strokeColor:_trendRev.strokeColor, path:spRev.areaPath, strokePath:spRev.strokePath},
+    {label:'月度总成本', value:kpiCost, trend:_trendCost.trend, trendUp:_trendCost.trendUp, areaColor:_trendCost.areaColor, strokeColor:_trendCost.strokeColor, path:spCost.areaPath, strokePath:spCost.strokePath},
+    {label:'项目费效比', value:kpiProfit, trend:_trendProfit.trend, trendUp:_trendProfit.trendUp, areaColor:_trendProfit.areaColor, strokeColor:_trendProfit.strokeColor, path:spProfit.areaPath, strokePath:spProfit.strokePath},
+    {label:'目标达成率', value:kpiTarget, trend:_trendTarget.trend, trendUp:_trendTarget.trendUp, areaColor:_trendTarget.areaColor, strokeColor:_trendTarget.strokeColor, path:spTarget.areaPath, strokePath:spTarget.strokePath},
     {label:'健康项目数', value:green+'/'+all.length, trend:'查看详情 →', trendUp:true, areaColor:'#ffffff', strokeColor:'#ffffff', path:'M 4,42 Q 14,40 28,38 T 52,36 T 76,32 T 100,30 T 124,26 L 124,50 L 4,50 Z', strokePath:'M 4,42 Q 14,40 28,38 T 52,36 T 76,32 T 100,30 T 124,26'}
   ];
 
@@ -2596,7 +2837,6 @@ function renderDashboard(){
       <button class="btn btn-sm" onclick="importData()">📂 导入数据</button>
       <button class="btn btn-sm" onclick="openDataManager()">⚙️ 数据管理</button>
       <button class="btn btn-sm" onclick="showChangeLog()">📋 修改历史</button>
-      <a href="#" class="btn btn-sm btn-primary" onclick="renderModule('comparison');return false;">📊 项目对比</a>
     </div>
   </div>
 
@@ -2893,51 +3133,59 @@ function renderDashboard(){
 
   </div>
 
-  <!-- 项目健康明细 -->
-  <div class="card" style="padding:12px 16px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <span style="font-size:13px;font-weight:600;color:#1e40af;">项目健康明细</span>
-      <a href="#" style="font-size:11px;color:#3b82f6;" onclick="renderModule('operation');return false;">查看完整健康报告 →</a>
-    </div>
-    <div style="overflow-x:auto;">
-      <table style="width:100%;border-collapse:collapse;font-size:11px;min-width:500px;">
-        <thead>
-          <tr style="background:#eff6ff;">
-            <th style="padding:5px 4px;text-align:left;color:#1e40af;font-weight:600;">项目</th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">人力</th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">服务</th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">销售</th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">退货</th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">风险</th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:40px;">成本</th>
-            <th style="padding:5px 4px;text-align:center;color:#1e40af;font-weight:600;width:50px;">综合</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${all.map(p=>{
-            const h = HEALTH_DATA.find(hh=>hh.projectId===p.id&&hh.period==="2026-05");
-            const dims = h ? h.dimensions : [];
-            const getDim = name=>{
-              const d = dims.find(dd=>dd.name.includes(name));
-              if(!d) return '<span style="color:#9ca3af;">-</span>';
-              return d.level==='优秀'||d.level==='健康'?'<span style="color:#22c55e;font-size:12px;">●</span>':d.level==='需注意'?'<span style="color:#eab308;font-size:12px;">●</span>':'<span style="color:#ef4444;font-size:12px;">●</span>';
-            };
-            const score = h?h.overallScore:'--';
-            const scoreColor = score>=90?'#dcfce7':score>=80?'#fef9c3':'#fee2e2';
-            const scoreText = score>=90?'#166534':score>=80?'#854d0e':'#991b1b';
-            return `<tr style="border-bottom:1px solid #f1f5f9;">
-              <td style="padding:5px 4px;"><a href="#" style="color:var(--c-primary);font-size:11px;" onclick="showProjectDetail('${p.id}');return false;">${p.name}</a></td>
-              <td style="padding:5px 4px;text-align:center;">${getDim('人力')}</td>
-              <td style="padding:5px 4px;text-align:center;">${getDim('服务')}</td>
-              <td style="padding:5px 4px;text-align:center;">${getDim('销售')}</td>
-              <td style="padding:5px 4px;text-align:center;">${getDim('退货')}</td>
-              <td style="padding:5px 4px;text-align:center;">${getDim('风险')}</td>
-              <td style="padding:5px 4px;text-align:center;">${getDim('成本')}</td>
-              <td style="padding:5px 4px;text-align:center;"><span style="display:inline-block;padding:2px 8px;border-radius:4px;background:${scoreColor};color:${scoreText};font-size:10px;font-weight:600;">${score}</span></td>
-            </tr>`;
-          }).join('')}
-        </tbody>
-      </table>
+  <!-- 近期动态时间线 -->
+  <div class="card" style="padding:0;overflow:hidden;border:1px solid transparent;background:linear-gradient(135deg,#0ABAB5,#3b82f6,#8b5cf6) padding-box,linear-gradient(135deg,#0ABAB5,#3b82f6,#8b5cf6) border-box;">
+    <div style="background:#fff;padding:12px 16px;">
+      <div style="display:flex;gap:16px;">
+      <div style="flex:1;min-width:0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:13px;font-weight:600;color:#1e293b;">近期动态</span>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="goToModule('issue');return false;">查看全部动态 →</a>
+      </div>
+      <!-- 时间线内容 -->
+      <div style="max-height:280px;overflow-y:auto;" class="tl-container">
+        ${(function(){
+          var events = [];
+          var newProjects = PROJECTS.slice().sort(function(a,b){ return (b.startDate||'').localeCompare(a.startDate||''); }).slice(0,2);
+          newProjects.forEach(function(p){ events.push({type:'new', title:'新增项目', text:p.name, detail:p.startDate||'', icon:'🆕', color:'#10b981'}); });
+          var urgentIssues = ISSUES.filter(function(i){ return i.priority==='紧急' && i.status!=='已关闭'; }).slice(0,2);
+          urgentIssues.forEach(function(i){ events.push({type:'urgent', title:'紧急问题', text:i.desc.substring(0,20)+(i.desc.length>20?'...':''), detail:i.projectName||'', icon:'⚠️', color:'#f59e0b'}); });
+          var completedHandovers = HANDOVERS.filter(function(h){ return h.status==='已完成'; }).slice(0,2);
+          completedHandovers.forEach(function(h){ events.push({type:'handover', title:'PM交接', text:h.from+'→'+h.to, detail:h.projectName, icon:'🔄', color:'#3b82f6'}); });
+          var closedIssues = ISSUES.filter(function(i){ return i.status==='已关闭'; }).slice(0,2);
+          closedIssues.forEach(function(i){ events.push({type:'closed', title:'问题关闭', text:i.desc.substring(0,20)+(i.desc.length>20?'...':''), detail:i.projectName||'', icon:'✅', color:'#6b7280'}); });
+          events.sort(function(a,b){ return (b.detail||'').localeCompare(a.detail||''); });
+          events = events.slice(0,4);
+          if(events.length===0) return '<div style="padding:20px;text-align:center;color:#94a3b8;">暂无动态</div>';
+          return events.map(function(e,idx){
+            return '<div class="tl-item" style="padding-left:4px;">'
+              +'<div class="tl-dot" style="background:'+e.color+'20;color:'+e.color+';">'+e.icon+'</div>'
+              +'<div class="tl-content">'
+                +'<div class="tl-title">'+e.title+'<span class="tl-badge" style="background:'+e.color+'15;color:'+e.color+';margin-left:6px;">'+e.type+'</span></div>'
+                +'<div style="font-size:13px;color:#1e293b;margin-top:2px;">'+e.text+'</div>'
+                +'<div class="tl-time">'+e.detail+'</div>'
+              +'</div>'
+              +(idx<events.length-1?'<div class="tl-line" style="left:38px;top:34px;"></div>':'')
+            +'</div>';
+          }).join('');
+        })()}
+      </div>
+      </div>
+      <!-- 极光装饰（事件右侧，不占事件宽） -->
+      <div class="tl-decoration">
+        <div class="tl-flow tl-flow-1" style="animation-delay:0s;"></div>
+        <div class="tl-flow tl-flow-2" style="animation-delay:1.5s;"></div>
+        <div class="tl-flow tl-flow-3" style="animation-delay:3s;"></div>
+        <div class="tl-flow tl-flow-4" style="animation-delay:4.5s;"></div>
+      </div>
+      </div>
+      <!-- 底部图例 -->
+      <div style="display:flex;justify-content:center;gap:16px;margin-top:8px;padding-top:8px;border-top:1px solid #f1f5f9;clear:both;">
+        <span style="font-size:10px;color:#94a3b8;display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block;"></span>新增项目</span>
+        <span style="font-size:10px;color:#94a3b8;display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>紧急问题</span>
+        <span style="font-size:10px;color:#94a3b8;display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:#3b82f6;display:inline-block;"></span>PM交接</span>
+        <span style="font-size:10px;color:#94a3b8;display:flex;align-items:center;gap:4px;"><span style="width:6px;height:6px;border-radius:50%;background:#6b7280;display:inline-block;"></span>问题关闭</span>
+      </div>
     </div>
   </div>`;
 
@@ -3355,6 +3603,7 @@ function renderHealthScoreTable(projects) {
         <thead>
           <tr>
             <th style="width:50px;">排名</th>
+            <th style="width:50px;">对比</th>
             <th onclick="sortHealthTable('name')" style="cursor:pointer;">店铺名称 ${sortArrow("name")}</th>
             <th onclick="sortHealthTable('workplace')" style="cursor:pointer;">职场 ${sortArrow("workplace")}</th>
             <th>类型</th>
@@ -3376,6 +3625,7 @@ function renderHealthScoreTable(projects) {
             const rankIcon = idx === 0 ? "🥇" : (idx === 1 ? "🥈" : (idx === 2 ? "🥉" : (idx + 1)));
             return `<tr class="${rankClass}">
               <td class="rank-col">${rankIcon}</td>
+              <td><input type="checkbox" onchange="toggleCompareCheckbox('${p.id}')" ${(window._selectedCompareIds||[]).indexOf(p.id)>=0?'checked':''} style="width:16px;height:16px;accent-color:#0ABAB5;cursor:pointer;"></td>
               <td>${p.name}</td>
               <td>${p.workplace}</td>
               <td>${p.serviceMode}</td>
@@ -3391,6 +3641,22 @@ function renderHealthScoreTable(projects) {
         </tbody>
       </table>
     </div>
+    ${(window._selectedCompareIds||[]).length === 2 ? (function(){
+      var cids = window._selectedCompareIds;
+      var cp1 = PROJECTS.find(function(pp){return pp.id===cids[0];});
+      var cp2 = PROJECTS.find(function(pp){return pp.id===cids[1];});
+      if(!cp1||!cp2) return '';
+      var ch1 = HEALTH_DATA.find(function(hh){return hh.projectId===cp1.id;});
+      var ch2 = HEALTH_DATA.find(function(hh){return hh.projectId===cp2.id;});
+      var cs1 = ch1 ? ch1.overallScore : 0;
+      var cs2 = ch2 ? ch2.overallScore : 0;
+      return '<div style="display:flex;align-items:center;gap:16px;padding:10px 16px;background:linear-gradient(135deg,#0B9B96,#3b82f6);color:#fff;border-radius:0 0 12px 12px;font-size:13px;">'
+        +'<span>已选: <b>'+cp1.name+'</b> vs <b>'+cp2.name+'</b></span>'
+        +'<span style="margin-left:auto;font-weight:600;">'+cs1+' vs '+cs2+'</span>'
+        +'<button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.3);" onclick="openComparePanel()">开始对比</button>'
+        +'<button onclick="window._selectedCompareIds=[];renderModule(\'operation\')" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;line-height:24px;text-align:center;">x</button>'
+        +'</div>';
+    })() : ''}
   </div>`;
 }
 
@@ -3514,113 +3780,102 @@ function renderOperation() {
 // ===== 问题与课题协作 =====
 
 function renderIssue(){
+  if(typeof issueActiveTab === 'undefined'){ window.issueActiveTab = 'issue'; }
+  var tab = window.issueActiveTab || 'issue';
+  var isIssue = tab === 'issue';
+  var can = canEdit();
 
-  const can = canEdit();
+  // 过滤数据
+  var items = ISSUES.filter(function(i){ return i.category === (isIssue ? '问题' : '课题'); });
+  var fs = window.issueFilterState || {};
+  if(fs.status && fs.status !== 'all') items = items.filter(function(i){ return i.status === fs.status; });
+  if(fs.priority && fs.priority !== 'all') items = items.filter(function(i){ return i.priority === fs.priority; });
+  if(fs.type && fs.type !== 'all') items = items.filter(function(i){ return i.type === fs.type; });
+  if(fs.assignee && fs.assignee !== 'all') items = items.filter(function(i){ return i.assignee === fs.assignee; });
+  if(fs.keyword) items = items.filter(function(i){ return (i.desc||'').indexOf(fs.keyword)>=0||(i.projectName||'').indexOf(fs.keyword)>=0||i.id.toString().indexOf(fs.keyword)>=0; });
 
-  // 计算各状态数量
-  const countPending = ISSUES.filter(i=>i.status==='待处理').length;
-  const countProcessing = ISSUES.filter(i=>i.status==='处理中').length;
-  const countVerify = ISSUES.filter(i=>i.status==='待验收').length;
-  const countClosed = ISSUES.filter(i=>i.status==='已关闭').length;
-  const countAll = ISSUES.length;
+  // 统计卡片
+  var counts = { pending:0, processing:0, verify:0, closed:0, all:items.length };
+  items.forEach(function(i){
+    if(i.status==='待处理'||i.status==='未开始') counts.pending++;
+    else if(i.status==='处理中'||i.status==='进行中') counts.processing++;
+    else if(i.status==='待验收') counts.verify++;
+    else if(i.status==='已关闭') counts.closed++;
+  });
 
-  return `
-  ${renderFilterBar()}
+  // 独立筛选栏
+  var allPriorities = ['紧急','重要','一般'];
+  var allTypes = isIssue ? ['整改','客诉','数据异常','流程卡点','系统故障','优化'] : ['流程优化','调研诊断','销售提升','服务升级','成本优化','风险防控','其他'];
+  var allAssignees = [];
+  ISSUES.forEach(function(i){ if(i.assignee && allAssignees.indexOf(i.assignee)<0) allAssignees.push(i.assignee); });
 
-  <div class="issue-page-header">
-    <div class="issue-page-title-row">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-      <h1 class="issue-page-title">问题与课题协作</h1>
-    </div>
-    <p class="issue-page-desc">问题登记、跟踪与闭环管理，支持跨职场协同</p>
-  </div>
+  function sel(name, options, allLabel){
+    var html = '<select id="issue-filter-'+name+'" onchange="filterIssues()" style="padding:6px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;color:#475569;background:#fff;cursor:pointer;outline:none;">';
+    html += '<option value="all">全部'+allLabel+'</option>';
+    options.forEach(function(o){ html += '<option value="'+o+'" '+(fs[name]===o?'selected':'')+'>'+o+'</option>'; });
+    html += '</select>';
+    return html;
+  }
 
-  <div class="issue-stat-cards">
-    <div class="issue-stat-card issue-stat-pending">
-      <p class="issue-stat-label">待处理</p>
-      <p class="issue-stat-count">${countPending}</p>
-    </div>
-    <div class="issue-stat-card issue-stat-processing">
-      <p class="issue-stat-label">处理中</p>
-      <p class="issue-stat-count">${countProcessing}</p>
-    </div>
-    <div class="issue-stat-card issue-stat-verify">
-      <p class="issue-stat-label">待验收</p>
-      <p class="issue-stat-count">${countVerify}</p>
-    </div>
-    <div class="issue-stat-card issue-stat-closed">
-      <p class="issue-stat-label">已关闭</p>
-      <p class="issue-stat-count">${countClosed}</p>
-    </div>
-  </div>
+  var statCards = isIssue
+    ? [{l:'待处理',c:counts.pending,cls:'issue-stat-pending'},{l:'处理中',c:counts.processing,cls:'issue-stat-processing'},{l:'待验收',c:counts.verify,cls:'issue-stat-verify'},{l:'已关闭',c:counts.closed,cls:'issue-stat-closed'}]
+    : [{l:'未开始',c:counts.pending,cls:'issue-stat-pending'},{l:'进行中',c:counts.processing,cls:'issue-stat-processing'},{l:'待验收',c:counts.verify,cls:'issue-stat-verify'},{l:'已关闭',c:counts.closed,cls:'issue-stat-closed'}];
+  var statHtml = '<div class="issue-stat-cards">'+statCards.map(function(s){ return '<div class="issue-stat-card '+s.cls+'"><p class="issue-stat-label">'+s.l+'</p><p class="issue-stat-count">'+s.c+'</p></div>'; }).join('')+'</div>';
 
-  <div class="issue-toolbar">
-    <div class="issue-filter-btns">
-      <span class="issue-filter-btn issue-filter-active">全部(${countAll})</span>
-      <span class="issue-filter-btn">待处理(${countPending})</span>
-      <span class="issue-filter-btn">处理中(${countProcessing})</span>
-      <span class="issue-filter-btn">待验收(${countVerify})</span>
-      <span class="issue-filter-btn">已关闭(${countClosed})</span>
-    </div>
-    ${can?'<div class="issue-add-btn" onclick="showAddIssue()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>上报问题</div>':''}
-  </div>
+  // 表格行
+  var rows = items.map(function(i){
+    var idLabel = isIssue ? 'I'+String(i.id).padStart(3,'0') : 'T'+String(i.id).padStart(3,'0');
+    var statusBadge = '<span class="issue-badge '+(i.status==='已关闭'?'issue-badge-success':i.status==='待处理'||i.status==='未开始'?'issue-badge-danger':'issue-badge-info')+'">'+i.status+'</span>';
+    var priorityBadge = '<span class="issue-priority-badge '+(i.priority==='紧急'?'issue-priority-danger':i.priority==='重要'?'issue-priority-warning':'issue-priority-gray')+'">'+i.priority+'</span>';
 
-  <div class="issue-table-wrapper">
-    <table class="issue-table">
-      <thead>
-        <tr>
-          <th style="width:9%;">状态</th>
-          <th style="width:9%;">课题编号</th>
-          <th style="width:12%;">项目</th>
-          <th style="width:7%;">类型</th>
-          <th style="width:26%;">问题描述</th>
-          <th style="width:7%;text-align:center;">优先级</th>
-          <th style="width:7%;">责任人</th>
-          <th style="width:8%;">责任归属</th>
-          <th style="width:15%;text-align:center;">操作</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${ISSUES.map(i=>{
-          const rowClass = (i.status==='待处理'||i.priority==='紧急')?'issue-row-danger':i.status==='待验收'?'issue-row-danger':i.status==='处理中'?'issue-row-warning':'';
-          let statusClass = '';
-          if(i.status==='已关闭') statusClass = 'issue-badge-success';
-          else if(i.status==='待处理') statusClass = 'issue-badge-danger';
-          else if(i.status==='待验收') statusClass = 'issue-badge-warning';
-          else statusClass = 'issue-badge-info';
+    if(isIssue){
+      return '<tr class="'+(i.status==='待处理'||i.priority==='紧急'?'issue-row-danger':i.status==='处理中'?'issue-row-warning':'')+'">'
+        +'<td>'+statusBadge+'</td>'
+        +'<td style="font-weight:500;">'+idLabel+'</td>'
+        +'<td>'+i.projectName+'</td>'
+        +'<td>'+i.type+'</td>'
+        +'<td style="color:#666;font-size:13px;">'+i.desc+'</td>'
+        +'<td style="text-align:center;">'+priorityBadge+'</td>'
+        +'<td>'+i.assignee+'</td>'
+        +'<td>'+(i.source||'')+'</td>'
+        +'<td style="text-align:center;"><span class="issue-action-btn issue-action-view" onclick="showIssueDetail('+i.id+')">查看</span></td>'
+        +'</tr>';
+    } else {
+      return '<tr class="topic-row" style="'+(i.status==='未开始'?'opacity:0.7':'')+'">'
+        +'<td>'+statusBadge+'</td>'
+        +'<td style="font-weight:500;color:#7c3aed;">'+idLabel+'</td>'
+        +'<td><span style="background:#f0f0ff;color:#7c3aed;padding:2px 8px;border-radius:4px;font-size:12px;">'+i.type+'</span></td>'
+        +'<td style="color:#666;font-size:13px;">'+i.desc+'</td>'
+        +'<td>'+i.assignee+'</td>'
+        +'<td style="text-align:center;">'+priorityBadge+'</td>'
+        +'<td>'+i.participants+'</td>'
+        +'<td style="text-align:center;"><span class="issue-action-btn issue-action-view" onclick="showIssueDetail('+i.id+')">查看</span></td>'
+        +'</tr>';
+    }
+  }).join('');
 
-          let priorityClass = '';
-          if(i.priority==='紧急') priorityClass = 'issue-priority-danger';
-          else if(i.priority==='重要') priorityClass = 'issue-priority-warning';
-          else priorityClass = 'issue-priority-gray';
-
-          return `
-          <tr class="${rowClass}">
-            <td><span class="issue-badge ${statusClass}">${i.status}</span></td>
-            <td style="font-weight:500;">I${String(i.id).padStart(3,'0')}</td>
-            <td>${i.projectName}</td>
-            <td>${i.type}</td>
-            <td style="color:var(--c-text-3,#666);">${i.desc}</td>
-            <td style="text-align:center;"><span class="issue-priority-badge ${priorityClass}">${i.priority}</span></td>
-            <td>${i.assignee}</td>
-            <td>${i.responsibility}</td>
-            <td style="text-align:center;">
-              <span class="issue-action-btn issue-action-view" onclick="showIssueDetail(${i.id})">查看</span>
-              ${can && i.status!=='已关闭'?'<span class="issue-action-btn issue-action-update" onclick="alert(\'处理功能开发中\')">更新</span>':''}
-            </td>
-          </tr>`;
-        }).join('')}
-      </tbody>
-    </table>
-  </div>
-
-  <div class="issue-legend">
-    <div class="issue-legend-item"><span class="issue-legend-color issue-legend-red"></span> 紧急/重要问题行高亮</div>
-    <div class="issue-legend-item"><span class="issue-legend-color issue-legend-blue"></span> 处理中</div>
-    <div class="issue-legend-item"><span class="issue-legend-color issue-legend-green"></span> 已关闭</div>
-  </div>`;
-
-
+  return '<div style="border-top:3px solid;border-image:linear-gradient(90deg,#0ABAB5,#3b82f6,#8b5cf6) 1;margin-bottom:20px;"></div>'
+    // 双药丸标签
+    +'<div style="display:flex;gap:12px;margin-bottom:16px;">'
+    +'<span class="issue-tab-pill '+(isIssue?'issue-tab-active issue-tab-issue':'issue-tab-inactive')+'" onclick="switchIssueTab(\'issue\')" style="background:'+(isIssue?'linear-gradient(135deg,#0ABAB5,#06b6d4)':'')+';">🔍 问题追踪</span>'
+    +'<span class="issue-tab-pill '+(!isIssue?'issue-tab-active issue-tab-topic':'issue-tab-inactive')+'" onclick="switchIssueTab(\'topic\')" style="background:'+(!isIssue?'linear-gradient(135deg,#8b5cf6,#a78bfa)':'')+';">📋 课题协作</span>'
+    + (can ? '<div style="margin-left:auto;"><button class="btn btn-sm btn-primary" onclick="showAddIssue()" style="padding:6px 14px;font-size:12px;">+'+(isIssue?'问题':'课题')+'</button></div>' : '')
+    +'</div>'
+    // 独立筛选栏
+    +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">'
+    + sel('priority',allPriorities,'优先级') + sel('type',allTypes,'类型') + sel('assignee',allAssignees,'责任人')
+    +'<div style="position:relative;flex:1;min-width:140px;"><input id="issue-search" placeholder="搜索关键词..." value="'+(fs.keyword||'')+'" onkeydown="if(event.key===\'Enter\')filterIssues()" style="width:100%;padding:6px 10px;padding-left:28px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;outline:none;"><span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:12px;">🔍</span></div>'
+    +'<span onclick="filterIssues()" style="cursor:pointer;color:#0ABAB5;font-size:12px;">筛选</span>'
+    +'<span onclick="document.getElementById(\'issue-search\').value=\'\';filterIssues()" style="cursor:pointer;color:#94a3b8;font-size:12px;">清除</span>'
+    +'</div>'
+    // 统计卡片
+    + statHtml
+    // 表格
+    +'<div class="issue-table-wrapper"><table class="issue-table"><thead><tr>'
+    + (isIssue ? '<th style="width:9%;">状态</th><th style="width:9%;">编号</th><th style="width:12%;">项目</th><th style="width:7%;">类型</th><th style="width:26%;">描述</th><th style="width:7%;text-align:center;">优先级</th><th style="width:7%;">责任人</th><th style="width:8%;">来源</th><th style="width:15%;text-align:center;">操作</th>'
+               : '<th style="width:9%;">状态</th><th style="width:9%;">编号</th><th style="width:12%;">课题类型</th><th style="width:26%;">描述</th><th style="width:7%;">负责人</th><th style="width:7%;text-align:center;">优先级</th><th style="width:12%;">参与人</th><th style="width:15%;text-align:center;">操作</th>')
+    +'</tr></thead><tbody>'+(rows||'<tr><td colspan="9" style="text-align:center;padding:40px;color:#94a3b8;">暂无数据</td></tr>')+'</tbody></table></div>'
+    +'<div class="issue-legend"><div class="issue-legend-item"><span class="issue-legend-color issue-legend-red"></span> 紧急/待处理行高亮</div><div class="issue-legend-item"><span class="issue-legend-color issue-legend-blue"></span> 处理中</div><div class="issue-legend-item"><span class="issue-legend-color issue-legend-green"></span> 已关闭</div></div>';
 }
 
 // ===== 核心知识能量池 =====
@@ -3655,7 +3910,6 @@ function renderKnowledge(){
   const permLabel = {'公开':'公开','内部':'内部','受限':'受限'};
 
   return `
-  ${renderFilterBar()}
 
   <div class="kyp-header">
     <div class="kyp-header-left">
@@ -4836,83 +5090,56 @@ function doNewHandover(){
 
 
 function showIssueDetail(id){
-
   const i = ISSUES.find(ii=>ii.id===id);
-
   if(!i) return;
+  var isIssue = i.category === '问题';
+  var accentColor = isIssue ? '#dc2626' : '#7c3aed';
+  var accentBg = isIssue ? '#fef2f2' : '#f5f3ff';
+  var idLabel = isIssue ? 'I'+String(id).padStart(3,'0') : 'T'+String(id).padStart(3,'0');
 
-  const body = document.getElementById("modal-body");
+  document.getElementById("modal-title").textContent = (isIssue?'🔍 问题':'📋 课题')+'详情 '+idLabel;
 
-  document.getElementById("modal-title").textContent = "课题详情 I"+String(id).padStart(3,"0");
+  var html = '<div style="border-top:3px solid '+accentColor+';border-radius:8px;overflow:hidden;">';
+  // 基本信息
+  html += '<div class="detail-grid" style="margin-bottom:16px;padding-top:12px;">';
+  var fields = [
+    ['类别', isIssue ? '问题' : '课题'],
+    ['关联项目', i.projectName || '--'],
+    ['类型', i.type],
+    ['优先级', '<span style="color:'+(i.priority==='紧急'?'#dc2626':i.priority==='重要'?'#d97706':'#6b7280')+';font-weight:600;">'+i.priority+'</span>'],
+    ['状态', '<span style="color:'+(i.status==='已关闭'?'#10b981':i.status==='待处理'||i.status==='未开始'?'#dc2626':'#06b6d4')+';font-weight:600;">'+i.status+'</span>'],
+    ['责任人', i.assignee || '--'],
+    ['来源', i.source || '--'],
+    ['参与人', i.participants || '--']
+  ];
+  fields.forEach(function(f){ html += '<div class="detail-item"><div class="detail-label">'+f[0]+'</div><div class="detail-value">'+f[1]+'</div></div>'; });
+  html += '</div>';
 
-  body.innerHTML = `
+  // 描述
+  html += '<div style="background:'+accentBg+';padding:12px;border-radius:8px;margin-bottom:10px;"><div style="font-size:12px;color:'+accentColor+';font-weight:500;">描述</div><div style="margin-top:4px;font-size:13px;color:#1e293b;">'+i.desc+'</div></div>';
 
-    <div class="detail-grid" style="margin-bottom:16px;">
+  // 背景
+  if(i.background) html += '<div style="background:#f8fafc;padding:12px;border-radius:8px;margin-bottom:10px;"><div style="font-size:12px;color:#64748b;font-weight:500;">背景</div><div style="margin-top:4px;font-size:13px;color:#1e293b;">'+i.background+'</div></div>';
 
-      <div class="detail-item"><div class="detail-label">关联项目</div><div class="detail-value">${i.projectName}</div></div>
+  // 根因
+  if(i.rootCause) html += '<div style="background:#f8fafc;padding:12px;border-radius:8px;margin-bottom:10px;"><div style="font-size:12px;color:#64748b;font-weight:500;">根本原因</div><div style="margin-top:4px;font-size:13px;color:#1e293b;">'+i.rootCause+'</div></div>';
 
-      <div class="detail-item"><div class="detail-label">问题类型</div><div class="detail-value">${i.type}</div></div>
+  // 方案
+  if(i.solution) html += '<div style="background:#f0fdf4;padding:12px;border-radius:8px;margin-bottom:10px;"><div style="font-size:12px;color:#16a34a;font-weight:500;">解决方案</div><div style="margin-top:4px;font-size:13px;color:#1e293b;">'+i.solution+'</div></div>';
 
-      <div class="detail-item"><div class="detail-label">优先级</div><div class="detail-value"><span class="badge ${i.priority==='紧急'?'badge-red':i.priority==='重要'?'badge-yellow':'badge-gray'}">${i.priority}</span></div></div>
+  // 里程碑
+  if(i.milestone) html += '<div style="background:#f8fafc;padding:12px;border-radius:8px;margin-bottom:10px;"><div style="font-size:12px;color:#64748b;font-weight:500;">关键节点</div><div style="margin-top:4px;font-size:13px;color:#1e293b;">'+i.milestone+'</div></div>';
 
-      <div class="detail-item"><div class="detail-label">当前状态</div><div class="detail-value"><span class="badge ${i.status==='已关闭'?'badge-green':'badge-yellow'}">${i.status}</span></div></div>
+  // 成果
+  if(i.outcome) html += '<div style="background:#f0fdf4;padding:12px;border-radius:8px;margin-bottom:10px;"><div style="font-size:12px;color:#16a34a;font-weight:500;">成果</div><div style="margin-top:4px;font-size:13px;color:#1e293b;">'+i.outcome+'</div></div>';
 
-      <div class="detail-item"><div class="detail-label">责任人</div><div class="detail-value">${i.assignee}</div></div>
+  html += '</div>';
 
-      <div class="detail-item"><div class="detail-label">责任归属</div><div class="detail-value">${i.responsibility}</div></div>
+  // 状态更新表单
+  html += (i.status!=='已关闭' ? '<div class="form-group"><label class="form-label">更新状态</label><select class="form-select" id="i-status-update" style="max-width:200px;"><option '+(i.status==='待处理'||i.status==='未开始'?'selected':'')+'>'+(isIssue?'待处理':'未开始')+'</option><option '+(i.status==='处理中'||i.status==='进行中'?'selected':'')+'>'+(isIssue?'处理中':'进行中')+'</option><option '+(i.status==='待验收'?'selected':'')+'>待验收</option><option '+(i.status==='已关闭'?'selected':'')+'>已关闭</option></select></div><div class="form-group"><label class="form-label">填写方案</label><textarea class="form-textarea" id="i-solution" placeholder="记录处理措施">'+(i.solution||'')+'</textarea></div><div class="form-actions"><button class="btn" onclick="document.getElementById(\'modal-overlay\').classList.add(\'hidden\')">关闭</button><button class="btn btn-primary" onclick="doUpdateIssue('+id+')">保存</button></div>' : '<div class="form-actions"><button class="btn" onclick="document.getElementById(\'modal-overlay\').classList.add(\'hidden\')">关闭</button></div>');
 
-    </div>
-
-    <div style="background:var(--c-bg);padding:12px;border-radius:var(--radius);margin-bottom:16px;">
-
-      <div style="font-size:12px;color:var(--c-text-3);">问题描述</div>
-
-      <div style="margin-top:4px;font-size:13px;">${i.desc}</div>
-
-    </div>
-
-    ${i.solution?'<div style="background:var(--c-green-bg);padding:12px;border-radius:var(--radius);margin-bottom:16px;"><div style="font-size:12px;color:var(--c-green);">解决方案</div><div style="margin-top:4px;font-size:13px;">'+i.solution+'</div></div>':''}
-
-    ${currentRole!=='leader'&&i.status!=='已关闭'?`
-
-    <div class="form-group">
-
-      <label class="form-label">更新处理状态</label>
-
-      <select class="form-select" id="i-status-update" style="max-width:200px;">
-
-        <option ${i.status==='待处理'?'selected':''}>待处理</option>
-
-        <option ${i.status==='处理中'?'selected':''}>处理中</option>
-
-        <option ${i.status==='待验收'?'selected':''}>待验收</option>
-
-        <option ${i.status==='已关闭'?'selected':''}>已关闭</option>
-
-      </select>
-
-    </div>
-
-    <div class="form-group">
-
-      <label class="form-label">填写解决方案</label>
-
-      <textarea class="form-textarea" id="i-solution" placeholder="记录处理措施与结果">${i.solution}</textarea>
-
-    </div>
-
-    <div class="form-actions">
-
-      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">关闭</button>
-
-      <button class="btn btn-primary" onclick="doUpdateIssue(${id})">保存更新</button>
-
-    </div>`:'<div class="form-actions"><button class="btn" onclick="document.getElementById(\'modal-overlay\').classList.add(\'hidden\')">关闭</button></div>'}
-
-  `;
-
+  document.getElementById("modal-body").innerHTML = html;
   document.getElementById("modal-overlay").classList.remove("hidden");
-
 }
 
 
@@ -6536,127 +6763,538 @@ function showAddUser(){
   renderModule("notifications");
 }
 
+
+// ===== 系统数据管理 - 全局变量 =====
+var _systemDataView = 'catalog';
+var _systemDataTab = 'projects';
+var _systemDataPage = 1;
+var _systemDataPageSize = 20;
+var _systemDataSortField = '';
+var _systemDataSortDir = 'asc';
+var _systemDataSearchKeyword = '';
+
+// ===== 系统数据管理 - 数据表定义 =====
+var SYSTEM_DATA_TABLES = {
+  projects: {
+    label: '\u{1F4CB} 项目数据表',
+    desc: '所有项目的完整档案数据，包含编号、名称、类型、职场、负责人、状态、健康度等核心字段。中控台全部5个页面均依赖此表。',
+    data: PROJECTS,
+    fields: [
+      {key:'id', label:'项目编号', type:'text', required:true},
+      {key:'name', label:'项目名称', type:'text', required:true},
+      {key:'brand', label:'品牌', type:'text', required:true},
+      {key:'category', label:'品类', type:'text'},
+      {key:'serviceMode', label:'项目类型', type:'select', options:['TP项目','DP项目','自营项目']},
+      {key:'workplace', label:'职场', type:'text'},
+      {key:'pm', label:'负责人', type:'text'},
+      {key:'status', label:'状态', type:'select', options:['优质健康店','平稳常规店','风险预警店','高危问题店']},
+      {key:'health', label:'健康度', type:'text'},
+      {key:'customerPlatforms', label:'平台', type:'text'}
+    ]
+  },
+  operations: {
+    label: '\u{1F4C8} 项目运营表',
+    desc: '各项目的运营数据，包含工单量、转化率、满意度、响应时效等指标。服务与进度追踪页面依赖此表。',
+    data: OPERATIONS,
+    fields: [
+      {key:'projectId', label:'项目ID', type:'text', required:true},
+      {key:'ticketVol', label:'工单量', type:'number'},
+      {key:'convCount', label:'转化数', type:'number'},
+      {key:'avgPrice', label:'客单价', type:'number'},
+      {key:'csat', label:'满意度', type:'text'},
+      {key:'responseTime', label:'响应时间(s)', type:'number'},
+      {key:'handleDuration', label:'处理时长(h)', type:'number'},
+      {key:'nps', label:'NPS', type:'number'},
+      {key:'satisfactionComm', label:'满意度-沟通', type:'number'},
+      {key:'satisfactionExec', label:'满意度-执行', type:'number'},
+      {key:'satisfactionCollab', label:'满意度-协作', type:'number'},
+      {key:'status', label:'状态', type:'text'}
+    ]
+  },
+  issues: {
+    label: '\u{1F9F0} 协同事项表',
+    desc: '问题与课题的统一登记、跟踪、闭环记录，包含问题(整改/客诉等)和课题(流程优化/调研诊断/销售提升/服务升级等)。问题与课题协作页面依赖此表。',
+    data: ISSUES,
+    fields: [
+      {key:'id', label:'编号', type:'text', required:true},
+      {key:'category', label:'类别', type:'select', options:['问题','课题']},
+      {key:'projectName', label:'项目', type:'text'},
+      {key:'type', label:'类型', type:'select', options:['整改','客诉','数据异常','流程卡点','系统故障','优化','流程优化','调研诊断','销售提升','服务升级','成本优化','风险防控','其他']},
+      {key:'desc', label:'描述', type:'textarea'},
+      {key:'priority', label:'优先级', type:'select', options:['紧急','重要','一般']},
+      {key:'assignee', label:'责任人', type:'text'},
+      {key:'status', label:'状态', type:'select', options:['待处理','处理中','待验收','已关闭','立项','执行中','结题']},
+      {key:'source', label:'来源', type:'text'},
+      {key:'background', label:'背景', type:'textarea'},
+      {key:'rootCause', label:'根因', type:'textarea'},
+      {key:'milestone', label:'关键节点', type:'textarea'},
+      {key:'outcome', label:'成果', type:'textarea'},
+      {key:'participants', label:'协同方', type:'text'}
+    ]
+  },
+  knowledge: {
+    label: '\u{1F4DA} 知识条目表',
+    desc: '客服团队的知识沉淀，包含SOP、话术、培训材料等。核心知识能量池页面依赖此表。',
+    data: typeof KNOWLEDGE !== 'undefined' ? KNOWLEDGE : [],
+    fields: [
+      {key:'id', label:'ID', type:'text', required:true},
+      {key:'title', label:'标题', type:'text', required:true},
+      {key:'type', label:'类型', type:'select', options:['SOP','话术','培训材料','案例','其他']},
+      {key:'permission', label:'权限', type:'select', options:['公开','仅PM','仅管理员']},
+      {key:'views', label:'浏览量', type:'number'},
+      {key:'downloads', label:'下载量', type:'number'},
+      {key:'updateTime', label:'更新时间', type:'text'}
+    ]
+  },
+  handovers: {
+    label: '\u{23F3} 交接记录表',
+    desc: '项目PM交接的历史记录，包含交接人、日期、完成状态等。项目承接规范页面依赖此表。',
+    data: typeof HANDOVERS !== 'undefined' ? HANDOVERS : [],
+    fields: [
+      {key:'id', label:'ID', type:'text', required:true},
+      {key:'projectId', label:'项目ID', type:'text'},
+      {key:'projectName', label:'项目名称', type:'text'},
+      {key:'from', label:'原负责人', type:'text'},
+      {key:'to', label:'新负责人', type:'text'},
+      {key:'date', label:'日期', type:'text'},
+      {key:'status', label:'状态', type:'select', options:['已完成','进行中','已取消']},
+      {key:'summary', label:'摘要', type:'textarea'}
+    ]
+  },
+  kpi: {
+    label: '\u{1F4CA} KPI数据表',
+    desc: '项目月度KPI数据，包含销售额、成本、费效比、目标达成率等。目标与权责、成本管理页面依赖此表。',
+    data: typeof KPI_HISTORY !== 'undefined' ? KPI_HISTORY : [],
+    fields: [
+      {key:'date', label:'日期', type:'text', required:true},
+      {key:'projectId', label:'项目ID', type:'text'},
+      {key:'revenue', label:'销售额(万)', type:'number'},
+      {key:'cost', label:'成本(万)', type:'number'},
+      {key:'profitRate', label:'费效比', type:'text'},
+      {key:'targetRate', label:'目标达成率', type:'text'}
+    ]
+  },
+  personnel: {
+    label: '\u{1F465} 人员数据表',
+    desc: '客服人员绩效、组别负荷比、工作量统计、人员配置。客服绩效看板、运营数据等页面依赖此表。',
+    data: typeof AGENT_PERFORMANCE !== 'undefined' ? AGENT_PERFORMANCE : [],
+    fields: [],
+    isComplex: true,
+    subTables: ['agent', 'group', 'workload', 'staff']
+  },
+  sysconfig: {
+    label: '\u{1F512} 系统配置表',
+    desc: '用户账号、数据权限配置、登录记录。登录认证、权限管理、用户管理均依赖此表。',
+    data: typeof USERS !== 'undefined' ? USERS : [],
+    fields: [],
+    isComplex: true,
+    subTables: ['users', 'permissions', 'loginlogs']
+  },
+  changelog: {
+    label: '\u{1F573} 操作日志表',
+    desc: '所有数据修改的审计记录（系统自动维护，仅可查看）。记录谁在何时修改了哪条数据的哪个字段。',
+    data: (function(){ try { var d = JSON.parse(localStorage.getItem('chansee_data_change_log')||'[]'); return Array.isArray(d) ? d : []; } catch(e){ return []; } })(),
+    fields: [
+      {key:'changedAt', label:'时间', type:'text'},
+      {key:'changedBy', label:'操作人', type:'text'},
+      {key:'tableName', label:'表名', type:'text'},
+      {key:'recordId', label:'记录ID', type:'text'},
+      {key:'fieldName', label:'字段名', type:'text'},
+      {key:'oldValue', label:'旧值', type:'text'},
+      {key:'newValue', label:'新值', type:'text'}
+    ]
+  }
+};
+
+// ===== localStorage Key 映射 =====
+var _SD_LS_MAP = {
+  projects: 'chansee_projects',
+  operations: 'chansee_operations',
+  issues: 'chansee_issues',
+  knowledge: 'chansee_knowledge',
+  handovers: 'chansee_handovers',
+  kpi: 'chansee_kpi_history',
+  changelog: 'chansee_data_change_log'
+};
+
+// ===== 跳转到系统数据管理对应表 =====
+function goToSystemDataTable(key) {
+  _systemDataView = 'detail';
+  _systemDataTab = key;
+  _systemDataPage = 1;
+  _systemDataSearchKeyword = '';
+  renderModule('systemData');
+  // 高亮侧边栏
+  var navItem = document.querySelector('.nav-item[data-module="systemData"]');
+  if (navItem) { navItem.click(); }
+}
+
+function renderSystemData(){return _renderSystemData();}
+
+// Placeholder - full implementation below
+var _renderSystemData = function(){
+  // 卡片目录视图
+  if(_systemDataView === 'catalog'){
+    var cardsHtml = '';
+    var tables = Object.keys(SYSTEM_DATA_TABLES);
+    for(var i=0; i<tables.length; i++){
+      var t = SYSTEM_DATA_TABLES[tables[i]];
+      var count = t.data ? t.data.length : 0;
+      var bgClass = '';
+      var accentColor = '';
+      if(i%3===0) { bgClass = 'sd-card-clr1'; accentColor = '#0B9B96'; }
+      else if(i%3===1) { bgClass = 'sd-card-clr2'; accentColor = '#3B82F6'; }
+      else { bgClass = 'sd-card-clr3'; accentColor = '#8B5CF6'; }
+      cardsHtml += ''
+        +'<div class="sd-card" style="cursor:pointer;" onclick="goSystemDataDetail(\''+tables[i]+'\')">'
+          +'<div style="height:4px;background:linear-gradient(90deg,'+accentColor+','+accentColor+'88);"></div>'
+          +'<div class="sd-card-inner '+bgClass+'">'
+            +'<div class="sd-card-icon">'+t.label.charAt(0)+t.label.charAt(1)+'</div>'
+            +'<div class="sd-card-label">'+t.label.substring(2)+'</div>'
+            +'<div class="sd-card-count">'+count+' 条记录</div>'
+            +'<div class="sd-card-desc">'+(t.desc||'').substring(0,42)+'...</div>'
+          +'</div>'
+        +'</div>';
+    }
+    return ''
+    +'<div class="module-header">'
+      +'<div>'
+        +'<div class="module-title">🗄️ 系统数据管理</div>'
+        +'<div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">统一数据管理中心 · 所有数据的唯一入口与维护中心</div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="sd-cards-grid">'+cardsHtml+'</div>';
+  }
+
+  var tableDef = SYSTEM_DATA_TABLES[_systemDataTab];
+  if(!tableDef) { _systemDataView='catalog'; return _renderSystemData(); }
+
+  var isLog = _systemDataTab === 'changelog';
+  var allData = tableDef.data || [];
+  if (!Array.isArray(allData)) allData = [];
+  var keyword = _systemDataSearchKeyword;
+  var filteredData = keyword ? allData.filter(function(row) {return JSON.stringify(row).toLowerCase().indexOf(keyword.toLowerCase()) >= 0;}) : allData;
+  var totalRecords = filteredData.length;
+  var totalPages = Math.ceil(totalRecords / _systemDataPageSize);
+  if (_systemDataPage > totalPages) _systemDataPage = Math.max(1, totalPages);
+  var startIdx = (_systemDataPage - 1) * _systemDataPageSize;
+  var pageData = filteredData.slice(startIdx, startIdx + _systemDataPageSize);
+
+  var colDefs = {};
+  if(_systemDataTab==='projects') colDefs={headers:['编号','名称','品牌','品类','类型','职场','负责人','状态'],keys:['id','name','brand','category','serviceMode','workplace','pm','status'],showCb:true};
+  else if(_systemDataTab==='operations') colDefs={headers:['项目ID','工单量','满意度','响应时间','NPS'],keys:['projectId','ticketVol','csat','responseTime','nps'],showCb:true};
+  else if(_systemDataTab==='issues') colDefs={headers:['编号','类别','项目','类型','优先级','责任人','状态'],keys:['id','category','projectName','type','priority','assignee','status'],showCb:true};
+  else if(_systemDataTab==='knowledge') colDefs={headers:['ID','标题','类型','权限','浏览'],keys:['id','title','type','permission','views'],showCb:true};
+  else if(_systemDataTab==='handovers') colDefs={headers:['ID','项目','原负责人','新负责人','日期','状态'],keys:['id','projectName','from','to','date','status'],showCb:true};
+  else if(_systemDataTab==='kpi') colDefs={headers:['日期','项目ID','销售额(万)','成本(万)','费效比','目标达成率'],keys:['date','projectId','revenue','cost','profitRate','targetRate'],showCb:true};
+  else if(_systemDataTab==='changelog') colDefs={headers:['时间','操作人','表名','记录ID','字段名','旧值','新值'],keys:['changedAt','changedBy','tableName','recordId','fieldName','oldValue','newValue'],showCb:false};
+
+  var tableHtml = '';
+  if(colDefs.headers){
+    tableHtml += '<table class="sysdata-table"><thead><tr>';
+    if(colDefs.showCb) tableHtml += '<th><input type="checkbox" onchange="toggleSelectAll(this)"></th>';
+    for(var hi=0; hi<colDefs.headers.length; hi++) tableHtml += '<th>'+colDefs.headers[hi]+'</th>';
+    if(colDefs.showCb) tableHtml += '<th>操作</th>';
+    tableHtml += '</tr></thead><tbody>';
+    for(var ri=0; ri<pageData.length; ri++){
+      var row = pageData[ri]; var idx = startIdx+ri;
+      tableHtml += '<tr>';
+      if(colDefs.showCb) tableHtml += '<td><input type="checkbox" class="sd-row-cb" data-idx="'+idx+'"></td>';
+      for(var ci=0; ci<colDefs.keys.length; ci++) tableHtml += '<td>'+(row[colDefs.keys[ci]]!=null?row[colDefs.keys[ci]]:'')+'</td>';
+      if(colDefs.showCb) tableHtml += '<td><button class="btn btn-xs" onclick="editSystemDataRow('+idx+')">编辑</button> <button class="btn btn-xs btn-danger" onclick="deleteSystemDataRow('+idx+')">删除</button></td>';
+      tableHtml += '</tr>';
+    }
+    tableHtml += '</tbody></table>';
+  } else if(_systemDataTab==='personnel'){
+    tableHtml = '<div style="padding:20px;text-align:center;color:var(--c-text-3);">人员数据为聚合视图，请在对应功能页面中查看详情</div>';
+  } else if(_systemDataTab==='sysconfig'){
+    tableHtml = '<div style="padding:20px;text-align:center;color:var(--c-text-3);">系统配置为聚合视图，请在对应功能页面中查看详情</div>';
+  } else {
+    tableHtml = '<div style="padding:40px;text-align:center;color:var(--c-text-3);">暂无数据</div>';
+  }
+
+  var paginationHtml = '';
+  if(totalPages > 1){
+    paginationHtml = ''
+    +'<div style="display:flex;gap:6px;align-items:center;justify-content:center;margin-top:12px;">'
+      +'<button class="btn btn-xs" onclick="_systemDataPage=1;renderModule(\'systemData\')"'+(_systemDataPage<=1?' disabled':'')+'>首页</button>'
+      +'<button class="btn btn-xs" onclick="_systemDataPage=Math.max(1,_systemDataPage-1);renderModule(\'systemData\')"'+(_systemDataPage<=1?' disabled':'')+'>上一页</button>'
+      +'<span style="font-size:12px;color:var(--c-text-2);padding:0 8px;">第 '+_systemDataPage+' / '+totalPages+' 页</span>'
+      +'<button class="btn btn-xs" onclick="_systemDataPage=Math.min('+totalPages+',_systemDataPage+1);renderModule(\'systemData\')"'+(_systemDataPage>=totalPages?' disabled':'')+'>下一页</button>'
+      +'<button class="btn btn-xs" onclick="_systemDataPage='+totalPages+';renderModule(\'systemData\')"'+(_systemDataPage>=totalPages?' disabled':'')+'>末页</button>'
+    +'</div>';
+  }
+
+  return ''
+  +'<div class="module-header">'
+    +'<div><div class="module-title">🗄️ '+tableDef.label+'</div>'
+    +'<div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">'+tableDef.desc+'</div></div>'
+    +'<div class="module-actions">'
+      +'<button class="btn btn-sm" onclick="backSystemDataCatalog()">← 返回目录</button>'
+      +(isLog?'':'<button class="btn btn-primary btn-sm" onclick="addSystemDataRow()">+ 新增</button>')
+      +(isLog?'':'<button class="btn btn-sm btn-danger" onclick="batchDeleteSystemData()">批量删除</button>')
+      +'<button class="btn btn-sm" onclick="exportSystemData()">导出</button>'
+      +'<button class="btn btn-sm" onclick="importSystemData()">导入</button>'
+    +'</div>'
+  +'</div>'
+  +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">'
+    +'<input type="text" id="sysdata-search" placeholder="搜索..." value="'+(keyword||'')+'" style="width:200px;padding:6px 10px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;" onkeyup="searchSystemData(event)">'
+    +'<button class="btn btn-xs" onclick="clearSystemDataSearch()">清除</button>'
+    +'<span style="font-size:12px;color:var(--c-text-3);">共 '+totalRecords+' 条记录</span>'
+  +'</div>'
+  +'<div style="overflow-x:auto;">'+tableHtml+'</div>'
+  +paginationHtml;
+};
+
+function goSystemDataDetail(key) { _systemDataView='detail'; _systemDataTab=key; _systemDataPage=1; _systemDataSearchKeyword=''; renderModule('systemData'); }
+function backSystemDataCatalog() { _systemDataView='catalog'; renderModule('systemData'); }
+function switchSystemDataTab(key) { _systemDataView='detail'; _systemDataTab=key; _systemDataPage=1; _systemDataSearchKeyword=''; renderModule('systemData'); }
+function searchSystemData(e) { if(e.key==='Enter'||e.type==='click'){ _systemDataSearchKeyword=document.getElementById('sysdata-search')?document.getElementById('sysdata-search').value:''; _systemDataPage=1; renderModule('systemData'); } }
+function clearSystemDataSearch() { _systemDataSearchKeyword=''; _systemDataPage=1; renderModule('systemData'); }
+function toggleSelectAll(cb) { var cbs=document.querySelectorAll('.sd-row-cb'); for(var i=0;i<cbs.length;i++) cbs[i].checked=cb.checked; }
+function _saveSystemData(tableKey) { var lsKey = _SD_LS_MAP[tableKey]; var td = SYSTEM_DATA_TABLES[tableKey]; if(lsKey && td && td.data) try { localStorage.setItem(lsKey, JSON.stringify(td.data)); } catch(e){} }
+
+function showSystemDataForm(tableKey, record, fields, editIdx){
+  var m = document.getElementById('sd-form-modal'); if(m) m.remove();
+  var isEdit = (typeof editIdx !== 'undefined');
+  var fh = '';
+  for(var i=0; i<fields.length; i++){
+    var f = fields[i], v = record ? (record[f.key]!=null?record[f.key]:'') : '';
+    if(f.type==='textarea') fh += '<div style="margin-bottom:10px;"><label style="font-size:12px;display:block;margin-bottom:3px;">'+f.label+'</label><textarea id="sdf-'+f.key+'" style="width:100%;min-height:60px;padding:6px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;">'+v+'</textarea></div>';
+    else if(f.type==='select' && f.options){ fh += '<div style="margin-bottom:10px;"><label style="font-size:12px;display:block;margin-bottom:3px;">'+f.label+'</label><select id="sdf-'+f.key+'" style="width:100%;padding:6px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;">'; for(var j=0;j<f.options.length;j++) fh += '<option value="'+f.options[j]+'"'+(v===f.options[j]?' selected':'')+'>'+f.options[j]+'</option>'; fh += '</select></div>'; }
+    else fh += '<div style="margin-bottom:10px;"><label style="font-size:12px;display:block;margin-bottom:3px;">'+f.label+'</label><input type="'+f.type+'" id="sdf-'+f.key+'" value="'+String(v).replace(/"/g,'&quot;')+'" style="width:100%;padding:6px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;"></div>';
+  }
+  var modal = document.createElement('div'); modal.id='sd-form-modal'; modal.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:10000;display:flex;align-items:center;justify-content:center;';
+  modal.innerHTML = '<div style="background:#fff;border-radius:8px;padding:20px;width:90%;max-width:500px;max-height:80vh;overflow-y:auto;"><div style="font-size:16px;font-weight:600;margin-bottom:15px;">'+(isEdit?'编辑记录':'新增记录')+'</div>'+fh+'<div style="text-align:right;margin-top:15px;"><button class="btn btn-sm" onclick="document.getElementById(\'sd-form-modal\').remove()" style="margin-right:8px;">取消</button><button class="btn btn-primary btn-sm" onclick="submitSystemDataForm(\''+tableKey+'\','+(isEdit?editIdx:'-1')+')">保存</button></div></div>';
+  document.body.appendChild(modal);
+}
+window.submitSystemDataForm = function(tableKey, editIdx) {
+  var td = SYSTEM_DATA_TABLES[tableKey]; if(!td||!td.fields) return; var rec = {};
+  for(var i=0; i<td.fields.length; i++){ var f=td.fields[i], el=document.getElementById('sdf-'+f.key); if(el){ var v=el.value; if(f.type==='number') v=parseFloat(v)||0; rec[f.key]=v; } }
+  if(editIdx>=0) td.data[editIdx]=rec; else td.data.push(rec); _saveSystemData(tableKey);
+  var mod=document.getElementById('sd-form-modal'); if(mod) mod.remove(); renderModule('systemData');
+};
+function addSystemDataRow() { var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td||!td.fields||td.fields.length===0){ alert('该表不支持新增'); return; } showSystemDataForm(_systemDataTab, null, td.fields); }
+function editSystemDataRow(idx) { var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td||!td.fields||td.fields.length===0){ alert('该表不支持编辑'); return; } var rec=td.data[idx]; if(!rec) return; showSystemDataForm(_systemDataTab, rec, td.fields, idx); }
+function deleteSystemDataRow(idx) { if(!confirm('确定删除该条记录吗？')) return; var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td) return; td.data.splice(idx,1); _saveSystemData(_systemDataTab); renderModule('systemData'); }
+function batchDeleteSystemData() { var cbs=document.querySelectorAll('.sd-row-cb:checked'); if(cbs.length===0){ alert('请先勾选要删除的记录'); return; } if(!confirm('确定删除选中的 '+cbs.length+' 条记录吗？')) return; var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td) return; var idxs=[]; for(var i=0;i<cbs.length;i++) idxs.push(parseInt(cbs[i].dataset.idx)); idxs.sort(function(a,b){return b-a;}); for(var j=0;j<idxs.length;j++) td.data.splice(idxs[j],1); _saveSystemData(_systemDataTab); renderModule('systemData'); }
+
+function exportSystemData(){
+  // 导出文件名映射配置（方案2）
+  if (typeof window._exportFileNameMap === 'undefined') {
+    window._exportFileNameMap = {
+      projects:   { current: 'operations_', rename: '项目数据表_' },
+      operations: { current: 'operations_', rename: '项目运营表_' },
+      issues:     { current: 'issues_',     rename: '问题记录表_' },
+      knowledge:  { current: 'knowledge_',  rename: '知识条目表_' },
+      handovers:  { current: 'handovers_',  rename: '交接记录表_' },
+      kpi:        { current: 'kpi_',        rename: 'KPI数据表_' },
+      personnel:  { current: 'personnel_',  rename: '人员数据表_' },
+      sysconfig:  { current: 'sysconfig_',  rename: '系统配置表_' },
+      changelog:  { current: 'changelog_',  rename: '操作日志表_' }
+    };
+    // 从 localStorage 恢复用户自定义
+    try {
+      var saved = localStorage.getItem('chansee_export_filename_map');
+      if (saved) {
+        var userMap = JSON.parse(saved);
+        for (var k in userMap) {
+          if (userMap.hasOwnProperty(k) && window._exportFileNameMap[k]) {
+            window._exportFileNameMap[k].rename = userMap[k];
+          }
+        }
+      }
+    } catch(e) {}
+  }
+
+  var map = window._exportFileNameMap;
+  var mapKeys = Object.keys(map);
+
+  var html = '\n'+
+'<style>\n'+
+'.sysdata-page{font-size:13px;}\n'+'.sysdata-title{font-size:16px;font-weight:700;color:var(--c-text-1);margin-bottom:4px;}\n'+
+'.sysdata-subtitle{font-size:12px;color:var(--c-text-3);margin-bottom:18px;}\n'+
+'.sysdata-table-wrap{background:var(--c-card);border-radius:10px;border:1px solid var(--c-border);overflow:hidden;}\n'+
+'.sysdata-table{width:100%;border-collapse:collapse;font-size:13px;}\n'+
+'.sysdata-table th{padding:12px 16px;text-align:left;background:var(--c-bg);color:var(--c-text-2);font-weight:600;font-size:12px;border-bottom:1px solid var(--c-border);}\n'+
+'.sysdata-table td{padding:10px 16px;border-bottom:1px solid var(--c-border);vertical-align:middle;}\n'+
+'.sysdata-table tr:last-child td{border-bottom:none;}\n'+
+'.sysdata-table tr:hover td{background:rgba(59,130,246,.03);}\n'+
+'.sysdata-key{font-family:monospace;background:#f1f5f9;padding:2px 8px;border-radius:4px;font-size:12px;color:#475569;}\n'+
+'.sysdata-current{color:var(--c-text-3);font-size:12px;font-family:monospace;}\n'+
+'.sysdata-input{width:100%;padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;font-size:13px;color:var(--c-text-1);background:var(--c-bg);transition:border-color .2s;outline:none;box-sizing:border-box;}\n'+
+'.sysdata-input:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.1);}\n'+
+'.sysdata-save-bar{margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;}\n'+
+'</style>\n'+
+'<div class="sysdata-page">\n'+
+'  <div class="module-header">\n'+
+'    <div>\n'+
+'      <div class="module-title">🗄️ 系统数据管理</div>\n'+
+'      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">管理导出文件名映射与系统配置</div>\n'+
+'    </div>\n'+
+'  </div>\n'+
+'\n'+
+'  <div style="margin-top:8px;">\n'+
+'    <div class="sysdata-title">方案2：导出文件名优化（小改）</div>\n'+
+'    <div class="sysdata-subtitle">文件名映射：</div>\n'+
+'\n'+
+'    <div class="sysdata-table-wrap">\n'+
+'      <table class="sysdata-table">\n'+
+'        <thead>\n'+
+'          <tr>\n'+
+'            <th style="width:140px;">tableKey</th>\n'+
+'            <th style="width:200px;">当前</th>\n'+
+'            <th>改为</th>\n'+
+'          </tr>\n'+
+'        </thead>\n'+
+'        <tbody>\n'+
+mapKeys.map(function(key) {
+  return '<tr>'+
+    '<td><span class="sysdata-key">'+key+'</span></td>'+
+    '<td><span class="sysdata-current">'+(map[key].current || '--')+'</span></td>'+
+    '<td><input class="sysdata-input" type="text" value="'+(map[key].rename || '')+'" data-sysdata-key="'+key+'" oninput="window._exportFileNameMap[this.dataset.sysdataKey].rename=this.value" /></td>'+
+  '</tr>';
+}).join('\n')+
+'        </tbody>\n'+
+'      </table>\n'+
+'    </div>\n'+
+'\n'+
+'    <div class="sysdata-save-bar">\n'+
+'      <button class="btn btn-primary btn-sm" onclick="saveExportFileNameMap()">💾 保存映射配置</button>\n'+
+'      <button class="btn btn-sm" onclick="resetExportFileNameMap()">↩️ 恢复默认</button>\n'+
+'      <span id="sysdata-save-hint" style="font-size:12px;color:#10b981;opacity:0;transition:opacity .3s;margin-left:8px;">✅ 已保存</span>\n'+
+'    </div>\n'+
+'  </div>\n'+
+'</div>';
+
+  return html;
+}
+
+// 保存导出文件名映射
+function saveExportFileNameMap() {
+  if (!window._exportFileNameMap) return;
+  var saveData = {};
+  for (var k in window._exportFileNameMap) {
+    if (window._exportFileNameMap.hasOwnProperty(k)) {
+      saveData[k] = window._exportFileNameMap[k].rename;
+    }
+  }
+  try {
+    localStorage.setItem('chansee_export_filename_map', JSON.stringify(saveData));
+    var hint = document.getElementById('sysdata-save-hint');
+    if (hint) { hint.style.opacity = '1'; setTimeout(function(){ hint.style.opacity = '0'; }, 2000); }
+  } catch(e) {}
+}
+
+// 恢复默认文件名映射
+function resetExportFileNameMap() {
+  if (!confirm('确定恢复默认文件名映射吗？')) return;
+  localStorage.removeItem('chansee_export_filename_map');
+  window._exportFileNameMap = undefined;
+  renderModule('systemData');
+}
+
 function renderPermissions(){
-  // 防御性检查
   if (typeof ROLES === "undefined") {
     document.getElementById("module-content").innerHTML = '<div style="padding:40px;text-align:center;color:red;">错误：ROLES 未定义</div>';
     return;
   }
-  if (typeof rolePermissions === "undefined") {
-    rolePermissions = {};
+  if (typeof rolePermissions === "undefined") { rolePermissions = {}; }
+
+  window._permSelectedRole = window._permSelectedRole || (ROLES.indexOf(currentRole) >= 0 ? currentRole : ROLES[0]);
+  var selRole = window._permSelectedRole;
+  var selPerms = rolePermissions[selRole] || {};
+  // 安全兜底：如果选中角色无权限数据，从默认配置补充
+  if (!selPerms || Object.keys(selPerms).length < 5){
+    if (DEFAULT_PERMISSIONS[selRole]){
+      selPerms = JSON.parse(JSON.stringify(DEFAULT_PERMISSIONS[selRole]));
+      rolePermissions[selRole] = selPerms;
+      savePermissions();
+    }
   }
+  var groupOrder = ["project","collab","tools","system"];
+  var actKeys = ["visible","view","edit","import","export","manage"];
+  var actLabels = {visible:"可见", view:"查看", edit:"编辑", import:"导入", export:"导出", manage:"管理"};
+  var actColors = {visible:"#10b981", view:"#3b82f6", edit:"#f59e0b", import:"#8b5cf6", export:"#ec4899", manage:"#ef4444"};
 
-  const allModules = [
-    {key:"dashboard", name:"项目总览看板"},
-    {key:"archive", name:"项目基础档案"},
-    {key:"target", name:"目标与权责管理"},
-    {key:"cost", name:"成本与利润管理"},
-    {key:"operation", name:"服务与进度追踪"},
-    {key:"issue", name:"问题与课题协作"},
-    {key:"knowledge", name:"核心知识能量池"},
-    {key:"handover", name:"项目承接规范"},
-    {key:"satisfaction", name:"项目运维调研"},
-    {key:"permissions", name:"系统权限管理"}
-  ];
+  var html = '\n<style>\n'+
+'.perm-page{font-size:13px;}\n'+
+'.perm-layout{display:flex;gap:16px;align-items:flex-start;}\n'+
+'.perm-roles{width:150px;flex-shrink:0;background:var(--c-card);border-radius:8px;overflow:hidden;border:1px solid var(--c-border);}\n'+
+'.perm-roles-title{font-size:12px;font-weight:600;color:var(--c-text-3);padding:12px 14px 8px;border-bottom:1px solid var(--c-border);}\n'+
+'.perm-role-item{padding:10px 14px;cursor:pointer;font-size:13px;color:var(--c-text-2);border-left:3px solid transparent;transition:all .15s;white-space:nowrap;}\n'+
+'.perm-role-item:hover{background:rgba(59,130,246,.06);color:var(--c-text-1);}\n'+
+'.perm-role-active{background:rgba(59,130,246,.08)!important;color:#2563eb!important;font-weight:600;border-left-color:#2563eb!important;}\n'+
+'.perm-content{flex:1;min-width:0;}\n'+
+'.perm-role-header{font-size:14px;font-weight:600;color:var(--c-text-1);margin-bottom:14px;display:flex;align-items:center;gap:10px;}\n'+
+'.perm-save-hint{font-size:11px;font-weight:400;color:#10b981;opacity:0;transition:opacity .3s;}\n'+
+'.perm-save-hint.show{opacity:1;}\n'+
+'.perm-group{margin-bottom:16px;}\n'+
+'.perm-group-label{font-size:12px;font-weight:600;color:var(--c-text-3);padding:6px 0;margin-bottom:6px;border-bottom:1px dashed var(--c-border);text-transform:uppercase;letter-spacing:.5px;}\n'+
+'.perm-mod-row{display:flex;align-items:center;padding:8px 12px;border-radius:6px;background:var(--c-card);border:1px solid var(--c-border);margin-bottom:4px;gap:12px;flex-wrap:wrap;}\n'+
+'.perm-mod-name{width:130px;flex-shrink:0;font-size:12px;font-weight:500;color:var(--c-text-2);}\n'+
+'.perm-mod-actions{display:flex;gap:4px;flex-wrap:wrap;}\n'+
+'.perm-cb{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:4px;cursor:pointer;font-size:11px;border:1px solid var(--c-border);transition:all .15s;user-select:none;}\n'+
+'.perm-cb-checked{background:#ecfdf5;border-color:#10b981;color:#059669;}\n'+
+'.perm-cb-unchecked{background:transparent;color:var(--c-text-3);}\n'+
+'.perm-cb-disabled{background:#f9fafb;color:#d1d5db;cursor:not-allowed;opacity:.5;}\n'+
+'.perm-cb-box{width:12px;height:12px;border-radius:2px;border:1.5px solid currentColor;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}\n'+
+'.perm-cb-checked .perm-cb-box{background:currentColor;border-color:currentColor;}\n'+
+'.perm-cb-checked .perm-cb-box::after{content:"✓";color:#fff;font-size:8px;font-weight:700;line-height:1;}\n'+
+'.perm-mod-scope{margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0;}\n'+
+'.perm-scope-label{font-size:11px;color:var(--c-text-3);}\n'+
+'.perm-scope-opt{font-size:11px;padding:3px 8px;border-radius:4px;cursor:pointer;border:1px solid var(--c-border);transition:all .15s;user-select:none;}\n'+
+'.perm-scope-active{background:#eff6ff;border-color:#3b82f6;color:#2563eb;font-weight:500;}\n'+
+'.perm-legend{margin-top:16px;padding:10px 14px;border-radius:6px;background:var(--c-bg);border:1px solid var(--c-border);display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:11px;color:var(--c-text-3);}\n'+
+'.perm-legend-item{display:inline-flex;align-items:center;gap:4px;}\n'+
+'.perm-legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;}\n'+
+'</style>\n'+
+'<div class="perm-page">\n'+
+'  <div class="module-header">\n'+
+'    <div>\n'+
+'      <div class="module-title">⚙️ 系统权限管理</div>\n'+
+'      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">为'+ROLES.length+'个角色配置各功能模块的访问权限与操作范围</div>\n'+
+'      <div style="margin-top:8px;padding:6px 10px;background:linear-gradient(135deg,#eff6ff,#ecfdf5);border-radius:6px;font-size:12px;color:#2563eb;display:inline-block;">'+
+'        👤 您当前的登录角色：<b>'+currentRole+'</b> &nbsp;|&nbsp; 点击左侧角色查看/编辑其权限，勾选操作框后自动保存'+
+'      </div>\n'+
+'    </div>\n'+
+'    <div class="module-actions">\n'+
+'      <button class="btn btn-sm" onclick="exportPermissions()">导出配置</button>\n'+
+'      <button class="btn btn-primary btn-sm" onclick="resetPermissions()">恢复默认</button>\n'+
+'    </div>\n'+
+'  </div>\n'+
+'  <div class="perm-layout">\n'+
+'    <div class="perm-roles">\n'+
+'      <div class="perm-roles-title">👥 角色列表</div>\n'+
+''+ROLES.map(function(r){var active=r===selRole?' perm-role-active':'';var isMyRole=r===currentRole?' <span style="font-size:10px;color:#10b981;">(我)</span>':'';return'      <div class="perm-role-item'+active+'" onclick="selectPermRole(\''+r+'\')">'+r+isMyRole+'</div>\n';}).join('')+
+'    </div>\n'+
+'    <div class="perm-content">\n'+
+'      <div class="perm-role-header">\n'+
+'        当前角色「'+selRole+'」的权限配置\n'+
+'        <span class="perm-save-hint" id="perm-save-hint">✅ 已保存</span>\n'+
+'      </div>\n'+
+''+groupOrder.map(function(gid){var grp=MODULE_GROUPS[gid];return'      <div class="perm-group">\n'+
+'        <div class="perm-group-label">'+grp.label+'</div>\n'+
+''+grp.keys.map(function(mk){var mn=MODULE_NAMES[mk];var ma=MODULE_ACTIONS[mk];var mp=selPerms[mk];if(typeof mp==='string'){if(mp==='write')mp={visible:true,view:true,edit:true,import:false,export:true,manage:false,scope:'all'};else if(mp==='read')mp={visible:true,view:true,edit:false,import:false,export:true,manage:false,scope:'all'};else mp={visible:false,view:false,edit:false,import:false,export:false,manage:false,scope:'all'};}return'        <div class="perm-mod-row">\n'+
+'          <div class="perm-mod-name">'+mn+'</div>\n'+
+'          <div class="perm-mod-actions">\n'+
+''+actKeys.map(function(ak){var applic=ma[ak]===1;var checked=mp[ak]===true;var disabled=!applic?' disabled':'';var cls=applic?(checked?'perm-cb-checked':'perm-cb-unchecked'):'perm-cb-disabled';return'            <label class="perm-cb '+cls+'" title="'+actLabels[ak]+'"><input type="checkbox"'+disabled+(checked?' checked':'')+' onchange="togglePermAction(\''+selRole+'\',\''+mk+'\',\''+ak+'\',this.checked)" style="display:none;"><span class="perm-cb-box"></span><span class="perm-cb-label">'+actLabels[ak]+'</span></label>\n';}).join('')+
+'          </div>\n'+
+''+(ma.scope===1?'          <div class="perm-mod-scope">\n'+
+'            <span class="perm-scope-label">数据范围：</span>\n'+
+'            <label class="perm-scope-opt '+(mp.scope==='all'||!mp.scope?'perm-scope-active':'')+'"><input type="radio" name="scope_'+mk+'" value="all" '+(mp.scope==='all'||!mp.scope?'checked':'')+' onchange="togglePermScope(\''+selRole+'\',\''+mk+'\',\'all\')" style="display:none;"><span>全部项目</span></label>\n'+
+'            <label class="perm-scope-opt '+(mp.scope==='own'?'perm-scope-active':'')+'"><input type="radio" name="scope_'+mk+'" value="own" '+(mp.scope==='own'?'checked':'')+' onchange="togglePermScope(\''+selRole+'\',\''+mk+'\',\'own\')" style="display:none;"><span>仅自己项目</span></label>\n'+
+'          </div>\n':'')+
+'        </div>\n';}).join('')+
+'      </div>\n';}).join('')+
+'      <div class="perm-legend">\n'+
+'        <span style="font-weight:600;color:var(--c-text-2);">💡 操作说明：</span>\n'+
+''+actKeys.map(function(ak){return'        <span class="perm-legend-item"><span class="perm-legend-dot" style="background:'+actColors[ak]+'"></span>'+actLabels[ak]+'</span>\n';}).join('')+
+'      </div>\n'+
+'    </div>\n'+
+'  </div>\n'+
+'</div>';
 
-  // 权限标签颜色
-  const pColor = {write:"#16a34a", read:"#2563eb", hidden:"#9ca3af"};
-
-  let html = `
-    <div class="module-header">
-      <div>
-        <div class="module-title">⚙️ 系统权限管理</div>
-        <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">为9个角色系统性配置各功能模块的访问权限</div>
-      </div>
-      <div class="module-actions">
-        <button class="btn btn-sm" onclick="batchSetPermission()" style="background:#f0f9ff;border:1px solid #bae6fd;">批量设置</button>
-        <button class="btn btn-primary btn-sm" onclick="resetPermissions()">恢复默认</button>
-        <button class="btn btn-sm" onclick="exportPermissions()">导出配置</button>
-        <button class="btn btn-sm" onclick="importPermissions()">导入配置</button>
-      </div>
-    </div>
-
-    <!-- 权限图例 -->
-    <div class="card" style="padding:10px 16px;margin-bottom:12px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
-      <span style="font-size:12px;color:var(--c-text-3);">权限图例：</span>
-      <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#dcfce7;color:#16a34a;">● 读写</span>
-      <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#dbeafe;color:#2563eb;">● 只读</span>
-      <span style="font-size:12px;padding:2px 8px;border-radius:4px;background:#f3f4f6;color:#9ca3af;">● 隐藏</span>
-      <span style="font-size:11px;color:var(--c-text-3);margin-left:auto;">点击单元格可快速切换权限，或使用下拉菜单精确选择</span>
-    </div>
-
-    <div class="card" style="overflow-x:auto;">
-      <table class="data-table permissions-table" style="min-width:900px;">
-        <thead>
-          <tr>
-            <th style="min-width:100px;position:sticky;left:0;background:var(--c-card);z-index:1;">角色＼模块</th>
-            ${allModules.map(m => {
-              // 表头显示：去掉"项目"前缀以节省空间，但保留核心词
-              let short = m.name.replace("项目","").replace("核心知识能量池","知识能量池");
-              return `<th style="text-align:center;font-size:11px;min-width:72px;padding:6px 2px;" title="${m.name}">${short}</th>`;
-            }).join('')}
-          </tr>
-        </thead>
-        <tbody>
-          ${ROLES.map(role => `
-            <tr>
-              <td style="font-weight:500;background:var(--c-bg);position:sticky;left:0;z-index:1;padding:8px 10px;">${role}</td>
-              ${allModules.map(m => {
-                const p = rolePermissions[role] ? rolePermissions[role][m.key] : "hidden";
-                const color = pColor[p] || "#9ca3af";
-                return `<td style="text-align:center;padding:4px 2px;cursor:pointer;"
-                          data-role="${role}" data-key="${m.key}"
-                          onclick="cyclePermission(event.currentTarget)"
-                          title="点击切换权限（当前：${p==="write"?"读写":p==="read"?"只读":"隐藏"}）">
-                  <select onchange="updatePermissionFromSelect(this)"
-                          data-role="${role}" data-key="${m.key}"
-                          onclick="event.stopPropagation()"
-                          style="padding:2px 2px;font-size:11px;border:1px solid ${color};border-radius:4px;background:${p==="write"?"#dcfce7":p==="read"?"#dbeafe":"#f3f4f6"};color:${color};cursor:pointer;width:52px;">
-                    <option value="write" ${p==="write"?"selected":""}>读写</option>
-                    <option value="read" ${p==="read"?"selected":""}>只读</option>
-                    <option value="hidden" ${p==="hidden"?"selected":""}>隐藏</option>
-                  </select>
-                </td>`;
-              }).join('')}
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 按角色查看权限卡片 -->
-    <div style="margin-top:16px;">
-      <div style="font-size:13px;font-weight:500;color:var(--c-text-2);margin-bottom:8px;">🔍 按角色查看权限摘要</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
-        ${ROLES.map(role => {
-          const perms = rolePermissions[role] || {};
-          const writeCount = allModules.filter(m => perms[m.key]==="write").length;
-          const readCount = allModules.filter(m => perms[m.key]==="read").length;
-          const hiddenCount = allModules.filter(m => perms[m.key]==="hidden" || !perms[m.key]).length;
-          return `
-            <div class="card" style="padding:10px 14px;">
-              <div style="font-weight:500;font-size:13px;margin-bottom:6px;">${role}</div>
-              <div style="display:flex;gap:8px;font-size:11px;">
-                <span style="color:#16a34a;">读写${writeCount}</span>
-                <span style="color:#2563eb;">只读${readCount}</span>
-                <span style="color:#9ca3af;">隐藏${hiddenCount}</span>
-              </div>
-            </div>`;
-        }).join('')}
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:16px;padding:14px 18px;">
-      <div style="font-size:13px;font-weight:500;margin-bottom:8px;">📋 权限说明</div>
-      <ul style="font-size:12px;color:var(--c-text-2);line-height:1.8;">
-        <li><b style="color:#16a34a;">读写</b>：可以查看和编辑该模块的所有内容</li>
-        <li><b style="color:#2563eb;">只读</b>：只能查看该模块的内容，不能编辑</li>
-        <li><b style="color:#9ca3af;">隐藏</b>：该模块对该角色不可见，左侧导航栏不显示</li>
-        <li>权限配置自动保存到浏览器本地存储，清除浏览器数据会重置为默认</li>
-      </ul>
-    </div>`;
-
-  // 不再直接操作 innerHTML，改为返回 html 字符串（与其他渲染函数一致）
   return html;
 }
 
@@ -7107,69 +7745,86 @@ function exportAssessment(){
     alert('导出失败：' + e.message);
   }
 }
-function cyclePermission(tdEl) {
-  const role = tdEl.dataset.role;
-  const key = tdEl.dataset.key;
-  const order = ["write", "read", "hidden"];
-  const current = rolePermissions[role] && rolePermissions[role][key] ? rolePermissions[role][key] : "hidden";
-  const next = order[(order.indexOf(current) + 1) % 3];
-  updatePermission(role, key, next);
-  renderPermissions();
+// 保存权限到 localStorage
+function savePermissions() {
+  try { localStorage.setItem("chansee_permissions", JSON.stringify(rolePermissions)); } catch(e) {}
 }
 
-// 更新权限配置
-function updatePermission(role, module, permission) {
-  if (!rolePermissions[role]) {
-    rolePermissions[role] = {};
+// 选中角色，重新渲染
+function selectPermRole(role) {
+  window._permSelectedRole = role;
+  renderModule("permissions");
+}
+
+// 切换某个操作的勾选状态
+function togglePermAction(role, module, action, checked) {
+  if (!rolePermissions[role]) rolePermissions[role] = {};
+  var mp = rolePermissions[role][module];
+  if (!mp || typeof mp === 'string') {
+    if (typeof mp === 'string') {
+      if (mp === 'write') mp = {visible:true,view:true,edit:true,import:false,export:true,manage:false,scope:'all'};
+      else if (mp === 'read') mp = {visible:true,view:true,edit:false,import:false,export:true,manage:false,scope:'all'};
+      else mp = {visible:false,view:false,edit:false,import:false,export:false,manage:false,scope:'all'};
+    } else {
+      mp = {visible:false,view:false,edit:false,import:false,export:false,manage:false,scope:'all'};
+    }
   }
-  rolePermissions[role][module] = permission;
+  mp[action] = checked;
+  // 如果关闭 visible，则自动关闭所有其他操作
+  if (action === 'visible' && !checked) {
+    mp.view = false; mp.edit = false; mp.import = false; mp.export = false; mp.manage = false;
+  }
+  // 如果开启 visible，则自动开启 view
+  if (action === 'visible' && checked) { mp.view = true; }
+  // 如果开启 edit/import/export/manage，自动确保 visible 和 view 开启
+  if ((action === 'edit' || action === 'import' || action === 'export' || action === 'manage') && checked) {
+    mp.visible = true; mp.view = true;
+  }
+  rolePermissions[role][module] = mp;
   savePermissions();
+  var hint = document.getElementById('perm-save-hint');
+  if (hint) { hint.classList.add('show'); setTimeout(function(){ hint.classList.remove('show'); }, 2000); }
 }
 
-// 下拉菜单触发
-function updatePermissionFromSelect(sel) {
-  const role = sel.dataset.role;
-  const key = sel.dataset.key;
-  updatePermission(role, key, sel.value);
-}
-
-// 批量设置：为某个角色批量设置所有模块权限
-function batchSetPermission() {
-  const role = prompt("请输入要批量设置的角色名称：\n（管理候选、客服组长、客服主管、客服经理、客服总监、管理员、项目伙伴、技术伙伴、风控伙伴）");
-  if (!role || ROLES.indexOf(role) < 0) { alert("角色名称不正确"); return; }
-  const val = prompt("请选择要设置的权限（输入数字）：\n1 = 读写\n2 = 只读\n3 = 隐藏");
-  if (!val || (val!=="1" && val!=="2" && val!=="3")) { alert("输入不正确"); return; }
-  const perm = val==="1" ? "write" : val==="2" ? "read" : "hidden";
-  MODULE_KEYS.forEach(m => updatePermission(role, m, perm));
-  renderPermissions();
-  alert("已为「" + role + "」批量设置所有模块为「" + (perm==="write"?"读写":perm==="read"?"只读":"隐藏") + "」");
+// 切换数据范围（全部/仅自己）
+function togglePermScope(role, module, scope) {
+  if (!rolePermissions[role]) rolePermissions[role] = {};
+  var mp = rolePermissions[role][module];
+  if (!mp || typeof mp === 'string') {
+    if (typeof mp === 'string') {
+      if (mp === 'write') mp = {visible:true,view:true,edit:true,import:false,export:true,manage:false,scope:'all'};
+      else if (mp === 'read') mp = {visible:true,view:true,edit:false,import:false,export:true,manage:false,scope:'all'};
+      else mp = {visible:false,view:false,edit:false,import:false,export:false,manage:false,scope:'all'};
+    } else {
+      mp = {visible:false,view:false,edit:false,import:false,export:false,manage:false,scope:'all'};
+    }
+  }
+  mp.scope = scope;
+  rolePermissions[role][module] = mp;
+  savePermissions();
+  var hint = document.getElementById('perm-save-hint');
+  if (hint) { hint.classList.add('show'); setTimeout(function(){ hint.classList.remove('show'); }, 2000); }
 }
 
 // 导入权限配置
 function importPermissions() {
-  const input = document.createElement("input");
-  input.type = "file";
-  input.accept = ".json";
+  var input = document.createElement("input");
+  input.type = "file"; input.accept = ".json";
   input.onchange = function() {
-    const file = input.files[0];
+    var file = input.files[0];
     if (!file) return;
-    const reader = new FileReader();
+    var reader = new FileReader();
     reader.onload = function(e) {
       try {
-        const data = JSON.parse(e.target.result);
-        // 验证结构
-        let valid = true;
-        ROLES.forEach(r => {
-          if (!data[r]) valid = false;
-        });
+        var data = JSON.parse(e.target.result);
+        var valid = true;
+        ROLES.forEach(function(r) { if (!data[r]) valid = false; });
         if (!valid) { alert("配置文件格式不正确，缺少部分角色数据"); return; }
         rolePermissions = data;
         savePermissions();
-        renderPermissions();
+        renderModule("permissions");
         alert("权限配置导入成功！");
-      } catch(ex) {
-        alert("文件解析失败：" + ex.message);
-      }
+      } catch(ex) { alert("文件解析失败：" + ex.message); }
     };
     reader.readAsText(file);
   };
@@ -7179,21 +7834,38 @@ function importPermissions() {
 // 恢复默认权限
 function resetPermissions() {
   if (confirm("确定要恢复默认权限配置吗？当前自定义配置将丢失。")) {
-    rolePermissions = {...DEFAULT_PERMISSIONS};
+    rolePermissions = JSON.parse(JSON.stringify(DEFAULT_PERMISSIONS));
     savePermissions();
-    renderPermissions();
+    renderModule("permissions");
     alert("已恢复默认权限配置");
   }
 }
 
 // 导出权限配置
 function exportPermissions() {
-  const json = JSON.stringify(rolePermissions, null, 2);
-  const blob = new Blob([json], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "chansee_permissions.json";
+  var json = JSON.stringify(rolePermissions, null, 2);
+  var blob = new Blob([json], {type:"application/json"});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = "chansee_permissions.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function exportSystemData() {
+  var backup = {};
+  try {
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key && key.indexOf('chansee_') === 0) {
+        try { backup[key] = JSON.parse(localStorage.getItem(key)); } catch(e) { backup[key] = localStorage.getItem(key); }
+      }
+    }
+  } catch(e) {}
+  var json = JSON.stringify(backup, null, 2);
+  var blob = new Blob([json], {type:"application/json"});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url; a.download = "chansee_backup_" + new Date().toISOString().slice(0,10) + ".json";
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -7863,10 +8535,10 @@ function renderProfile(){
       <span style="${linkStyle}" ${linkHover} onclick="editProfilePosition()">修改</span>
     </div>
 
-    <!-- 品牌 -->
+    <!-- 职场 -->
     <div style="${rowStyle}" id="profile-brand-row">
-      <div style="${labelStyle}" class="profile-field-label">品牌</div>
-      <div style="${valueStyle}" id="profile-brand-value">${u.brand || userInDb.brand || "Chanseen CloudHub"}</div>
+      <div style="${labelStyle}" class="profile-field-label">职场</div>
+      <div style="${valueStyle}" id="profile-brand-value">${(u.workplace || userInDb.workplace || "Chanseen CloudHub").replace(/,/g,'/')}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileBrand()">修改</span>
     </div>
 
@@ -8344,18 +9016,48 @@ function toggleWechatBind() {
 
 // 品牌编辑
 function editProfileBrand() {
-  const el = document.getElementById("profile-brand-value");
-  if (!el) return;
-  enterEditMode("profile-brand-row", "品牌", "profile-brand-input", "text", el.textContent, "saveProfileBrand");
+  // 多选职场弹窗
+  var workplaces = ['济南','淄博','杭州','无锡'];
+  var currentVal = document.getElementById("profile-brand-value");
+  if (!currentVal) return;
+  var selected = (currentUser.workplace || '').split(',').filter(Boolean);
+  if (selected.length === 0) selected = ['济南'];
+  var html = '<div style="display:flex;flex-direction:column;gap:10px;">';
+  workplaces.forEach(function(wp) {
+    var checked = selected.indexOf(wp) !== -1 ? 'checked' : '';
+    html += '<label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:14px;color:#334155;padding:6px 0;">';
+    html += '<input type="checkbox" value="' + wp + '" ' + checked + ' style="width:18px;height:18px;accent-color:#0ABAB5;">';
+    html += wp;
+    html += '</label>';
+  });
+  html += '</div>';
+  html += '<div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;">';
+  html += '<button class="btn" onclick="closeWorkplaceModal()" style="padding:8px 16px;">取消</button>';
+  html += '<button class="btn btn-primary" onclick="saveProfileWorkplace()" style="padding:8px 16px;">确定</button>';
+  html += '</div>';
+  
+  document.getElementById('modal-title').textContent = '选择职场';
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+  window._workplaceSelected = selected;
 }
-function saveProfileBrand() {
-  const input = document.getElementById("profile-brand-input");
-  if (!input) return;
-  const val = input.value.trim();
-  if (currentUser) currentUser.brand = val;
+function closeWorkplaceModal() {
+  document.getElementById('modal-overlay').classList.add('hidden');
+}
+function saveProfileWorkplace() {
+  var cbs = document.querySelectorAll('#modal-body input[type=checkbox]:checked');
+  var val = [];
+  cbs.forEach(function(cb) { val.push(cb.value); });
+  val = val.join(',');
+  if (currentUser) currentUser.workplace = val;
+  // 同步更新 USERS 数组
+  var u = USERS.find(function(uu){ return uu.id === currentUser.id; });
+  if (u) u.workplace = val;
   persistCurrentUser();
+  saveUsers();
   renderModule("profile");
-  showToast("品牌修改成功");
+  showToast("职场修改成功");
+  closeWorkplaceModal();
 }
 
 // 保持当前状态切换
@@ -8833,6 +9535,389 @@ function showChangeLog() {
   if (footerEl) footerEl.innerHTML = '<button class="btn" onclick="closeChangeLog()">关闭</button>';
   overlay.classList.remove('hidden');
 }
+
+
+
+// ===== Recovered Functions (June 26) =====
+function goToModule(module){
+  document.querySelectorAll('.nav-item').forEach(function(i){i.classList.remove('active');});
+  var nav = document.querySelector('.nav-item[data-module="'+module+'"]');
+  if(nav){
+    nav.classList.add('active');
+    var sec = nav.closest('.nav-section');
+    if(sec && sec.classList.contains('collapsed')) sec.classList.remove('collapsed');
+  }
+  renderModule(module);
+}
+
+function toggleAdvancedFilter() {
+  _advancedFilterOpen = !_advancedFilterOpen;
+  renderModule(currentModule);
+}
+
+function sortArchiveTable(field) {
+  if (archiveSortField === field) {
+  } else {
+    archiveSortDirection = 'asc';
+  }
+  renderModule('archive');
+}
+
+function clearArchiveSelection(){
+  var cb=document.querySelectorAll('.archive-row-check');
+  for(var i=0;i<cb.length;i++)cb[i].checked=false;
+  updateBatchDeleteBtn();
+}
+
+function batchEditProjects(){
+  alert('鎵归噺缂栬緫鍔熻兘寮€鍙戜腑');
+}
+
+function toggleCompareCheckbox(projectId) {
+  if (!window._selectedCompareIds) window._selectedCompareIds = [];
+  var idx = window._selectedCompareIds.indexOf(projectId);
+  if (idx >= 0) {
+    window._selectedCompareIds.splice(idx, 1);
+  } else {
+    if (window._selectedCompareIds.length >= 2) {
+      window._selectedCompareIds.shift();
+    }
+    window._selectedCompareIds.push(projectId);
+  }
+  renderModule('operation');
+}
+
+function closeComparePanel() {
+  var overlay = document.getElementById('compare-overlay');
+  if(overlay){ overlay.classList.add('hidden'); overlay.style.opacity = '0'; }
+}
+
+function switchIssueTab(tab){
+  issueActiveTab = tab;
+  if(tab==='issue'){ issueFilterState = { status:'all', priority:'all', type:'all', assignee:'all', keyword:'' }; }
+  else { topicFilterState = { status:'all', type:'all', assignee:'all', keyword:'' }; }
+  renderModule('issue');
+}
+
+function filterIssues(){
+  var sel = document.getElementById('issue-filter-priority');
+  var sel2 = document.getElementById('issue-filter-type');
+  var sel3 = document.getElementById('issue-filter-assignee');
+  var kw = document.getElementById('issue-search');
+  if(issueActiveTab==='issue'){
+    issueFilterState.priority = sel ? sel.value : 'all';
+    issueFilterState.type = sel2 ? sel2.value : 'all';
+    issueFilterState.assignee = sel3 ? sel3.value : 'all';
+    issueFilterState.keyword = kw ? kw.value : '';
+  } else {
+    topicFilterState.type = sel2 ? sel2.value : 'all';
+    topicFilterState.assignee = sel3 ? sel3.value : 'all';
+    topicFilterState.keyword = kw ? kw.value : '';
+  }
+  renderModule('issue');
+}
+
+function filterIssueByStatus(status, el){
+  if(issueActiveTab==='issue') issueFilterState.status = status;
+  else topicFilterState.status = status;
+  renderModule('issue');
+}
+
+function generateSparklinePath(fieldName){
+    if(!KPI_HISTORY || KPI_HISTORY.length < 2){
+      // 鏃犲巻鍙叉暟鎹椂杩斿洖骞崇洿绾?      return {areaPath:'M 4,44 L 104,44 L 104,50 L 4,50 Z', strokePath:'M 4,44 L 104,44'};
+    }
+    var values = [];
+    for(var v=0; v<KPI_HISTORY.length; v++){ values.push(KPI_HISTORY[v][fieldName] || 0); }
+    var maxV = Math.max.apply(null, values) || 1;
+    var minV = Math.min.apply(null, values);
+    var range = maxV - minV || 1;
+    var points = [];
+    var totalW = 100, totalH = 24, topY = 22;
+    for(var v2=0; v2<values.length; v2++){
+      var x = values.length===1 ? 50 : Math.round(v2 * totalW / (values.length-1)) + 4;
+      var y = Math.round(topY + totalH - ((values[v2]-minV)/range * totalH));
+      points.push({x:x, y:y});
+    }
+    // 鏋勫缓path
+    var areaPath = 'M 4,50 L '+points[0].x+','+points[0].y;
+    for(var p2=1; p2<points.length; p2++){
+      areaPath += ' L '+points[p2].x+','+points[p2].y;
+    }
+    areaPath += ' L '+points[points.length-1].x+',50 L 4,50 Z';
+    var strokePath = 'M '+points[0].x+','+points[0].y;
+    for(var p3=1; p3<points.length; p3++){
+      strokePath += ' L '+points[p3].x+','+points[p3].y;
+    }
+    return {areaPath:areaPath, strokePath:strokePath};
+  }
+
+function openComparePanel() {
+  var ids = window._selectedCompareIds || [];
+  if (ids.length < 2) return;
+  var p1 = PROJECTS.find(function(p){return p.id===ids[0];});
+  var p2 = PROJECTS.find(function(p){return p.id===ids[1];});
+  if(!p1||!p2) return;
+  var h1 = HEALTH_DATA.find(function(h){return h.projectId===p1.id&&h.period==='2026-05';});
+  var h2 = HEALTH_DATA.find(function(h){return h.projectId===p2.id&&h.period==='2026-05';});
+  var s1 = h1 ? h1.overallScore : 0;
+  var s2 = h2 ? h2.overallScore : 0;
+  var dims1 = h1 ? h1.dimensions : [];
+  var dims2 = h2 ? h2.dimensions : [];
+  var dimLabels = {manpower:'人力', service:'服务', sales:'销售', returns:'退货', risk:'风险', cost:'成本'};
+
+  var rowsHtml = '';
+  for(var i=0; i<dims1.length; i++){
+    var v1 = dims1[i].score;
+    var v2 = dims2[i] ? dims2[i].score : 0;
+    var diff = v1 - v2;
+    var diffStr = diff>0 ? '▲ +'+diff : (diff<0 ? '▼ '+diff : '持平');
+    var diffColor = diff>0 ? '#10b981' : (diff<0 ? '#ef4444' : '#6b7280');
+    var label = dimLabels[dims1[i].key] || dims1[i].name;
+    var c1 = v1>=90?'#10b981':v1>=75?'#eab308':v1>=60?'#f97316':'#ef4444';
+    var c2 = v2>=90?'#10b981':v2>=75?'#eab308':v2>=60?'#f97316':'#ef4444';
+    rowsHtml += '<tr>'
+      +'<td style="padding:10px 14px;font-size:13px;color:#1e40af;font-weight:500;">'+label+'</td>'
+      +'<td style="padding:10px 14px;text-align:center;font-size:22px;font-weight:700;color:'+c1+';">'+v1+'</td>'
+      +'<td style="padding:10px 14px;text-align:center;font-size:22px;font-weight:700;color:'+c2+';">'+v2+'</td>'
+      +'<td style="padding:10px 14px;text-align:center;font-size:14px;font-weight:600;color:'+diffColor+';">'+diffStr+'</td>'
+    +'</tr>';
+  }
+  // Compare score bars
+  var maxW = 200;
+  var bar1W = Math.round(s1/100*maxW);
+  var bar2W = Math.round(s2/100*maxW);
+
+  var overlay = document.getElementById('compare-overlay');
+  if(!overlay){
+    overlay = document.createElement('div');
+    overlay.id = 'compare-overlay';
+    overlay.className = 'modal-overlay';
+    overlay.style.background = 'rgba(0,0,0,0.5)';
+    overlay.style.opacity = '1';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML = ''
+    +'<div class="modal-dialog" style="max-width:700px;padding:0;border-radius:16px;overflow:hidden;background:#fff;">'
+      +'<div style="background:linear-gradient(135deg,#0B9B96,#3b82f6);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;">'
+        +'<div style="font-size:15px;font-weight:600;">📊 项目对比</div>'
+        +'<button onclick="closeComparePanel()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;">&#10005;</button>'
+      +'</div>'
+      +'<div style="padding:20px;">'
+        // Project headers
+        +'<div style="display:flex;gap:16px;margin-bottom:16px;">'
+          +'<div style="flex:1;text-align:center;padding:12px;background:#f0fdf4;border-radius:10px;">'
+            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+p1.name+'</div>'
+            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+p1.workplace+' 路 '+p1.serviceMode+' 路 PM: '+(p1.pm||'')+'</div>'
+            +'<div style="font-size:32px;font-weight:800;color:#0B9B96;margin-top:4px;">'+s1+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 鍒?/span></div>'
+            +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar1W+'px;background:linear-gradient(90deg,#0B9B96,#00C9A7);border-radius:3px;"></div></div>'
+          +'</div>'
+          +'<div style="display:flex;align-items:center;font-size:20px;font-weight:800;color:#94a3b8;flex-shrink:0;">VS</div>'
+          +'<div style="flex:1;text-align:center;padding:12px;background:#eff6ff;border-radius:10px;">'
+            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+p2.name+'</div>'
+            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+p2.workplace+' 路 '+p2.serviceMode+' 路 PM: '+(p2.pm||'')+'</div>'
+            +'<div style="font-size:32px;font-weight:800;color:#3b82f6;margin-top:4px;">'+s2+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 鍒?/span></div>'
+            +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar2W+'px;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:3px;"></div></div>'
+          +'</div>'
+        +'</div>'
+        // Dimension table
+        +'<table style="width:100%;border-collapse:collapse;">'
+          +'<thead><tr style="background:#f8fafc;">'
+            +'<th style="padding:8px 14px;text-align:left;font-size:12px;color:#64748b;font-weight:500;">缁村害</th>'
+            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+p1.name.substring(0,4)+'</th>'
+            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+p2.name.substring(0,4)+'</th>'
+            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">宸紓</th>'
+          +'</tr></thead>'
+          +'<tbody>'+rowsHtml+'</tbody>'
+        +'</table>'
+        +'<div style="margin-top:12px;text-align:center;font-size:11px;color:#94a3b8;">'
+          +(s1>s2 ? p1.name+' 综合领先 '+ (s1-s2)+' 分' : (s2>s1 ? p2.name+' 综合领先 '+ (s2-s1)+' 分' : '双方综合得分持平'))
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  overlay.classList.remove('hidden');
+  overlay.style.opacity = '1';
+}
+
+// ===== End Recovered Functions =====
+
+
+
+
+// ===== Recovered Functions (June 26) =====
+function goToModule(module){
+  document.querySelectorAll('.nav-item').forEach(function(i){i.classList.remove('active');});
+  var nav = document.querySelector('.nav-item[data-module="'+module+'"]');
+  if(nav){
+    nav.classList.add('active');
+    var sec = nav.closest('.nav-section');
+    if(sec && sec.classList.contains('collapsed')) sec.classList.remove('collapsed');
+  }
+  renderModule(module);
+}
+
+function toggleAdvancedFilter() {
+  _advancedFilterOpen = !_advancedFilterOpen;
+  renderModule(currentModule);
+}
+
+function sortArchiveTable(field) {
+  if (archiveSortField === field) {
+  } else {
+    archiveSortDirection = 'asc';
+  }
+  renderModule('archive');
+}
+
+function clearArchiveSelection(){
+  var cb=document.querySelectorAll('.archive-row-check');
+  for(var i=0;i<cb.length;i++)cb[i].checked=false;
+  updateBatchDeleteBtn();
+}
+
+function batchEditProjects(){
+  alert('鎵归噺缂栬緫鍔熻兘寮€鍙戜腑');
+}
+
+function toggleCompareCheckbox(projectId) {
+  if (!window._selectedCompareIds) window._selectedCompareIds = [];
+  var idx = window._selectedCompareIds.indexOf(projectId);
+  if (idx >= 0) {
+    window._selectedCompareIds.splice(idx, 1);
+  } else {
+    if (window._selectedCompareIds.length >= 2) {
+      window._selectedCompareIds.shift();
+    }
+    window._selectedCompareIds.push(projectId);
+  }
+  renderModule('operation');
+}
+
+function closeComparePanel() {
+  var overlay = document.getElementById('compare-overlay');
+  if(overlay){ overlay.classList.add('hidden'); overlay.style.opacity = '0'; }
+}
+
+function switchIssueTab(tab){
+  issueActiveTab = tab;
+  if(tab==='issue'){ issueFilterState = { status:'all', priority:'all', type:'all', assignee:'all', keyword:'' }; }
+  else { topicFilterState = { status:'all', type:'all', assignee:'all', keyword:'' }; }
+  renderModule('issue');
+}
+
+function filterIssues(){
+  var sel = document.getElementById('issue-filter-priority');
+  var sel2 = document.getElementById('issue-filter-type');
+  var sel3 = document.getElementById('issue-filter-assignee');
+  var kw = document.getElementById('issue-search');
+  if(issueActiveTab==='issue'){
+    issueFilterState.priority = sel ? sel.value : 'all';
+    issueFilterState.type = sel2 ? sel2.value : 'all';
+    issueFilterState.assignee = sel3 ? sel3.value : 'all';
+    issueFilterState.keyword = kw ? kw.value : '';
+  } else {
+    topicFilterState.type = sel2 ? sel2.value : 'all';
+    topicFilterState.assignee = sel3 ? sel3.value : 'all';
+    topicFilterState.keyword = kw ? kw.value : '';
+  }
+  renderModule('issue');
+}
+
+function filterIssueByStatus(status, el){
+  if(issueActiveTab==='issue') issueFilterState.status = status;
+  else topicFilterState.status = status;
+  renderModule('issue');
+}
+
+function openComparePanel() {
+  var ids = window._selectedCompareIds || [];
+  if (ids.length < 2) return;
+  var p1 = PROJECTS.find(function(p){return p.id===ids[0];});
+  var p2 = PROJECTS.find(function(p){return p.id===ids[1];});
+  if(!p1||!p2) return;
+  var h1 = HEALTH_DATA.find(function(h){return h.projectId===p1.id&&h.period==='2026-05';});
+  var h2 = HEALTH_DATA.find(function(h){return h.projectId===p2.id&&h.period==='2026-05';});
+  var s1 = h1 ? h1.overallScore : 0;
+  var s2 = h2 ? h2.overallScore : 0;
+  var dims1 = h1 ? h1.dimensions : [];
+  var dims2 = h2 ? h2.dimensions : [];
+  var dimLabels = {manpower:'人力', service:'服务', sales:'销售', returns:'退货', risk:'风险', cost:'成本'};
+
+  var rowsHtml = '';
+  for(var i=0; i<dims1.length; i++){
+    var v1 = dims1[i].score;
+    var v2 = dims2[i] ? dims2[i].score : 0;
+    var diff = v1 - v2;
+    var diffStr = diff>0 ? '▲ +'+diff : (diff<0 ? '▼ '+diff : '持平');
+    var diffColor = diff>0 ? '#10b981' : (diff<0 ? '#ef4444' : '#6b7280');
+    var label = dimLabels[dims1[i].key] || dims1[i].name;
+    var c1 = v1>=90?'#10b981':v1>=75?'#eab308':v1>=60?'#f97316':'#ef4444';
+    var c2 = v2>=90?'#10b981':v2>=75?'#eab308':v2>=60?'#f97316':'#ef4444';
+    rowsHtml += '<tr>'
+      +'<td style="padding:10px 14px;font-size:13px;color:#1e40af;font-weight:500;">'+label+'</td>'
+      +'<td style="padding:10px 14px;text-align:center;font-size:22px;font-weight:700;color:'+c1+';">'+v1+'</td>'
+      +'<td style="padding:10px 14px;text-align:center;font-size:22px;font-weight:700;color:'+c2+';">'+v2+'</td>'
+      +'<td style="padding:10px 14px;text-align:center;font-size:14px;font-weight:600;color:'+diffColor+';">'+diffStr+'</td>'
+    +'</tr>';
+  }
+  // Compare score bars
+  var maxW = 200;
+  var bar1W = Math.round(s1/100*maxW);
+  var bar2W = Math.round(s2/100*maxW);
+
+  var overlay = document.getElementById('compare-overlay');
+  if(!overlay){
+    overlay = document.createElement('div');
+    overlay.id = 'compare-overlay';
+    overlay.className = 'modal-overlay';
+    overlay.style.background = 'rgba(0,0,0,0.5)';
+    overlay.style.opacity = '1';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML = ''
+    +'<div class="modal-dialog" style="max-width:700px;padding:0;border-radius:16px;overflow:hidden;background:#fff;">'
+      +'<div style="background:linear-gradient(135deg,#0B9B96,#3b82f6);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;">'
+        +'<div style="font-size:15px;font-weight:600;">📊 项目对比</div>'
+        +'<button onclick="closeComparePanel()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;">&#10005;</button>'
+      +'</div>'
+      +'<div style="padding:20px;">'
+        // Project headers
+        +'<div style="display:flex;gap:16px;margin-bottom:16px;">'
+          +'<div style="flex:1;text-align:center;padding:12px;background:#f0fdf4;border-radius:10px;">'
+            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+p1.name+'</div>'
+            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+p1.workplace+' 路 '+p1.serviceMode+' 路 PM: '+(p1.pm||'')+'</div>'
+            +'<div style="font-size:32px;font-weight:800;color:#0B9B96;margin-top:4px;">'+s1+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 鍒?/span></div>'
+            +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar1W+'px;background:linear-gradient(90deg,#0B9B96,#00C9A7);border-radius:3px;"></div></div>'
+          +'</div>'
+          +'<div style="display:flex;align-items:center;font-size:20px;font-weight:800;color:#94a3b8;flex-shrink:0;">VS</div>'
+          +'<div style="flex:1;text-align:center;padding:12px;background:#eff6ff;border-radius:10px;">'
+            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+p2.name+'</div>'
+            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+p2.workplace+' 路 '+p2.serviceMode+' 路 PM: '+(p2.pm||'')+'</div>'
+            +'<div style="font-size:32px;font-weight:800;color:#3b82f6;margin-top:4px;">'+s2+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 鍒?/span></div>'
+            +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar2W+'px;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:3px;"></div></div>'
+          +'</div>'
+        +'</div>'
+        // Dimension table
+        +'<table style="width:100%;border-collapse:collapse;">'
+          +'<thead><tr style="background:#f8fafc;">'
+            +'<th style="padding:8px 14px;text-align:left;font-size:12px;color:#64748b;font-weight:500;">缁村害</th>'
+            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+p1.name.substring(0,4)+'</th>'
+            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+p2.name.substring(0,4)+'</th>'
+            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">宸紓</th>'
+          +'</tr></thead>'
+          +'<tbody>'+rowsHtml+'</tbody>'
+        +'</table>'
+        +'<div style="margin-top:12px;text-align:center;font-size:11px;color:#94a3b8;">'
+          +(s1>s2 ? p1.name+' 综合领先 '+ (s1-s2)+' 分' : (s2>s1 ? p2.name+' 综合领先 '+ (s2-s1)+' 分' : '双方综合得分持平'))
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  overlay.classList.remove('hidden');
+  overlay.style.opacity = '1';
+}
+
+// ===== End Recovered Functions =====
+
 
 function closeChangeLog() {
   var overlay = document.getElementById('modal-overlay');
