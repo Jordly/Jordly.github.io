@@ -2748,6 +2748,10 @@
   background: linear-gradient(135deg, rgba(11,155,150,0.04) 0%, rgba(59,130,246,0.03) 50%, rgba(139,92,246,0.02) 100%) !important;
   border-style: solid !important;
   border-color: rgba(11,155,150,0.15) !important;
+  display: none !important;
+}
+.filter-row-v4-second.filter-row-visible {
+  display: flex !important;
 }
 
 .fb-divider {

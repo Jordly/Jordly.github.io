@@ -2186,13 +2186,26 @@ function renderModule(module){
   try {
     currentModule = module;
     const area = document.getElementById("module-content");
+    if (!area) { console.error('renderModule: module-content 元素不存在'); return; }
     const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, systemData:renderSystemData, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
-    area.innerHTML = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
+    var html = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
+    if (!html || html === 'undefined' || html === 'null') {
+      html = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>模块内容为空</p></div>`;
+    }
+    area.innerHTML = html;
     bindEvents();
+    // 确保右上角用户头像始终显示（防止被其他代码清空）
+    updateUserDisplay();
   } catch(e) {
-    document.getElementById("module-content").innerHTML =
-      '<div style="padding:40px;text-align:center;color:red;">' +
-      '<h3>模块加载错误</h3><p>' + e.message + '</p></div>';
+    console.error('renderModule 错误:', e);
+    var area = document.getElementById("module-content");
+    if (area) {
+      area.innerHTML =
+        '<div style="padding:40px;text-align:center;"><div style="font-size:48px;margin-bottom:16px;">⚠️</div>' +
+        '<h3 style="color:#ef4444;margin-bottom:8px;">模块加载出错</h3>' +
+        '<p style="color:#64748b;margin-bottom:12px;">' + (e.message || '未知错误') + '</p>' +
+        '<button class="btn btn-sm btn-primary" onclick="location.reload()">刷新页面</button></div>';
+    }
   }
 }
 
@@ -2285,8 +2298,8 @@ function renderFilterBar() {
       '</div>';
   }
 
-  // 第二行：搜索下拉（默认隐藏）
-  var row2 = '<div class="filter-row-v4 filter-row-v4-second" id="filter-row-advanced" style="display:none;">';
+  // 第二行：搜索下拉（默认隐藏，通过CSS .filter-row-v4-second 控制）
+  var row2 = '<div class="filter-row-v4 filter-row-v4-second" id="filter-row-advanced">';
 
   // 平台
   var pfLabel = '平台 ▼';
@@ -2355,14 +2368,17 @@ function renderFilterBar() {
   return '<div class="filter-bar-v4">' + tagsHtml + row1 + customTimeHtml + row2 + '</div>';
 }
 
-// 高级筛选切换
+// 高级筛选切换（使用class控制，避免被CSS !important覆盖）
 function toggleAdvancedFilter() {
   var el = document.getElementById('filter-row-advanced');
   if (!el) return;
-  var isVisible = el.style.display !== 'none';
-  el.style.display = isVisible ? 'none' : 'flex';
+  var isVisible = el.classList.contains('filter-row-visible');
+  if (isVisible) {
+    el.classList.remove('filter-row-visible');
+  } else {
+    el.classList.add('filter-row-visible');
+  }
   window._advFilterVisible = !isVisible;
-  renderModule(currentModule);
 }
 
 // ----- 筛选栏 v4 辅助函数 -----
@@ -6531,7 +6547,12 @@ function showSatisfactionPermission(){
 let notificationFilter = "all";
 
 function renderNotifications(){
-  if (!isAdmin()) {
+  // 权限检查：超级管理员、管理员、客服总监可访问
+  if (!currentUser) {
+    return `<div class="empty-state"><div class="empty-icon">&#x1F512;</div><p>请先登录</p></div>`;
+  }
+  const _adminRoles = ["超级管理员", "管理员", "客服总监"];
+  if (_adminRoles.indexOf(currentUser.role) === -1) {
     return `<div class="empty-state"><div class="empty-icon">&#x1F512;</div><p>仅管理员可访问此模块</p></div>`;
   }
 
@@ -6561,17 +6582,34 @@ function renderNotifications(){
     "风控伙伴": "badge-gray"
   };
 
-  return `<div class="module-header">
+  return `<div style="border-top:3px solid;border-image:linear-gradient(90deg,#0ABAB5,#3b82f6,#8b5cf6) 1;margin-bottom:20px;"></div>
+    <div class="module-header">
     <div>
       <div class="module-title">&#x1F514; 系统用户管理</div>
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">管理系统用户，审批注册申请，维护账号状态</div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">管理系统用户账号、角色权限、审批注册申请</div>
     </div>
     <div class="module-actions">
       <button class="btn btn-sm btn-primary" onclick="showAddUser()">&#xFF0B; 新增用户</button>
     </div>
   </div>
 
-  <div style="display:flex;gap:8px;margin-bottom:16px;">
+  <!-- 统计卡片 -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
+    ${[
+      {l:'全部用户',c:USERS.length,icon:'👥',clr:'#3b82f6',bg:'rgba(59,130,246,0.08)'},
+      {l:'已激活',c:USERS.filter(u=>u.status==='已激活').length,icon:'✅',clr:'#22c55e',bg:'rgba(34,197,94,0.08)'},
+      {l:'待审核',c:USERS.filter(u=>u.status==='待审核').length,icon:'⏳',clr:'#eab308',bg:'rgba(234,179,8,0.08)'},
+      {l:'已禁用',c:USERS.filter(u=>u.status==='已禁用'||u.status==='已拒绝').length,icon:'🚫',clr:'#ef4444',bg:'rgba(239,68,68,0.08)'}
+    ].map(function(s){
+      return `<div style="background:${s.bg};border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+        <span style="font-size:24px;">${s.icon}</span>
+        <div><div style="font-size:18px;font-weight:700;color:${s.clr};">${s.c}</div><div style="font-size:11px;color:#64748b;">${s.l}</div></div>
+      </div>`;
+    }).join('')}
+  </div>
+
+  <!-- 筛选标签 -->
+  <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
     <button class="btn btn-sm ${notificationFilter==='all'?'btn-primary':''}" onclick="setNotificationFilter('all')">全部(${USERS.length})</button>
     <button class="btn btn-sm ${notificationFilter==='pending'?'btn-primary':''}" style="background:var(--c-yellow-bg);color:var(--c-yellow);border-color:var(--c-yellow)" onclick="setNotificationFilter('pending')">待审核(${USERS.filter(u=>u.status==='待审核').length})</button>
     <button class="btn btn-sm ${notificationFilter==='active'?'btn-primary':''}" style="background:var(--c-green-bg);color:var(--c-green);border-color:var(--c-green)" onclick="setNotificationFilter('active')">已激活(${USERS.filter(u=>u.status==='已激活').length})</button>
