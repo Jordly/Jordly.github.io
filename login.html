@@ -978,7 +978,7 @@
       try {
         const auth = JSON.parse(localStorage.getItem('chanseen_auth'));
         if (auth && auth.token) {
-          window.location.href = 'index.html';
+          window.location.href = 'index.html?from=login&_=' + Date.now();
         }
       } catch(e) {}
     }
@@ -1064,7 +1064,7 @@
         showToast('登录成功！正在进入系统...', 'success');
 
         setTimeout(() => {
-          window.location.href = 'index.html';
+          window.location.href = 'index.html?from=login&_=' + Date.now();
         }, 800);
       }, 800);
 
