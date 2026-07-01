@@ -1035,7 +1035,36 @@
 
       // 模拟登录验证（1秒后）
       setTimeout(() => {
-        // 内置默认用户（首次部署时兜底）
+        // 记录登录失败
+    function recordFailedLogin(username) {
+      try {
+        var os = '未知';
+        var device = 'desktop';
+        var ua = navigator.userAgent || '';
+        if (ua.indexOf('Windows') !== -1) os = 'Windows';
+        else if (ua.indexOf('HarmonyOS') !== -1) { os = 'HarmonyOS'; device = 'mobile'; }
+        else if (ua.indexOf('Mac') !== -1) os = 'macOS';
+        else if (ua.indexOf('Linux') !== -1) os = 'Linux';
+        else if (ua.indexOf('Android') !== -1) { os = 'Android'; device = 'mobile'; }
+        else if (ua.indexOf('iPhone') !== -1 || ua.indexOf('iPad') !== -1) { os = 'iOS'; device = 'mobile'; }
+        if (window.innerWidth <= 768) device = 'mobile';
+        var record = {
+          _id: 'login_' + Date.now(),
+          username: username,
+          os: os,
+          device: device,
+          status: '登录失败',
+          loginTime: new Date().toISOString()
+        };
+        var logs = [];
+        try { logs = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]'); } catch(e) {}
+        logs.unshift(record);
+        if (logs.length > 20) logs = logs.slice(0, 20);
+        localStorage.setItem('chansee_login_logs', JSON.stringify(logs));
+      } catch(e) {}
+    }
+
+    // 内置默认用户（首次部署时兜底）
         var defaultUsers = [
           {id:"U001", username:"admin", password:"admin666", name:"admin", nickname:"", role:"超级管理员", position:"", birthday:""},
           {id:"U002", username:"jordly", password:"jordly1218", name:"jordly", nickname:"", role:"管理员", position:"", birthday:""}
@@ -1069,6 +1098,7 @@
         }
         // 用户不存在
         if (!foundUser) {
+          recordFailedLogin(username);
           btnText.textContent = '登 录';
           btn.disabled = false;
           btn.style.opacity = '1';
@@ -1077,6 +1107,7 @@
         }
         // 验证密码
         if (foundUser.password !== password) {
+          recordFailedLogin(username);
           btnText.textContent = '登 录';
           btn.disabled = false;
           btn.style.opacity = '1';

@@ -163,7 +163,7 @@ function safeSetItem(key, value) {
 
 // 默认用户数据（只在首次初始化时使用）
 var DEFAULT_USERS = [
-  {id:"U001", name:"admin", nickname:"", username:"admin", role:"超级管理员", status:"已激活", registerTime:"2025-01-01", password:"admin666", phone:"", email:"", birthday:"", position:"", workplace:"", approvedBy:"system", remark:"系统初始化超级管理员"},
+  {id:"U001", name:"周东利", nickname:"Jordly", username:"admin", role:"超级管理员", status:"已激活", registerTime:"2025-01-01", password:"admin666", phone:"18510084943", email:"zhoudongli@xcxd.com", birthday:"1991-12-18", position:"客服总监", workplace:"济南/淄博/杭州", approvedBy:"system", remark:"系统初始化超级管理员"},
   {id:"U002", name:"jordly", nickname:"", username:"jordly", role:"管理员", status:"已激活", registerTime:"2025-03-15", password:"jordly1218", phone:"", email:"", birthday:"", position:"", workplace:"", approvedBy:"admin", remark:""}
 ];
 
@@ -8709,36 +8709,31 @@ function renderProfile(){
   if (loginLogs.length === 0) {
     html += '<div style="text-align:center;color:#94a3b8;padding:20px 0;font-size:13px;">暂无登录记录</div>';
   } else {
-    html += '<div class="profile-login-list">';
-    
-    var currentSessionId = sessionStorage.getItem('chansee_session_id') || '';
+    html += '<table class="login-records-table">' +
+      '<thead><tr>' +
+        '<th>时间</th>' +
+        '<th>设备</th>' +
+        '<th>操作系统</th>' +
+        '<th>状态</th>' +
+      '</tr></thead><tbody>';
     
     for (var li = 0; li < loginLogs.length && li < 5; li++) {
       var log = loginLogs[li];
-      var isCurrent = (log.sessionId === currentSessionId);
-      var deviceIcon = log.device === 'mobile' ? '📱' : '🖥️';
-      var iconBg = isCurrent ? '#dbeafe' : (log.device === 'mobile' ? '#dcfce7' : '#f3f4f6');
-      var iconColor = isCurrent ? '#3b82f6' : (log.device === 'mobile' ? '#22c55e' : '#6b7280');
+      var deviceLabel = log.device === 'mobile' ? '手机' : (log.device === 'tablet' ? '平板' : 'PC');
+      var deviceIcon = log.device === 'mobile' ? '📱' : (log.device === 'tablet' ? '📟' : '🖥️');
       var timeStr = log.loginTime ? new Date(log.loginTime).toLocaleString('zh-CN') : '--';
+      var statusLabel = log.status || '登录成功';
+      var statusClass = statusLabel === '登录成功' ? 'status-success' : 'status-fail';
       
-      html += '<div class="profile-login-item' + (isCurrent ? ' current' : '') + '">' +
-        '<div class="profile-login-device">' +
-          '<div class="profile-login-icon" style="background:' + iconBg + ';color:' + iconColor + ';">' + deviceIcon + '</div>' +
-          '<div>' +
-            '<div class="profile-login-name">' + log.browser + ' / ' + log.os + '</div>' +
-            '<div class="profile-login-ip">账号: ' + log.username + '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="profile-login-meta">' +
-          (isCurrent ? '<span class="profile-login-badge">当前在线</span>' : '') +
-          (currentUser && currentUser.role === '超级管理员' && !isCurrent ? 
-            '<span style="color:#ef4444;font-size:12px;cursor:pointer;margin-right:8px;" onclick="if(confirm(\'确定强制退出该设备吗？\'))forceLogoutSession(\'' + log.sessionId + '\')">强制退出</span>' : '') +
-          '<div class="profile-login-time">' + timeStr + '</div>' +
-        '</div>' +
-      '</div>';
+      html += '<tr>' +
+        '<td class="rec-time">' + timeStr + '</td>' +
+        '<td class="rec-device">' + deviceIcon + ' ' + deviceLabel + '</td>' +
+        '<td class="rec-os">' + log.os + '</td>' +
+        '<td class="rec-status"><span class="' + statusClass + '">' + statusLabel + '</span></td>' +
+      '</tr>';
     }
     
-    html += '</div>';
+    html += '</tbody></table>';
   }
   
   html += '</div>';
@@ -8778,6 +8773,9 @@ function detectDeviceInfo() {
     os = 'Windows';
   } else if (ua.indexOf('Mac OS') !== -1 || ua.indexOf('Macintosh') !== -1) {
     os = 'macOS';
+  } else if (ua.indexOf('HarmonyOS') !== -1) {
+    os = 'HarmonyOS';
+    device = 'mobile';
   } else if (ua.indexOf('Linux') !== -1) {
     os = 'Linux';
   } else if (ua.indexOf('Android') !== -1) {
@@ -8818,6 +8816,7 @@ function recordLogin() {
       browser: info.browser,
       os: info.os,
       device: info.device,
+      status: '登录成功',
       loginTime: new Date().toISOString(),
       sessionId: sessionId,
       forceLogout: false

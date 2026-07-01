@@ -2340,3 +2340,55 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   cursor: not-allowed;
   pointer-events: none;
 }
+
+/* ===== 最近登录记录表格 ===== */
+.login-records-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.login-records-table thead th {
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--c-text-2);
+  border-bottom: 2px solid var(--c-border);
+  font-size: 12px;
+}
+.login-records-table tbody td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--c-border-light);
+  color: var(--c-text);
+}
+.login-records-table tbody tr:hover {
+  background: var(--c-bg);
+}
+.login-records-table .rec-time {
+  color: var(--c-text-2);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.login-records-table .rec-device {
+  white-space: nowrap;
+}
+.login-records-table .rec-os {
+  white-space: nowrap;
+}
+.status-success {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: var(--c-green-bg);
+  color: var(--c-green);
+  font-size: 12px;
+  font-weight: 500;
+}
+.status-fail {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: var(--c-red-bg);
+  color: var(--c-red);
+  font-size: 12px;
+  font-weight: 500;
+}
