@@ -546,6 +546,7 @@ async function checkLogin() {
           hideLoginModal();
           updateUserDisplay();
           setAppContentVisible(true);
+          recordLogin();
           console.log('checkLogin 快速通行成功');
           return true;
         }
