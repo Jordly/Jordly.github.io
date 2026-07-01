@@ -781,6 +781,7 @@ async function checkLogin() {
       hideLoginModal();
       updateUserDisplay();
       setAppContentVisible(true);
+      recordLogin();
       return true;
     }
   } catch(e) {
@@ -810,6 +811,7 @@ async function checkLogin() {
           hideLoginModal();
           updateUserDisplay();
           setAppContentVisible(true);
+          recordLogin();
           console.warn('checkLogin 已通过兜底方案完成登录');
           return true;
         }
