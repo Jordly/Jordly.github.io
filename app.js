@@ -8704,6 +8704,22 @@ function renderProfile(){
     loginLogs = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]');
   } catch(e) {}
   
+  // 【兜底】如果没有记录但当前是登录状态，强制创建一条当前登录记录
+  if (loginLogs.length === 0 && currentUser) {
+    var info = detectDeviceInfo();
+    var sid = sessionStorage.getItem('chansee_session_id') || ('sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
+    loginLogs.push({
+      _id: 'login_' + Date.now(),
+      username: currentUser.username || 'admin',
+      os: info.os,
+      device: info.device,
+      status: '登录成功',
+      loginTime: new Date().toISOString(),
+      sessionId: sid
+    });
+    try { localStorage.setItem('chansee_login_logs', JSON.stringify(loginLogs)); } catch(e) {}
+  }
+  
   html += '<div class="card profile-card">' +
     '<div class="profile-card-title">' +
       '<span class="profile-card-icon">📍</span>最近登录' +
