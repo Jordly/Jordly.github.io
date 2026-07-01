@@ -1040,13 +1040,26 @@
           {id:"U001", username:"admin", password:"admin666", name:"admin", nickname:"", role:"超级管理员", position:"", birthday:""},
           {id:"U002", username:"jordly", password:"jordly1218", name:"jordly", nickname:"", role:"管理员", position:"", birthday:""}
         ];
-        // 从 localStorage 读取用户数据，如果为空则用默认
+        // 从 localStorage 读取用户数据，然后合并默认用户（默认用户覆盖同名旧数据）
         var savedUsers = [];
         try { savedUsers = JSON.parse(localStorage.getItem('chansee_users') || '[]'); } catch(e) {}
-        if (savedUsers.length === 0) {
-          savedUsers = defaultUsers;
-          // 把默认用户写入 localStorage，方便后面使用
-          try { localStorage.setItem('chansee_users', JSON.stringify(defaultUsers)); } catch(e) {}
+
+        // 合并默认用户：确保默认账号始终可用
+        for (var di = 0; di < defaultUsers.length; di++) {
+          var foundIdx = -1;
+          for (var si = 0; si < savedUsers.length; si++) {
+            if (savedUsers[si].username === defaultUsers[di].username) { foundIdx = si; break; }
+          }
+          if (foundIdx >= 0) {
+            // 同名用户存在，更新密码和角色（确保与默认一致）
+            savedUsers[foundIdx].password = defaultUsers[di].password;
+            savedUsers[foundIdx].role = defaultUsers[di].role;
+            savedUsers[foundIdx].name = defaultUsers[di].name;
+            savedUsers[foundIdx].id = defaultUsers[di].id;
+            savedUsers[foundIdx].nickname = defaultUsers[di].nickname;
+          } else {
+            savedUsers.push(defaultUsers[di]);
+          }
         }
 
         // 查找用户
