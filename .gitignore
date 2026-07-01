@@ -6,3 +6,6 @@ cloudbase-api.zip
 
 # 辅助脚本
 pack_api.js
+
+# 备份目录（含嵌套.git子模块，会导致Cloudflare Pages构建失败）
+backups/
