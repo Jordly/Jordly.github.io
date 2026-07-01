@@ -2301,8 +2301,8 @@ function renderFilterBar() {
       '</div>';
   }
 
-  // 第二行：搜索下拉（默认隐藏，通过CSS .filter-row-v4-second 控制）
-  var row2 = '<div class="filter-row-v4 filter-row-v4-second" id="filter-row-advanced">';
+  // 第二行：搜索下拉（默认隐藏，由JS控制显示）
+  var row2 = '<div class="filter-row-v4 filter-row-v4-second" id="filter-row-advanced" style="display:none;">';
 
   // 平台
   var pfLabel = '平台 ▼';
@@ -2366,18 +2366,22 @@ function renderFilterBar() {
   return '<div class="filter-bar-v4">' + tagsHtml + row1 + customTimeHtml + row2 + '</div>';
 }
 
-// 高级筛选切换（使用class控制，避免被CSS !important覆盖）
+// 高级筛选切换（使用style直接操作，最可靠）
 function toggleAdvancedFilter() {
   var el = document.getElementById('filter-row-advanced');
-  if (!el) { console.warn('[高级筛选] 找不到 #filter-row-advanced 元素'); return; }
-  var isVisible = el.classList.contains('filter-row-visible');
-  if (isVisible) {
-    el.classList.remove('filter-row-visible');
-  } else {
-    el.classList.add('filter-row-visible');
+  if (!el) {
+    // 延迟重试：DOM可能还没渲染完（异步渲染场景）
+    setTimeout(function(){ toggleAdvancedFilter(); }, 200);
+    return;
   }
-  window._advFilterVisible = !isVisible;
-  console.log('[高级筛选] 切换完成, 状态:', window._advFilterVisible ? '展开' : '收起');
+  var isVisible = el.style.display !== 'none' && el.style.display !== '';
+  if (isVisible) {
+    el.style.display = 'none';
+    window._advFilterVisible = false;
+  } else {
+    el.style.display = 'flex';
+    window._advFilterVisible = true;
+  }
 }
 
 // ----- 筛选栏 v4 辅助函数 -----
@@ -9645,8 +9649,19 @@ function goToModule(module){
 }
 
 function toggleAdvancedFilter() {
-  _advancedFilterOpen = !_advancedFilterOpen;
-  renderModule(currentModule);
+  var el = document.getElementById('filter-row-advanced');
+  if (!el) {
+    setTimeout(function(){ toggleAdvancedFilter(); }, 200);
+    return;
+  }
+  var isVisible = el.style.display !== 'none' && el.style.display !== '';
+  if (isVisible) {
+    el.style.display = 'none';
+    window._advFilterVisible = false;
+  } else {
+    el.style.display = 'flex';
+    window._advFilterVisible = true;
+  }
 }
 
 function sortArchiveTable(field) {
@@ -9851,8 +9866,19 @@ function goToModule(module){
 }
 
 function toggleAdvancedFilter() {
-  _advancedFilterOpen = !_advancedFilterOpen;
-  renderModule(currentModule);
+  var el = document.getElementById('filter-row-advanced');
+  if (!el) {
+    setTimeout(function(){ toggleAdvancedFilter(); }, 200);
+    return;
+  }
+  var isVisible = el.style.display !== 'none' && el.style.display !== '';
+  if (isVisible) {
+    el.style.display = 'none';
+    window._advFilterVisible = false;
+  } else {
+    el.style.display = 'flex';
+    window._advFilterVisible = true;
+  }
 }
 
 function sortArchiveTable(field) {
