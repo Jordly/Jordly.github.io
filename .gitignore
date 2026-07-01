@@ -9,3 +9,6 @@ pack_api.js
 
 # 备份目录（含嵌套.git子模块，会导致Cloudflare Pages构建失败）
 backups/
+
+# prototype独立git仓库（作为子模块被追踪，导致Cloudflare Pages构建失败）
+prototype/
