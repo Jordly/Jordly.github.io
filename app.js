@@ -1957,7 +1957,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(arrow) arrow.textContent = '▶';
       }
     });
-    renderModule("dashboard");
+    renderModule(localStorage.getItem('cs_lastModule') || "dashboard");
   } catch(e) {
     document.getElementById("module-content").innerHTML =
       '<div style="padding:40px;text-align:center;color:red;">' +
