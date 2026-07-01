@@ -6607,19 +6607,29 @@ function renderNotifications(){
     </div>
   </div>
 
-  <!-- 统计卡片 -->
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
-    ${[
-      {l:'全部用户',c:USERS.length,icon:'👥',clr:'#3b82f6',bg:'rgba(59,130,246,0.08)'},
-      {l:'已激活',c:USERS.filter(u=>u.status==='已激活').length,icon:'✅',clr:'#22c55e',bg:'rgba(34,197,94,0.08)'},
-      {l:'待审核',c:USERS.filter(u=>u.status==='待审核').length,icon:'⏳',clr:'#eab308',bg:'rgba(234,179,8,0.08)'},
-      {l:'已禁用',c:USERS.filter(u=>u.status==='已禁用'||u.status==='已拒绝').length,icon:'🚫',clr:'#ef4444',bg:'rgba(239,68,68,0.08)'}
-    ].map(function(s){
-      return `<div style="background:${s.bg};border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;">
-        <span style="font-size:24px;">${s.icon}</span>
-        <div><div style="font-size:18px;font-weight:700;color:${s.clr};">${s.c}</div><div style="font-size:11px;color:#64748b;">${s.l}</div></div>
-      </div>`;
+  <!-- 团队角色分布 -->
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span style="font-size:16px;">👥</span>
+      <span style="font-size:13px;font-weight:600;color:#1e293b;">团队角色分布</span>
+      <span style="font-size:11px;color:#94a3b8;margin-left:auto;">共 ${USERS.length} 人</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+    ${ROLES.map(function(r){
+      var count = USERS.filter(function(u){ return u.role === r; }).length;
+      var pct = USERS.length > 0 ? Math.round(count / USERS.length * 100) : 0;
+      var clrs = {'超级管理员':'#8b5cf6','管理员':'#3b82f6','客服总监':'#0b9b96','客服经理':'#f59e0b','客服主管':'#6366f1','项目伙伴':'#ec4899'};
+      var c = clrs[r] || '#94a3b8';
+      return '<div style="display:flex;align-items:center;gap:10px;">'
+        +'<span style="width:72px;font-size:12px;color:#64748b;flex-shrink:0;">'+r+'</span>'
+        +'<div style="flex:1;height:16px;background:#f1f5f9;border-radius:8px;overflow:hidden;">'
+          +'<div style="height:100%;width:'+pct+'%;background:'+c+';border-radius:8px;transition:width 0.3s;"></div>'
+        +'</div>'
+        +'<span style="width:30px;font-size:12px;font-weight:600;color:#334155;text-align:right;">'+count+'</span>'
+        +'<span style="width:32px;font-size:11px;color:#94a3b8;text-align:right;">'+pct+'%</span>'
+      +'</div>';
     }).join('')}
+    </div>
   </div>
 
   <!-- 筛选标签 -->
@@ -6705,7 +6715,7 @@ function approveUser(userId, action){
 function editUserRole(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  const roles = ["客服组长","客服主管","客服经理","客服总监","管理员","项目伙伴","技术伙伴","风控伙伴"];
+  const roles = ROLES; // 统一使用系统权限管理中的角色列表
   const roleOptions = roles.map(r => `<option value="${r}" ${r===user.role?'selected':''}>${r}</option>`).join('');
 
   const modalHtml = `
@@ -6798,20 +6808,66 @@ function deleteUser(userId){
 
 function showAddUser(){
   if (!isAdmin()) { alert("仅管理员可新增用户"); return; }
-  const name = prompt("用户姓名：");
-  if (!name) return;
-  const username = prompt("登录账号：");
-  if (!username || USERS.some(u => u.username === username)) { alert("账号为空或已存在"); return; }
-  const password = prompt("初始密码：");
-  if (!password) return;
-  const role = prompt("角色（客服组长/客服主管/客服经理/客服总监/管理员）：") || "客服组长";
-  const newUser = {
+  var old = document.getElementById('adduser-modal-overlay');
+  if(old) old.remove();
+  var roleOptions = ROLES.map(function(r){
+    return '<option value="'+r+'">'+r+'</option>';
+  }).join('');
+  var modalHtml = ''
+  +'<div class="modal-overlay" id="adduser-modal-overlay" onclick="if(event.target===this)closeAddUserModal()">'
+    +'<div class="modal-box" style="max-width:380px;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.15);">'
+      +'<div class="modal-header" style="padding:14px 18px;border-bottom:1px solid #f1f5f9;">'
+        +'<div style="font-size:14px;font-weight:600;color:#1e293b;">+ 新增用户</div>'
+        +'<button class="modal-close" onclick="closeAddUserModal()" style="font-size:20px;color:#94a3b8;border:none;background:none;cursor:pointer;">&times;</button>'
+      +'</div>'
+      +'<div class="modal-body" style="padding:18px;">'
+        +'<div style="margin-bottom:12px;">'
+          +'<label style="display:block;font-size:12px;color:#64748b;margin-bottom:4px;">用户姓名 *</label>'
+          +'<input id="adduser-name" type="text" placeholder="请输入姓名" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;outline:none;box-sizing:border-box;">'
+        +'</div>'
+        +'<div style="margin-bottom:12px;">'
+          +'<label style="display:block;font-size:12px;color:#64748b;margin-bottom:4px;">登录账号 *</label>'
+          +'<input id="adduser-username" type="text" placeholder="请输入账号" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;outline:none;box-sizing:border-box;">'
+        +'</div>'
+        +'<div style="margin-bottom:12px;">'
+          +'<label style="display:block;font-size:12px;color:#64748b;margin-bottom:4px;">初始密码 *</label>'
+          +'<input id="adduser-password" type="text" placeholder="请输入密码" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;outline:none;box-sizing:border-box;">'
+        +'</div>'
+        +'<div style="margin-bottom:4px;">'
+          +'<label style="display:block;font-size:12px;color:#64748b;margin-bottom:4px;">角色</label>'
+          +'<select id="adduser-role" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;cursor:pointer;">'
+            +roleOptions
+          +'</select>'
+        +'</div>'
+      +'</div>'
+      +'<div class="modal-footer" style="padding:12px 18px 16px;gap:8px;">'
+        +'<button class="btn" onclick="closeAddUserModal()" style="padding:7px 16px;font-size:12px;border-radius:8px;background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;">取消</button>'
+        +'<button class="btn btn-primary" onclick="confirmAddUser()" style="padding:7px 16px;font-size:12px;border-radius:8px;">确定创建</button>'
+      +'</div>'
+    +'</div>'
+  +'</div>';
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+function closeAddUserModal(){
+  var el = document.getElementById('adduser-modal-overlay');
+  if(el) el.remove();
+}
+function confirmAddUser(){
+  var name = document.getElementById('adduser-name').value.trim();
+  var username = document.getElementById('adduser-username').value.trim();
+  var password = document.getElementById('adduser-password').value.trim();
+  var role = document.getElementById('adduser-role').value;
+  if(!name || !username || !password){ alert('请填写姓名、账号和密码'); return; }
+  if(USERS.some(function(u){ return u.username === username; })){ alert('账号 "'+username+'" 已存在'); return; }
+  var newUser = {
     id: "U" + String(USERS.length + 1).padStart(3, "0"),
-    name, username, password, role,
+    name: name, username: username, password: password, role: role,
     status: "已激活", registerTime: new Date().toISOString().slice(0, 10),
     phone: "", email: "", approvedBy: currentUser ? currentUser.name : "admin", remark: ""
   };
   USERS.push(newUser);
+  saveUsers();
+  closeAddUserModal();
   renderModule("notifications");
 }
 
