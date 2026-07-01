@@ -2292,8 +2292,6 @@ function renderFilterBar() {
   row1 += '<button type="button" class="fb-adv-btn '+(isAdvVisible?'fb-adv-btn-active':'')+'" onclick="toggleAdvancedFilter();return false;" style="flex-shrink:0;">'+(isAdvVisible?'收起筛选 ▲':'高级筛选 ▼')+'</button>';
   row1 += '</div>';
 
-  row1 += '</div>';
-
   // 自定义时间
   var customTimeHtml = '';
   if (filterState.timeMode === 'custom') {
