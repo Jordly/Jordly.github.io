@@ -2301,8 +2301,8 @@ function renderFilterBar() {
       '</div>';
   }
 
-  // 第二行：搜索下拉（默认隐藏，由JS控制显示）
-  var row2 = '<div class="filter-row-v4 filter-row-v4-second" id="filter-row-advanced" style="display:none;">';
+  // 第二行：搜索下拉（默认隐藏）
+  var row2 = '<div class="filter-row-v4 filter-row-v4-second" id="filter-row-advanced">';
 
   // 平台
   var pfLabel = '平台 ▼';
@@ -2363,24 +2363,31 @@ function renderFilterBar() {
     '</div>';
   row2 += '</div>';
 
+  // "更多"按钮（对齐第一行"高级筛选"按钮位置）
+  row2 += '<button type="button" class="fb-more-btn" onclick="toggleAdvancedFilter();return false;" style="flex-shrink:0;">更多 ▲</button>';
+
   return '<div class="filter-bar-v4">' + tagsHtml + row1 + customTimeHtml + row2 + '</div>';
 }
 
-// 高级筛选切换（使用style直接操作，最可靠）
+// 高级筛选切换（用important覆盖CSS !important规则）
 function toggleAdvancedFilter() {
   var el = document.getElementById('filter-row-advanced');
-  if (!el) {
-    // 延迟重试：DOM可能还没渲染完（异步渲染场景）
-    setTimeout(function(){ toggleAdvancedFilter(); }, 200);
-    return;
-  }
-  var isVisible = el.style.display !== 'none' && el.style.display !== '';
+  if (!el) { setTimeout(function(){ toggleAdvancedFilter(); }, 200); return; }
+  var btn = document.querySelector('.fb-adv-btn');
+  var moreBtn = document.querySelector('.fb-more-btn');
+  // 检查当前可见状态：CSS强制none时style.display可能为空
+  var computedStyle = window.getComputedStyle(el);
+  var isVisible = (el.style.display !== 'none' && el.style.display !== '') ? (el.style.display !== 'none') : (computedStyle.display !== 'none');
   if (isVisible) {
-    el.style.display = 'none';
+    el.style.setProperty('display', 'none', 'important');
     window._advFilterVisible = false;
+    if(btn){btn.textContent='高级筛选 ▼';btn.className='fb-adv-btn';}
+    if(moreBtn) moreBtn.textContent='更多 ▼';
   } else {
-    el.style.display = 'flex';
+    el.style.setProperty('display', 'flex', 'important');
     window._advFilterVisible = true;
+    if(btn){btn.textContent='收起筛选 ▲';btn.className='fb-adv-btn fb-adv-btn-active';}
+    if(moreBtn) moreBtn.textContent='更多 ▲';
   }
 }
 
@@ -9650,17 +9657,21 @@ function goToModule(module){
 
 function toggleAdvancedFilter() {
   var el = document.getElementById('filter-row-advanced');
-  if (!el) {
-    setTimeout(function(){ toggleAdvancedFilter(); }, 200);
-    return;
-  }
-  var isVisible = el.style.display !== 'none' && el.style.display !== '';
+  if (!el) { setTimeout(function(){ toggleAdvancedFilter(); }, 200); return; }
+  var btn = document.querySelector('.fb-adv-btn');
+  var moreBtn = document.querySelector('.fb-more-btn');
+  var computedStyle = window.getComputedStyle(el);
+  var isVisible = (el.style.display !== 'none' && el.style.display !== '') ? (el.style.display !== 'none') : (computedStyle.display !== 'none');
   if (isVisible) {
-    el.style.display = 'none';
+    el.style.setProperty('display', 'none', 'important');
     window._advFilterVisible = false;
+    if(btn){btn.textContent='高级筛选 ▼';btn.className='fb-adv-btn';}
+    if(moreBtn) moreBtn.textContent='更多 ▼';
   } else {
-    el.style.display = 'flex';
+    el.style.setProperty('display', 'flex', 'important');
     window._advFilterVisible = true;
+    if(btn){btn.textContent='收起筛选 ▲';btn.className='fb-adv-btn fb-adv-btn-active';}
+    if(moreBtn) moreBtn.textContent='更多 ▲';
   }
 }
 
@@ -9867,17 +9878,21 @@ function goToModule(module){
 
 function toggleAdvancedFilter() {
   var el = document.getElementById('filter-row-advanced');
-  if (!el) {
-    setTimeout(function(){ toggleAdvancedFilter(); }, 200);
-    return;
-  }
-  var isVisible = el.style.display !== 'none' && el.style.display !== '';
+  if (!el) { setTimeout(function(){ toggleAdvancedFilter(); }, 200); return; }
+  var btn = document.querySelector('.fb-adv-btn');
+  var moreBtn = document.querySelector('.fb-more-btn');
+  var computedStyle = window.getComputedStyle(el);
+  var isVisible = (el.style.display !== 'none' && el.style.display !== '') ? (el.style.display !== 'none') : (computedStyle.display !== 'none');
   if (isVisible) {
-    el.style.display = 'none';
+    el.style.setProperty('display', 'none', 'important');
     window._advFilterVisible = false;
+    if(btn){btn.textContent='高级筛选 ▼';btn.className='fb-adv-btn';}
+    if(moreBtn) moreBtn.textContent='更多 ▼';
   } else {
-    el.style.display = 'flex';
+    el.style.setProperty('display', 'flex', 'important');
     window._advFilterVisible = true;
+    if(btn){btn.textContent='收起筛选 ▲';btn.className='fb-adv-btn fb-adv-btn-active';}
+    if(moreBtn) moreBtn.textContent='更多 ▲';
   }
 }
 
