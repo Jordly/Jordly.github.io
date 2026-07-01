@@ -8771,27 +8771,46 @@ function detectDeviceInfo() {
     browser = 'Opera';
   }
 
-  // 检测操作系统
-  if (ua.indexOf('Windows') !== -1) {
-    os = 'Windows';
-  } else if (ua.indexOf('Mac OS') !== -1 || ua.indexOf('Macintosh') !== -1) {
-    os = 'macOS';
-  } else if (ua.indexOf('HarmonyOS') !== -1) {
+  // 检测操作系统（HarmonyOS优先，因为其UA可能同时包含Android/Linux）
+  var isHarmonyOS = false;
+  if (ua.indexOf('HarmonyOS') !== -1 || ua.indexOf('OpenHarmony') !== -1) {
     os = 'HarmonyOS';
     device = 'mobile';
-  } else if (ua.indexOf('Linux') !== -1) {
-    os = 'Linux';
-  } else if (ua.indexOf('Android') !== -1) {
-    os = 'Android';
-    device = 'mobile';
+    isHarmonyOS = true;
   } else if (ua.indexOf('iPhone') !== -1 || ua.indexOf('iPad') !== -1) {
     os = 'iOS';
     device = 'mobile';
+  } else if (ua.indexOf('Android') !== -1) {
+    os = 'Android';
+    device = 'mobile';
+  } else if (ua.indexOf('Windows NT 10') !== -1 || ua.indexOf('Windows NT 11') !== -1 || ua.indexOf('Windows NT 6') !== -1) {
+    os = 'Windows';
+  } else if (ua.indexOf('Windows') !== -1) {
+    os = 'Windows';
+  } else if (ua.indexOf('Mac OS X') !== -1 || ua.indexOf('Macintosh') !== -1 || ua.indexOf('MacIntel') !== -1) {
+    os = 'macOS';
+  } else if (ua.indexOf('Linux') !== -1) {
+    // Linux且含华为/荣耀关键词 → 鸿蒙PC
+    if (ua.indexOf('HUAWEI') !== -1 || ua.indexOf('honor') !== -1 || ua.indexOf('Harmony') !== -1) {
+      os = 'HarmonyOS';
+      device = 'desktop';
+      isHarmonyOS = true;
+    } else {
+      os = 'Linux';
+    }
   }
 
-  // 检测设备类型（补充判断）
-  if (window.innerWidth <= 768) {
+  // 补充设备类型判断
+  if (!isHarmonyOS && window.innerWidth <= 768) {
     device = 'mobile';
+  }
+  if ((os === 'iOS' || os === 'Android' || os === 'HarmonyOS') && window.innerWidth > 768 && window.innerWidth <= 1024) {
+    device = 'tablet';
+  }
+  // iPad特殊处理（iPad上Safari UA不含"iPad"，用屏幕比例判断）
+  if (os === 'iOS' && navigator.maxTouchPoints > 0) {
+    device = 'mobile';
+    if (window.innerWidth >= 768) device = 'tablet';
   }
 
   return { browser: browser, os: os, device: device };
@@ -8812,7 +8831,7 @@ function recordLogin() {
     }
     // 还没取到就用兜底
     if (!username) username = 'admin';
-    
+
     var info = detectDeviceInfo();
 
     // 生成唯一会话ID（存在sessionStorage，页面关闭就失效）
@@ -8820,6 +8839,20 @@ function recordLogin() {
     if (!sessionId) {
       sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       sessionStorage.setItem('chansee_session_id', sessionId);
+    }
+
+    // === 去重：同一sessionId在5分钟内不重复记录（防止刷新页面重复写入）===
+    var existingLogs = [];
+    try { existingLogs = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]'); } catch(e) {}
+    var nowTime = Date.now();
+    for (var ei = 0; ei < existingLogs.length; ei++) {
+      if (existingLogs[ei].sessionId === sessionId) {
+        var logTime = new Date(existingLogs[ei].loginTime).getTime();
+        if ((nowTime - logTime) < 5 * 60 * 1000) {
+          // 5分钟内有同sessionId的记录，跳过不写
+          return;
+        }
+      }
     }
 
     var loginRecord = {

@@ -1041,13 +1041,19 @@
         var os = '未知';
         var device = 'desktop';
         var ua = navigator.userAgent || '';
-        if (ua.indexOf('Windows') !== -1) os = 'Windows';
-        else if (ua.indexOf('HarmonyOS') !== -1) { os = 'HarmonyOS'; device = 'mobile'; }
-        else if (ua.indexOf('Mac') !== -1) os = 'macOS';
-        else if (ua.indexOf('Linux') !== -1) os = 'Linux';
-        else if (ua.indexOf('Android') !== -1) { os = 'Android'; device = 'mobile'; }
+        // HarmonyOS 优先检测
+        if (ua.indexOf('HarmonyOS') !== -1 || ua.indexOf('OpenHarmony') !== -1) { os = 'HarmonyOS'; device = 'mobile'; }
         else if (ua.indexOf('iPhone') !== -1 || ua.indexOf('iPad') !== -1) { os = 'iOS'; device = 'mobile'; }
-        if (window.innerWidth <= 768) device = 'mobile';
+        else if (ua.indexOf('Android') !== -1) { os = 'Android'; device = 'mobile'; }
+        else if (ua.indexOf('Windows') !== -1) { os = 'Windows'; }
+        else if (ua.indexOf('Mac') !== -1) { os = 'macOS'; }
+        else if (ua.indexOf('Linux') !== -1) {
+          if (ua.indexOf('HUAWEI') !== -1 || ua.indexOf('honor') !== -1) { os = 'HarmonyOS'; }
+          else { os = 'Linux'; }
+        }
+        // 设备类型细化
+        if (os === 'iOS' && navigator.maxTouchPoints > 0 && window.innerWidth >= 768) device = 'tablet';
+        if (!os.includes('Harmony') && window.innerWidth <= 768) device = 'mobile';
         var record = {
           _id: 'login_' + Date.now(),
           username: username,
