@@ -8799,10 +8799,19 @@ function detectDeviceInfo() {
 // ===== 记录登录信息 =====
 function recordLogin() {
   try {
+    var username = '';
     var authStr = localStorage.getItem('chanseen_auth');
-    if (!authStr) return;
-    var auth = JSON.parse(authStr);
-    var username = auth.user?.username || auth.user?.name || 'admin';
+    if (authStr) {
+      var auth = JSON.parse(authStr);
+      username = auth.user?.username || auth.user?.name || '';
+    }
+    // 如果 chanseen_auth 取不到用户名，从 currentUser 取
+    if (!username && typeof currentUser !== 'undefined' && currentUser) {
+      username = currentUser.username || currentUser.name || 'admin';
+    }
+    // 还没取到就用兜底
+    if (!username) username = 'admin';
+    
     var info = detectDeviceInfo();
 
     // 生成唯一会话ID（存在sessionStorage，页面关闭就失效）
