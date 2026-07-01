@@ -134,6 +134,71 @@ function showToast(msg, type) {
   }
 }
 
+// ===== 自定义确认弹窗（替代原生 confirm）=====
+function showConfirmModal(msg, title, onConfirm, onCancel) {
+  title = title || '确认操作';
+  var overlay = document.createElement('div');
+  overlay.className = 'sd-confirm-overlay';
+  overlay.innerHTML = ''
+    + '<div class="sd-confirm-box">'
+    + '<div class="sd-confirm-header">'+title+'</div>'
+    + '<div class="sd-confirm-body">'+msg+'</div>'
+    + '<div class="sd-confirm-footer">'
+    + '<button class="sd-confirm-btn sd-confirm-cancel" id="sd-confirm-cancel-btn">取消</button>'
+    + '<button class="sd-confirm-btn sd-confirm-ok" id="sd-confirm-ok-btn">确定</button>'
+    + '</div></div>';
+  document.body.appendChild(overlay);
+  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
+  document.getElementById('sd-confirm-ok-btn').onclick = function(){
+    if(onConfirm) onConfirm();
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  document.getElementById('sd-confirm-cancel-btn').onclick = function(){
+    if(onCancel) onCancel();
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.onclick = function(e){
+    if(e.target === this) { if(onCancel) onCancel(); overlay.classList.remove('sd-confirm-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
+  };
+}
+
+// ===== 自定义输入弹窗（替代原生 prompt）=====
+function showPromptModal(title, label, defaultValue, onConfirm) {
+  var overlay = document.createElement('div');
+  overlay.className = 'sd-prompt-overlay';
+  overlay.innerHTML = ''
+    + '<div class="sd-prompt-box">'
+    + '<div class="sd-prompt-header">'+title+' <button class="sd-prompt-close" id="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-body"><label>'+label+'</label><input type="text" class="sd-prompt-input" id="sd-prompt-input" value="'+(defaultValue||'')+'"></div>'
+    + '<div class="sd-prompt-footer">'
+    + '<button class="sd-confirm-btn sd-confirm-cancel" id="sd-prompt-cancel-btn">取消</button>'
+    + '<button class="sd-confirm-btn sd-confirm-ok" id="sd-prompt-ok-btn">确定</button>'
+    + '</div></div>';
+  document.body.appendChild(overlay);
+  setTimeout(function(){ overlay.classList.add('sd-prompt-show'); }, 10);
+  var inputEl = document.getElementById('sd-prompt-input');
+  if(inputEl){ inputEl.focus(); inputEl.select(); }
+  document.getElementById('sd-prompt-ok-btn').onclick = function(){
+    var val = inputEl ? inputEl.value : '';
+    if(onConfirm) onConfirm(val);
+    overlay.classList.remove('sd-prompt-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  document.getElementById('sd-prompt-cancel-btn').onclick = function(){
+    overlay.classList.remove('sd-prompt-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  document.getElementById('sd-prompt-close').onclick = function(){
+    overlay.classList.remove('sd-prompt-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.onclick = function(e){
+    if(e.target === this){ overlay.classList.remove('sd-prompt-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
+  };
+}
+
 // ===== 数据持久化（彻底修复版）=====
 // 安全写入 localStorage（带 quota 处理和用户提示）
 function safeSetItem(key, value) {
@@ -6696,17 +6761,16 @@ function approveUser(userId, action){
   if (action === "同意") {
     user.status = "已激活";
     user.approvedBy = currentUser ? currentUser.name : "admin";
-    // 新用户默认角色为"新用户"，所有权限只读
     if (!user.role) user.role = "新用户";
     saveUsers();
-    alert(`已同意 ${user.name} 的注册申请，账号已激活。`);
+    showToast('已同意 '+user.name+' 的注册申请，账号已激活', 'success');
   } else if (action === "拒绝") {
     user.status = "已拒绝";
     user.approvedBy = currentUser ? currentUser.name : "admin";
     saveUsers();
-    alert(`已拒绝 ${user.name} 的注册申请。`);
+    showToast('已拒绝 '+user.name+' 的注册申请', 'warning');
   } else if (action === "忽略") {
-    alert(`已忽略 ${user.name} 的注册申请，该申请仍保留在待审核列表中。`);
+    showToast('已忽略 '+user.name+' 的注册申请，仍保留在待审核列表中', 'info');
     return;
   }
   renderModule("notifications");
@@ -6757,7 +6821,7 @@ function confirmEditRole(userId){
   if(newRole && newRole !== user.role){
     user.role = newRole;
     saveUsers();
-    alert(`已修改 ${user.name} 的角色为：${newRole}`);
+    showToast('已修改 '+user.name+' 的角色为：'+newRole, 'success');
     renderModule("notifications");
   }
   closeRoleModal();
@@ -6766,24 +6830,27 @@ function confirmEditRole(userId){
 function resetUserPassword(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  const newPwd = prompt(`重置 ${user.name} 的密码：\n请输入新密码（至少6位）：`);
-  if (newPwd && newPwd.length >= 6) {
-    user.password = newPwd;
-    alert(`已重置 ${user.name} 的密码。`);
-  } else if (newPwd) {
-    alert("密码长度不足6位");
-  }
+  showPromptModal('重置 '+user.name+' 的密码', '请输入新密码（至少6位）：', '', function(newPwd){
+    if (newPwd && newPwd.length >= 6) {
+      user.password = newPwd;
+      saveUsers();
+      showToast('已重置 '+user.name+' 的密码', 'success');
+    } else if (newPwd) {
+      showToast('密码长度不足6位，请重新操作', 'error');
+    }
+  });
 }
 
 function disableUser(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  if (user.role === "超级管理员") { alert("不能禁用超级管理员"); return; }
-  if (confirm(`确定要禁用用户 ${user.name} 吗？`)) {
+  if (user.role === "超级管理员") { showToast('不能禁用超级管理员', 'error'); return; }
+  showConfirmModal('确定要禁用用户 <strong>'+user.name+'</strong> 吗？', '确认禁用', function(){
     user.status = "已禁用";
     saveUsers();
+    showToast('已禁用用户 '+user.name, 'warning');
     renderModule("notifications");
-  }
+  });
 }
 
 function enableUser(userId){
@@ -6797,17 +6864,18 @@ function enableUser(userId){
 function deleteUser(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  if (user.role === "超级管理员") { alert("不能删除超级管理员"); return; }
-  if (confirm(`确定要删除用户 ${user.name} 吗？此操作不可恢复。`)) {
+  if (user.role === "超级管理员") { showToast('不能删除超级管理员', 'error'); return; }
+  showConfirmModal('确定要删除用户 <strong>'+user.name+'</strong> 吗？<br><span style="color:#f5222d">此操作不可恢复！</span>', '确认删除', function(){
     const idx = USERS.findIndex(u => u.id === userId);
     if (idx > -1) USERS.splice(idx, 1);
     saveUsers();
+    showToast('已删除用户 '+user.name, 'success');
     renderModule("notifications");
-  }
+  });
 }
 
 function showAddUser(){
-  if (!isAdmin()) { alert("仅管理员可新增用户"); return; }
+  if (!isAdmin()) { showToast('仅管理员可新增用户', 'error'); return; }
   var old = document.getElementById('adduser-modal-overlay');
   if(old) old.remove();
   var roleOptions = ROLES.map(function(r){
@@ -6857,8 +6925,8 @@ function confirmAddUser(){
   var username = document.getElementById('adduser-username').value.trim();
   var password = document.getElementById('adduser-password').value.trim();
   var role = document.getElementById('adduser-role').value;
-  if(!name || !username || !password){ alert('请填写姓名、账号和密码'); return; }
-  if(USERS.some(function(u){ return u.username === username; })){ alert('账号 "'+username+'" 已存在'); return; }
+  if(!name || !username || !password){ showToast('请填写姓名、账号和密码', 'warning'); return; }
+  if(USERS.some(function(u){ return u.username === username; })){ showToast('账号 "'+username+'" 已存在', 'error'); return; }
   var newUser = {
     id: "U" + String(USERS.length + 1).padStart(3, "0"),
     name: name, username: username, password: password, role: role,

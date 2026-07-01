@@ -2392,3 +2392,57 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   font-size: 12px;
   font-weight: 500;
 }
+
+/* ===== 自定义弹窗样式（替代浏览器原生 alert/confirm/prompt）===== */
+.sd-confirm-overlay, .sd-prompt-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15,23,42,0.45); z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.25s ease;
+}
+.sd-confirm-show { opacity: 1; }
+.sd-confirm-box, .sd-prompt-box {
+  background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  width: 380px; max-width: 88vw; overflow: hidden;
+  transform: scale(0.92); transition: transform 0.25s ease;
+}
+.sd-confirm-show .sd-confirm-box,
+.sd-confirm-show .sd-prompt-box { transform: scale(1); }
+.sd-confirm-header, .sd-prompt-header {
+  padding: 16px 20px; font-size: 15px; font-weight: 600; color: #1e293b;
+  border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;
+}
+.sd-prompt-close {
+  font-size: 22px; color: #94a3b8; background: none; border: none; cursor: pointer; line-height: 1;
+}
+.sd-prompt-close:hover { color: #475569; }
+.sd-confirm-body {
+  padding: 20px 20px; font-size: 14px; color: #475569; line-height: 1.6;
+}
+.sd-prompt-body {
+  padding: 16px 20px;
+}
+.sd-prompt-body label {
+  display: block; font-size: 13px; color: #64748b; margin-bottom: 8px;
+}
+.sd-prompt-input {
+  width: 100%; padding: 10px 14px; font-size: 14px; color: #1e293b;
+  border: 1.5px solid #e2e8f0; border-radius: 8px; outline: none; box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+.sd-prompt-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+.sd-confirm-footer {
+  padding: 14px 20px 18px; display: flex; gap: 10px; justify-content: flex-end;
+}
+.sd-confirm-btn {
+  padding: 8px 22px; font-size: 13px; font-weight: 500; border-radius: 8px;
+  border: none; cursor: pointer; transition: all 0.2s;
+}
+.sd-confirm-cancel {
+  background: #f1f5f9; color: #475569;
+}
+.sd-confirm-cancel:hover { background: #e2e8f0; }
+.sd-confirm-ok {
+  background: linear-gradient(135deg,#3b82f6,#2563eb); color: #fff;
+}
+.sd-confirm-ok:hover { background: linear-gradient(135deg,#2563eb,#1d4ed8); box-shadow: 0 4px 12px rgba(59,130,246,0.35); }
