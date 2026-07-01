@@ -978,7 +978,7 @@
       try {
         const auth = JSON.parse(localStorage.getItem('chanseen_auth'));
         if (auth && auth.token) {
-          window.location.href = 'index.html';
+          window.location.href = 'index.html?from=login&_=' + Date.now();
         }
       } catch(e) {}
     }
@@ -1035,15 +1035,45 @@
 
       // 模拟登录验证（1秒后）
       setTimeout(() => {
-        // 从 USERS 数组查找匹配用户，获取完整信息
+        // 内置默认用户（首次部署时兜底）
+        var defaultUsers = [
+          {id:"U001", username:"admin", password:"admin123", name:"系统创建者", nickname:"Jordly", role:"超级管理员", position:"客服", birthday:"1991-12-18"},
+          {id:"U002", username:"wangadmin", password:"wang456", name:"王管理", role:"管理员", position:"", birthday:""},
+          {id:"U003", username:"lilead", password:"li789", name:"李组长", role:"客服组长", position:"", birthday:""},
+          {id:"U004", username:"zhangsup", password:"zhang000", name:"张主管", role:"客服主管", position:"", birthday:""},
+          {id:"U005", username:"chenmgr", password:"chen111", name:"陈经理", role:"客服经理", position:"", birthday:""},
+          {id:"U006", username:"zhaocs", password:"zhao222", name:"赵专员", role:"客服组长", position:"", birthday:""}
+        ];
+        // 从 localStorage 读取用户数据，如果为空则用默认
         var savedUsers = [];
         try { savedUsers = JSON.parse(localStorage.getItem('chansee_users') || '[]'); } catch(e) {}
+        if (savedUsers.length === 0) {
+          savedUsers = defaultUsers;
+          // 把默认用户写入 localStorage，方便后面使用
+          try { localStorage.setItem('chansee_users', JSON.stringify(defaultUsers)); } catch(e) {}
+        }
+
+        // 查找用户
         var foundUser = null;
         for (var i = 0; i < savedUsers.length; i++) {
           if (savedUsers[i].username === username) { foundUser = savedUsers[i]; break; }
         }
-        // 如果没找到，用输入的信息构建基础对象
-        if (!foundUser) { foundUser = { id: 'U001', username: username, name: username, role: '超级管理员' }; }
+        // 用户不存在
+        if (!foundUser) {
+          btnText.textContent = '登 录';
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          showToast('用户名或密码错误', 'error');
+          return;
+        }
+        // 验证密码
+        if (foundUser.password !== password) {
+          btnText.textContent = '登 录';
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          showToast('用户名或密码错误', 'error');
+          return;
+        }
 
         const auth = {
           token: 'demo_' + Date.now(),
@@ -1064,7 +1094,7 @@
         showToast('登录成功！正在进入系统...', 'success');
 
         setTimeout(() => {
-          window.location.href = 'index.html';
+          window.location.href = 'index.html?from=login&_=' + Date.now();
         }, 800);
       }, 800);
 
