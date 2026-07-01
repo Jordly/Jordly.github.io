@@ -834,6 +834,7 @@ function updateUserDisplay() {
   if (!el) return;
   if (!currentUser) { el.innerHTML = ""; return; }
   const displayName = currentUser.nickname || currentUser.name || "?";
+  const firstChar = (displayName || '').charAt(0).toUpperCase() || '?';
   const avatar = currentUser.avatar || "";
   const avatarHtml = avatar
     ? `<div class="user-avatar" style="background-image:url(${avatar});background-size:cover;background-position:center;color:transparent;">${firstChar}</div>`
@@ -2287,6 +2288,11 @@ function renderFilterBar() {
   statuses.forEach(function(s){ row1 += '<option value="'+s+'"'+(filterState.status===s?' selected':'')+'>'+s+'</option>'; });
   row1 += '</select>';
 
+  // 高级筛选切换按钮（放在第一行末尾，始终可见）
+  var isAdvVisible = window._advFilterVisible || false;
+  row1 += '<button class="fb-adv-btn '+(isAdvVisible?'fb-adv-btn-active':'')+'" onclick="toggleAdvancedFilter()" style="flex-shrink:0;">'+(isAdvVisible?'收起筛选 ▲':'高级筛选 ▼')+'</button>';
+  row1 += '</div>';
+
   row1 += '</div>';
 
   // 自定义时间
@@ -2358,11 +2364,6 @@ function renderFilterBar() {
     '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-director" placeholder="搜索客服管理..." oninput="renderFbOptions(\'director\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-director"></div>'+
     '</div>';
-  row2 += '</div>';
-
-  // 高级筛选切换按钮
-  var isAdvVisible = window._advFilterVisible || false;
-  row2 += '<button class="fb-adv-btn '+(isAdvVisible?'fb-adv-btn-active':'')+'" onclick="toggleAdvancedFilter()">'+(isAdvVisible?'收起筛选':'高级筛选')+'</button>';
   row2 += '</div>';
 
   return '<div class="filter-bar-v4">' + tagsHtml + row1 + customTimeHtml + row2 + '</div>';

@@ -2676,6 +2676,22 @@
   min-height: 26px !important;
 }
 
+/* 筛选行 — 第一行：4个筛选项 + 高级筛选按钮，铺开约75%宽度 */
+.filter-row-v4 {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 18px !important;
+  background: #fff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+  margin-bottom: 10px !important;
+  position: relative !important;
+  width: 75% !important;
+}
+
 .filter-tag {
   display: inline-flex !important;
   align-items: center !important;
@@ -2730,18 +2746,19 @@
 }
 
 /* 筛选行 */
-.filter-row-v4 {
+.filter-bar-v4 {
+  margin-bottom: 16px !important;
+  user-select: none !important;
+}
+
+/* 已选标签行 */
+.filter-tags-row {
   display: flex !important;
   flex-wrap: wrap !important;
   align-items: center !important;
-  gap: 14px !important;
-  padding: 12px 18px !important;
-  background: #fff !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 14px !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+  gap: 6px !important;
   margin-bottom: 10px !important;
-  position: relative !important;
+  min-height: 26px !important;
 }
 
 .filter-row-v4-second {
@@ -2764,6 +2781,8 @@
 
 /* 普通下拉 — 极光色调 */
 .fb-select {
+  flex: 1 !important;
+  min-width: 0 !important;
   padding: 7px 28px 7px 12px !important;
   font-size: 13px !important;
   border-radius: 10px !important;
@@ -2779,8 +2798,6 @@
   background-position: right 10px center !important;
   background-size: 10px !important;
   transition: all 0.3s ease !important;
-  min-width: 90px !important;
-  max-width: 140px !important;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
