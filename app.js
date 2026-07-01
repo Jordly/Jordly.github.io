@@ -1936,7 +1936,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               if(idx===0){ sec.classList.remove("collapsed"); if(arrow) arrow.textContent = '▼'; }
               else { sec.classList.add("collapsed"); if(arrow) arrow.textContent = '▶'; }
             });
-            renderModule("dashboard");
+            renderModule(localStorage.getItem('cs_lastModule') || "dashboard");
             return;
           }
         }
@@ -2185,6 +2185,8 @@ function initNav(){
 function renderModule(module){
   try {
     currentModule = module;
+    // 保存当前模块到localStorage，刷新后自动回到该模块
+    try { localStorage.setItem('cs_lastModule', module); } catch(e){};
     const area = document.getElementById("module-content");
     if (!area) { console.error('renderModule: module-content 元素不存在'); return; }
     const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, systemData:renderSystemData, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
