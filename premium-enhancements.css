@@ -2761,10 +2761,19 @@
   min-height: 26px !important;
 }
 
+/* 筛选行 — 第二行：5个筛选项，宽度和第一行一致 */
 .filter-row-v4-second {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 18px !important;
   background: linear-gradient(135deg, rgba(11,155,150,0.04) 0%, rgba(59,130,246,0.03) 50%, rgba(139,92,246,0.02) 100%) !important;
   border-style: solid !important;
+  border-width: 1px !important;
   border-color: rgba(11,155,150,0.15) !important;
+  border-radius: 14px !important;
+  width: 75% !important;
   /* 显示隐藏由JS通过style直接控制，避免!important冲突 */
 }
 
@@ -2829,17 +2838,21 @@
   margin-left: 4px !important;
 }
 
-/* 搜索下拉包裹 */
+/* 搜索下拉包裹 — 第二行用flex:1均匀铺开 */
 .fb-search-wrap {
   position: relative !important;
-  display: inline-flex !important;
-  flex-shrink: 0 !important;
+  display: flex !important;
+  flex: 1 !important;
+  min-width: 0 !important;
 }
 
 /* 搜索触发按钮 — 极光色调 */
 .fb-search-trigger {
-  display: inline-flex !important;
+  display: flex !important;
   align-items: center !important;
+  flex: 1 !important;
+  width: 100% !important;
+  min-width: 0 !important;
   gap: 6px !important;
   padding: 7px 28px 7px 12px !important;
   font-size: 13px !important;
@@ -3126,13 +3139,7 @@
   max-width: 240px !important;
   min-width: 80px !important;
 }
-/* 高级筛选面板（第二行）默认隐藏 */
-.filter-row-v4-advanced {
-  display: none !important;
-}
-.filter-row-v4-advanced.show {
-  display: flex !important;
-}
+/* 高级筛选面板显隐由JS通过style.display直接控制 */
 
 /* ===== 导入对话框样式 ===== */
 #import-drop-zone:hover {
