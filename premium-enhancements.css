@@ -3109,26 +3109,16 @@
   flex-shrink: 0 !important;
 }
 
-/* 第二行"更多"按钮 — 对齐第一行"高级筛选" */
+/* 第二行"更多"文字 — 纯装饰，对齐第一行"高级筛选" */
 .fb-more-btn {
   display: inline-flex !important;
   align-items: center !important;
-  gap: 4px !important;
   padding: 7px 14px !important;
   font-size: 13px !important;
-  color: #64748b !important;
-  background: transparent !important;
-  border: 1px dashed #cbd5e1 !important;
-  border-radius: 10px !important;
-  cursor: pointer !important;
+  color: #94a3b8 !important;
   white-space: nowrap !important;
   flex-shrink: 0 !important;
   margin-left: auto !important;
-}
-.fb-more-btn:hover {
-  color: #0b9b96 !important;
-  border-color: rgba(11,155,150,0.5) !important;
-  background: linear-gradient(135deg, rgba(11,155,150,0.06) 0%, rgba(59,130,246,0.04) 100%) !important;
 }
 
 /* 高级筛选展开状态 */

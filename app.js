@@ -2363,8 +2363,8 @@ function renderFilterBar() {
     '</div>';
   row2 += '</div>';
 
-  // "更多"按钮（对齐第一行"高级筛选"按钮位置）
-  row2 += '<button type="button" class="fb-more-btn" onclick="toggleAdvancedFilter();return false;" style="flex-shrink:0;">更多 ▲</button>';
+  // "更多"按钮（纯装饰，对齐第一行"高级筛选"位置）
+  row2 += '<span class="fb-more-btn">更多</span>';
 
   return '<div class="filter-bar-v4">' + tagsHtml + row1 + customTimeHtml + row2 + '</div>';
 }
@@ -2382,12 +2382,10 @@ function toggleAdvancedFilter() {
     el.style.setProperty('display', 'none', 'important');
     window._advFilterVisible = false;
     if(btn){btn.textContent='高级筛选 ▼';btn.className='fb-adv-btn';}
-    if(moreBtn) moreBtn.textContent='更多 ▼';
   } else {
     el.style.setProperty('display', 'flex', 'important');
     window._advFilterVisible = true;
     if(btn){btn.textContent='收起筛选 ▲';btn.className='fb-adv-btn fb-adv-btn-active';}
-    if(moreBtn) moreBtn.textContent='更多 ▲';
   }
 }
 
@@ -9659,19 +9657,16 @@ function toggleAdvancedFilter() {
   var el = document.getElementById('filter-row-advanced');
   if (!el) { setTimeout(function(){ toggleAdvancedFilter(); }, 200); return; }
   var btn = document.querySelector('.fb-adv-btn');
-  var moreBtn = document.querySelector('.fb-more-btn');
   var computedStyle = window.getComputedStyle(el);
   var isVisible = (el.style.display !== 'none' && el.style.display !== '') ? (el.style.display !== 'none') : (computedStyle.display !== 'none');
   if (isVisible) {
     el.style.setProperty('display', 'none', 'important');
     window._advFilterVisible = false;
     if(btn){btn.textContent='高级筛选 ▼';btn.className='fb-adv-btn';}
-    if(moreBtn) moreBtn.textContent='更多 ▼';
   } else {
     el.style.setProperty('display', 'flex', 'important');
     window._advFilterVisible = true;
     if(btn){btn.textContent='收起筛选 ▲';btn.className='fb-adv-btn fb-adv-btn-active';}
-    if(moreBtn) moreBtn.textContent='更多 ▲';
   }
 }
 
@@ -9880,19 +9875,16 @@ function toggleAdvancedFilter() {
   var el = document.getElementById('filter-row-advanced');
   if (!el) { setTimeout(function(){ toggleAdvancedFilter(); }, 200); return; }
   var btn = document.querySelector('.fb-adv-btn');
-  var moreBtn = document.querySelector('.fb-more-btn');
   var computedStyle = window.getComputedStyle(el);
   var isVisible = (el.style.display !== 'none' && el.style.display !== '') ? (el.style.display !== 'none') : (computedStyle.display !== 'none');
   if (isVisible) {
     el.style.setProperty('display', 'none', 'important');
     window._advFilterVisible = false;
     if(btn){btn.textContent='高级筛选 ▼';btn.className='fb-adv-btn';}
-    if(moreBtn) moreBtn.textContent='更多 ▼';
   } else {
     el.style.setProperty('display', 'flex', 'important');
     window._advFilterVisible = true;
     if(btn){btn.textContent='收起筛选 ▲';btn.className='fb-adv-btn fb-adv-btn-active';}
-    if(moreBtn) moreBtn.textContent='更多 ▲';
   }
 }
 
