@@ -2289,7 +2289,7 @@ function renderFilterBar() {
 
   // 高级筛选切换按钮（放在第一行末尾，始终可见）
   var isAdvVisible = window._advFilterVisible || false;
-  row1 += '<button class="fb-adv-btn '+(isAdvVisible?'fb-adv-btn-active':'')+'" onclick="toggleAdvancedFilter()" style="flex-shrink:0;">'+(isAdvVisible?'收起筛选 ▲':'高级筛选 ▼')+'</button>';
+  row1 += '<button type="button" class="fb-adv-btn '+(isAdvVisible?'fb-adv-btn-active':'')+'" onclick="toggleAdvancedFilter();return false;" style="flex-shrink:0;">'+(isAdvVisible?'收起筛选 ▲':'高级筛选 ▼')+'</button>';
   row1 += '</div>';
 
   row1 += '</div>';
@@ -2371,7 +2371,7 @@ function renderFilterBar() {
 // 高级筛选切换（使用class控制，避免被CSS !important覆盖）
 function toggleAdvancedFilter() {
   var el = document.getElementById('filter-row-advanced');
-  if (!el) return;
+  if (!el) { console.warn('[高级筛选] 找不到 #filter-row-advanced 元素'); return; }
   var isVisible = el.classList.contains('filter-row-visible');
   if (isVisible) {
     el.classList.remove('filter-row-visible');
@@ -2379,6 +2379,7 @@ function toggleAdvancedFilter() {
     el.classList.add('filter-row-visible');
   }
   window._advFilterVisible = !isVisible;
+  console.log('[高级筛选] 切换完成, 状态:', window._advFilterVisible ? '展开' : '收起');
 }
 
 // ----- 筛选栏 v4 辅助函数 -----
