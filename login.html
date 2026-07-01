@@ -1037,12 +1037,8 @@
       setTimeout(() => {
         // 内置默认用户（首次部署时兜底）
         var defaultUsers = [
-          {id:"U001", username:"admin", password:"admin123", name:"系统创建者", nickname:"Jordly", role:"超级管理员", position:"客服", birthday:"1991-12-18"},
-          {id:"U002", username:"wangadmin", password:"wang456", name:"王管理", role:"管理员", position:"", birthday:""},
-          {id:"U003", username:"lilead", password:"li789", name:"李组长", role:"客服组长", position:"", birthday:""},
-          {id:"U004", username:"zhangsup", password:"zhang000", name:"张主管", role:"客服主管", position:"", birthday:""},
-          {id:"U005", username:"chenmgr", password:"chen111", name:"陈经理", role:"客服经理", position:"", birthday:""},
-          {id:"U006", username:"zhaocs", password:"zhao222", name:"赵专员", role:"客服组长", position:"", birthday:""}
+          {id:"U001", username:"admin", password:"admin666", name:"admin", nickname:"", role:"超级管理员", position:"", birthday:""},
+          {id:"U002", username:"jordly", password:"jordly1218", name:"jordly", nickname:"", role:"管理员", position:"", birthday:""}
         ];
         // 从 localStorage 读取用户数据，如果为空则用默认
         var savedUsers = [];

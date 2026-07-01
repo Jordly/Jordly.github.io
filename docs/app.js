@@ -163,12 +163,8 @@ function safeSetItem(key, value) {
 
 // 默认用户数据（只在首次初始化时使用）
 var DEFAULT_USERS = [
-  {id:"U001", name:"系统创建者", nickname:"Jordly", username:"admin", role:"超级管理员", status:"已激活", registerTime:"2025-01-01", password:"admin123", phone:"18510084943", email:"zhoudongli@xcxd.com", birthday:"1991-12-18", position:"客服", workplace:"济南/淄博/杭州", approvedBy:"system", remark:"系统初始化超级管理员"},
-  {id:"U002", name:"王管理", username:"wangadmin", role:"管理员", status:"已激活", registerTime:"2025-03-15", password:"wang456", phone:"139****1111", email:"wang@chanseen.com", approvedBy:"admin", remark:""},
-  {id:"U003", name:"李组长", username:"lilead", role:"客服组长", status:"待审核", registerTime:"2026-05-20", password:"li789", phone:"137****2222", email:"li@chanseen.com", approvedBy:"", remark:"新入职申请"},
-  {id:"U004", name:"张主管", username:"zhangsup", role:"客服主管", status:"已拒绝", registerTime:"2026-05-18", password:"zhang000", phone:"136****3333", email:"zhang@chanseen.com", approvedBy:"wangadmin", remark:"信息不完整"},
-  {id:"U005", name:"陈经理", username:"chenmgr", role:"客服经理", status:"已激活", registerTime:"2025-06-10", password:"chen111", phone:"135****4444", email:"chen@chanseen.com", approvedBy:"admin", remark:""},
-  {id:"U006", name:"赵专员", username:"zhaocs", role:"客服组长", status:"待审核", registerTime:"2026-06-01", password:"zhao222", phone:"134****5555", email:"zhao@chanseen.com", approvedBy:"", remark:"跨部门调动"}
+  {id:"U001", name:"admin", nickname:"", username:"admin", role:"超级管理员", status:"已激活", registerTime:"2025-01-01", password:"admin666", phone:"", email:"", birthday:"", position:"", workplace:"", approvedBy:"system", remark:"系统初始化超级管理员"},
+  {id:"U002", name:"jordly", nickname:"", username:"jordly", role:"管理员", status:"已激活", registerTime:"2025-03-15", password:"jordly1218", phone:"", email:"", birthday:"", position:"", workplace:"", approvedBy:"admin", remark:""}
 ];
 
 var DEFAULT_PROJECTS = [
