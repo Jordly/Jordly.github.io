@@ -7053,7 +7053,7 @@ var _renderSystemData = function(){
       tableHtml += '<tr>';
       if(colDefs.showCb) tableHtml += '<td><input type="checkbox" class="sd-row-cb" data-idx="'+idx+'"></td>';
       for(var ci=0; ci<colDefs.keys.length; ci++) tableHtml += '<td>'+(row[colDefs.keys[ci]]!=null?row[colDefs.keys[ci]]:'')+'</td>';
-      if(colDefs.showCb) tableHtml += '<td><button class="btn btn-xs" onclick="editSystemDataRow('+idx+')">编辑</button> <button class="btn btn-xs btn-danger" onclick="deleteSystemDataRow('+idx+')">删除</button></td>';
+      if(colDefs.showCb) tableHtml += '<td><button class="sd-action-btn sd-action-btn-edit" onclick="editSystemDataRow('+idx+')">✏️ 编辑</button><button class="sd-action-btn sd-action-btn-delete" onclick="deleteSystemDataRow('+idx+')">🗑 删除</button></td>';
       tableHtml += '</tr>';
     }
     tableHtml += '</tbody></table>';

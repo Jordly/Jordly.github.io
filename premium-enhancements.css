@@ -4407,57 +4407,19 @@
   display: flex;
   flex-direction: column;
 }
-.sd-card-inner::before {
-  content: '';
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  opacity: 0.1;
-}
-.sd-card-inner::after {
-  content: '';
-  position: absolute;
-  bottom: -30px;
-  left: -30px;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  opacity: 0.06;
-}
 
-/* 卡片配色 */
-.sd-card-clr1::before { background: #0B9B96; }
-.sd-card-clr1::after { background: #0B9B96; }
-.sd-card-clr1 .sd-card-icon { background: linear-gradient(135deg, rgba(11,155,150,0.15), rgba(11,155,150,0.05)); color: #0B9B96; }
-.sd-card-clr1 .sd-card-count { background: rgba(11,155,150,0.1); color: #0B9B96; }
-.sd-card-clr1 .sd-card-inner { background: linear-gradient(160deg, rgba(11,155,150,0.03) 0%, #fff 40%); }
-
-.sd-card-clr2::before { background: #3B82F6; }
-.sd-card-clr2::after { background: #3B82F6; }
-.sd-card-clr2 .sd-card-icon { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)); color: #3B82F6; }
-.sd-card-clr2 .sd-card-count { background: rgba(59,130,246,0.1); color: #3B82F6; }
-.sd-card-clr2 .sd-card-inner { background: linear-gradient(160deg, rgba(59,130,246,0.03) 0%, #fff 40%); }
-
-.sd-card-clr3::before { background: #8B5CF6; }
-.sd-card-clr3::after { background: #8B5CF6; }
-.sd-card-clr3 .sd-card-icon { background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05)); color: #8B5CF6; }
-.sd-card-clr3 .sd-card-count { background: rgba(139,92,246,0.1); color: #8B5CF6; }
-.sd-card-clr3 .sd-card-inner { background: linear-gradient(160deg, rgba(139,92,246,0.03) 0%, #fff 40%); }
-
-/* 卡片图标 */
+/* 卡片图标 — 改进为圆角渐变色背景 */
 .sd-card-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 48px;
   height: 48px;
-  font-size: 22px;
-  border-radius: 12px;
+  font-size: 24px;
+  border-radius: 14px;
   margin-bottom: 14px;
   font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 /* 卡片标题 */
@@ -4485,6 +4447,137 @@
   color: #9ca3af;
   line-height: 1.6;
   flex: 1;
+}
+
+/* ========================================
+   系统数据管理 - 表格美化
+   ======================================== */
+
+/* 数据表格 */
+.sysdata-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+/* 表头 */
+.sysdata-table thead {
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%);
+  color: #fff;
+}
+.sysdata-table thead th {
+  padding: 11px 14px;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: left;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  border: none;
+}
+.sysdata-table thead th:first-child {
+  border-radius: 12px 0 0 0;
+}
+.sysdata-table thead th:last-child {
+  border-radius: 0 12px 0 0;
+}
+
+/* 数据行 */
+.sysdata-table tbody tr {
+  background: #fff;
+  transition: background 0.15s ease;
+}
+.sysdata-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+.sysdata-table tbody tr:hover {
+  background: linear-gradient(135deg, rgba(11,155,150,0.04) 0%, rgba(59,130,246,0.03) 100%);
+}
+
+/* 单元格 */
+.sysdata-table tbody td {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+.sysdata-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 操作列 — 文字链接式按钮 */
+.sd-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+.sd-action-btn-edit {
+  color: #3b82f6;
+}
+.sd-action-btn-edit:hover {
+  background: rgba(59,130,246,0.1);
+}
+.sd-action-btn-delete {
+  color: #ef4444;
+}
+.sd-action-btn-delete:hover {
+  background: rgba(239,68,68,0.1);
+}
+
+/* 顶部操作栏按钮 */
+.module-actions .btn {
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  padding: 6px 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.15s ease !important;
+}
+.module-actions .btn-primary {
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%) !important;
+  border: none !important;
+  color: #fff !important;
+}
+.module-actions .btn-danger {
+  color: #ef4444 !important;
+  border-color: #fca5a5 !important;
+  background: transparent !important;
+}
+.module-actions .btn-danger:hover {
+  background: rgba(239,68,68,0.08) !important;
+}
+
+/* 搜索输入框统一 */
+#sysdata-search {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 13px !important;
+  transition: all 0.15s ease !important;
+  background: #fff !important;
+}
+#sysdata-search:focus {
+  border-color: #0b9b96 !important;
+  box-shadow: 0 0 0 3px rgba(11,155,150,0.1) !important;
+  outline: none !important;
+}
+
+/* 分页按钮 */
+.sysdata-pagination .btn {
+  border-radius: 6px !important;
+  font-size: 12px !important;
+  padding: 4px 10px !important;
 }
 
 /* ========================================
