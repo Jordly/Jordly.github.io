@@ -590,7 +590,7 @@ async function checkLogin() {
     var _faStr = localStorage.getItem('chanseen_auth');
     if (_faStr) {
       var _fa = JSON.parse(_faStr);
-      var _ma = _fa.remember ? 28800000 : 3600000;
+      var _ma = 3600000;
       if (_fa.token && (Date.now() - _fa.loginAt) < _ma) {
         var _user = USERS.find(function(u){ return u.id === (_fa.user && _fa.user.id) || u.username === (_fa.user && _fa.user.username); }) || USERS[0];
         if (_user) {
@@ -627,7 +627,7 @@ async function checkLogin() {
     if (authStr) {
       try {
         const auth = JSON.parse(authStr);
-        const maxAge = auth.remember ? 8 * 60 * 60 * 1000 : 60 * 60 * 1000;
+        const maxAge = 60 * 60 * 1000;
         if (auth.token && (Date.now() - auth.loginAt) < maxAge) {
           // 【防重置修复】加载云端数据前，先备份本地的用户数据
           var localUsersBackup = null;
@@ -857,7 +857,7 @@ async function checkLogin() {
       var _authStr = localStorage.getItem('chanseen_auth');
       if (_authStr) {
         var _auth = JSON.parse(_authStr);
-        var _maxAge = _auth.remember ? 8 * 60 * 60 * 1000 : 60 * 60 * 1000;
+        var _maxAge = 60 * 60 * 1000;
         if (_auth.token && (Date.now() - _auth.loginAt) < _maxAge) {
           var _u = USERS.find(function(u){ return u.username === (_auth.user && _auth.user.username); }) || USERS[0] || {};
           currentUser = {
