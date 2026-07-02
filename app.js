@@ -1,4 +1,4 @@
-// VERSION: 202607011043 - 修复3个问题：看板空白+筛选栏布局+头像显示
+// VERSION: 202607021703 - 权限管理优化：动态角色+角色管理+复制权限+权限拦截
 // ===== Mock 数据 =====
 
 // 管理难度评估数据（自动生成）
@@ -1107,6 +1107,11 @@ function doLogin() {
   updateUserDisplay();
   setAppContentVisible(true);
   showToast("登录成功，欢迎回来！");
+  
+  // 根据当前用户角色过滤导航菜单
+  setTimeout(function() {
+    filterNavByPermissions();
+  }, 100);
 }
 
 // 注册
@@ -1870,9 +1875,48 @@ const HEALTH_DATA = [
 
 // ===== 角色与权限系统 =====
 
-const ROLES = [
-  "超级管理员", "管理员", "客服总监", "客服经理", "客服主管", "项目伙伴"
-];
+// 内置角色（不可删除）
+const BUILT_IN_ROLES = ["超级管理员", "管理员", "客服总监", "客服经理", "客服主管", "项目伙伴"];
+
+// 动态角色系统：从localStorage加载，支持自定义角色
+let ROLES = [];
+(function initRoles() {
+  try {
+    var savedRoles = localStorage.getItem("chansee_roles");
+    if (savedRoles) {
+      ROLES = JSON.parse(savedRoles);
+      // 确保所有内置角色都存在
+      var needsSave = false;
+      BUILT_IN_ROLES.forEach(function(r) {
+        if (ROLES.indexOf(r) === -1) {
+          ROLES.push(r);
+          needsSave = true;
+        }
+      });
+      if (needsSave) {
+        localStorage.setItem("chansee_roles", JSON.stringify(ROLES));
+      }
+    } else {
+      // 首次使用，使用默认角色列表
+      ROLES = BUILT_IN_ROLES.slice();
+      localStorage.setItem("chansee_roles", JSON.stringify(ROLES));
+    }
+  } catch(e) {
+    ROLES = BUILT_IN_ROLES.slice();
+  }
+})();
+
+// 保存角色列表到localStorage
+function saveRoles() {
+  try {
+    localStorage.setItem("chansee_roles", JSON.stringify(ROLES));
+  } catch(e) {}
+}
+
+// 检查角色是否为内置角色
+function isBuiltInRole(roleName) {
+  return BUILT_IN_ROLES.indexOf(roleName) >= 0;
+}
 
 const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","performance","risk","systemData","permissions","notifications","profile"];
 
@@ -2327,7 +2371,29 @@ function initNav(){
 function renderModule(module){
   try {
     currentModule = module;
-    // 保存当前模块到localStorage，刷新后自动回到该模块
+    
+    // 权限检查：检查当前用户是否有权限查看此模块
+    // 超级管理员跳过检查
+    if (currentRole !== "超级管理员" && MODULE_KEYS.indexOf(module) >= 0) {
+      if (!canViewModule(module)) {
+        // 无权限，找到第一个有权限的模块并跳转
+        var firstAllowedModule = MODULE_KEYS.find(function(mk) { return canViewModule(mk); });
+        if (firstAllowedModule) {
+          alert("您没有权限访问「" + MODULE_NAMES[module] + "」模块！\n系统将自动跳转到" + MODULE_NAMES[firstAllowedModule] + "。");
+          currentModule = firstAllowedModule;
+          module = firstAllowedModule;
+        } else {
+          // 没有任何模块权限，显示错误
+          document.getElementById("module-content").innerHTML = 
+            '<div style="padding:40px;text-align:center;"><div style="font-size:48px;margin-bottom:16px;">🔒</div>' +
+            '<h3 style="color:#ef4444;margin-bottom:8px;">暂无可用模块</h3>' +
+            '<p style="color:#64748b;">您没有被分配任何模块权限，请联系管理员。</p></div>';
+          return;
+        }
+      }
+    }
+    
+    // 保存当前模块到sessionStorage，刷新后自动回到该模块
     try { sessionStorage.setItem('cs_lastModule', module); } catch(e){};
     // 同步更新导航栏高亮状态
     document.querySelectorAll('.nav-item').forEach(function(i){i.classList.remove('active');});
@@ -7508,15 +7574,24 @@ function renderPermissions(){
   var html = '\n<style>\n'+
 '.perm-page{font-size:13px;}\n'+
 '.perm-layout{display:flex;gap:16px;align-items:flex-start;}\n'+
-'.perm-roles{width:150px;flex-shrink:0;background:var(--c-card);border-radius:8px;overflow:hidden;border:1px solid var(--c-border);}\n'+
-'.perm-roles-title{font-size:12px;font-weight:600;color:var(--c-text-3);padding:12px 14px 8px;border-bottom:1px solid var(--c-border);}\n'+
-'.perm-role-item{padding:10px 14px;cursor:pointer;font-size:13px;color:var(--c-text-2);border-left:3px solid transparent;transition:all .15s;white-space:nowrap;}\n'+
+'.perm-roles{width:180px;flex-shrink:0;background:var(--c-card);border-radius:8px;overflow:hidden;border:1px solid var(--c-border);}\n'+
+'.perm-roles-title{font-size:12px;font-weight:600;color:var(--c-text-3);padding:12px 14px 8px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;}\n'+
+'.perm-roles-title .add-role-btn{font-size:16px;cursor:pointer;color:#3b82f6;}\n'+
+'.perm-role-item{padding:10px 14px;cursor:pointer;font-size:13px;color:var(--c-text-2);border-left:3px solid transparent;transition:all .15s;white-space:nowrap;display:flex;align-items:center;justify-content:space-between;}\n'+
 '.perm-role-item:hover{background:rgba(59,130,246,.06);color:var(--c-text-1);}\n'+
 '.perm-role-active{background:rgba(59,130,246,.08)!important;color:#2563eb!important;font-weight:600;border-left-color:#2563eb!important;}\n'+
+'.perm-role-name{flex:1;}\n'+
+'.perm-role-actions{display:none;gap:4px;}\n'+
+'.perm-role-item:hover .perm-role-actions{display:flex;}\n'+
+'.perm-role-action-btn{font-size:12px;cursor:pointer;color:#6b7280;}\n'+
+'.perm-role-action-btn:hover{color:#3b82f6;}\n'+
 '.perm-content{flex:1;min-width:0;}\n'+
-'.perm-role-header{font-size:14px;font-weight:600;color:var(--c-text-1);margin-bottom:14px;display:flex;align-items:center;gap:10px;}\n'+
+'.perm-role-header{font-size:14px;font-weight:600;color:var(--c-text-1);margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}\n'+
+'.perm-copy-btn{font-size:12px;padding:4px 10px;background:#f3f4f6;border:1px solid #d1d5db;border-radius:4px;cursor:pointer;color:#374151;}\n'+
+'.perm-copy-btn:hover{background:#e5e7eb;}\n'+
 '.perm-save-hint{font-size:11px;font-weight:400;color:#10b981;opacity:0;transition:opacity .3s;}\n'+
 '.perm-save-hint.show{opacity:1;}\n'+
+'.perm-affected-users{font-size:11px;color:#f59e0b;margin-top:8px;}\n'+
 '.perm-group{margin-bottom:16px;}\n'+
 '.perm-group-label{font-size:12px;font-weight:600;color:var(--c-text-3);padding:6px 0;margin-bottom:6px;border-bottom:1px dashed var(--c-border);text-transform:uppercase;letter-spacing:.5px;}\n'+
 '.perm-mod-row{display:flex;align-items:center;padding:8px 12px;border-radius:6px;background:var(--c-card);border:1px solid var(--c-border);margin-bottom:4px;gap:12px;flex-wrap:wrap;}\n'+
@@ -7525,7 +7600,6 @@ function renderPermissions(){
 '.perm-cb{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:4px;cursor:pointer;font-size:11px;border:1px solid var(--c-border);transition:all .15s;user-select:none;}\n'+
 '.perm-cb-checked{background:#ecfdf5;border-color:#10b981;color:#059669;}\n'+
 '.perm-cb-unchecked{background:transparent;color:var(--c-text-3);}\n'+
-'.perm-cb-disabled{background:#f9fafb;color:#d1d5db;cursor:not-allowed;opacity:.5;}\n'+
 '.perm-cb-box{width:12px;height:12px;border-radius:2px;border:1.5px solid currentColor;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}\n'+
 '.perm-cb-checked .perm-cb-box{background:currentColor;border-color:currentColor;}\n'+
 '.perm-cb-checked .perm-cb-box::after{content:"✓";color:#fff;font-size:8px;font-weight:700;line-height:1;}\n'+
@@ -7553,20 +7627,34 @@ function renderPermissions(){
 '  </div>\n'+
 '  <div class="perm-layout">\n'+
 '    <div class="perm-roles">\n'+
-'      <div class="perm-roles-title">👥 角色列表</div>\n'+
-''+ROLES.map(function(r){var active=r===selRole?' perm-role-active':'';var isMyRole=r===currentRole?' <span style="font-size:10px;color:#10b981;">(我)</span>':'';return'      <div class="perm-role-item'+active+'" onclick="selectPermRole(\''+r+'\')">'+r+isMyRole+'</div>\n';}).join('')+
+'      <div class="perm-roles-title">👥 角色列表 <span class="add-role-btn" onclick="addRole()" title="新增角色">＋</span></div>\n'+
+''+ROLES.map(function(r){
+  var active=r===selRole?' perm-role-active':'';
+  var isMyRole=r===currentRole?' <span style="font-size:10px;color:#10b981;">(我)</span>':'';
+  var isBuiltIn=isBuiltInRole(r);
+  var actions=isBuiltIn?'':('<span class="perm-role-actions">'+
+    '<span class="perm-role-action-btn" onclick="event.stopPropagation();editRole(\''+r+'\')" title="编辑">✏️</span>'+
+    '<span class="perm-role-action-btn" onclick="event.stopPropagation();deleteRole(\''+r+'\')" title="删除">🗑️</span>'+
+    '</span>');
+  return'      <div class="perm-role-item'+active+'" onclick="selectPermRole(\''+r+'\')"><span class="perm-role-name">'+r+isMyRole+'</span>'+actions+'</div>\n';
+}).join('')+
 '    </div>\n'+
 '    <div class="perm-content">\n'+
 '      <div class="perm-role-header">\n'+
 '        当前角色「'+selRole+'」的权限配置\n'+
+'        <button class="perm-copy-btn" onclick="copyPermissionsFrom()">📋 从其他角色复制权限</button>\n'+
 '        <span class="perm-save-hint" id="perm-save-hint">✅ 已保存</span>\n'+
 '      </div>\n'+
+'      <div class="perm-affected-users" id="perm-affected-users"></div>\n'+
 ''+groupOrder.map(function(gid){var grp=MODULE_GROUPS[gid];return'      <div class="perm-group">\n'+
 '        <div class="perm-group-label">'+grp.label+'</div>\n'+
-''+grp.keys.map(function(mk){var mn=MODULE_NAMES[mk];var ma=MODULE_ACTIONS[mk];var mp=selPerms[mk];if(typeof mp==='string'){if(mp==='write')mp={visible:true,view:true,edit:true,import:false,export:true,manage:false,scope:'all'};else if(mp==='read')mp={visible:true,view:true,edit:false,import:false,export:true,manage:false,scope:'all'};else mp={visible:false,view:false,edit:false,import:false,export:false,manage:false,scope:'all'};}return'        <div class="perm-mod-row">\n'+
+''+grp.keys.map(function(mk){var mn=MODULE_NAMES[mk];var ma=MODULE_ACTIONS[mk];var mp=selPerms[mk];if(typeof mp==='string'){if(mp==='write')mp={visible:true,view:true,edit:true,import:false,export:true,manage:false,scope:'all'};else if(mp==='read')mp={visible:true,view:true,edit:false,import:false,export:true,manage:false,scope:'all'};else mp={visible:false,view:false,edit:false,import:false,export:false,manage:false,scope:'all'};}
+// 只显示支持的操作选项（隐藏不支持的）
+var applicableActions=actKeys.filter(function(ak){return ma[ak]===1;});
+return'        <div class="perm-mod-row">\n'+
 '          <div class="perm-mod-name">'+mn+'</div>\n'+
 '          <div class="perm-mod-actions">\n'+
-''+actKeys.map(function(ak){var applic=ma[ak]===1;var checked=mp[ak]===true;var disabled=!applic?' disabled':'';var cls=applic?(checked?'perm-cb-checked':'perm-cb-unchecked'):'perm-cb-disabled';return'            <label class="perm-cb '+cls+'" title="'+actLabels[ak]+'"><input type="checkbox"'+disabled+(checked?' checked':'')+' onchange="togglePermAction(\''+selRole+'\',\''+mk+'\',\''+ak+'\',this.checked)" style="display:none;"><span class="perm-cb-box"></span><span class="perm-cb-label">'+actLabels[ak]+'</span></label>\n';}).join('')+
+''+applicableActions.map(function(ak){var checked=mp[ak]===true;var cls=checked?'perm-cb-checked':'perm-cb-unchecked';return'            <label class="perm-cb '+cls+'" title="'+actLabels[ak]+'"><input type="checkbox" '+(checked?' checked':'')+' onchange="togglePermAction(\''+selRole+'\',\''+mk+'\',\''+ak+'\',this.checked)" style="display:none;"><span class="perm-cb-box"></span><span class="perm-cb-label">'+actLabels[ak]+'</span></label>\n';}).join('')+
 '          </div>\n'+
 ''+(ma.scope===1?'          <div class="perm-mod-scope">\n'+
 '            <span class="perm-scope-label">数据范围：</span>\n'+
@@ -8042,6 +8130,11 @@ function savePermissions() {
 function selectPermRole(role) {
   window._permSelectedRole = role;
   renderModule("permissions");
+  
+  // 延迟执行，等待渲染完成
+  setTimeout(function() {
+    updateAffectedUsers(role);
+  }, 100);
 }
 
 // 切换某个操作的勾选状态
@@ -8072,6 +8165,9 @@ function togglePermAction(role, module, action, checked) {
   savePermissions();
   var hint = document.getElementById('perm-save-hint');
   if (hint) { hint.classList.add('show'); setTimeout(function(){ hint.classList.remove('show'); }, 2000); }
+  
+  // 显示受影响的用户数
+  updateAffectedUsers(role);
 }
 
 // 切换数据范围（全部/仅自己）
@@ -8139,6 +8235,260 @@ function exportPermissions() {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+// ===== 角色管理功能 =====
+
+// 新增角色
+function addRole() {
+  var roleName = prompt("请输入新角色名称：");
+  if (!roleName || roleName.trim() === "") {
+    alert("角色名称不能为空！");
+    return;
+  }
+  roleName = roleName.trim();
+  
+  // 检查角色是否已存在
+  if (ROLES.indexOf(roleName) >= 0) {
+    alert("角色「" + roleName + "」已存在！");
+    return;
+  }
+  
+  // 添加角色
+  ROLES.push(roleName);
+  saveRoles();
+  
+  // 初始化权限（默认使用"项目伙伴"的权限）
+  if (!rolePermissions[roleName]) {
+    rolePermissions[roleName] = JSON.parse(JSON.stringify(rolePermissions["项目伙伴"] || DEFAULT_PERMISSIONS["项目伙伴"]));
+    savePermissions();
+  }
+  
+  // 重新渲染
+  window._permSelectedRole = roleName;
+  renderModule("permissions");
+  alert("角色「" + roleName + "」已添加成功！");
+}
+
+// 编辑角色
+function editRole(oldName) {
+  if (isBuiltInRole(oldName)) {
+    alert("内置角色不能编辑名称！");
+    return;
+  }
+  
+  var newName = prompt("请输入新的角色名称：", oldName);
+  if (!newName || newName.trim() === "") {
+    alert("角色名称不能为空！");
+    return;
+  }
+  newName = newName.trim();
+  
+  // 检查新名称是否已存在（排除自身）
+  if (newName !== oldName && ROLES.indexOf(newName) >= 0) {
+    alert("角色「" + newName + "」已存在！");
+    return;
+  }
+  
+  // 更新角色列表
+  var idx = ROLES.indexOf(oldName);
+  if (idx >= 0) {
+    ROLES[idx] = newName;
+    saveRoles();
+    
+    // 更新权限配置
+    if (rolePermissions[oldName]) {
+      rolePermissions[newName] = rolePermissions[oldName];
+      delete rolePermissions[oldName];
+      savePermissions();
+    }
+    
+    // 重新渲染
+    window._permSelectedRole = newName;
+    renderModule("permissions");
+    alert("角色已重命名为「" + newName + "」！");
+  }
+}
+
+// 删除角色
+function deleteRole(roleName) {
+  if (isBuiltInRole(roleName)) {
+    alert("内置角色不能删除！");
+    return;
+  }
+  
+  // 检查是否有用户使用此角色
+  var affectedUsers = [];
+  try {
+    var users = JSON.parse(localStorage.getItem("chansee_users") || "[]");
+    for (var i = 0; i < users.length; i++) {
+      if (users[i].role === roleName) {
+        affectedUsers.push(users[i].username || users[i].name || "未知用户");
+      }
+    }
+  } catch(e) {}
+  
+  var confirmMsg = "确定要删除角色「" + roleName + "」吗？";
+  if (affectedUsers.length > 0) {
+    confirmMsg += "\n\n⚠️ 警告：此操作将影响 " + affectedUsers.length + " 个用户：\n" + affectedUsers.join("、");
+    confirmMsg += "\n\n这些用户的角色将被设置为“项目伙伴”。";
+  }
+  
+  if (!confirm(confirmMsg)) {
+    return;
+  }
+  
+  // 删除角色
+  var idx = ROLES.indexOf(roleName);
+  if (idx >= 0) {
+    ROLES.splice(idx, 1);
+    saveRoles();
+    
+    // 删除权限配置
+    delete rolePermissions[roleName];
+    savePermissions();
+    
+    // 更新受影响的用户
+    if (affectedUsers.length > 0) {
+      try {
+        var users = JSON.parse(localStorage.getItem("chansee_users") || "[]");
+        for (var i = 0; i < users.length; i++) {
+          if (users[i].role === roleName) {
+            users[i].role = "项目伙伴";
+          }
+        }
+        localStorage.setItem("chansee_users", JSON.stringify(users));
+      } catch(e) {}
+    }
+    
+    // 重新渲染
+    window._permSelectedRole = ROLES[0] || "项目伙伴";
+    renderModule("permissions");
+    alert("角色「" + roleName + "」已删除！");
+  }
+}
+
+// 从其他角色复制权限
+function copyPermissionsFrom() {
+  var selRole = window._permSelectedRole;
+  if (!selRole) {
+    alert("请先选择要配置的角色！");
+    return;
+  }
+  
+  // 排除当前角色
+  var otherRoles = ROLES.filter(function(r) { return r !== selRole; });
+  if (otherRoles.length === 0) {
+    alert("没有其他角色可以复制！");
+    return;
+  }
+  
+  var sourceRole = prompt("请选择要复制权限的来源角色：\n\n" + otherRoles.map(function(r, i) { return (i+1) + ". " + r; }).join("\n") + "\n\n请输入角色名称：");
+  
+  if (!sourceRole || sourceRole.trim() === "") {
+    return;
+  }
+  sourceRole = sourceRole.trim();
+  
+  if (otherRoles.indexOf(sourceRole) < 0) {
+    alert("角色「" + sourceRole + "」不存在！");
+    return;
+  }
+  
+  if (!confirm("确定要从角色「" + sourceRole + "」复制权限到「" + selRole + "」吗？\n\n当前「" + selRole + "」的权限配置将被覆盖！")) {
+    return;
+  }
+  
+  // 复制权限
+  if (rolePermissions[sourceRole]) {
+    rolePermissions[selRole] = JSON.parse(JSON.stringify(rolePermissions[sourceRole]));
+    savePermissions();
+    
+    // 重新渲染
+    renderModule("permissions");
+    alert("已成功从「" + sourceRole + "」复制权限到「" + selRole + "」！");
+  } else {
+    alert("来源角色没有权限配置！");
+  }
+}
+
+// 显示受影响的用户数
+function updateAffectedUsers(role) {
+  if (!role) return;
+  
+  var affectedUsers = [];
+  try {
+    var users = JSON.parse(localStorage.getItem("chansee_users") || "[]");
+    for (var i = 0; i < users.length; i++) {
+      if (users[i].role === role) {
+        affectedUsers.push(users[i].username || users[i].name || "未知用户");
+      }
+    }
+  } catch(e) {}
+  
+  var hint = document.getElementById("perm-affected-users");
+  if (hint) {
+    if (affectedUsers.length > 0) {
+      hint.innerHTML = "⚠️ 此修改将影响 " + affectedUsers.length + " 个用户：" + affectedUsers.join("、");
+      hint.style.display = "block";
+    } else {
+      hint.innerHTML = "";
+      hint.style.display = "none";
+    }
+  }
+}
+
+// ===== 权限检查辅助函数 =====
+
+// 检查当前用户是否有某个模块的某个操作权限
+function hasPermission(module, action) {
+  if (!currentRole || !rolePermissions[currentRole]) {
+    return false;
+  }
+  var mp = rolePermissions[currentRole][module];
+  if (!mp) return false;
+  return mp[action] === true;
+}
+
+// 检查当前用户是否可见某个模块
+function canViewModule(module) {
+  return hasPermission(module, "visible");
+}
+
+// 根据当前用户角色过滤导航菜单（隐藏无权限的模块）
+function filterNavByPermissions() {
+  // 超级管理员可以看到所有模块
+  if (currentRole === "超级管理员") {
+    // 显示所有导航项
+    document.querySelectorAll('.nav-item').forEach(function(item) {
+      item.style.display = "";
+    });
+    return;
+  }
+  
+  // 其他角色：根据权限隐藏模块
+  MODULE_KEYS.forEach(function(mk) {
+    var navItems = document.querySelectorAll('.nav-item[data-module="' + mk + '"]');
+    var canView = canViewModule(mk);
+    
+    navItems.forEach(function(item) {
+      if (canView) {
+        item.style.display = "";
+      } else {
+        item.style.display = "none";
+      }
+    });
+  });
+  
+  // 如果当前模块不可见，切换到第一个可见的模块
+  if (!canViewModule(currentModule)) {
+    var firstVisibleModule = MODULE_KEYS.find(function(mk) { return canViewModule(mk); });
+    if (firstVisibleModule) {
+      currentModule = firstVisibleModule;
+      renderModule(currentModule);
+    }
+  }
+}
+
 function exportSystemData() {
   var backup = {};
   try {
