@@ -4857,6 +4857,7 @@
 .archive-table thead th {
   color: #fff !important;
   border-bottom: none !important;
+  text-align: center !important;
   text-transform: none !important;
   letter-spacing: 0 !important;
 }
