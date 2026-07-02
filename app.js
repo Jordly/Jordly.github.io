@@ -277,6 +277,12 @@ var CATEGORY_ALIAS = {
   '医疗':'医药健康','医疗保健':'医药健康','医疗器械':'医药健康',
   '虚拟':'虚拟服务','游戏':'虚拟服务','游戏娱乐':'虚拟服务'
 };
+// 平台别名映射（旧名称→新名称），用于迁移旧项目数据
+var PLATFORM_ALIAS = {
+  '天猫':'天猫官旗','淘宝':'淘宝','京东':'京东自营','拼多多':'拼多多',
+  '抖音':'抖音','快手':'快手','小红书':'小红书',
+  '京东自营':'京东自营','天猫超市':'天猫超市'
+};
 // 天猫真实一级类目（用于筛选下拉选项，无重复）
 var PRESET_CATEGORIES = [
   '女装男装',
@@ -307,16 +313,38 @@ var PRESET_CATEGORIES = [
           migrated = true;
         }
       });
-      if (migrated) safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
+      // 数据迁移：把旧平台名映射为新名称（支持多平台逗号分隔）
+      var platformMigrated = false;
+      PROJECTS.forEach(function(p) {
+        if (p.platforms) {
+          var plats = p.platforms.split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean);
+          var newPlats = plats.map(function(plat) {
+            if (PLATFORM_ALIAS[plat]) {
+              platformMigrated = true;
+              return PLATFORM_ALIAS[plat];
+            }
+            return plat;
+          });
+          p.platforms = newPlats.join('、');
+        }
+      });
+      if (migrated || platformMigrated) safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
       return;
     } catch(e) {
     }
   }
   PROJECTS = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
-  // 同时迁移默认项目数据的品类名
+  // 同时迁移默认项目数据的品类名和平台名
   PROJECTS.forEach(function(p) {
     if (p.category && CATEGORY_ALIAS[p.category]) {
       p.category = CATEGORY_ALIAS[p.category];
+    }
+    if (p.platforms) {
+      var plats = p.platforms.split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean);
+      var newPlats = plats.map(function(plat) {
+        return PLATFORM_ALIAS[plat] || plat;
+      });
+      p.platforms = newPlats.join('、');
     }
   });
   safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
@@ -2565,19 +2593,30 @@ function renderFbOptions(key) {
   var keyword = input ? input.value.toLowerCase() : '';
   var values = [];
 
-  // 预置完整平台列表（主流电商+社交电商，不含"全平台"）
-  var PRESET_PLATFORMS = [
-    '天猫','淘宝','京东','拼多多',
+  // 预置完整平台列表（按主流程度排序，不含"全平台"）
+  // 平台排序优先级：淘宝>天猫官旗>天猫超市>天猫跨境>京东自营>京东POP>京东超市>拼多多>抖音>快手>小红书>微信视频号>唯品会>得物>1688>苏宁易购>微信小程序>企业微信
+  var PLATFORM_ORDER = [
+    '淘宝','天猫官旗','天猫超市','天猫跨境',
+    '京东自营','京东POP','京东超市',
+    '拼多多',
     '抖音','快手','小红书','微信视频号',
     '唯品会','得物','1688','苏宁易购',
-    '微信小程序','企业微信',
-    '京东自营','天猫超市'
+    '微信小程序','企业微信'
   ];
 
   if (key === 'platforms') {
     // 合并：预置平台 + 项目数据中已有的平台（去重 + 过滤掉"全平台"）
     var fromProjects = [...new Set(PROJECTS.flatMap(function(p) { return (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean); }))];
-    values = [...new Set(PRESET_PLATFORMS.concat(fromProjects))].filter(function(v){ return v && v !== '全平台'; }).sort();
+    values = [...new Set(PLATFORM_ORDER.concat(fromProjects))].filter(function(v){ return v && v !== '全平台'; });
+    // 按 PLATFORM_ORDER 排序（在列表里的排前面，不在的排后面按字母序）
+    values.sort(function(a, b) {
+      var ia = PLATFORM_ORDER.indexOf(a);
+      var ib = PLATFORM_ORDER.indexOf(b);
+      if (ia === -1 && ib === -1) return a.localeCompare(b, 'zh');
+      if (ia === -1) return 1;
+      if (ib === -1) return -1;
+      return ia - ib;
+    });
   } else if (key === 'category') {
     // 合并：标准品类列表 + 项目数据中的品类（通过别名映射归一）
     var catFromProjects = PROJECTS.map(function(p){return p.category;}).filter(Boolean);
