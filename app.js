@@ -3427,14 +3427,14 @@ function renderArchive(){
 
       <!-- 搜索框 -->
       <input type="text" id="archive-search" placeholder="🔍 搜索项目编号/名称/品牌..." 
-        style="padding:5px 10px;border-radius:6px;border:1px solid var(--c-border);font-size:13px;width:220px;"
+        style="flex:1;min-width:180px;padding:6px 12px;border-radius:8px;border:1px solid var(--c-border);font-size:13px;"
         oninput="filterArchiveTable(this.value)">
 
       <button class="btn btn-sm" onclick="showImportDialog()" style="margin-right:4px;">📤 导入</button>
       <button class="btn btn-sm" onclick="exportProjects()" style="margin-right:8px;">📥 导出</button>
       ${can?'<button class="btn btn-primary btn-sm" onclick="showAddProject()">＋ 新增项目</button>':''}
 
-      ${can?'<button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;margin-left:4px;" onclick="batchDeleteProjects()">🗑 批量删除</button>':''}
+      ${can?'<button class="btn btn-sm" class="btn btn-sm btn-archive-danger" onclick="batchDeleteProjects()">🗑 批量删除</button>':''}
 
       ${currentRole==='leader'?'<span class="badge badge-gray">只读权限</span>':''}
 
@@ -3444,7 +3444,7 @@ function renderArchive(){
 
   <div class="card">
 
-    <table class="data-table">
+    <table class="data-table archive-table">
 
       <thead><tr>
         ${can?'<th style="width:36px;"><input type="checkbox" id="archive-select-all" onclick="toggleArchiveSelectAll(this.checked)" title="全选/取消"></th>':''}
@@ -3475,7 +3475,7 @@ function renderArchive(){
             <td>${(p.pmHistory||[]).length>0?`<span class="badge badge-gray" title="${(p.pmHistory||[]).map(h=>h.name+'('+h.from+'~'+h.to+')').join('; ')}">${(p.pmHistory||[]).length}次交接</span>`:'无'}</td>
 
             <td class="actions">
-              <button class="btn btn-sm" onclick="showProjectDetail('${p.id}')">查看</button>
+              <a href="#" class="archive-link archive-link-view" onclick="showProjectDetail('${p.id}');return false;">查看</a>
               ${can?`&nbsp;<button class="btn btn-sm" onclick="editProject('${p.id}')">编辑</button>&nbsp;
               <button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;" onclick="deleteProjectConfirm('${p.id}','${p.name}')">删除</button>`:''}
 
@@ -4341,7 +4341,7 @@ function renderHandover(){
 
             <td>${h.date}</td>
 
-            <td><span class="badge badge-green">${h.status}</span></td>
+            <td><span class="archive-tag archive-tag-dp">${h.status}</span></td>
 
             <td style="max-width:200px;font-size:12px;">${h.summary}</td>
 
@@ -4381,7 +4381,7 @@ function renderHandover(){
 
             <td>${p.pm}</td>
 
-            <td><span class="badge badge-green">正常</span></td>
+            <td><span class="archive-tag archive-tag-dp">正常</span></td>
 
             <td>${(p.pmHistory||[]).length + HANDOVERS.filter(h=>h.projectId===p.id).length}</td>
 
@@ -4421,7 +4421,7 @@ function showProjectDetail(projectId){
 
   document.getElementById("modal-body").innerHTML = `
 
-    <div class="project-detail-header">
+    <div class="project-detail-header detail-header-gradient">
 
       <div>
 
@@ -6653,7 +6653,7 @@ function showSatisfactionPermission(){
 
           <tr>
 
-            <td><span class="badge badge-blue">上级领导</span></td>
+            <td><span class="archive-tag archive-tag-tp">上级领导</span></td>
 
             <td>全部项目评估记录</td>
 
@@ -6663,7 +6663,7 @@ function showSatisfactionPermission(){
 
           <tr>
 
-            <td><span class="badge badge-green">项目经理</span></td>
+            <td><span class="archive-tag archive-tag-dp">项目经理</span></td>
 
             <td>负责项目 + 跨职场同类项目</td>
 

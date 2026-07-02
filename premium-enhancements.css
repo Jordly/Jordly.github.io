@@ -4755,3 +4755,178 @@
   100% { transform: translateX(20px) translateY(0px) scaleX(0.8); opacity: 0.2; }
 }
 
+
+
+/* ===== 项目基础档案：列表页美化 ===== */
+
+/* 搜索框 + 按钮组对齐 */
+.module-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+.btn-archive-action {
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 5px 12px !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+.btn-archive-action:hover {
+  opacity: 0.85 !important;
+  box-shadow: 0 2px 8px rgba(11,155,150,0.3) !important;
+}
+.btn-archive-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #e74c3c 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 5px 12px !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+.btn-archive-danger:hover {
+  opacity: 0.85 !important;
+  box-shadow: 0 2px 8px rgba(239,68,68,0.3) !important;
+}
+
+/* 项目类型：药丸标签 */
+.archive-tag {
+  display: inline-block !important;
+  padding: 2px 12px !important;
+  border-radius: 99px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+}
+.archive-tag-tp {
+  background: rgba(11,155,150,0.1) !important;
+  color: #0b9b96 !important;
+  border: 1px solid rgba(11,155,150,0.25) !important;
+}
+.archive-tag-dp {
+  background: rgba(59,130,246,0.1) !important;
+  color: #3b82f6 !important;
+  border: 1px solid rgba(59,130,246,0.25) !important;
+}
+.archive-tag-bpo {
+  background: rgba(139,92,246,0.1) !important;
+  color: #8b5cf6 !important;
+  border: 1px solid rgba(139,92,246,0.25) !important;
+}
+
+/* 操作列：文字链接 */
+.archive-link {
+  font-size: 12px !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  margin-right: 8px !important;
+  transition: all 0.15s !important;
+}
+.archive-link-view {
+  color: #3b82f6 !important;
+}
+.archive-link-view:hover {
+  color: #1d4ed !important;
+  text-decoration: underline !important;
+}
+.archive-link-edit {
+  color: #f59e0b !important;
+}
+.archive-link-edit:hover {
+  color: #d97706 !important;
+  text-decoration: underline !important;
+}
+.archive-link-del {
+  color: #ef4444 !important;
+}
+.archive-link-del:hover {
+  color: #dc2626 !important;
+  text-decoration: underline !important;
+}
+
+/* 表头：极光渐变 */
+.archive-table thead tr {
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 50%, #8b5cf6 100%) !important;
+}
+.archive-table thead th {
+  color: #fff !important;
+  border-bottom: none !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+.archive-table thead th::after {
+  color: rgba(255,255,255,0.6) !important;
+}
+
+/* 斑马纹 */
+.archive-table tbody tr:nth-child(even) {
+  background: #f8fafc !important;
+}
+.archive-table tbody tr:hover td {
+  background: rgba(59,130,246,0.04) !important;
+}
+
+/* ===== 项目详情弹窗美化 ===== */
+
+/* 关闭按钮X加大 */
+.modal-box .modal-close,
+.modal-box .close-btn,
+.modal-overlay .modal-close {
+  font-size: 20px !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  transition: all 0.2s !important;
+}
+.modal-box .modal-close:hover,
+.modal-box .close-btn:hover {
+  background: rgba(239,68,68,0.1) !important;
+  color: #ef4444 !important;
+}
+
+/* 项目类型标签（详情弹窗内）药丸样式 */
+.project-detail-meta .archive-tag {
+  display: inline-block !important;
+  padding: 2px 10px !important;
+  border-radius: 99px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+/* 状态/健康度彩色条 */
+.project-detail-meta span[style*="color"] {
+  padding: 2px 8px !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+}
+
+/* 历任负责人记录表：斑马纹 */
+.detail-section .data-table tbody tr:nth-child(even) {
+  background: #f8fafc !important;
+}
+.detail-section .data-table {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+.detail-section .data-table th {
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 50%, #8b5cf6 100%) !important;
+  color: #fff !important;
+}
+
+/* 弹窗标题 */
+.modal-title {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
