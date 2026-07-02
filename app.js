@@ -590,7 +590,7 @@ async function checkLogin() {
     var _faStr = localStorage.getItem('chanseen_auth');
     if (_faStr) {
       var _fa = JSON.parse(_faStr);
-      var _ma = _fa.remember ? 604800000 : 3600000;
+      var _ma = _fa.remember ? 28800000 : 3600000;
       if (_fa.token && (Date.now() - _fa.loginAt) < _ma) {
         var _user = USERS.find(function(u){ return u.id === (_fa.user && _fa.user.id) || u.username === (_fa.user && _fa.user.username); }) || USERS[0];
         if (_user) {
@@ -627,7 +627,7 @@ async function checkLogin() {
     if (authStr) {
       try {
         const auth = JSON.parse(authStr);
-        const maxAge = auth.remember ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
+        const maxAge = auth.remember ? 8 * 60 * 60 * 1000 : 60 * 60 * 1000;
         if (auth.token && (Date.now() - auth.loginAt) < maxAge) {
           // 【防重置修复】加载云端数据前，先备份本地的用户数据
           var localUsersBackup = null;
@@ -857,7 +857,7 @@ async function checkLogin() {
       var _authStr = localStorage.getItem('chanseen_auth');
       if (_authStr) {
         var _auth = JSON.parse(_authStr);
-        var _maxAge = _auth.remember ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
+        var _maxAge = _auth.remember ? 8 * 60 * 60 * 1000 : 60 * 60 * 1000;
         if (_auth.token && (Date.now() - _auth.loginAt) < _maxAge) {
           var _u = USERS.find(function(u){ return u.username === (_auth.user && _auth.user.username); }) || USERS[0] || {};
           currentUser = {
@@ -2001,7 +2001,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               if(idx===0){ sec.classList.remove("collapsed"); if(arrow) arrow.textContent = '▼'; }
               else { sec.classList.add("collapsed"); if(arrow) arrow.textContent = '▶'; }
             });
-            renderModule(localStorage.getItem('cs_lastModule') || "dashboard");
+            renderModule(sessionStorage.getItem('cs_lastModule') || "dashboard");
             return;
           }
         }
@@ -2022,7 +2022,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(arrow) arrow.textContent = '▶';
       }
     });
-    renderModule(localStorage.getItem('cs_lastModule') || "dashboard");
+    renderModule(sessionStorage.getItem('cs_lastModule') || "dashboard");
   } catch(e) {
     document.getElementById("module-content").innerHTML =
       '<div style="padding:40px;text-align:center;color:red;">' +
@@ -2251,7 +2251,7 @@ function renderModule(module){
   try {
     currentModule = module;
     // 保存当前模块到localStorage，刷新后自动回到该模块
-    try { localStorage.setItem('cs_lastModule', module); } catch(e){};
+    try { sessionStorage.setItem('cs_lastModule', module); } catch(e){};
     // 同步更新导航栏高亮状态
     document.querySelectorAll('.nav-item').forEach(function(i){i.classList.remove('active');});
     var nav = document.querySelector('.nav-item[data-module="'+module+'"]');
