@@ -3427,7 +3427,7 @@ function renderArchive(){
 
       <!-- 搜索框 -->
       <input type="text" id="archive-search" placeholder="🔍 搜索项目编号/名称/品牌..." 
-        style="flex:1;min-width:180px;padding:6px 12px;border-radius:8px;border:1px solid var(--c-border);font-size:13px;"
+        style="flex:1;min-width:180px;padding:8px 12px;border-radius:8px;border:1px solid var(--c-border);font-size:13px;"
         oninput="filterArchiveTable(this.value)">
 
       <button class="btn btn-sm" onclick="showImportDialog()" style="margin-right:4px;">📤 导入</button>
@@ -3460,7 +3460,10 @@ function renderArchive(){
 
             <td>${p.id}</td>
 
-            <td><a href="#" style="color:var(--c-primary);cursor:pointer" onclick="showProjectDetail('${p.id}');return false;">${p.name}</a></td>
+            <td><a href="#" style="color:#3b82f6;cursor:pointer;border-bottom:1px dashed #3b82f6;text-decoration:none;" 
+                onmouseover="this.style.borderBottom='1px solid #3b82f6'" 
+                onmouseout="this.style.borderBottom='1px dashed #3b82f6'"
+                onclick="showProjectDetail('${p.id}');return false;" title="点击查看项目详情">${p.name}</a></td>
 
             <td>${p.brand} / ${p.category}</td>
 
@@ -3475,8 +3478,7 @@ function renderArchive(){
             <td>${(p.pmHistory||[]).length>0?`<span class="badge badge-gray" title="${(p.pmHistory||[]).map(h=>h.name+'('+h.from+'~'+h.to+')').join('; ')}">${(p.pmHistory||[]).length}次交接</span>`:'无'}</td>
 
             <td class="actions">
-              <a href="#" class="archive-link archive-link-view" onclick="showProjectDetail('${p.id}');return false;">查看</a>
-              ${can?`&nbsp;<button class="btn btn-sm" onclick="editProject('${p.id}')">编辑</button>&nbsp;
+              ${can?`<button class="btn btn-sm" style="background:#2563eb;color:#fff;border-color:#2563eb;" onclick="editProject('${p.id}')">编辑</button>&nbsp;
               <button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;" onclick="deleteProjectConfirm('${p.id}','${p.name}')">删除</button>`:''}
 
             </td>
