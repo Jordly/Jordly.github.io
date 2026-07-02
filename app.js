@@ -2373,7 +2373,7 @@ function renderFilterBar() {
   }
 
   // 第二行：搜索下拉（默认隐藏）
-  var row2 = '<div class="filter-row-v4 filter-row-v4-second" id="filter-row-advanced">';
+  var row2 = '<div class="filter-row-v4 filter-row-v4-second" id="filter-row-advanced"' + (isAdvVisible ? ' style="display:flex!important"' : '') + '>';
 
   // 平台
   var pfLabel = '平台 ▼';
