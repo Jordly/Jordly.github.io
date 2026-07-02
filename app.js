@@ -3478,8 +3478,8 @@ function renderArchive(){
             <td>${(p.pmHistory||[]).length>0?`<span class="badge badge-gray" title="${(p.pmHistory||[]).map(h=>h.name+'('+h.from+'~'+h.to+')').join('; ')}">${(p.pmHistory||[]).length}次交接</span>`:'无'}</td>
 
             <td class="actions">
-              ${can?`<button class="btn btn-sm" style="background:#2563eb;color:#fff;border-color:#2563eb;" onclick="editProject('${p.id}')">编辑</button>&nbsp;
-              <button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;" onclick="deleteProjectConfirm('${p.id}','${p.name}')">删除</button>`:''}
+              ${can?`<button class="btn btn-sm" style="background:#eff6ff;color:#2563eb;border-color:#bfdbfe;" onclick="editProject('${p.id}')">编辑</button>&nbsp;
+              <button class="btn btn-sm" style="color:#dc2626;background:#fef2f2;border-color:#fecaca;" onclick="deleteProjectConfirm('${p.id}','${p.name}')">删除</button>`:''}
 
             </td>
 
