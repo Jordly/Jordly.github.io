@@ -2515,10 +2515,35 @@ function renderFbOptions(key) {
   var input = panel.querySelector('.fb-search-input');
   var keyword = input ? input.value.toLowerCase() : '';
   var values = [];
+
+  // 预置完整平台列表（主流电商+社交电商，不含"全平台"）
+  var PRESET_PLATFORMS = [
+    '天猫','淘宝','京东','拼多多',
+    '抖音','快手','小红书','微信视频号',
+    '唯品会','得物','1688','苏宁易购',
+    '微信小程序','企业微信',
+    '京东自营','天猫超市'
+  ];
+  // 预置完整品类列表（主流电商品类）
+  var PRESET_CATEGORIES = [
+    '美妆护肤','个护家清',
+    '服饰鞋包','运动户外',
+    '母婴童装','食品生鲜',
+    '家电数码','家居家装',
+    '3C数码','智能硬件',
+    '宠物用品','汽车用品',
+    '医疗保健','图书文具',
+    '虚拟服务','游戏娱乐'
+  ];
+
   if (key === 'platforms') {
-    values = [...new Set(PROJECTS.flatMap(function(p) { return (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean); }))].filter(function(v){ return v !== '全平台'; }).sort();
+    // 合并：预置平台 + 项目数据中已有的平台（去重 + 过滤掉"全平台"）
+    var fromProjects = [...new Set(PROJECTS.flatMap(function(p) { return (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean); }))];
+    values = [...new Set(PRESET_PLATFORMS.concat(fromProjects))].filter(function(v){ return v && v !== '全平台'; }).sort();
   } else if (key === 'category') {
-    values = [...new Set(PROJECTS.map(function(p){return p.category}))].sort();
+    // 合并：预置品类 + 项目数据中已有的品类
+    var catFromProjects = PROJECTS.map(function(p){return p.category;}).filter(Boolean);
+    values = [...new Set(PRESET_CATEGORIES.concat(catFromProjects))].sort();
   } else if (key === 'brand') {
     values = [...new Set(PROJECTS.map(function(p){return p.brand}))].sort();
   } else if (key === 'pm') {
