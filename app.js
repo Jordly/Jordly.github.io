@@ -260,6 +260,28 @@ var USERS = [];
 
 // 初始化 PROJECTS
 var PROJECTS = [];
+
+// 品类别名映射（旧名称→标准名称），全局统一，渲染和筛选都用到
+var CATEGORY_ALIAS = {
+  '美妆护肤':'美妆','个护':'美妆','个护家清':'个护家清',
+  '服饰':'服装','服饰鞋包':'服装','鞋子':'服装',
+  '运动户外':'运动','运动装备':'运动',
+  '母婴童装':'母婴','母婴用品':'母婴',
+  '食品生鲜':'食品','零食':'食品',
+  '家电数码':'家电','家用电器':'家电',
+  '智能设备':'智能硬件','智能家居':'智能硬件'
+};
+// 标准品类列表（全局，渲染下拉选项用）
+var PRESET_CATEGORIES = [
+  '美妆','个护家清',
+  '服装','运动',
+  '母婴','食品',
+  '家电','家居家装',
+  '3C数码','智能硬件',
+  '宠物用品','汽车用品',
+  '医疗保健','图书文具',
+  '虚拟服务','游戏娱乐'
+];
 (function initProjects() {
   var raw = localStorage.getItem('chansee_projects');
   if (raw && raw !== 'null' && raw !== '[]') {
@@ -2524,26 +2546,19 @@ function renderFbOptions(key) {
     '微信小程序','企业微信',
     '京东自营','天猫超市'
   ];
-  // 预置完整品类列表（主流电商品类）
-  var PRESET_CATEGORIES = [
-    '美妆护肤','个护家清',
-    '服饰鞋包','运动户外',
-    '母婴童装','食品生鲜',
-    '家电数码','家居家装',
-    '3C数码','智能硬件',
-    '宠物用品','汽车用品',
-    '医疗保健','图书文具',
-    '虚拟服务','游戏娱乐'
-  ];
 
   if (key === 'platforms') {
     // 合并：预置平台 + 项目数据中已有的平台（去重 + 过滤掉"全平台"）
     var fromProjects = [...new Set(PROJECTS.flatMap(function(p) { return (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean); }))];
     values = [...new Set(PRESET_PLATFORMS.concat(fromProjects))].filter(function(v){ return v && v !== '全平台'; }).sort();
   } else if (key === 'category') {
-    // 合并：预置品类 + 项目数据中已有的品类
+    // 合并：标准品类列表 + 项目数据中的品类（通过别名映射归一）
     var catFromProjects = PROJECTS.map(function(p){return p.category;}).filter(Boolean);
-    values = [...new Set(PRESET_CATEGORIES.concat(catFromProjects))].sort();
+    // 把项目数据里的旧品类名映射成标准名称
+    var normalizedCats = catFromProjects.map(function(c){
+      return CATEGORY_ALIAS[c] || c;
+    }).filter(function(v){ return v && PRESET_CATEGORIES.indexOf(v) === -1; });
+    values = [...new Set(PRESET_CATEGORIES.concat(normalizedCats))].sort();
   } else if (key === 'brand') {
     values = [...new Set(PROJECTS.map(function(p){return p.brand}))].sort();
   } else if (key === 'pm') {
@@ -2777,7 +2792,11 @@ function getFilteredProjects(){
     list = list.filter(p => filterState.brand.indexOf(p.brand) !== -1);
   }
   if (filterState.category.length > 0) {
-    list = list.filter(p => filterState.category.indexOf(p.category) !== -1);
+    // 筛选时把项目的旧品类名映射成标准名称再匹配
+    list = list.filter(p => {
+      var normCat = CATEGORY_ALIAS[p.category] || p.category;
+      return filterState.category.indexOf(normCat) !== -1;
+    });
   }
   if (filterState.platforms.length > 0) {
     list = list.filter(p => {
