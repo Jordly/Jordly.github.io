@@ -1,4 +1,4 @@
-// VERSION: 202607031130 - 权限管理弹窗修复：恢复querySelector版（去掉唯一ID）
+// VERSION: 202607031145 - 权限管理弹窗修复：CSS类名sd-prompt-show→sd-confirm-show（去掉唯一ID）
 // ===== Mock 数据 =====
 
 // 管理难度评估数据（自动生成）
@@ -177,25 +177,25 @@ function showPromptModal(title, label, defaultValue, onConfirm) {
     + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
     + '</div></div>';
   document.body.appendChild(overlay);
-  setTimeout(function(){ overlay.classList.add('sd-prompt-show'); }, 10);
+  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
   var inputEl = overlay.querySelector('.sd-prompt-input');
   if(inputEl){ inputEl.focus(); inputEl.select(); }
   overlay.querySelector('.sd-confirm-ok').onclick = function(){
     var val = inputEl ? inputEl.value : '';
     if(onConfirm) onConfirm(val);
-    overlay.classList.remove('sd-prompt-show');
+    overlay.classList.remove('sd-confirm-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
   overlay.querySelector('.sd-confirm-cancel').onclick = function(){
-    overlay.classList.remove('sd-prompt-show');
+    overlay.classList.remove('sd-confirm-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
   overlay.querySelector('.sd-prompt-close').onclick = function(){
-    overlay.classList.remove('sd-prompt-show');
+    overlay.classList.remove('sd-confirm-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
   overlay.onclick = function(e){
-    if(e.target === this){ overlay.classList.remove('sd-prompt-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
+    if(e.target === this){ overlay.classList.remove('sd-confirm-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
   };
 }
 
@@ -220,7 +220,7 @@ function showSelectModal(title, label, options, onConfirm) {
     + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
     + '</div></div>';
   document.body.appendChild(overlay);
-  setTimeout(function(){ overlay.classList.add('sd-prompt-show'); }, 10);
+  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
   
   var selectEl = overlay.querySelector('.sd-prompt-input');
   if(selectEl){ selectEl.focus(); }
@@ -232,22 +232,22 @@ function showSelectModal(title, label, options, onConfirm) {
       return;
     }
     if(onConfirm) onConfirm(val);
-    overlay.classList.remove('sd-prompt-show');
+    overlay.classList.remove('sd-confirm-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
   
   overlay.querySelector('.sd-confirm-cancel').onclick = function(){
-    overlay.classList.remove('sd-prompt-show');
+    overlay.classList.remove('sd-confirm-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
   
   overlay.querySelector('.sd-prompt-close').onclick = function(){
-    overlay.classList.remove('sd-prompt-show');
+    overlay.classList.remove('sd-confirm-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
   
   overlay.onclick = function(e){
-    if(e.target === this){ overlay.classList.remove('sd-prompt-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
+    if(e.target === this){ overlay.classList.remove('sd-confirm-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
   };
 }
 
