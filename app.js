@@ -1,4 +1,4 @@
-// VERSION: 202607021703 - 权限管理优化：动态角色+角色管理+复制权限+权限拦截
+// VERSION: 202607030950 - 权限管理弹窗美化：替换所有原生弹窗为美化弹窗
 // ===== Mock 数据 =====
 
 // 管理难度评估数据（自动生成）
@@ -194,6 +194,58 @@ function showPromptModal(title, label, defaultValue, onConfirm) {
     overlay.classList.remove('sd-prompt-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
+  overlay.onclick = function(e){
+    if(e.target === this){ overlay.classList.remove('sd-prompt-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
+  };
+}
+
+// ===== 自定义选择弹窗（用于选择角色等场景）=====
+function showSelectModal(title, label, options, onConfirm) {
+  var overlay = document.createElement('div');
+  overlay.className = 'sd-prompt-overlay';
+  
+  var optionsHtml = options.map(function(opt, idx) {
+    return '<option value="' + opt + '">' + opt + '</option>';
+  }).join('');
+  
+  overlay.innerHTML = ''
+    + '<div class="sd-prompt-box">'
+    + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close" id="sd-select-close">&times;</button></div>'
+    + '<div class="sd-prompt-body"><label>' + label + '</label><select class="sd-prompt-input" id="sd-select-input" style="width:100%;padding:8px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;">'
+    + '<option value="">-- 请选择 --</option>'
+    + optionsHtml
+    + '</select></div>'
+    + '<div class="sd-prompt-footer">'
+    + '<button class="sd-confirm-btn sd-confirm-cancel" id="sd-select-cancel-btn">取消</button>'
+    + '<button class="sd-confirm-btn sd-confirm-ok" id="sd-select-ok-btn">确定</button>'
+    + '</div></div>';
+  document.body.appendChild(overlay);
+  setTimeout(function(){ overlay.classList.add('sd-prompt-show'); }, 10);
+  
+  var selectEl = document.getElementById('sd-select-input');
+  if(selectEl){ selectEl.focus(); }
+  
+  document.getElementById('sd-select-ok-btn').onclick = function(){
+    var val = selectEl ? selectEl.value : '';
+    if(!val) {
+      showToast('请选择一个角色', 'warning');
+      return;
+    }
+    if(onConfirm) onConfirm(val);
+    overlay.classList.remove('sd-prompt-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  
+  document.getElementById('sd-select-cancel-btn').onclick = function(){
+    overlay.classList.remove('sd-prompt-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  
+  document.getElementById('sd-select-close').onclick = function(){
+    overlay.classList.remove('sd-prompt-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  
   overlay.onclick = function(e){
     if(e.target === this){ overlay.classList.remove('sd-prompt-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
   };
@@ -2379,9 +2431,13 @@ function renderModule(module){
         // 无权限，找到第一个有权限的模块并跳转
         var firstAllowedModule = MODULE_KEYS.find(function(mk) { return canViewModule(mk); });
         if (firstAllowedModule) {
-          alert("您没有权限访问「" + MODULE_NAMES[module] + "」模块！\n系统将自动跳转到" + MODULE_NAMES[firstAllowedModule] + "。");
-          currentModule = firstAllowedModule;
-          module = firstAllowedModule;
+          showConfirmModal("您没有权限访问「" + MODULE_NAMES[module] + "」模块！<br><br>系统将跳转到「" + MODULE_NAMES[firstAllowedModule] + "」。", "权限不足", function() {
+            currentModule = firstAllowedModule;
+            module = firstAllowedModule;
+            // 继续执行后续的渲染逻辑（递归调用自身）
+            renderModule(module);
+          });
+          return; // 等待用户确认
         } else {
           // 没有任何模块权限，显示错误
           document.getElementById("module-content").innerHTML = 
@@ -8203,12 +8259,12 @@ function importPermissions() {
         var data = JSON.parse(e.target.result);
         var valid = true;
         ROLES.forEach(function(r) { if (!data[r]) valid = false; });
-        if (!valid) { alert("配置文件格式不正确，缺少部分角色数据"); return; }
+        if (!valid) { showToast("配置文件格式不正确，缺少部分角色数据", "error"); return; }
         rolePermissions = data;
         savePermissions();
         renderModule("permissions");
-        alert("权限配置导入成功！");
-      } catch(ex) { alert("文件解析失败：" + ex.message); }
+        showToast("权限配置导入成功！", "success");
+      } catch(ex) { showToast("文件解析失败：" + ex.message, "error"); }
     };
     reader.readAsText(file);
   };
@@ -8217,12 +8273,12 @@ function importPermissions() {
 
 // 恢复默认权限
 function resetPermissions() {
-  if (confirm("确定要恢复默认权限配置吗？当前自定义配置将丢失。")) {
+  showConfirmModal("确定要恢复默认权限配置吗？<br><br>当前自定义配置将丢失。", "确认恢复", function() {
     rolePermissions = JSON.parse(JSON.stringify(DEFAULT_PERMISSIONS));
     savePermissions();
     renderModule("permissions");
-    alert("已恢复默认权限配置");
-  }
+    showToast("已恢复默认权限配置", "success");
+  });
 }
 
 // 导出权限配置
@@ -8240,79 +8296,81 @@ function exportPermissions() {
 
 // 新增角色
 function addRole() {
-  var roleName = prompt("请输入新角色名称：");
-  if (!roleName || roleName.trim() === "") {
-    alert("角色名称不能为空！");
-    return;
-  }
-  roleName = roleName.trim();
-  
-  // 检查角色是否已存在
-  if (ROLES.indexOf(roleName) >= 0) {
-    alert("角色「" + roleName + "」已存在！");
-    return;
-  }
-  
-  // 添加角色
-  ROLES.push(roleName);
-  saveRoles();
-  
-  // 初始化权限（默认使用"项目伙伴"的权限）
-  if (!rolePermissions[roleName]) {
-    rolePermissions[roleName] = JSON.parse(JSON.stringify(rolePermissions["项目伙伴"] || DEFAULT_PERMISSIONS["项目伙伴"]));
-    savePermissions();
-  }
-  
-  // 重新渲染
-  window._permSelectedRole = roleName;
-  renderModule("permissions");
-  alert("角色「" + roleName + "」已添加成功！");
+  showPromptModal("新增角色", "请输入新角色名称：", "", function(roleName) {
+    if (!roleName || roleName.trim() === "") {
+      showToast("角色名称不能为空！", "error");
+      return;
+    }
+    roleName = roleName.trim();
+    
+    // 检查角色是否已存在
+    if (ROLES.indexOf(roleName) >= 0) {
+      showToast("角色「" + roleName + "」已存在！", "error");
+      return;
+    }
+    
+    // 添加角色
+    ROLES.push(roleName);
+    saveRoles();
+    
+    // 初始化权限（默认使用"项目伙伴"的权限）
+    if (!rolePermissions[roleName]) {
+      rolePermissions[roleName] = JSON.parse(JSON.stringify(rolePermissions["项目伙伴"] || DEFAULT_PERMISSIONS["项目伙伴"]));
+      savePermissions();
+    }
+    
+    // 重新渲染
+    window._permSelectedRole = roleName;
+    renderModule("permissions");
+    showToast("角色「" + roleName + "」已添加成功！", "success");
+  });
 }
 
 // 编辑角色
 function editRole(oldName) {
   if (isBuiltInRole(oldName)) {
-    alert("内置角色不能编辑名称！");
+    showToast("内置角色不能编辑名称！", "error");
     return;
   }
   
-  var newName = prompt("请输入新的角色名称：", oldName);
-  if (!newName || newName.trim() === "") {
-    alert("角色名称不能为空！");
-    return;
-  }
-  newName = newName.trim();
-  
-  // 检查新名称是否已存在（排除自身）
-  if (newName !== oldName && ROLES.indexOf(newName) >= 0) {
-    alert("角色「" + newName + "」已存在！");
-    return;
-  }
-  
-  // 更新角色列表
-  var idx = ROLES.indexOf(oldName);
-  if (idx >= 0) {
-    ROLES[idx] = newName;
-    saveRoles();
+  showPromptModal("编辑角色", "请输入新的角色名称：", oldName, function(newName) {
+    if (!newName || newName.trim() === "") {
+      showToast("角色名称不能为空！", "error");
+      return;
+    }
+    newName = newName.trim();
     
-    // 更新权限配置
-    if (rolePermissions[oldName]) {
-      rolePermissions[newName] = rolePermissions[oldName];
-      delete rolePermissions[oldName];
-      savePermissions();
+    // 检查新名称是否已存在（排除自身）
+    if (newName !== oldName && ROLES.indexOf(newName) >= 0) {
+      showToast("角色「" + newName + "」已存在！", "error");
+      return;
     }
     
-    // 重新渲染
-    window._permSelectedRole = newName;
-    renderModule("permissions");
-    alert("角色已重命名为「" + newName + "」！");
-  }
+    // 更新角色列表
+    var idx = ROLES.indexOf(oldName);
+    if (idx >= 0) {
+      ROLES[idx] = newName;
+      saveRoles();
+      
+      // 更新权限配置
+      if (rolePermissions[oldName]) {
+        rolePermissions[newName] = rolePermissions[oldName];
+        delete rolePermissions[oldName];
+        savePermissions();
+      }
+      
+      // 重新渲染
+      window._permSelectedRole = newName;
+      renderModule("permissions");
+      showToast("角色已重命名为「" + newName + "」！", "success");
+    }
+  });
 }
 
 // 删除角色
 function deleteRole(roleName) {
   if (isBuiltInRole(roleName)) {
-    alert("内置角色不能删除！");
+    showToast("内置角色不能删除！", "error");
     return;
   }
   
@@ -8329,86 +8387,78 @@ function deleteRole(roleName) {
   
   var confirmMsg = "确定要删除角色「" + roleName + "」吗？";
   if (affectedUsers.length > 0) {
-    confirmMsg += "\n\n⚠️ 警告：此操作将影响 " + affectedUsers.length + " 个用户：\n" + affectedUsers.join("、");
-    confirmMsg += "\n\n这些用户的角色将被设置为“项目伙伴”。";
+    confirmMsg += "<br><br>⚠️ <strong>警告：</strong>此操作将影响 " + affectedUsers.length + " 个用户：<br>" + affectedUsers.join("、");
+    confirmMsg += "<br><br>这些用户的角色将被设置为<strong>项目伙伴</strong>。";
   }
   
-  if (!confirm(confirmMsg)) {
-    return;
-  }
-  
-  // 删除角色
-  var idx = ROLES.indexOf(roleName);
-  if (idx >= 0) {
-    ROLES.splice(idx, 1);
-    saveRoles();
-    
-    // 删除权限配置
-    delete rolePermissions[roleName];
-    savePermissions();
-    
-    // 更新受影响的用户
-    if (affectedUsers.length > 0) {
-      try {
-        var users = JSON.parse(localStorage.getItem("chansee_users") || "[]");
-        for (var i = 0; i < users.length; i++) {
-          if (users[i].role === roleName) {
-            users[i].role = "项目伙伴";
+  showConfirmModal(confirmMsg, "确认删除", function() {
+    // 删除角色
+    var idx = ROLES.indexOf(roleName);
+    if (idx >= 0) {
+      ROLES.splice(idx, 1);
+      saveRoles();
+      
+      // 删除权限配置
+      delete rolePermissions[roleName];
+      savePermissions();
+      
+      // 更新受影响的用户
+      if (affectedUsers.length > 0) {
+        try {
+          var users = JSON.parse(localStorage.getItem("chansee_users") || "[]");
+          for (var i = 0; i < users.length; i++) {
+            if (users[i].role === roleName) {
+              users[i].role = "项目伙伴";
+            }
           }
-        }
-        localStorage.setItem("chansee_users", JSON.stringify(users));
-      } catch(e) {}
+          localStorage.setItem("chansee_users", JSON.stringify(users));
+        } catch(e) {}
+      }
+      
+      // 重新渲染
+      window._permSelectedRole = ROLES[0] || "项目伙伴";
+      renderModule("permissions");
+      showToast("角色「" + roleName + "」已删除！", "success");
     }
-    
-    // 重新渲染
-    window._permSelectedRole = ROLES[0] || "项目伙伴";
-    renderModule("permissions");
-    alert("角色「" + roleName + "」已删除！");
-  }
+  });
 }
 
 // 从其他角色复制权限
 function copyPermissionsFrom() {
   var selRole = window._permSelectedRole;
   if (!selRole) {
-    alert("请先选择要配置的角色！");
+    showToast("请先选择要配置的角色！", "warning");
     return;
   }
   
   // 排除当前角色
   var otherRoles = ROLES.filter(function(r) { return r !== selRole; });
   if (otherRoles.length === 0) {
-    alert("没有其他角色可以复制！");
+    showToast("没有其他角色可以复制！", "warning");
     return;
   }
   
-  var sourceRole = prompt("请选择要复制权限的来源角色：\n\n" + otherRoles.map(function(r, i) { return (i+1) + ". " + r; }).join("\n") + "\n\n请输入角色名称：");
-  
-  if (!sourceRole || sourceRole.trim() === "") {
-    return;
-  }
-  sourceRole = sourceRole.trim();
-  
-  if (otherRoles.indexOf(sourceRole) < 0) {
-    alert("角色「" + sourceRole + "」不存在！");
-    return;
-  }
-  
-  if (!confirm("确定要从角色「" + sourceRole + "」复制权限到「" + selRole + "」吗？\n\n当前「" + selRole + "」的权限配置将被覆盖！")) {
-    return;
-  }
-  
-  // 复制权限
-  if (rolePermissions[sourceRole]) {
-    rolePermissions[selRole] = JSON.parse(JSON.stringify(rolePermissions[sourceRole]));
-    savePermissions();
+  // 使用美化选择弹窗
+  showSelectModal("复制权限", "请选择要复制权限的来源角色：", otherRoles, function(sourceRole) {
+    if (!sourceRole) {
+      return;
+    }
     
-    // 重新渲染
-    renderModule("permissions");
-    alert("已成功从「" + sourceRole + "」复制权限到「" + selRole + "」！");
-  } else {
-    alert("来源角色没有权限配置！");
-  }
+    // 确认复制
+    showConfirmModal("确定要从角色「" + sourceRole + "」复制权限到「" + selRole + "」吗？<br><br>当前「" + selRole + "」的权限配置将被覆盖！", "确认复制", function() {
+      // 复制权限
+      if (rolePermissions[sourceRole]) {
+        rolePermissions[selRole] = JSON.parse(JSON.stringify(rolePermissions[sourceRole]));
+        savePermissions();
+        
+        // 重新渲染
+        renderModule("permissions");
+        showToast("已成功从「" + sourceRole + "」复制权限到「" + selRole + "」！", "success");
+      } else {
+        showToast("来源角色没有权限配置！", "error");
+      }
+    });
+  });
 }
 
 // 显示受影响的用户数
