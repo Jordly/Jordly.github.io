@@ -2490,7 +2490,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
 
 /* ===== 按钮区：宽松布局 ===== */
 .sd-confirm-footer {
-  padding: 18px 28px 22px; display: flex; gap: 22px; justify-content: flex-end;
+  padding: 24px 36px 28px; display: flex; gap: 36px; justify-content: flex-end;
 }
 .sd-confirm-btn {
   font-size: 13.5px; font-weight: 500; border-radius: 9px;
