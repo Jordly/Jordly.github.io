@@ -1,4 +1,4 @@
-// VERSION: 202607011043 - 修复3个问题：看板空白+筛选栏布局+头像显示
+// VERSION: 202607031345 - 权限管理弹窗UI全面美化：极光质感设计
 // ===== Mock 数据 =====
 
 // 管理难度评估数据（自动生成）
@@ -134,6 +134,123 @@ function showToast(msg, type) {
   }
 }
 
+// ===== 自定义确认弹窗（替代原生 confirm）=====
+function showConfirmModal(msg, title, onConfirm, onCancel) {
+  title = title || '确认操作';
+  var overlay = document.createElement('div');
+  overlay.className = 'sd-confirm-overlay';
+  overlay.innerHTML = ''
+    + '<div class="sd-confirm-box">'
+    + '<div class="sd-confirm-header">'+title+'</div>'
+    + '<div class="sd-confirm-body">'+msg+'</div>'
+    + '<div class="sd-confirm-footer">'
+    + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
+    + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
+    + '</div></div>';
+  document.body.appendChild(overlay);
+  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
+  overlay.querySelector('.sd-confirm-ok').onclick = function(){
+    if(onConfirm) onConfirm();
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.querySelector('.sd-confirm-cancel').onclick = function(){
+    if(onCancel) onCancel();
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.onclick = function(e){
+    if(e.target === this) { if(onCancel) onCancel(); overlay.classList.remove('sd-confirm-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
+  };
+}
+
+// ===== 自定义输入弹窗（替代原生 prompt）=====
+function showPromptModal(title, label, defaultValue, onConfirm) {
+  var overlay = document.createElement('div');
+  overlay.className = 'sd-prompt-overlay';
+  overlay.innerHTML = ''
+    + '<div class="sd-prompt-box">'
+    + '<div class="sd-prompt-header">'+title+' <button class="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-body"><label>'+label+'</label><div class="sd-prompt-input-wrap"><input type="text" class="sd-prompt-input" value="'+(defaultValue||'').replace(/"/g,'&quot;')+'"></div></div>'
+    + '<div class="sd-prompt-footer">'
+    + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
+    + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
+    + '</div></div>';
+  document.body.appendChild(overlay);
+  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
+  var inputEl = overlay.querySelector('.sd-prompt-input');
+  if(inputEl){ inputEl.focus(); inputEl.select(); }
+  overlay.querySelector('.sd-confirm-ok').onclick = function(){
+    var val = inputEl ? inputEl.value : '';
+    if(onConfirm) onConfirm(val);
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.querySelector('.sd-confirm-cancel').onclick = function(){
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.querySelector('.sd-prompt-close').onclick = function(){
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.onclick = function(e){
+    if(e.target === this){ overlay.classList.remove('sd-confirm-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
+  };
+}
+
+// ===== 自定义选择弹窗（用于选择角色等场景）=====
+function showSelectModal(title, label, options, onConfirm) {
+  var overlay = document.createElement('div');
+  overlay.className = 'sd-prompt-overlay';
+  
+  var optionsHtml = options.map(function(opt, idx) {
+    return '<option value="' + opt + '">' + opt + '</option>';
+  }).join('');
+  
+  overlay.innerHTML = ''
+    + '<div class="sd-prompt-box">'
+    + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-body"><label>' + label + '</label><div class="sd-prompt-input-wrap"><select class="sd-prompt-input">'
+    + '<option value="">-- 请选择 --</option>'
+    + optionsHtml
+    + '</select></div></div>'
+    + '<div class="sd-prompt-footer">'
+    + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
+    + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
+    + '</div></div>';
+  document.body.appendChild(overlay);
+  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
+  
+  var selectEl = overlay.querySelector('.sd-prompt-input');
+  if(selectEl){ selectEl.focus(); }
+  
+  overlay.querySelector('.sd-confirm-ok').onclick = function(){
+    var val = selectEl ? selectEl.value : '';
+    if(!val) {
+      showToast('请选择一个角色', 'warning');
+      return;
+    }
+    if(onConfirm) onConfirm(val);
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  
+  overlay.querySelector('.sd-confirm-cancel').onclick = function(){
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  
+  overlay.querySelector('.sd-prompt-close').onclick = function(){
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  
+  overlay.onclick = function(e){
+    if(e.target === this){ overlay.classList.remove('sd-confirm-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
+  };
+}
+
 // ===== 数据持久化（彻底修复版）=====
 // 安全写入 localStorage（带 quota 处理和用户提示）
 function safeSetItem(key, value) {
@@ -195,16 +312,93 @@ var USERS = [];
 
 // 初始化 PROJECTS
 var PROJECTS = [];
+
+// 品类别名映射（旧名称→天猫真实一级类目名称），用于迁移旧项目数据
+var CATEGORY_ALIAS = {
+  '美妆':'美妆洗护','美妆护肤':'美妆洗护','个护':'美妆洗护','个护家清':'美妆洗护',
+  '服装':'女装男装','服饰':'女装男装','服饰鞋包':'女装男装','鞋子':'女装男装',
+  '运动':'运动户外','运动户外':'运动户外','运动装备':'运动户外',
+  '母婴':'母婴童装','母婴童装':'母婴童装','母婴用品':'母婴童装',
+  '食品':'食品生鲜','食品生鲜':'食品生鲜','零食':'食品生鲜',
+  '家电':'数码家电','家电数码':'数码家电','家用电器':'数码家电','3C数码':'数码家电',
+  '智能硬件':'数码家电','智能设备':'数码家电','智能家居':'数码家电',
+  '家居':'家居家装','家居家装':'家居家装','居家日用':'家居家装',
+  '宠物':'宠物用品','宠物用品':'宠物用品','宠物农资':'宠物用品',
+  '汽车':'汽车用品','汽车用品':'汽车用品',
+  '图书':'图书音像','图书文具':'图书音像','图书音像':'图书音像',
+  '医疗':'医药健康','医疗保健':'医药健康','医疗器械':'医药健康',
+  '虚拟':'虚拟服务','游戏':'虚拟服务','游戏娱乐':'虚拟服务'
+};
+// 平台别名映射（旧名称→新名称），用于迁移旧项目数据
+var PLATFORM_ALIAS = {
+  '天猫':'天猫官旗','淘宝':'淘宝','京东':'京东自营','拼多多':'拼多多',
+  '抖音':'抖音','快手':'快手','小红书':'小红书',
+  '京东自营':'京东自营','天猫超市':'天猫超市'
+};
+// 天猫真实一级类目（用于筛选下拉选项，无重复）
+var PRESET_CATEGORIES = [
+  '女装男装',
+  '鞋靴箱包',
+  '运动户外',
+  '美妆洗护',
+  '母婴童装',
+  '食品生鲜',
+  '家居家装',
+  '数码家电',
+  '汽车用品',
+  '宠物用品',
+  '图书音像',
+  '医药健康',
+  '珠宝眼镜',
+  '虚拟服务'
+];
 (function initProjects() {
   var raw = localStorage.getItem('chansee_projects');
   if (raw && raw !== 'null' && raw !== '[]') {
     try {
       PROJECTS = JSON.parse(raw);
+      // 数据迁移：把旧品类名映射为天猫真实一级类目名称
+      var migrated = false;
+      PROJECTS.forEach(function(p) {
+        if (p.category && CATEGORY_ALIAS[p.category]) {
+          p.category = CATEGORY_ALIAS[p.category];
+          migrated = true;
+        }
+      });
+      // 数据迁移：把旧平台名映射为新名称（支持多平台逗号分隔）
+      var platformMigrated = false;
+      PROJECTS.forEach(function(p) {
+        if (p.platforms) {
+          var plats = p.platforms.split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean);
+          var newPlats = plats.map(function(plat) {
+            if (PLATFORM_ALIAS[plat]) {
+              platformMigrated = true;
+              return PLATFORM_ALIAS[plat];
+            }
+            return plat;
+          });
+          p.platforms = newPlats.join('、');
+        }
+      });
+      if (migrated || platformMigrated) safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
       return;
     } catch(e) {
     }
   }
   PROJECTS = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
+  // 同时迁移默认项目数据的品类名和平台名
+  PROJECTS.forEach(function(p) {
+    if (p.category && CATEGORY_ALIAS[p.category]) {
+      p.category = CATEGORY_ALIAS[p.category];
+    }
+    if (p.platforms) {
+      var plats = p.platforms.split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean);
+      var newPlats = plats.map(function(plat) {
+        return PLATFORM_ALIAS[plat] || plat;
+      });
+      p.platforms = newPlats.join('、');
+    }
+  });
   safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
 })();
 
@@ -525,7 +719,7 @@ async function checkLogin() {
     var _faStr = localStorage.getItem('chanseen_auth');
     if (_faStr) {
       var _fa = JSON.parse(_faStr);
-      var _ma = _fa.remember ? 604800000 : 3600000;
+      var _ma = 3600000;
       if (_fa.token && (Date.now() - _fa.loginAt) < _ma) {
         var _user = USERS.find(function(u){ return u.id === (_fa.user && _fa.user.id) || u.username === (_fa.user && _fa.user.username); }) || USERS[0];
         if (_user) {
@@ -562,7 +756,7 @@ async function checkLogin() {
     if (authStr) {
       try {
         const auth = JSON.parse(authStr);
-        const maxAge = auth.remember ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
+        const maxAge = 60 * 60 * 1000;
         if (auth.token && (Date.now() - auth.loginAt) < maxAge) {
           // 【防重置修复】加载云端数据前，先备份本地的用户数据
           var localUsersBackup = null;
@@ -792,7 +986,7 @@ async function checkLogin() {
       var _authStr = localStorage.getItem('chanseen_auth');
       if (_authStr) {
         var _auth = JSON.parse(_authStr);
-        var _maxAge = _auth.remember ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000;
+        var _maxAge = 60 * 60 * 1000;
         if (_auth.token && (Date.now() - _auth.loginAt) < _maxAge) {
           var _u = USERS.find(function(u){ return u.username === (_auth.user && _auth.user.username); }) || USERS[0] || {};
           currentUser = {
@@ -965,6 +1159,11 @@ function doLogin() {
   updateUserDisplay();
   setAppContentVisible(true);
   showToast("登录成功，欢迎回来！");
+  
+  // 根据当前用户角色过滤导航菜单
+  setTimeout(function() {
+    filterNavByPermissions();
+  }, 100);
 }
 
 // 注册
@@ -1728,9 +1927,48 @@ const HEALTH_DATA = [
 
 // ===== 角色与权限系统 =====
 
-const ROLES = [
-  "超级管理员", "管理员", "客服总监", "客服经理", "客服主管", "项目伙伴"
-];
+// 内置角色（不可删除）
+const BUILT_IN_ROLES = ["超级管理员", "管理员", "客服总监", "客服经理", "客服主管", "项目伙伴"];
+
+// 动态角色系统：从localStorage加载，支持自定义角色
+let ROLES = [];
+(function initRoles() {
+  try {
+    var savedRoles = localStorage.getItem("chansee_roles");
+    if (savedRoles) {
+      ROLES = JSON.parse(savedRoles);
+      // 确保所有内置角色都存在
+      var needsSave = false;
+      BUILT_IN_ROLES.forEach(function(r) {
+        if (ROLES.indexOf(r) === -1) {
+          ROLES.push(r);
+          needsSave = true;
+        }
+      });
+      if (needsSave) {
+        localStorage.setItem("chansee_roles", JSON.stringify(ROLES));
+      }
+    } else {
+      // 首次使用，使用默认角色列表
+      ROLES = BUILT_IN_ROLES.slice();
+      localStorage.setItem("chansee_roles", JSON.stringify(ROLES));
+    }
+  } catch(e) {
+    ROLES = BUILT_IN_ROLES.slice();
+  }
+})();
+
+// 保存角色列表到localStorage
+function saveRoles() {
+  try {
+    localStorage.setItem("chansee_roles", JSON.stringify(ROLES));
+  } catch(e) {}
+}
+
+// 检查角色是否为内置角色
+function isBuiltInRole(roleName) {
+  return BUILT_IN_ROLES.indexOf(roleName) >= 0;
+}
 
 const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","performance","risk","systemData","permissions","notifications","profile"];
 
@@ -1936,7 +2174,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               if(idx===0){ sec.classList.remove("collapsed"); if(arrow) arrow.textContent = '▼'; }
               else { sec.classList.add("collapsed"); if(arrow) arrow.textContent = '▶'; }
             });
-            renderModule("dashboard");
+            renderModule(sessionStorage.getItem('cs_lastModule') || "dashboard");
             return;
           }
         }
@@ -1957,7 +2195,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(arrow) arrow.textContent = '▶';
       }
     });
-    renderModule("dashboard");
+    renderModule(sessionStorage.getItem('cs_lastModule') || "dashboard");
   } catch(e) {
     document.getElementById("module-content").innerHTML =
       '<div style="padding:40px;text-align:center;color:red;">' +
@@ -2185,6 +2423,38 @@ function initNav(){
 function renderModule(module){
   try {
     currentModule = module;
+    
+    // 权限检查：检查当前用户是否有权限查看此模块
+    // 超级管理员跳过检查
+    if (currentRole !== "超级管理员" && MODULE_KEYS.indexOf(module) >= 0) {
+      if (!canViewModule(module)) {
+        // 无权限，找到第一个有权限的模块并跳转
+        var firstAllowedModule = MODULE_KEYS.find(function(mk) { return canViewModule(mk); });
+        if (firstAllowedModule) {
+          showConfirmModal("您没有权限访问「" + MODULE_NAMES[module] + "」模块！<br><br>系统将跳转到「" + MODULE_NAMES[firstAllowedModule] + "」。", "权限不足", function() {
+            currentModule = firstAllowedModule;
+            module = firstAllowedModule;
+            // 继续执行后续的渲染逻辑（递归调用自身）
+            renderModule(module);
+          });
+          return; // 等待用户确认
+        } else {
+          // 没有任何模块权限，显示错误
+          document.getElementById("module-content").innerHTML = 
+            '<div style="padding:40px;text-align:center;"><div style="font-size:48px;margin-bottom:16px;">🔒</div>' +
+            '<h3 style="color:#ef4444;margin-bottom:8px;">暂无可用模块</h3>' +
+            '<p style="color:#64748b;">您没有被分配任何模块权限，请联系管理员。</p></div>';
+          return;
+        }
+      }
+    }
+    
+    // 保存当前模块到sessionStorage，刷新后自动回到该模块
+    try { sessionStorage.setItem('cs_lastModule', module); } catch(e){};
+    // 同步更新导航栏高亮状态
+    document.querySelectorAll('.nav-item').forEach(function(i){i.classList.remove('active');});
+    var nav = document.querySelector('.nav-item[data-module="'+module+'"]');
+    if(nav){ nav.classList.add('active'); }
     const area = document.getElementById("module-content");
     if (!area) { console.error('renderModule: module-content 元素不存在'); return; }
     const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, systemData:renderSystemData, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
@@ -2301,8 +2571,8 @@ function renderFilterBar() {
       '</div>';
   }
 
-  // 第二行：搜索下拉（默认隐藏，通过CSS .filter-row-v4-second 控制）
-  var row2 = '<div class="filter-row-v4 filter-row-v4-second" id="filter-row-advanced">';
+  // 第二行：搜索下拉（默认隐藏）
+  var row2 = '<div class="filter-row-v4 filter-row-v4-second" id="filter-row-advanced"' + (isAdvVisible ? ' style="display:flex!important"' : '') + '>';
 
   // 平台
   var pfLabel = '平台 ▼';
@@ -2363,21 +2633,30 @@ function renderFilterBar() {
     '</div>';
   row2 += '</div>';
 
+  // "更多"按钮（纯装饰，对齐第一行"高级筛选"位置）
+  row2 += '<span class="fb-more-btn">更多</span>';
+
   return '<div class="filter-bar-v4">' + tagsHtml + row1 + customTimeHtml + row2 + '</div>';
 }
 
-// 高级筛选切换（使用class控制，避免被CSS !important覆盖）
+// 高级筛选切换（用important覆盖CSS !important规则）
 function toggleAdvancedFilter() {
   var el = document.getElementById('filter-row-advanced');
-  if (!el) { console.warn('[高级筛选] 找不到 #filter-row-advanced 元素'); return; }
-  var isVisible = el.classList.contains('filter-row-visible');
+  if (!el) { setTimeout(function(){ toggleAdvancedFilter(); }, 200); return; }
+  var btn = document.querySelector('.fb-adv-btn');
+  var moreBtn = document.querySelector('.fb-more-btn');
+  // 检查当前可见状态：CSS强制none时style.display可能为空
+  var computedStyle = window.getComputedStyle(el);
+  var isVisible = (el.style.display !== 'none' && el.style.display !== '') ? (el.style.display !== 'none') : (computedStyle.display !== 'none');
   if (isVisible) {
-    el.classList.remove('filter-row-visible');
+    el.style.setProperty('display', 'none', 'important');
+    window._advFilterVisible = false;
+    if(btn){btn.textContent='高级筛选 ▼';btn.className='fb-adv-btn';}
   } else {
-    el.classList.add('filter-row-visible');
+    el.style.setProperty('display', 'flex', 'important');
+    window._advFilterVisible = true;
+    if(btn){btn.textContent='收起筛选 ▲';btn.className='fb-adv-btn fb-adv-btn-active';}
   }
-  window._advFilterVisible = !isVisible;
-  console.log('[高级筛选] 切换完成, 状态:', window._advFilterVisible ? '展开' : '收起');
 }
 
 // ----- 筛选栏 v4 辅助函数 -----
@@ -2435,10 +2714,39 @@ function renderFbOptions(key) {
   var input = panel.querySelector('.fb-search-input');
   var keyword = input ? input.value.toLowerCase() : '';
   var values = [];
+
+  // 预置完整平台列表（按主流程度排序，不含"全平台"）
+  // 平台排序优先级：淘宝>天猫官旗>天猫超市>天猫跨境>京东自营>京东POP>京东超市>拼多多>抖音>快手>小红书>微信视频号>唯品会>得物>1688>苏宁易购>微信小程序>企业微信
+  var PLATFORM_ORDER = [
+    '淘宝','天猫官旗','天猫超市','天猫跨境',
+    '京东自营','京东POP','京东超市',
+    '拼多多',
+    '抖音','快手','小红书','微信视频号',
+    '唯品会','得物','1688','苏宁易购',
+    '微信小程序','企业微信'
+  ];
+
   if (key === 'platforms') {
-    values = [...new Set(PROJECTS.flatMap(function(p) { return (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean); }))].filter(function(v){ return v !== '全平台'; }).sort();
+    // 合并：预置平台 + 项目数据中已有的平台（去重 + 过滤掉"全平台"）
+    var fromProjects = [...new Set(PROJECTS.flatMap(function(p) { return (p.platforms || '').split(/[,，、]/).map(function(s){return s.trim();}).filter(Boolean); }))];
+    values = [...new Set(PLATFORM_ORDER.concat(fromProjects))].filter(function(v){ return v && v !== '全平台'; });
+    // 按 PLATFORM_ORDER 排序（在列表里的排前面，不在的排后面按字母序）
+    values.sort(function(a, b) {
+      var ia = PLATFORM_ORDER.indexOf(a);
+      var ib = PLATFORM_ORDER.indexOf(b);
+      if (ia === -1 && ib === -1) return a.localeCompare(b, 'zh');
+      if (ia === -1) return 1;
+      if (ib === -1) return -1;
+      return ia - ib;
+    });
   } else if (key === 'category') {
-    values = [...new Set(PROJECTS.map(function(p){return p.category}))].sort();
+    // 合并：标准品类列表 + 项目数据中的品类（通过别名映射归一）
+    var catFromProjects = PROJECTS.map(function(p){return p.category;}).filter(Boolean);
+    // 把项目数据里的旧品类名映射成标准名称
+    var normalizedCats = catFromProjects.map(function(c){
+      return CATEGORY_ALIAS[c] || c;
+    }).filter(function(v){ return v && PRESET_CATEGORIES.indexOf(v) === -1; });
+    values = [...new Set(PRESET_CATEGORIES.concat(normalizedCats))].sort();
   } else if (key === 'brand') {
     values = [...new Set(PROJECTS.map(function(p){return p.brand}))].sort();
   } else if (key === 'pm') {
@@ -2672,7 +2980,11 @@ function getFilteredProjects(){
     list = list.filter(p => filterState.brand.indexOf(p.brand) !== -1);
   }
   if (filterState.category.length > 0) {
-    list = list.filter(p => filterState.category.indexOf(p.category) !== -1);
+    // 筛选时把项目的旧品类名映射成标准名称再匹配
+    list = list.filter(p => {
+      var normCat = CATEGORY_ALIAS[p.category] || p.category;
+      return filterState.category.indexOf(normCat) !== -1;
+    });
   }
   if (filterState.platforms.length > 0) {
     list = list.filter(p => {
@@ -3237,14 +3549,14 @@ function renderArchive(){
 
       <!-- 搜索框 -->
       <input type="text" id="archive-search" placeholder="🔍 搜索项目编号/名称/品牌..." 
-        style="padding:5px 10px;border-radius:6px;border:1px solid var(--c-border);font-size:13px;width:220px;"
+        style="flex:1;min-width:180px;padding:8px 12px;border-radius:8px;border:1px solid var(--c-border);font-size:13px;"
         oninput="filterArchiveTable(this.value)">
 
       <button class="btn btn-sm" onclick="showImportDialog()" style="margin-right:4px;">📤 导入</button>
       <button class="btn btn-sm" onclick="exportProjects()" style="margin-right:8px;">📥 导出</button>
       ${can?'<button class="btn btn-primary btn-sm" onclick="showAddProject()">＋ 新增项目</button>':''}
 
-      ${can?'<button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;margin-left:4px;" onclick="batchDeleteProjects()">🗑 批量删除</button>':''}
+      ${can?'<button class="btn btn-sm" class="btn btn-sm btn-archive-danger" onclick="batchDeleteProjects()">🗑 批量删除</button>':''}
 
       ${currentRole==='leader'?'<span class="badge badge-gray">只读权限</span>':''}
 
@@ -3254,7 +3566,7 @@ function renderArchive(){
 
   <div class="card">
 
-    <table class="data-table">
+    <table class="data-table archive-table">
 
       <thead><tr>
         ${can?'<th style="width:36px;"><input type="checkbox" id="archive-select-all" onclick="toggleArchiveSelectAll(this.checked)" title="全选/取消"></th>':''}
@@ -3270,7 +3582,10 @@ function renderArchive(){
 
             <td>${p.id}</td>
 
-            <td><a href="#" style="color:var(--c-primary);cursor:pointer" onclick="showProjectDetail('${p.id}');return false;">${p.name}</a></td>
+            <td><a href="#" style="color:#3b82f6;cursor:pointer;border-bottom:1px dashed #3b82f6;text-decoration:none;" 
+                onmouseover="this.style.borderBottom='1px solid #3b82f6'" 
+                onmouseout="this.style.borderBottom='1px dashed #3b82f6'"
+                onclick="showProjectDetail('${p.id}');return false;" title="点击查看项目详情">${p.name}</a></td>
 
             <td>${p.brand} / ${p.category}</td>
 
@@ -3285,9 +3600,8 @@ function renderArchive(){
             <td>${(p.pmHistory||[]).length>0?`<span class="badge badge-gray" title="${(p.pmHistory||[]).map(h=>h.name+'('+h.from+'~'+h.to+')').join('; ')}">${(p.pmHistory||[]).length}次交接</span>`:'无'}</td>
 
             <td class="actions">
-              <button class="btn btn-sm" onclick="showProjectDetail('${p.id}')">查看</button>
-              ${can?`&nbsp;<button class="btn btn-sm" onclick="editProject('${p.id}')">编辑</button>&nbsp;
-              <button class="btn btn-sm" style="color:#fff;background:#e74c3c;border-color:#e74c3c;" onclick="deleteProjectConfirm('${p.id}','${p.name}')">删除</button>`:''}
+              ${can?`<button class="btn btn-sm" style="background:#eff6ff;color:#2563eb;border-color:#bfdbfe;" onclick="editProject('${p.id}')">编辑</button>&nbsp;
+              <button class="btn btn-sm" style="color:#dc2626;background:#fef2f2;border-color:#fecaca;" onclick="deleteProjectConfirm('${p.id}','${p.name}')">删除</button>`:''}
 
             </td>
 
@@ -4151,7 +4465,7 @@ function renderHandover(){
 
             <td>${h.date}</td>
 
-            <td><span class="badge badge-green">${h.status}</span></td>
+            <td><span class="archive-tag archive-tag-dp">${h.status}</span></td>
 
             <td style="max-width:200px;font-size:12px;">${h.summary}</td>
 
@@ -4191,7 +4505,7 @@ function renderHandover(){
 
             <td>${p.pm}</td>
 
-            <td><span class="badge badge-green">正常</span></td>
+            <td><span class="archive-tag archive-tag-dp">正常</span></td>
 
             <td>${(p.pmHistory||[]).length + HANDOVERS.filter(h=>h.projectId===p.id).length}</td>
 
@@ -4231,7 +4545,7 @@ function showProjectDetail(projectId){
 
   document.getElementById("modal-body").innerHTML = `
 
-    <div class="project-detail-header">
+    <div class="project-detail-header detail-header-gradient">
 
       <div>
 
@@ -6463,7 +6777,7 @@ function showSatisfactionPermission(){
 
           <tr>
 
-            <td><span class="badge badge-blue">上级领导</span></td>
+            <td><span class="archive-tag archive-tag-tp">上级领导</span></td>
 
             <td>全部项目评估记录</td>
 
@@ -6473,7 +6787,7 @@ function showSatisfactionPermission(){
 
           <tr>
 
-            <td><span class="badge badge-green">项目经理</span></td>
+            <td><span class="archive-tag archive-tag-dp">项目经理</span></td>
 
             <td>负责项目 + 跨职场同类项目</td>
 
@@ -6592,19 +6906,29 @@ function renderNotifications(){
     </div>
   </div>
 
-  <!-- 统计卡片 -->
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;">
-    ${[
-      {l:'全部用户',c:USERS.length,icon:'👥',clr:'#3b82f6',bg:'rgba(59,130,246,0.08)'},
-      {l:'已激活',c:USERS.filter(u=>u.status==='已激活').length,icon:'✅',clr:'#22c55e',bg:'rgba(34,197,94,0.08)'},
-      {l:'待审核',c:USERS.filter(u=>u.status==='待审核').length,icon:'⏳',clr:'#eab308',bg:'rgba(234,179,8,0.08)'},
-      {l:'已禁用',c:USERS.filter(u=>u.status==='已禁用'||u.status==='已拒绝').length,icon:'🚫',clr:'#ef4444',bg:'rgba(239,68,68,0.08)'}
-    ].map(function(s){
-      return `<div style="background:${s.bg};border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;">
-        <span style="font-size:24px;">${s.icon}</span>
-        <div><div style="font-size:18px;font-weight:700;color:${s.clr};">${s.c}</div><div style="font-size:11px;color:#64748b;">${s.l}</div></div>
-      </div>`;
+  <!-- 团队角色分布 -->
+  <div style="background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span style="font-size:16px;">👥</span>
+      <span style="font-size:13px;font-weight:600;color:#1e293b;">团队角色分布</span>
+      <span style="font-size:11px;color:#94a3b8;margin-left:auto;">共 ${USERS.length} 人</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+    ${ROLES.map(function(r){
+      var count = USERS.filter(function(u){ return u.role === r; }).length;
+      var pct = USERS.length > 0 ? Math.round(count / USERS.length * 100) : 0;
+      var clrs = {'超级管理员':'#8b5cf6','管理员':'#3b82f6','客服总监':'#0b9b96','客服经理':'#f59e0b','客服主管':'#6366f1','项目伙伴':'#ec4899'};
+      var c = clrs[r] || '#94a3b8';
+      return '<div style="display:flex;align-items:center;gap:10px;">'
+        +'<span style="width:72px;font-size:12px;color:#64748b;flex-shrink:0;">'+r+'</span>'
+        +'<div style="flex:1;height:16px;background:#f1f5f9;border-radius:8px;overflow:hidden;">'
+          +'<div style="height:100%;width:'+pct+'%;background:'+c+';border-radius:8px;transition:width 0.3s;"></div>'
+        +'</div>'
+        +'<span style="width:30px;font-size:12px;font-weight:600;color:#334155;text-align:right;">'+count+'</span>'
+        +'<span style="width:32px;font-size:11px;color:#94a3b8;text-align:right;">'+pct+'%</span>'
+      +'</div>';
     }).join('')}
+    </div>
   </div>
 
   <!-- 筛选标签 -->
@@ -6671,17 +6995,16 @@ function approveUser(userId, action){
   if (action === "同意") {
     user.status = "已激活";
     user.approvedBy = currentUser ? currentUser.name : "admin";
-    // 新用户默认角色为"新用户"，所有权限只读
     if (!user.role) user.role = "新用户";
     saveUsers();
-    alert(`已同意 ${user.name} 的注册申请，账号已激活。`);
+    showToast('已同意 '+user.name+' 的注册申请，账号已激活', 'success');
   } else if (action === "拒绝") {
     user.status = "已拒绝";
     user.approvedBy = currentUser ? currentUser.name : "admin";
     saveUsers();
-    alert(`已拒绝 ${user.name} 的注册申请。`);
+    showToast('已拒绝 '+user.name+' 的注册申请', 'warning');
   } else if (action === "忽略") {
-    alert(`已忽略 ${user.name} 的注册申请，该申请仍保留在待审核列表中。`);
+    showToast('已忽略 '+user.name+' 的注册申请，仍保留在待审核列表中', 'info');
     return;
   }
   renderModule("notifications");
@@ -6690,7 +7013,7 @@ function approveUser(userId, action){
 function editUserRole(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  const roles = ["客服组长","客服主管","客服经理","客服总监","管理员","项目伙伴","技术伙伴","风控伙伴"];
+  const roles = ROLES; // 统一使用系统权限管理中的角色列表
   const roleOptions = roles.map(r => `<option value="${r}" ${r===user.role?'selected':''}>${r}</option>`).join('');
 
   const modalHtml = `
@@ -6732,7 +7055,7 @@ function confirmEditRole(userId){
   if(newRole && newRole !== user.role){
     user.role = newRole;
     saveUsers();
-    alert(`已修改 ${user.name} 的角色为：${newRole}`);
+    showToast('已修改 '+user.name+' 的角色为：'+newRole, 'success');
     renderModule("notifications");
   }
   closeRoleModal();
@@ -6741,24 +7064,27 @@ function confirmEditRole(userId){
 function resetUserPassword(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  const newPwd = prompt(`重置 ${user.name} 的密码：\n请输入新密码（至少6位）：`);
-  if (newPwd && newPwd.length >= 6) {
-    user.password = newPwd;
-    alert(`已重置 ${user.name} 的密码。`);
-  } else if (newPwd) {
-    alert("密码长度不足6位");
-  }
+  showPromptModal('重置 '+user.name+' 的密码', '请输入新密码（至少6位）：', '', function(newPwd){
+    if (newPwd && newPwd.length >= 6) {
+      user.password = newPwd;
+      saveUsers();
+      showToast('已重置 '+user.name+' 的密码', 'success');
+    } else if (newPwd) {
+      showToast('密码长度不足6位，请重新操作', 'error');
+    }
+  });
 }
 
 function disableUser(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  if (user.role === "超级管理员") { alert("不能禁用超级管理员"); return; }
-  if (confirm(`确定要禁用用户 ${user.name} 吗？`)) {
+  if (user.role === "超级管理员") { showToast('不能禁用超级管理员', 'error'); return; }
+  showConfirmModal('确定要禁用用户 <strong>'+user.name+'</strong> 吗？', '确认禁用', function(){
     user.status = "已禁用";
     saveUsers();
+    showToast('已禁用用户 '+user.name, 'warning');
     renderModule("notifications");
-  }
+  });
 }
 
 function enableUser(userId){
@@ -6772,31 +7098,78 @@ function enableUser(userId){
 function deleteUser(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
-  if (user.role === "超级管理员") { alert("不能删除超级管理员"); return; }
-  if (confirm(`确定要删除用户 ${user.name} 吗？此操作不可恢复。`)) {
+  if (user.role === "超级管理员") { showToast('不能删除超级管理员', 'error'); return; }
+  showConfirmModal('确定要删除用户 <strong>'+user.name+'</strong> 吗？<br><span style="color:#f5222d">此操作不可恢复！</span>', '确认删除', function(){
     const idx = USERS.findIndex(u => u.id === userId);
     if (idx > -1) USERS.splice(idx, 1);
     saveUsers();
+    showToast('已删除用户 '+user.name, 'success');
     renderModule("notifications");
-  }
+  });
 }
 
 function showAddUser(){
-  if (!isAdmin()) { alert("仅管理员可新增用户"); return; }
-  const name = prompt("用户姓名：");
-  if (!name) return;
-  const username = prompt("登录账号：");
-  if (!username || USERS.some(u => u.username === username)) { alert("账号为空或已存在"); return; }
-  const password = prompt("初始密码：");
-  if (!password) return;
-  const role = prompt("角色（客服组长/客服主管/客服经理/客服总监/管理员）：") || "客服组长";
-  const newUser = {
+  if (!isAdmin()) { showToast('仅管理员可新增用户', 'error'); return; }
+  var old = document.getElementById('adduser-modal-overlay');
+  if(old) old.remove();
+  var roleOptions = ROLES.map(function(r){
+    return '<option value="'+r+'">'+r+'</option>';
+  }).join('');
+  var modalHtml = ''
+  +'<div class="modal-overlay" id="adduser-modal-overlay" onclick="if(event.target===this)closeAddUserModal()">'
+    +'<div class="modal-box" style="max-width:380px;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.15);">'
+      +'<div class="modal-header" style="padding:14px 18px;border-bottom:1px solid #f1f5f9;">'
+        +'<div style="font-size:14px;font-weight:600;color:#1e293b;">+ 新增用户</div>'
+        +'<button class="modal-close" onclick="closeAddUserModal()" style="font-size:20px;color:#94a3b8;border:none;background:none;cursor:pointer;">&times;</button>'
+      +'</div>'
+      +'<div class="modal-body" style="padding:18px;">'
+        +'<div style="margin-bottom:12px;">'
+          +'<label style="display:block;font-size:12px;color:#64748b;margin-bottom:4px;">用户姓名 *</label>'
+          +'<input id="adduser-name" type="text" placeholder="请输入姓名" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;outline:none;box-sizing:border-box;">'
+        +'</div>'
+        +'<div style="margin-bottom:12px;">'
+          +'<label style="display:block;font-size:12px;color:#64748b;margin-bottom:4px;">登录账号 *</label>'
+          +'<input id="adduser-username" type="text" placeholder="请输入账号" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;outline:none;box-sizing:border-box;">'
+        +'</div>'
+        +'<div style="margin-bottom:12px;">'
+          +'<label style="display:block;font-size:12px;color:#64748b;margin-bottom:4px;">初始密码 *</label>'
+          +'<input id="adduser-password" type="text" placeholder="请输入密码" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;outline:none;box-sizing:border-box;">'
+        +'</div>'
+        +'<div style="margin-bottom:4px;">'
+          +'<label style="display:block;font-size:12px;color:#64748b;margin-bottom:4px;">角色</label>'
+          +'<select id="adduser-role" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;cursor:pointer;">'
+            +roleOptions
+          +'</select>'
+        +'</div>'
+      +'</div>'
+      +'<div class="modal-footer" style="padding:12px 18px 16px;gap:8px;">'
+        +'<button class="btn" onclick="closeAddUserModal()" style="padding:7px 16px;font-size:12px;border-radius:8px;background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;">取消</button>'
+        +'<button class="btn btn-primary" onclick="confirmAddUser()" style="padding:7px 16px;font-size:12px;border-radius:8px;">确定创建</button>'
+      +'</div>'
+    +'</div>'
+  +'</div>';
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+function closeAddUserModal(){
+  var el = document.getElementById('adduser-modal-overlay');
+  if(el) el.remove();
+}
+function confirmAddUser(){
+  var name = document.getElementById('adduser-name').value.trim();
+  var username = document.getElementById('adduser-username').value.trim();
+  var password = document.getElementById('adduser-password').value.trim();
+  var role = document.getElementById('adduser-role').value;
+  if(!name || !username || !password){ showToast('请填写姓名、账号和密码', 'warning'); return; }
+  if(USERS.some(function(u){ return u.username === username; })){ showToast('账号 "'+username+'" 已存在', 'error'); return; }
+  var newUser = {
     id: "U" + String(USERS.length + 1).padStart(3, "0"),
-    name, username, password, role,
+    name: name, username: username, password: password, role: role,
     status: "已激活", registerTime: new Date().toISOString().slice(0, 10),
     phone: "", email: "", approvedBy: currentUser ? currentUser.name : "admin", remark: ""
   };
   USERS.push(newUser);
+  saveUsers();
+  closeAddUserModal();
   renderModule("notifications");
 }
 
@@ -7038,7 +7411,7 @@ var _renderSystemData = function(){
       tableHtml += '<tr>';
       if(colDefs.showCb) tableHtml += '<td><input type="checkbox" class="sd-row-cb" data-idx="'+idx+'"></td>';
       for(var ci=0; ci<colDefs.keys.length; ci++) tableHtml += '<td>'+(row[colDefs.keys[ci]]!=null?row[colDefs.keys[ci]]:'')+'</td>';
-      if(colDefs.showCb) tableHtml += '<td><button class="btn btn-xs" onclick="editSystemDataRow('+idx+')">编辑</button> <button class="btn btn-xs btn-danger" onclick="deleteSystemDataRow('+idx+')">删除</button></td>';
+      if(colDefs.showCb) tableHtml += '<td><button class="sd-action-btn sd-action-btn-edit" onclick="editSystemDataRow('+idx+')">✏️ 编辑</button><button class="sd-action-btn sd-action-btn-delete" onclick="deleteSystemDataRow('+idx+')">🗑 删除</button></td>';
       tableHtml += '</tr>';
     }
     tableHtml += '</tbody></table>';
@@ -7257,15 +7630,24 @@ function renderPermissions(){
   var html = '\n<style>\n'+
 '.perm-page{font-size:13px;}\n'+
 '.perm-layout{display:flex;gap:16px;align-items:flex-start;}\n'+
-'.perm-roles{width:150px;flex-shrink:0;background:var(--c-card);border-radius:8px;overflow:hidden;border:1px solid var(--c-border);}\n'+
-'.perm-roles-title{font-size:12px;font-weight:600;color:var(--c-text-3);padding:12px 14px 8px;border-bottom:1px solid var(--c-border);}\n'+
-'.perm-role-item{padding:10px 14px;cursor:pointer;font-size:13px;color:var(--c-text-2);border-left:3px solid transparent;transition:all .15s;white-space:nowrap;}\n'+
+'.perm-roles{width:180px;flex-shrink:0;background:var(--c-card);border-radius:8px;overflow:hidden;border:1px solid var(--c-border);}\n'+
+'.perm-roles-title{font-size:12px;font-weight:600;color:var(--c-text-3);padding:12px 14px 8px;border-bottom:1px solid var(--c-border);display:flex;align-items:center;justify-content:space-between;}\n'+
+'.perm-roles-title .add-role-btn{font-size:16px;cursor:pointer;color:#3b82f6;}\n'+
+'.perm-role-item{padding:10px 14px;cursor:pointer;font-size:13px;color:var(--c-text-2);border-left:3px solid transparent;transition:all .15s;white-space:nowrap;display:flex;align-items:center;justify-content:space-between;}\n'+
 '.perm-role-item:hover{background:rgba(59,130,246,.06);color:var(--c-text-1);}\n'+
 '.perm-role-active{background:rgba(59,130,246,.08)!important;color:#2563eb!important;font-weight:600;border-left-color:#2563eb!important;}\n'+
+'.perm-role-name{flex:1;}\n'+
+'.perm-role-actions{display:none;gap:4px;}\n'+
+'.perm-role-item:hover .perm-role-actions{display:flex;}\n'+
+'.perm-role-action-btn{font-size:12px;cursor:pointer;color:#6b7280;}\n'+
+'.perm-role-action-btn:hover{color:#3b82f6;}\n'+
 '.perm-content{flex:1;min-width:0;}\n'+
-'.perm-role-header{font-size:14px;font-weight:600;color:var(--c-text-1);margin-bottom:14px;display:flex;align-items:center;gap:10px;}\n'+
+'.perm-role-header{font-size:14px;font-weight:600;color:var(--c-text-1);margin-bottom:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}\n'+
+'.perm-copy-btn{font-size:12px;padding:4px 10px;background:#f3f4f6;border:1px solid #d1d5db;border-radius:4px;cursor:pointer;color:#374151;}\n'+
+'.perm-copy-btn:hover{background:#e5e7eb;}\n'+
 '.perm-save-hint{font-size:11px;font-weight:400;color:#10b981;opacity:0;transition:opacity .3s;}\n'+
 '.perm-save-hint.show{opacity:1;}\n'+
+'.perm-affected-users{font-size:11px;color:#f59e0b;margin-top:8px;}\n'+
 '.perm-group{margin-bottom:16px;}\n'+
 '.perm-group-label{font-size:12px;font-weight:600;color:var(--c-text-3);padding:6px 0;margin-bottom:6px;border-bottom:1px dashed var(--c-border);text-transform:uppercase;letter-spacing:.5px;}\n'+
 '.perm-mod-row{display:flex;align-items:center;padding:8px 12px;border-radius:6px;background:var(--c-card);border:1px solid var(--c-border);margin-bottom:4px;gap:12px;flex-wrap:wrap;}\n'+
@@ -7274,7 +7656,6 @@ function renderPermissions(){
 '.perm-cb{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:4px;cursor:pointer;font-size:11px;border:1px solid var(--c-border);transition:all .15s;user-select:none;}\n'+
 '.perm-cb-checked{background:#ecfdf5;border-color:#10b981;color:#059669;}\n'+
 '.perm-cb-unchecked{background:transparent;color:var(--c-text-3);}\n'+
-'.perm-cb-disabled{background:#f9fafb;color:#d1d5db;cursor:not-allowed;opacity:.5;}\n'+
 '.perm-cb-box{width:12px;height:12px;border-radius:2px;border:1.5px solid currentColor;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}\n'+
 '.perm-cb-checked .perm-cb-box{background:currentColor;border-color:currentColor;}\n'+
 '.perm-cb-checked .perm-cb-box::after{content:"✓";color:#fff;font-size:8px;font-weight:700;line-height:1;}\n'+
@@ -7302,20 +7683,34 @@ function renderPermissions(){
 '  </div>\n'+
 '  <div class="perm-layout">\n'+
 '    <div class="perm-roles">\n'+
-'      <div class="perm-roles-title">👥 角色列表</div>\n'+
-''+ROLES.map(function(r){var active=r===selRole?' perm-role-active':'';var isMyRole=r===currentRole?' <span style="font-size:10px;color:#10b981;">(我)</span>':'';return'      <div class="perm-role-item'+active+'" onclick="selectPermRole(\''+r+'\')">'+r+isMyRole+'</div>\n';}).join('')+
+'      <div class="perm-roles-title">👥 角色列表 <span class="add-role-btn" onclick="addRole()" title="新增角色">＋</span></div>\n'+
+''+ROLES.map(function(r){
+  var active=r===selRole?' perm-role-active':'';
+  var isMyRole=r===currentRole?' <span style="font-size:10px;color:#10b981;">(我)</span>':'';
+  var isBuiltIn=isBuiltInRole(r);
+  var actions=isBuiltIn?'':('<span class="perm-role-actions">'+
+    '<span class="perm-role-action-btn" onclick="event.stopPropagation();editRole(\''+r+'\')" title="编辑">✏️</span>'+
+    '<span class="perm-role-action-btn" onclick="event.stopPropagation();deleteRole(\''+r+'\')" title="删除">🗑️</span>'+
+    '</span>');
+  return'      <div class="perm-role-item'+active+'" onclick="selectPermRole(\''+r+'\')"><span class="perm-role-name">'+r+isMyRole+'</span>'+actions+'</div>\n';
+}).join('')+
 '    </div>\n'+
 '    <div class="perm-content">\n'+
 '      <div class="perm-role-header">\n'+
 '        当前角色「'+selRole+'」的权限配置\n'+
+'        <button class="perm-copy-btn" onclick="copyPermissionsFrom()">📋 从其他角色复制权限</button>\n'+
 '        <span class="perm-save-hint" id="perm-save-hint">✅ 已保存</span>\n'+
 '      </div>\n'+
+'      <div class="perm-affected-users" id="perm-affected-users"></div>\n'+
 ''+groupOrder.map(function(gid){var grp=MODULE_GROUPS[gid];return'      <div class="perm-group">\n'+
 '        <div class="perm-group-label">'+grp.label+'</div>\n'+
-''+grp.keys.map(function(mk){var mn=MODULE_NAMES[mk];var ma=MODULE_ACTIONS[mk];var mp=selPerms[mk];if(typeof mp==='string'){if(mp==='write')mp={visible:true,view:true,edit:true,import:false,export:true,manage:false,scope:'all'};else if(mp==='read')mp={visible:true,view:true,edit:false,import:false,export:true,manage:false,scope:'all'};else mp={visible:false,view:false,edit:false,import:false,export:false,manage:false,scope:'all'};}return'        <div class="perm-mod-row">\n'+
+''+grp.keys.map(function(mk){var mn=MODULE_NAMES[mk];var ma=MODULE_ACTIONS[mk];var mp=selPerms[mk];if(typeof mp==='string'){if(mp==='write')mp={visible:true,view:true,edit:true,import:false,export:true,manage:false,scope:'all'};else if(mp==='read')mp={visible:true,view:true,edit:false,import:false,export:true,manage:false,scope:'all'};else mp={visible:false,view:false,edit:false,import:false,export:false,manage:false,scope:'all'};}
+// 只显示支持的操作选项（隐藏不支持的）
+var applicableActions=actKeys.filter(function(ak){return ma[ak]===1;});
+return'        <div class="perm-mod-row">\n'+
 '          <div class="perm-mod-name">'+mn+'</div>\n'+
 '          <div class="perm-mod-actions">\n'+
-''+actKeys.map(function(ak){var applic=ma[ak]===1;var checked=mp[ak]===true;var disabled=!applic?' disabled':'';var cls=applic?(checked?'perm-cb-checked':'perm-cb-unchecked'):'perm-cb-disabled';return'            <label class="perm-cb '+cls+'" title="'+actLabels[ak]+'"><input type="checkbox"'+disabled+(checked?' checked':'')+' onchange="togglePermAction(\''+selRole+'\',\''+mk+'\',\''+ak+'\',this.checked)" style="display:none;"><span class="perm-cb-box"></span><span class="perm-cb-label">'+actLabels[ak]+'</span></label>\n';}).join('')+
+''+applicableActions.map(function(ak){var checked=mp[ak]===true;var cls=checked?'perm-cb-checked':'perm-cb-unchecked';return'            <label class="perm-cb '+cls+'" title="'+actLabels[ak]+'"><input type="checkbox" '+(checked?' checked':'')+' onchange="togglePermAction(\''+selRole+'\',\''+mk+'\',\''+ak+'\',this.checked)" style="display:none;"><span class="perm-cb-box"></span><span class="perm-cb-label">'+actLabels[ak]+'</span></label>\n';}).join('')+
 '          </div>\n'+
 ''+(ma.scope===1?'          <div class="perm-mod-scope">\n'+
 '            <span class="perm-scope-label">数据范围：</span>\n'+
@@ -7791,6 +8186,11 @@ function savePermissions() {
 function selectPermRole(role) {
   window._permSelectedRole = role;
   renderModule("permissions");
+  
+  // 延迟执行，等待渲染完成
+  setTimeout(function() {
+    updateAffectedUsers(role);
+  }, 100);
 }
 
 // 切换某个操作的勾选状态
@@ -7821,6 +8221,9 @@ function togglePermAction(role, module, action, checked) {
   savePermissions();
   var hint = document.getElementById('perm-save-hint');
   if (hint) { hint.classList.add('show'); setTimeout(function(){ hint.classList.remove('show'); }, 2000); }
+  
+  // 显示受影响的用户数
+  updateAffectedUsers(role);
 }
 
 // 切换数据范围（全部/仅自己）
@@ -7856,12 +8259,12 @@ function importPermissions() {
         var data = JSON.parse(e.target.result);
         var valid = true;
         ROLES.forEach(function(r) { if (!data[r]) valid = false; });
-        if (!valid) { alert("配置文件格式不正确，缺少部分角色数据"); return; }
+        if (!valid) { showToast("配置文件格式不正确，缺少部分角色数据", "error"); return; }
         rolePermissions = data;
         savePermissions();
         renderModule("permissions");
-        alert("权限配置导入成功！");
-      } catch(ex) { alert("文件解析失败：" + ex.message); }
+        showToast("权限配置导入成功！", "success");
+      } catch(ex) { showToast("文件解析失败：" + ex.message, "error"); }
     };
     reader.readAsText(file);
   };
@@ -7870,24 +8273,279 @@ function importPermissions() {
 
 // 恢复默认权限
 function resetPermissions() {
-  if (confirm("确定要恢复默认权限配置吗？当前自定义配置将丢失。")) {
+  showConfirmModal("确定要恢复默认权限配置吗？<br><br>当前自定义配置将丢失。", "确认恢复", function() {
     rolePermissions = JSON.parse(JSON.stringify(DEFAULT_PERMISSIONS));
     savePermissions();
     renderModule("permissions");
-    alert("已恢复默认权限配置");
-  }
+    showToast("已恢复默认权限配置", "success");
+  });
 }
 
 // 导出权限配置
 function exportPermissions() {
   var json = JSON.stringify(rolePermissions, null, 2);
+  // 复制到剪贴板（作为备用）
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(json).catch(function(){});
+  }
+  // 触发浏览器下载（这个会弹出浏览器原生下载对话框，无法避免）
   var blob = new Blob([json], {type:"application/json"});
   var url = URL.createObjectURL(blob);
   var a = document.createElement("a");
   a.href = url; a.download = "chansee_permissions.json";
   a.click();
   URL.revokeObjectURL(url);
+  // 显示提示
+  showToast("权限配置文件已开始下载（chansee_permissions.json），同时已复制到剪贴板", "success");
 }
+
+// ===== 角色管理功能 =====
+
+// 新增角色
+function addRole() {
+  showPromptModal("新增角色", "请输入新角色名称：", "", function(roleName) {
+    if (!roleName || roleName.trim() === "") {
+      showToast("角色名称不能为空！", "error");
+      return;
+    }
+    roleName = roleName.trim();
+    
+    // 检查角色是否已存在
+    if (ROLES.indexOf(roleName) >= 0) {
+      showToast("角色「" + roleName + "」已存在！", "error");
+      return;
+    }
+    
+    // 添加角色
+    ROLES.push(roleName);
+    saveRoles();
+    
+    // 初始化权限（默认使用"项目伙伴"的权限）
+    if (!rolePermissions[roleName]) {
+      rolePermissions[roleName] = JSON.parse(JSON.stringify(rolePermissions["项目伙伴"] || DEFAULT_PERMISSIONS["项目伙伴"]));
+      savePermissions();
+    }
+    
+    // 重新渲染
+    window._permSelectedRole = roleName;
+    renderModule("permissions");
+    showToast("角色「" + roleName + "」已添加成功！", "success");
+  });
+}
+
+// 编辑角色
+function editRole(oldName) {
+  if (isBuiltInRole(oldName)) {
+    showToast("内置角色不能编辑名称！", "error");
+    return;
+  }
+  
+  showPromptModal("编辑角色", "请输入新的角色名称：", oldName, function(newName) {
+    if (!newName || newName.trim() === "") {
+      showToast("角色名称不能为空！", "error");
+      return;
+    }
+    newName = newName.trim();
+    
+    // 检查新名称是否已存在（排除自身）
+    if (newName !== oldName && ROLES.indexOf(newName) >= 0) {
+      showToast("角色「" + newName + "」已存在！", "error");
+      return;
+    }
+    
+    // 更新角色列表
+    var idx = ROLES.indexOf(oldName);
+    if (idx >= 0) {
+      ROLES[idx] = newName;
+      saveRoles();
+      
+      // 更新权限配置
+      if (rolePermissions[oldName]) {
+        rolePermissions[newName] = rolePermissions[oldName];
+        delete rolePermissions[oldName];
+        savePermissions();
+      }
+      
+      // 重新渲染
+      window._permSelectedRole = newName;
+      renderModule("permissions");
+      showToast("角色已重命名为「" + newName + "」！", "success");
+    }
+  });
+}
+
+// 删除角色
+function deleteRole(roleName) {
+  if (isBuiltInRole(roleName)) {
+    showToast("内置角色不能删除！", "error");
+    return;
+  }
+  
+  // 检查是否有用户使用此角色
+  var affectedUsers = [];
+  try {
+    var users = JSON.parse(localStorage.getItem("chansee_users") || "[]");
+    for (var i = 0; i < users.length; i++) {
+      if (users[i].role === roleName) {
+        affectedUsers.push(users[i].username || users[i].name || "未知用户");
+      }
+    }
+  } catch(e) {}
+  
+  var confirmMsg = "确定要删除角色「" + roleName + "」吗？";
+  if (affectedUsers.length > 0) {
+    confirmMsg += "<br><br>⚠️ <strong>警告：</strong>此操作将影响 " + affectedUsers.length + " 个用户：<br>" + affectedUsers.join("、");
+    confirmMsg += "<br><br>这些用户的角色将被设置为<strong>项目伙伴</strong>。";
+  }
+  
+  showConfirmModal(confirmMsg, "确认删除", function() {
+    // 删除角色
+    var idx = ROLES.indexOf(roleName);
+    if (idx >= 0) {
+      ROLES.splice(idx, 1);
+      saveRoles();
+      
+      // 删除权限配置
+      delete rolePermissions[roleName];
+      savePermissions();
+      
+      // 更新受影响的用户
+      if (affectedUsers.length > 0) {
+        try {
+          var users = JSON.parse(localStorage.getItem("chansee_users") || "[]");
+          for (var i = 0; i < users.length; i++) {
+            if (users[i].role === roleName) {
+              users[i].role = "项目伙伴";
+            }
+          }
+          localStorage.setItem("chansee_users", JSON.stringify(users));
+        } catch(e) {}
+      }
+      
+      // 重新渲染
+      window._permSelectedRole = ROLES[0] || "项目伙伴";
+      renderModule("permissions");
+      showToast("角色「" + roleName + "」已删除！", "success");
+    }
+  });
+}
+
+// 从其他角色复制权限
+function copyPermissionsFrom() {
+  var selRole = window._permSelectedRole;
+  if (!selRole) {
+    showToast("请先选择要配置的角色！", "warning");
+    return;
+  }
+  
+  // 排除当前角色
+  var otherRoles = ROLES.filter(function(r) { return r !== selRole; });
+  if (otherRoles.length === 0) {
+    showToast("没有其他角色可以复制！", "warning");
+    return;
+  }
+  
+  // 使用美化选择弹窗
+  showSelectModal("复制权限", "请选择要复制权限的来源角色：", otherRoles, function(sourceRole) {
+    if (!sourceRole) {
+      return;
+    }
+    
+    // 确认复制
+    showConfirmModal("确定要从角色「" + sourceRole + "」复制权限到「" + selRole + "」吗？<br><br>当前「" + selRole + "」的权限配置将被覆盖！", "确认复制", function() {
+      // 复制权限
+      if (rolePermissions[sourceRole]) {
+        rolePermissions[selRole] = JSON.parse(JSON.stringify(rolePermissions[sourceRole]));
+        savePermissions();
+        
+        // 重新渲染
+        renderModule("permissions");
+        showToast("已成功从「" + sourceRole + "」复制权限到「" + selRole + "」！", "success");
+      } else {
+        showToast("来源角色没有权限配置！", "error");
+      }
+    });
+  });
+}
+
+// 显示受影响的用户数
+function updateAffectedUsers(role) {
+  if (!role) return;
+  
+  var affectedUsers = [];
+  try {
+    var users = JSON.parse(localStorage.getItem("chansee_users") || "[]");
+    for (var i = 0; i < users.length; i++) {
+      if (users[i].role === role) {
+        affectedUsers.push(users[i].username || users[i].name || "未知用户");
+      }
+    }
+  } catch(e) {}
+  
+  var hint = document.getElementById("perm-affected-users");
+  if (hint) {
+    if (affectedUsers.length > 0) {
+      hint.innerHTML = "⚠️ 此修改将影响 " + affectedUsers.length + " 个用户：" + affectedUsers.join("、");
+      hint.style.display = "block";
+    } else {
+      hint.innerHTML = "";
+      hint.style.display = "none";
+    }
+  }
+}
+
+// ===== 权限检查辅助函数 =====
+
+// 检查当前用户是否有某个模块的某个操作权限
+function hasPermission(module, action) {
+  if (!currentRole || !rolePermissions[currentRole]) {
+    return false;
+  }
+  var mp = rolePermissions[currentRole][module];
+  if (!mp) return false;
+  return mp[action] === true;
+}
+
+// 检查当前用户是否可见某个模块
+function canViewModule(module) {
+  return hasPermission(module, "visible");
+}
+
+// 根据当前用户角色过滤导航菜单（隐藏无权限的模块）
+function filterNavByPermissions() {
+  // 超级管理员可以看到所有模块
+  if (currentRole === "超级管理员") {
+    // 显示所有导航项
+    document.querySelectorAll('.nav-item').forEach(function(item) {
+      item.style.display = "";
+    });
+    return;
+  }
+  
+  // 其他角色：根据权限隐藏模块
+  MODULE_KEYS.forEach(function(mk) {
+    var navItems = document.querySelectorAll('.nav-item[data-module="' + mk + '"]');
+    var canView = canViewModule(mk);
+    
+    navItems.forEach(function(item) {
+      if (canView) {
+        item.style.display = "";
+      } else {
+        item.style.display = "none";
+      }
+    });
+  });
+  
+  // 如果当前模块不可见，切换到第一个可见的模块
+  if (!canViewModule(currentModule)) {
+    var firstVisibleModule = MODULE_KEYS.find(function(mk) { return canViewModule(mk); });
+    if (firstVisibleModule) {
+      currentModule = firstVisibleModule;
+      renderModule(currentModule);
+    }
+  }
+}
+
 function exportSystemData() {
   var backup = {};
   try {
@@ -8073,15 +8731,15 @@ function renderPerformance() {
   html += `<select id="pf-group" class="fb-select"><option value="all">全部组别</option>${[...new Set(AGENT_PERFORMANCE.map(a=>a.group))].map(g=>`<option value="${g}" ${groupFilter===g?'selected':''}>${g}</option>`).join('')}</select>`;
   html += `</div>`;
 
-  // 操作按钮（右侧对齐）
-  html += `<div style="margin-left:auto;display:flex;gap:8px;align-items:center;">`;
-  html += `<button class="btn btn-sm btn-primary" onclick="renderModule('performance')">🔍 查询</button>`;
+  html += `</div></div>`;
+
+  // 操作按钮行（独立一行）
+  html += `<div class="filter-actions-v4" style="display:flex;align-items:center;gap:10px;padding:10px 0;">`;
+  html += `<button class="btn btn-primary" onclick="renderModule('performance')" style="padding:7px 18px;font-size:13px;">🔍 查询</button>`;
   html += `<button class="btn btn-sm" onclick="importPerformance()">📥 导入</button>`;
   html += `<button class="btn btn-sm" onclick="exportPerformance()">📤 导出</button>`;
   html += `<button class="btn btn-sm btn-primary" onclick="addAgentPerformance()">➕ 新增</button>`;
   html += `</div>`;
-
-  html += `</div></div>`;
   
   // 绩效总池概览
   var groups = {};
@@ -8142,8 +8800,8 @@ function renderPerformance() {
   html += `</div></div>`;
   
   // 坐席绩效明细表
-  html += `<div class="card"><div class="card-title">坐席绩效明细（${data.length}人）</div><table class="data-table">`;
-  html += `<thead><tr><th>组别</th><th>项目</th><th>坐席</th><th>类型</th><th>状态</th><th>基数</th><th>销售额</th><th>转化率</th><th>工作量</th><th>解决率</th><th>响应时长</th><th>CSAT</th><th>绩效分数</th><th>瓜分金额</th><th>奖/惩</th><th>最终绩效</th><th>操作</th></tr></thead><tbody>`;
+  html += `<div class="card"><div class="card-title">坐席绩效明细（${data.length}人）</div><div class="table-wrap"><table class="data-table">`;
+  html += `<thead><tr><th style="min-width:60px;">组别</th><th style="min-width:120px;">项目</th><th style="min-width:70px;">坐席</th><th style="min-width:60px;">类型</th><th style="min-width:60px;">状态</th><th style="min-width:70px;">基数</th><th style="min-width:80px;">销售额</th><th style="min-width:70px;">转化率</th><th style="min-width:70px;">工作量</th><th style="min-width:70px;">解决率</th><th style="min-width:80px;">响应时长</th><th style="min-width:60px;">CSAT</th><th style="min-width:80px;">绩效分数</th><th style="min-width:80px;">瓜分金额</th><th style="min-width:120px;">奖/惩</th><th style="min-width:90px;">最终绩效</th><th style="min-width:110px;">操作</th></tr></thead><tbody>`;
   
   data.forEach(a => {
     var p = PROJECTS.find(pp => pp.id === a.projectId);
@@ -8174,7 +8832,7 @@ function renderPerformance() {
     html += `</tr>`;
   });
   
-  html += `</tbody></table></div>`;
+  html += `</tbody></table></div></div>`;
   
   // 计算说明
   html += `<div style="margin-top:16px;padding:12px;background:var(--c-bg);border-radius:8px;font-size:12px;color:var(--c-text-3);line-height:1.8;">`;
@@ -9645,8 +10303,20 @@ function goToModule(module){
 }
 
 function toggleAdvancedFilter() {
-  _advancedFilterOpen = !_advancedFilterOpen;
-  renderModule(currentModule);
+  var el = document.getElementById('filter-row-advanced');
+  if (!el) { setTimeout(function(){ toggleAdvancedFilter(); }, 200); return; }
+  var btn = document.querySelector('.fb-adv-btn');
+  var computedStyle = window.getComputedStyle(el);
+  var isVisible = (el.style.display !== 'none' && el.style.display !== '') ? (el.style.display !== 'none') : (computedStyle.display !== 'none');
+  if (isVisible) {
+    el.style.setProperty('display', 'none', 'important');
+    window._advFilterVisible = false;
+    if(btn){btn.textContent='高级筛选 ▼';btn.className='fb-adv-btn';}
+  } else {
+    el.style.setProperty('display', 'flex', 'important');
+    window._advFilterVisible = true;
+    if(btn){btn.textContent='收起筛选 ▲';btn.className='fb-adv-btn fb-adv-btn-active';}
+  }
 }
 
 function sortArchiveTable(field) {
@@ -9851,8 +10521,20 @@ function goToModule(module){
 }
 
 function toggleAdvancedFilter() {
-  _advancedFilterOpen = !_advancedFilterOpen;
-  renderModule(currentModule);
+  var el = document.getElementById('filter-row-advanced');
+  if (!el) { setTimeout(function(){ toggleAdvancedFilter(); }, 200); return; }
+  var btn = document.querySelector('.fb-adv-btn');
+  var computedStyle = window.getComputedStyle(el);
+  var isVisible = (el.style.display !== 'none' && el.style.display !== '') ? (el.style.display !== 'none') : (computedStyle.display !== 'none');
+  if (isVisible) {
+    el.style.setProperty('display', 'none', 'important');
+    window._advFilterVisible = false;
+    if(btn){btn.textContent='高级筛选 ▼';btn.className='fb-adv-btn';}
+  } else {
+    el.style.setProperty('display', 'flex', 'important');
+    window._advFilterVisible = true;
+    if(btn){btn.textContent='收起筛选 ▲';btn.className='fb-adv-btn fb-adv-btn-active';}
+  }
 }
 
 function sortArchiveTable(field) {

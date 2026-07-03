@@ -8731,15 +8731,15 @@ function renderPerformance() {
   html += `<select id="pf-group" class="fb-select"><option value="all">全部组别</option>${[...new Set(AGENT_PERFORMANCE.map(a=>a.group))].map(g=>`<option value="${g}" ${groupFilter===g?'selected':''}>${g}</option>`).join('')}</select>`;
   html += `</div>`;
 
-  // 操作按钮（右侧对齐）
-  html += `<div style="margin-left:auto;display:flex;gap:8px;align-items:center;">`;
-  html += `<button class="btn btn-sm btn-primary" onclick="renderModule('performance')">🔍 查询</button>`;
+  html += `</div></div>`;
+
+  // 操作按钮行（独立一行）
+  html += `<div class="filter-actions-v4" style="display:flex;align-items:center;gap:10px;padding:10px 0;">`;
+  html += `<button class="btn btn-primary" onclick="renderModule('performance')" style="padding:7px 18px;font-size:13px;">🔍 查询</button>`;
   html += `<button class="btn btn-sm" onclick="importPerformance()">📥 导入</button>`;
   html += `<button class="btn btn-sm" onclick="exportPerformance()">📤 导出</button>`;
   html += `<button class="btn btn-sm btn-primary" onclick="addAgentPerformance()">➕ 新增</button>`;
   html += `</div>`;
-
-  html += `</div></div>`;
   
   // 绩效总池概览
   var groups = {};
@@ -8800,8 +8800,8 @@ function renderPerformance() {
   html += `</div></div>`;
   
   // 坐席绩效明细表
-  html += `<div class="card"><div class="card-title">坐席绩效明细（${data.length}人）</div><table class="data-table">`;
-  html += `<thead><tr><th>组别</th><th>项目</th><th>坐席</th><th>类型</th><th>状态</th><th>基数</th><th>销售额</th><th>转化率</th><th>工作量</th><th>解决率</th><th>响应时长</th><th>CSAT</th><th>绩效分数</th><th>瓜分金额</th><th>奖/惩</th><th>最终绩效</th><th>操作</th></tr></thead><tbody>`;
+  html += `<div class="card"><div class="card-title">坐席绩效明细（${data.length}人）</div><div class="table-wrap"><table class="data-table">`;
+  html += `<thead><tr><th style="min-width:60px;">组别</th><th style="min-width:120px;">项目</th><th style="min-width:70px;">坐席</th><th style="min-width:60px;">类型</th><th style="min-width:60px;">状态</th><th style="min-width:70px;">基数</th><th style="min-width:80px;">销售额</th><th style="min-width:70px;">转化率</th><th style="min-width:70px;">工作量</th><th style="min-width:70px;">解决率</th><th style="min-width:80px;">响应时长</th><th style="min-width:60px;">CSAT</th><th style="min-width:80px;">绩效分数</th><th style="min-width:80px;">瓜分金额</th><th style="min-width:120px;">奖/惩</th><th style="min-width:90px;">最终绩效</th><th style="min-width:110px;">操作</th></tr></thead><tbody>`;
   
   data.forEach(a => {
     var p = PROJECTS.find(pp => pp.id === a.projectId);
@@ -8832,7 +8832,7 @@ function renderPerformance() {
     html += `</tr>`;
   });
   
-  html += `</tbody></table></div>`;
+  html += `</tbody></table></div></div>`;
   
   // 计算说明
   html += `<div style="margin-top:16px;padding:12px;background:var(--c-bg);border-radius:8px;font-size:12px;color:var(--c-text-3);line-height:1.8;">`;

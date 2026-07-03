@@ -1373,15 +1373,6 @@
   background: white !important;
 }
 
-.data-table th {
-  background: linear-gradient(135deg, #185FA5 0%, #4F46E5 100%) !important;
-  color: white !important;
-  padding: 14px 16px !important;
-  font-weight: 600 !important;
-  text-align: left !important;
-  font-size: 13px !important;
-}
-
 .data-table td {
   padding: 12px 16px !important;
   border-bottom: 1px solid #F0F1F3 !important;
@@ -1467,13 +1458,12 @@
 }
 
 .data-table th {
-  padding: 12px 14px !important;
+  padding: 11px 28px 11px 10px !important;
   text-align: left !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   font-size: 12px !important;
   color: #1e293b !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.5px !important;
+  letter-spacing: 0 !important;
   border-bottom: 2px solid rgba(24, 95, 165, 0.15) !important;
   position: relative !important;
   white-space: nowrap !important;
@@ -1491,11 +1481,14 @@
 .data-table th::after {
   content: '↕' !important;
   position: absolute !important;
-  right: 8px !important;
-  opacity: 0.4 !important;
-  font-size: 10px !important;
+  right: 6px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  opacity: 0.3 !important;
+  font-size: 11px !important;
   transition: all 0.2s !important;
-  color: #64748b !important;
+  color: #94a3b8 !important;
+  pointer-events: none !important;
 }
 
 .data-table th:hover::after {
@@ -2761,14 +2754,18 @@
   min-height: 26px !important;
 }
 
+/* 筛选行 — 第二行：5个筛选项+更多按钮，默认隐藏（高优先级覆盖filter-row-v4的display:flex!important）*/
 .filter-row-v4-second {
+  display: none !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 10px 18px !important;
   background: linear-gradient(135deg, rgba(11,155,150,0.04) 0%, rgba(59,130,246,0.03) 50%, rgba(139,92,246,0.02) 100%) !important;
   border-style: solid !important;
+  border-width: 1px !important;
   border-color: rgba(11,155,150,0.15) !important;
-  display: none !important;
-}
-.filter-row-v4-second.filter-row-visible {
-  display: flex !important;
+  border-radius: 14px !important;
+  width: 75% !important;
 }
 
 .fb-divider {
@@ -2816,6 +2813,20 @@
   outline: none !important;
 }
 
+/* 操作按钮行 */
+.filter-actions-v4 {
+  margin-bottom: 8px !important;
+}
+.filter-actions-v4 .btn {
+  padding: 7px 18px !important;
+  font-size: 13px !important;
+  border-radius: 8px !important;
+}
+.filter-actions-v4 .btn-sm {
+  padding: 5px 14px !important;
+  font-size: 12.5px !important;
+}
+
 /* 日期输入 */
 .fb-date {
   padding: 4px 8px !important;
@@ -2832,17 +2843,21 @@
   margin-left: 4px !important;
 }
 
-/* 搜索下拉包裹 */
+/* 搜索下拉包裹 — 第二行用flex:1均匀铺开 */
 .fb-search-wrap {
   position: relative !important;
-  display: inline-flex !important;
-  flex-shrink: 0 !important;
+  display: flex !important;
+  flex: 1 !important;
+  min-width: 0 !important;
 }
 
 /* 搜索触发按钮 — 极光色调 */
 .fb-search-trigger {
-  display: inline-flex !important;
+  display: flex !important;
   align-items: center !important;
+  flex: 1 !important;
+  width: 100% !important;
+  min-width: 0 !important;
   gap: 6px !important;
   padding: 7px 28px 7px 12px !important;
   font-size: 13px !important;
@@ -3101,6 +3116,18 @@
   flex-shrink: 0 !important;
 }
 
+/* 第二行"更多"文字 — 纯装饰，对齐第一行"高级筛选" */
+.fb-more-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 7px 14px !important;
+  font-size: 13px !important;
+  color: #94a3b8 !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  margin-left: auto !important;
+}
+
 /* 高级筛选展开状态 */
 .fb-adv-btn-active {
   border-color: rgba(11,155,150,0.6) !important;
@@ -3129,13 +3156,7 @@
   max-width: 240px !important;
   min-width: 80px !important;
 }
-/* 高级筛选面板（第二行）默认隐藏 */
-.filter-row-v4-advanced {
-  display: none !important;
-}
-.filter-row-v4-advanced.show {
-  display: flex !important;
-}
+/* 高级筛选面板显隐由JS通过style.display直接控制 */
 
 /* ===== 导入对话框样式 ===== */
 #import-drop-zone:hover {
@@ -4393,57 +4414,19 @@
   display: flex;
   flex-direction: column;
 }
-.sd-card-inner::before {
-  content: '';
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
-  opacity: 0.1;
-}
-.sd-card-inner::after {
-  content: '';
-  position: absolute;
-  bottom: -30px;
-  left: -30px;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  opacity: 0.06;
-}
 
-/* 卡片配色 */
-.sd-card-clr1::before { background: #0B9B96; }
-.sd-card-clr1::after { background: #0B9B96; }
-.sd-card-clr1 .sd-card-icon { background: linear-gradient(135deg, rgba(11,155,150,0.15), rgba(11,155,150,0.05)); color: #0B9B96; }
-.sd-card-clr1 .sd-card-count { background: rgba(11,155,150,0.1); color: #0B9B96; }
-.sd-card-clr1 .sd-card-inner { background: linear-gradient(160deg, rgba(11,155,150,0.03) 0%, #fff 40%); }
-
-.sd-card-clr2::before { background: #3B82F6; }
-.sd-card-clr2::after { background: #3B82F6; }
-.sd-card-clr2 .sd-card-icon { background: linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05)); color: #3B82F6; }
-.sd-card-clr2 .sd-card-count { background: rgba(59,130,246,0.1); color: #3B82F6; }
-.sd-card-clr2 .sd-card-inner { background: linear-gradient(160deg, rgba(59,130,246,0.03) 0%, #fff 40%); }
-
-.sd-card-clr3::before { background: #8B5CF6; }
-.sd-card-clr3::after { background: #8B5CF6; }
-.sd-card-clr3 .sd-card-icon { background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05)); color: #8B5CF6; }
-.sd-card-clr3 .sd-card-count { background: rgba(139,92,246,0.1); color: #8B5CF6; }
-.sd-card-clr3 .sd-card-inner { background: linear-gradient(160deg, rgba(139,92,246,0.03) 0%, #fff 40%); }
-
-/* 卡片图标 */
+/* 卡片图标 — 改进为圆角渐变色背景 */
 .sd-card-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 48px;
   height: 48px;
-  font-size: 22px;
-  border-radius: 12px;
+  font-size: 24px;
+  border-radius: 14px;
   margin-bottom: 14px;
   font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 /* 卡片标题 */
@@ -4471,6 +4454,137 @@
   color: #9ca3af;
   line-height: 1.6;
   flex: 1;
+}
+
+/* ========================================
+   系统数据管理 - 表格美化
+   ======================================== */
+
+/* 数据表格 */
+.sysdata-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+/* 表头 */
+.sysdata-table thead {
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%);
+  color: #fff;
+}
+.sysdata-table thead th {
+  padding: 11px 14px;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: left;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  border: none;
+}
+.sysdata-table thead th:first-child {
+  border-radius: 12px 0 0 0;
+}
+.sysdata-table thead th:last-child {
+  border-radius: 0 12px 0 0;
+}
+
+/* 数据行 */
+.sysdata-table tbody tr {
+  background: #fff;
+  transition: background 0.15s ease;
+}
+.sysdata-table tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+.sysdata-table tbody tr:hover {
+  background: linear-gradient(135deg, rgba(11,155,150,0.04) 0%, rgba(59,130,246,0.03) 100%);
+}
+
+/* 单元格 */
+.sysdata-table tbody td {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+.sysdata-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* 操作列 — 文字链接式按钮 */
+.sd-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+.sd-action-btn-edit {
+  color: #3b82f6;
+}
+.sd-action-btn-edit:hover {
+  background: rgba(59,130,246,0.1);
+}
+.sd-action-btn-delete {
+  color: #ef4444;
+}
+.sd-action-btn-delete:hover {
+  background: rgba(239,68,68,0.1);
+}
+
+/* 顶部操作栏按钮 */
+.module-actions .btn {
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  padding: 6px 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.15s ease !important;
+}
+.module-actions .btn-primary {
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%) !important;
+  border: none !important;
+  color: #fff !important;
+}
+.module-actions .btn-danger {
+  color: #ef4444 !important;
+  border-color: #fca5a5 !important;
+  background: transparent !important;
+}
+.module-actions .btn-danger:hover {
+  background: rgba(239,68,68,0.08) !important;
+}
+
+/* 搜索输入框统一 */
+#sysdata-search {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 13px !important;
+  transition: all 0.15s ease !important;
+  background: #fff !important;
+}
+#sysdata-search:focus {
+  border-color: #0b9b96 !important;
+  box-shadow: 0 0 0 3px rgba(11,155,150,0.1) !important;
+  outline: none !important;
+}
+
+/* 分页按钮 */
+.sysdata-pagination .btn {
+  border-radius: 6px !important;
+  font-size: 12px !important;
+  padding: 4px 10px !important;
 }
 
 /* ========================================
@@ -4648,3 +4762,179 @@
   100% { transform: translateX(20px) translateY(0px) scaleX(0.8); opacity: 0.2; }
 }
 
+
+
+/* ===== 项目基础档案：列表页美化 ===== */
+
+/* 搜索框 + 按钮组对齐 */
+.module-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+.btn-archive-action {
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 5px 12px !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+.btn-archive-action:hover {
+  opacity: 0.85 !important;
+  box-shadow: 0 2px 8px rgba(11,155,150,0.3) !important;
+}
+.btn-archive-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #e74c3c 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 5px 12px !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  transition: all 0.2s !important;
+}
+.btn-archive-danger:hover {
+  opacity: 0.85 !important;
+  box-shadow: 0 2px 8px rgba(239,68,68,0.3) !important;
+}
+
+/* 项目类型：药丸标签 */
+.archive-tag {
+  display: inline-block !important;
+  padding: 2px 12px !important;
+  border-radius: 99px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+}
+.archive-tag-tp {
+  background: rgba(11,155,150,0.1) !important;
+  color: #0b9b96 !important;
+  border: 1px solid rgba(11,155,150,0.25) !important;
+}
+.archive-tag-dp {
+  background: rgba(59,130,246,0.1) !important;
+  color: #3b82f6 !important;
+  border: 1px solid rgba(59,130,246,0.25) !important;
+}
+.archive-tag-bpo {
+  background: rgba(139,92,246,0.1) !important;
+  color: #8b5cf6 !important;
+  border: 1px solid rgba(139,92,246,0.25) !important;
+}
+
+/* 操作列：文字链接 */
+.archive-link {
+  font-size: 12px !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  margin-right: 8px !important;
+  transition: all 0.15s !important;
+}
+.archive-link-view {
+  color: #3b82f6 !important;
+}
+.archive-link-view:hover {
+  color: #1d4ed !important;
+  text-decoration: underline !important;
+}
+.archive-link-edit {
+  color: #f59e0b !important;
+}
+.archive-link-edit:hover {
+  color: #d97706 !important;
+  text-decoration: underline !important;
+}
+.archive-link-del {
+  color: #ef4444 !important;
+}
+.archive-link-del:hover {
+  color: #dc2626 !important;
+  text-decoration: underline !important;
+}
+
+/* 表头：极光渐变 */
+.archive-table thead tr {
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 50%, #8b5cf6 100%) !important;
+}
+.archive-table thead th {
+  color: #fff !important;
+  border-bottom: none !important;
+  text-align: center !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+.archive-table thead th::after {
+  color: rgba(255,255,255,0.6) !important;
+}
+
+/* 斑马纹 */
+.archive-table tbody tr:nth-child(even) {
+  background: #f8fafc !important;
+}
+.archive-table tbody tr:hover td {
+  background: rgba(59,130,246,0.04) !important;
+}
+
+/* ===== 项目详情弹窗美化 ===== */
+
+/* 关闭按钮X加大 */
+.modal-box .modal-close,
+.modal-box .close-btn,
+.modal-overlay .modal-close {
+  font-size: 20px !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  transition: all 0.2s !important;
+}
+.modal-box .modal-close:hover,
+.modal-box .close-btn:hover {
+  background: rgba(239,68,68,0.1) !important;
+  color: #ef4444 !important;
+}
+
+/* 项目类型标签（详情弹窗内）药丸样式 */
+.project-detail-meta .archive-tag {
+  display: inline-block !important;
+  padding: 2px 10px !important;
+  border-radius: 99px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+/* 状态/健康度彩色条 */
+.project-detail-meta span[style*="color"] {
+  padding: 2px 8px !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+}
+
+/* 历任负责人记录表：斑马纹 */
+.detail-section .data-table tbody tr:nth-child(even) {
+  background: #f8fafc !important;
+}
+.detail-section .data-table {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+.detail-section .data-table th {
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 50%, #8b5cf6 100%) !important;
+  color: #fff !important;
+}
+
+/* 弹窗标题 */
+.modal-title {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
