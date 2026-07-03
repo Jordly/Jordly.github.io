@@ -1,4 +1,4 @@
-// VERSION: 202607031025 - 权限管理弹窗修复：唯一ID+导出优化
+// VERSION: 202607031130 - 权限管理弹窗修复：恢复querySelector版（去掉唯一ID）
 // ===== Mock 数据 =====
 
 // 管理难度评估数据（自动生成）
@@ -137,26 +137,24 @@ function showToast(msg, type) {
 // ===== 自定义确认弹窗（替代原生 confirm）=====
 function showConfirmModal(msg, title, onConfirm, onCancel) {
   title = title || '确认操作';
-  var uid = '_scm_' + Date.now() + '_' + Math.floor(Math.random()*9999);
   var overlay = document.createElement('div');
   overlay.className = 'sd-confirm-overlay';
-  overlay.id = uid + '_overlay';
   overlay.innerHTML = ''
     + '<div class="sd-confirm-box">'
     + '<div class="sd-confirm-header">'+title+'</div>'
     + '<div class="sd-confirm-body">'+msg+'</div>'
     + '<div class="sd-confirm-footer">'
-    + '<button class="sd-confirm-btn sd-confirm-cancel" id="'+uid+'_cancel">取消</button>'
-    + '<button class="sd-confirm-btn sd-confirm-ok" id="'+uid+'_ok">确定</button>'
+    + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
+    + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
     + '</div></div>';
   document.body.appendChild(overlay);
   setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
-  document.getElementById(uid+'_ok').onclick = function(){
+  overlay.querySelector('.sd-confirm-ok').onclick = function(){
     if(onConfirm) onConfirm();
     overlay.classList.remove('sd-confirm-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
-  document.getElementById(uid+'_cancel').onclick = function(){
+  overlay.querySelector('.sd-confirm-cancel').onclick = function(){
     if(onCancel) onCancel();
     overlay.classList.remove('sd-confirm-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
@@ -168,34 +166,31 @@ function showConfirmModal(msg, title, onConfirm, onCancel) {
 
 // ===== 自定义输入弹窗（替代原生 prompt）=====
 function showPromptModal(title, label, defaultValue, onConfirm) {
-  // 使用唯一ID避免多次调用时冲突
-  var uid = '_spm_' + Date.now() + '_' + Math.floor(Math.random()*9999);
   var overlay = document.createElement('div');
   overlay.className = 'sd-prompt-overlay';
-  overlay.id = uid + '_overlay';
   overlay.innerHTML = ''
     + '<div class="sd-prompt-box">'
-    + '<div class="sd-prompt-header">'+title+' <button class="sd-prompt-close" id="'+uid+'_close">&times;</button></div>'
-    + '<div class="sd-prompt-body"><label>'+label+'</label><input type="text" class="sd-prompt-input" id="'+uid+'_input" value="'+(defaultValue||'').replace(/"/g,'&quot;')+'"></div>'
+    + '<div class="sd-prompt-header">'+title+' <button class="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-body"><label>'+label+'</label><input type="text" class="sd-prompt-input" value="'+(defaultValue||'').replace(/"/g,'&quot;')+'"></div>'
     + '<div class="sd-prompt-footer">'
-    + '<button class="sd-confirm-btn sd-confirm-cancel" id="'+uid+'_cancel">取消</button>'
-    + '<button class="sd-confirm-btn sd-confirm-ok" id="'+uid+'_ok">确定</button>'
+    + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
+    + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
     + '</div></div>';
   document.body.appendChild(overlay);
   setTimeout(function(){ overlay.classList.add('sd-prompt-show'); }, 10);
-  var inputEl = document.getElementById(uid+'_input');
+  var inputEl = overlay.querySelector('.sd-prompt-input');
   if(inputEl){ inputEl.focus(); inputEl.select(); }
-  document.getElementById(uid+'_ok').onclick = function(){
+  overlay.querySelector('.sd-confirm-ok').onclick = function(){
     var val = inputEl ? inputEl.value : '';
     if(onConfirm) onConfirm(val);
     overlay.classList.remove('sd-prompt-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
-  document.getElementById(uid+'_cancel').onclick = function(){
+  overlay.querySelector('.sd-confirm-cancel').onclick = function(){
     overlay.classList.remove('sd-prompt-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
-  document.getElementById(uid+'_close').onclick = function(){
+  overlay.querySelector('.sd-prompt-close').onclick = function(){
     overlay.classList.remove('sd-prompt-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
@@ -206,33 +201,31 @@ function showPromptModal(title, label, defaultValue, onConfirm) {
 
 // ===== 自定义选择弹窗（用于选择角色等场景）=====
 function showSelectModal(title, label, options, onConfirm) {
-  var uid = '_ssm_' + Date.now() + '_' + Math.floor(Math.random()*9999);
   var overlay = document.createElement('div');
   overlay.className = 'sd-prompt-overlay';
-  overlay.id = uid + '_overlay';
-
+  
   var optionsHtml = options.map(function(opt, idx) {
     return '<option value="' + opt + '">' + opt + '</option>';
   }).join('');
-
+  
   overlay.innerHTML = ''
     + '<div class="sd-prompt-box">'
-    + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close" id="'+uid+'_close">&times;</button></div>'
-    + '<div class="sd-prompt-body"><label>' + label + '</label><select class="sd-prompt-input" id="'+uid+'_input" style="width:100%;padding:8px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;">'
+    + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-body"><label>' + label + '</label><select class="sd-prompt-input" style="width:100%;padding:8px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;">'
     + '<option value="">-- 请选择 --</option>'
     + optionsHtml
     + '</select></div>'
     + '<div class="sd-prompt-footer">'
-    + '<button class="sd-confirm-btn sd-confirm-cancel" id="'+uid+'_cancel">取消</button>'
-    + '<button class="sd-confirm-btn sd-confirm-ok" id="'+uid+'_ok">确定</button>'
+    + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
+    + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
     + '</div></div>';
   document.body.appendChild(overlay);
   setTimeout(function(){ overlay.classList.add('sd-prompt-show'); }, 10);
-
-  var selectEl = document.getElementById(uid+'_input');
+  
+  var selectEl = overlay.querySelector('.sd-prompt-input');
   if(selectEl){ selectEl.focus(); }
-
-  document.getElementById(uid+'_ok').onclick = function(){
+  
+  overlay.querySelector('.sd-confirm-ok').onclick = function(){
     var val = selectEl ? selectEl.value : '';
     if(!val) {
       showToast('请选择一个角色', 'warning');
@@ -242,17 +235,17 @@ function showSelectModal(title, label, options, onConfirm) {
     overlay.classList.remove('sd-prompt-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
-
-  document.getElementById(uid+'_cancel').onclick = function(){
+  
+  overlay.querySelector('.sd-confirm-cancel').onclick = function(){
     overlay.classList.remove('sd-prompt-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
-
-  document.getElementById(uid+'_close').onclick = function(){
+  
+  overlay.querySelector('.sd-prompt-close').onclick = function(){
     overlay.classList.remove('sd-prompt-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
   };
-
+  
   overlay.onclick = function(e){
     if(e.target === this){ overlay.classList.remove('sd-prompt-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
   };
