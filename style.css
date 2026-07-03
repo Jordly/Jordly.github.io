@@ -2488,17 +2488,18 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   padding-right: 36px;
 }
 
-/* ===== 按钮区：更大更精致 ===== */
+/* ===== 按钮区：宽松布局 ===== */
 .sd-confirm-footer {
-  padding: 18px 24px 22px; display: flex; gap: 12px; justify-content: flex-end;
+  padding: 18px 28px 22px; display: flex; gap: 22px; justify-content: flex-end;
 }
 .sd-confirm-btn {
-  padding: 9px 24px; font-size: 13.5px; font-weight: 500; border-radius: 9px;
+  font-size: 13.5px; font-weight: 500; border-radius: 9px;
   border: none; cursor: pointer; transition: all 0.2s ease;
   letter-spacing: 0.3px;
 }
 .sd-confirm-cancel {
   background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;
+  padding: 9px 22px;
 }
 .sd-confirm-cancel:hover {
   background: #f1f5f9; border-color: #d1d5db;
@@ -2508,6 +2509,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   background: linear-gradient(135deg,#0b9b96 0%,#3b82f6 100%);
   color: #fff; font-weight: 600;
   box-shadow: 0 2px 8px rgba(11,155,150,0.25);
+  padding: 10px 32px;
 }
 .sd-confirm-ok:hover {
   background: linear-gradient(135deg,#09a39c 0%,#2563eb 100%);
