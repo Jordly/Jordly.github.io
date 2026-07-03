@@ -2408,56 +2408,109 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   font-weight: 500;
 }
 
-/* ===== 自定义弹窗样式（替代浏览器原生 alert/confirm/prompt）===== */
+/* ===== 自定义弹窗样式（美化版 — 极光质感设计）===== */
 .sd-confirm-overlay, .sd-prompt-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(15,23,42,0.45); z-index: 99999;
+  background: rgba(15,23,42,0.40); z-index: 99999;
+  backdrop-filter: blur(4px);
   display: flex; align-items: center; justify-content: center;
-  opacity: 0; transition: opacity 0.25s ease;
+  opacity: 0; transition: opacity 0.28s ease;
 }
 .sd-confirm-show { opacity: 1; }
 .sd-confirm-box, .sd-prompt-box {
-  background: #fff; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-  width: 380px; max-width: 88vw; overflow: hidden;
-  transform: scale(0.92); transition: transform 0.25s ease;
+  background: #fff; border-radius: 14px;
+  box-shadow:
+    0 25px 60px -12px rgba(0,0,0,0.18),
+    0 8px 20px -8px rgba(0,0,0,0.10);
+  width: 420px; max-width: 90vw; overflow: hidden;
+  transform: scale(0.94) translateY(8px);
+  transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1);
 }
 .sd-confirm-show .sd-confirm-box,
-.sd-confirm-show .sd-prompt-box { transform: scale(1); }
+.sd-confirm-show .sd-prompt-box {
+  transform: scale(1) translateY(0);
+}
+
+/* ===== 标题栏：极光渐变 ===== */
 .sd-confirm-header, .sd-prompt-header {
-  padding: 16px 20px; font-size: 15px; font-weight: 600; color: #1e293b;
-  border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 24px; font-size: 15px; font-weight: 600; color: #fff;
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 50%, #8b5cf6 100%);
+  display: flex; justify-content: space-between; align-items: center;
 }
 .sd-prompt-close {
-  font-size: 22px; color: #94a3b8; background: none; border: none; cursor: pointer; line-height: 1;
+  width: 26px; height: 26px; border-radius: 50%;
+  font-size: 17px; color: rgba(255,255,255,0.85);
+  background: rgba(255,255,255,0.18);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1; transition: all 0.2s;
 }
-.sd-prompt-close:hover { color: #475569; }
+.sd-prompt-close:hover {
+  background: rgba(255,255,255,0.30);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+/* ===== 内容区：宽松布局 ===== */
 .sd-confirm-body {
-  padding: 20px 20px; font-size: 14px; color: #475569; line-height: 1.6;
+  padding: 24px 28px; font-size: 14px; color: #475569; line-height: 1.65;
 }
 .sd-prompt-body {
-  padding: 16px 20px;
+  padding: 22px 28px;
 }
 .sd-prompt-body label {
-  display: block; font-size: 13px; color: #64748b; margin-bottom: 8px;
+  display: block; font-size: 13.5px; color: #475569; margin-bottom: 10px;
+  font-weight: 500;
+}
+
+/* 输入框：浅灰卡片包裹 */
+.sd-prompt-input-wrap {
+  background: #f8fafc; border: 1px solid #f1f5f9;
+  border-radius: 10px; padding: 14px 16px;
 }
 .sd-prompt-input {
-  width: 100%; padding: 10px 14px; font-size: 14px; color: #1e293b;
-  border: 1.5px solid #e2e8f0; border-radius: 8px; outline: none; box-sizing: border-box;
-  transition: border-color 0.2s;
+  width: 100%; padding: 11px 14px; font-size: 14px; color: #1e293b;
+  border: 2px solid #e2e8f0; border-radius: 8px; outline: none;
+  box-sizing: border-box; transition: all 0.25s ease;
+  background: #fff;
 }
-.sd-prompt-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+.sd-prompt-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.12), 0 2px 8px rgba(59,130,246,0.08);
+}
+
+/* 下拉选择框 */
+.sd-prompt-input[type="select"] {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M3 5l3 3 3-3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+/* ===== 按钮区：更大更精致 ===== */
 .sd-confirm-footer {
-  padding: 14px 20px 18px; display: flex; gap: 10px; justify-content: flex-end;
+  padding: 18px 24px 22px; display: flex; gap: 12px; justify-content: flex-end;
 }
 .sd-confirm-btn {
-  padding: 8px 22px; font-size: 13px; font-weight: 500; border-radius: 8px;
-  border: none; cursor: pointer; transition: all 0.2s;
+  padding: 9px 24px; font-size: 13.5px; font-weight: 500; border-radius: 9px;
+  border: none; cursor: pointer; transition: all 0.2s ease;
+  letter-spacing: 0.3px;
 }
 .sd-confirm-cancel {
-  background: #f1f5f9; color: #475569;
+  background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;
 }
-.sd-confirm-cancel:hover { background: #e2e8f0; }
+.sd-confirm-cancel:hover {
+  background: #f1f5f9; border-color: #d1d5db;
+  transform: translateY(-1px);
+}
 .sd-confirm-ok {
-  background: linear-gradient(135deg,#3b82f6,#2563eb); color: #fff;
+  background: linear-gradient(135deg,#0b9b96 0%,#3b82f6 100%);
+  color: #fff; font-weight: 600;
+  box-shadow: 0 2px 8px rgba(11,155,150,0.25);
 }
-.sd-confirm-ok:hover { background: linear-gradient(135deg,#2563eb,#1d4ed8); box-shadow: 0 4px 12px rgba(59,130,246,0.35); }
+.sd-confirm-ok:hover {
+  background: linear-gradient(135deg,#09a39c 0%,#2563eb 100%);
+  box-shadow: 0 4px 16px rgba(11,155,150,0.35), 0 2px 6px rgba(0,0,0,0.06);
+  transform: translateY(-1px);
+}

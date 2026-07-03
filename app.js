@@ -1,4 +1,4 @@
-// VERSION: 202607031145 - 权限管理弹窗修复：CSS类名sd-prompt-show→sd-confirm-show（去掉唯一ID）
+// VERSION: 202607031345 - 权限管理弹窗UI全面美化：极光质感设计
 // ===== Mock 数据 =====
 
 // 管理难度评估数据（自动生成）
@@ -171,7 +171,7 @@ function showPromptModal(title, label, defaultValue, onConfirm) {
   overlay.innerHTML = ''
     + '<div class="sd-prompt-box">'
     + '<div class="sd-prompt-header">'+title+' <button class="sd-prompt-close">&times;</button></div>'
-    + '<div class="sd-prompt-body"><label>'+label+'</label><input type="text" class="sd-prompt-input" value="'+(defaultValue||'').replace(/"/g,'&quot;')+'"></div>'
+    + '<div class="sd-prompt-body"><label>'+label+'</label><div class="sd-prompt-input-wrap"><input type="text" class="sd-prompt-input" value="'+(defaultValue||'').replace(/"/g,'&quot;')+'"></div></div>'
     + '<div class="sd-prompt-footer">'
     + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
     + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
@@ -211,10 +211,10 @@ function showSelectModal(title, label, options, onConfirm) {
   overlay.innerHTML = ''
     + '<div class="sd-prompt-box">'
     + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close">&times;</button></div>'
-    + '<div class="sd-prompt-body"><label>' + label + '</label><select class="sd-prompt-input" style="width:100%;padding:8px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;">'
+    + '<div class="sd-prompt-body"><label>' + label + '</label><div class="sd-prompt-input-wrap"><select class="sd-prompt-input">'
     + '<option value="">-- 请选择 --</option>'
     + optionsHtml
-    + '</select></div>'
+    + '</select></div></div>'
     + '<div class="sd-prompt-footer">'
     + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
     + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
