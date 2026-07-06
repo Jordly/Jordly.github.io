@@ -10088,6 +10088,14 @@ function openDataManager() {
 
 function switchDataTab(tabIdx) {
   window.__dataTab = tabIdx;
+  // 更新标签按钮高亮状态：移除全部btn-primary，给当前按钮加上
+  var tabBtns = document.querySelectorAll('#modal-body > div:first-child button');
+  if (tabBtns && tabBtns.length) {
+    for (var bi = 0; bi < tabBtns.length; bi++) {
+      if (bi === tabIdx) tabBtns[bi].classList.add('btn-primary');
+      else tabBtns[bi].classList.remove('btn-primary');
+    }
+  }
   var html = '';
   if (tabIdx === 0) {
     html += '<table style="width:100%;border-collapse:collapse;"><tr style="background:var(--c-bg-2);"><th style="padding:6px;border:1px solid var(--c-border);">角色</th><th style="padding:6px;border:1px solid var(--c-border);">人数</th><th style="padding:6px;border:1px solid var(--c-border);">占比(%)</th><th style="padding:6px;border:1px solid var(--c-border);">操作</th></tr>';
