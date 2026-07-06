@@ -251,6 +251,38 @@ function showSelectModal(title, label, options, onConfirm) {
   };
 }
 
+// ===== 自定义内容弹窗（支持任意HTML内容，用于复杂编辑场景）=====
+function showCustomModal(title, bodyHtml, onConfirm) {
+  var overlay = document.createElement('div');
+  overlay.className = 'sd-prompt-overlay';
+  overlay.innerHTML = ''
+    + '<div class="sd-prompt-box" style="width:460px;">'
+    + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-body">' + bodyHtml + '</div>'
+    + '<div class="sd-prompt-footer">'
+    + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
+    + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
+    + '</div></div>';
+  document.body.appendChild(overlay);
+  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
+  overlay.querySelector('.sd-confirm-ok').onclick = function(){
+    if(onConfirm) onConfirm();
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.querySelector('.sd-confirm-cancel').onclick = function(){
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.querySelector('.sd-prompt-close').onclick = function(){
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.onclick = function(e){
+    if(e.target === this){ overlay.classList.remove('sd-confirm-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
+  };
+}
+
 // ===== 数据持久化（彻底修复版）=====
 // 安全写入 localStorage（带 quota 处理和用户提示）
 function safeSetItem(key, value) {
@@ -3793,11 +3825,49 @@ function renderCost(){
 // ===== 服务与进度追踪（新版 2026-06-09） =====
 
 // 计算项目健康等级
+// 健康度等级阈值（支持自定义，存localStorage）
+function getHealthLevels() {
+  try {
+    var saved = localStorage.getItem("chansee_health_levels");
+    if (saved) {
+      var p = JSON.parse(saved);
+      if (p && typeof p.excellent === "number" && typeof p.normal === "number" && typeof p.warning === "number") return p;
+    }
+  } catch(e) {}
+  return { excellent: 90, normal: 75, warning: 60 };
+}
+
 function getHealthLevel(score) {
-  if (score >= 90) return { level: "优质健康店", class: "excellent", icon: "🟢" };
-  if (score >= 75) return { level: "平稳常规店", class: "normal", icon: "🟡" };
-  if (score >= 60) return { level: "风险预警店", class: "warning", icon: "🟠" };
+  var lv = getHealthLevels();
+  if (score >= lv.excellent) return { level: "优质健康店", class: "excellent", icon: "🟢" };
+  if (score >= lv.normal) return { level: "平稳常规店", class: "normal", icon: "🟡" };
+  if (score >= lv.warning) return { level: "风险预警店", class: "warning", icon: "🟠" };
   return { level: "高危问题店", class: "danger", icon: "🔴" };
+}
+
+// 编辑健康度等级阈值
+function editHealthLevels() {
+  var lv = getHealthLevels();
+  var html = '<div style="padding:4px 0;">'
+    + '<div style="margin-bottom:14px;font-size:13px;color:#64748b;line-height:1.5;">设置各等级的最低分数，保存后立即生效。</div>'
+    + '<div style="margin-bottom:12px;"><label style="display:block;font-size:13px;color:#334155;margin-bottom:6px;font-weight:500;">🟢 优质健康店 最低分</label><input type="number" id="hl-excellent" value="' + lv.excellent + '" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;"></div>'
+    + '<div style="margin-bottom:12px;"><label style="display:block;font-size:13px;color:#334155;margin-bottom:6px;font-weight:500;">🟡 平稳常规店 最低分</label><input type="number" id="hl-normal" value="' + lv.normal + '" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;"></div>'
+    + '<div style="margin-bottom:12px;"><label style="display:block;font-size:13px;color:#334155;margin-bottom:6px;font-weight:500;">🟠 风险预警店 最低分</label><input type="number" id="hl-warning" value="' + lv.warning + '" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;"></div>'
+    + '<div style="font-size:12px;color:#94a3b8;background:#f8fafc;padding:8px 12px;border-radius:8px;">注：高危问题店为低于风险预警店最低分的区间，无需单独设置。</div>'
+    + '</div>';
+  showCustomModal("编辑健康度等级", html, function() {
+    var e = parseInt(document.getElementById("hl-excellent").value);
+    var n = parseInt(document.getElementById("hl-normal").value);
+    var w = parseInt(document.getElementById("hl-warning").value);
+    if (isNaN(e) || isNaN(n) || isNaN(w) || e <= n || n <= w || w <= 0) {
+      showConfirmModal("分数设置不合理！\n要求：优质 > 平稳 > 风险预警 > 0（例如 90 > 75 > 60）", "设置失败", function(){});
+      return;
+    }
+    localStorage.setItem("chansee_health_levels", JSON.stringify({ excellent: e, normal: n, warning: w }));
+    showConfirmModal("健康度等级已更新！\n页面将立即刷新显示新标准。", "保存成功", function() {
+      if (currentModule === "service") renderModule("service");
+    });
+  });
 }
 
 // 渲染四大卡片概览
@@ -3993,33 +4063,32 @@ function renderHealthScoreTable(projects) {
 function renderHealthLevelDefinition() {
   return `
   <div class="card" style="margin-top:16px;padding:14px 18px;">
-    <div style="font-size:13px;font-weight:500;margin-bottom:8px;">📋 健康度等级定义</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <div style="font-size:13px;font-weight:500;">📋 健康度等级定义</div>
+      <button class="btn btn-sm" onclick="editHealthLevels()" style="padding:4px 12px;font-size:12px;">✏️ 编辑</button>
+    </div>
     <div class="health-level-definition">
       <div class="hld-item excellent">
-        <div class="hld-dot"></div>
         <div class="hld-content">
-          <div class="hld-title">🟢 优质健康店（90-100分）</div>
+          <div class="hld-title">🟢 优质健康店（${getHealthLevels().excellent}-100分）</div>
           <div class="hld-desc">各维度表现优秀，无明显短板，可作为标杆案例推广</div>
         </div>
       </div>
       <div class="hld-item normal">
-        <div class="hld-dot"></div>
         <div class="hld-content">
-          <div class="hld-title">🟡 平稳常规店（75-89分）</div>
+          <div class="hld-title">🟡 平稳常规店（${getHealthLevels().normal}-${getHealthLevels().excellent - 1}分）</div>
           <div class="hld-desc">整体运营平稳，个别维度需关注，建议制定提升计划</div>
         </div>
       </div>
       <div class="hld-item warning">
-        <div class="hld-dot"></div>
         <div class="hld-content">
-          <div class="hld-title">🟠 风险预警店（60-74分）</div>
+          <div class="hld-title">🟠 风险预警店（${getHealthLevels().warning}-${getHealthLevels().normal - 1}分）</div>
           <div class="hld-desc">存在明显问题，需制定改善计划，PM需每周跟进</div>
         </div>
       </div>
       <div class="hld-item danger">
-        <div class="hld-dot"></div>
         <div class="hld-content">
-          <div class="hld-title">🔴 高危问题店（0-59分）</div>
+          <div class="hld-title">🔴 高危问题店（0-${getHealthLevels().warning - 1}分）</div>
           <div class="hld-desc">多项指标不达标，需立即介入整改，建议成立专项小组</div>
         </div>
       </div>
