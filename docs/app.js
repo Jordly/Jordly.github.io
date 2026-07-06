@@ -3735,25 +3735,19 @@ function renderTarget(){
 function renderCost(){
 
   const all = getFilteredProjects();
+  // 真实数据：营收、成本预算来自项目档案（中台），利润率用真实 profitRate 字段
   const totalRevenue = all.reduce((s,p)=>s+(p.revenue||0),0);
   const totalBudget = all.reduce((s,p)=>s+(p.costBudget||0),0);
-  const totalActual = all.reduce((s,p)=>s+Math.round((p.costBudget||0)*(0.9+Math.random()*0.3)),0);
-  const profitRates = all.map(p=>{
-    const ac = Math.round((p.costBudget||0)*(0.9+Math.random()*0.3));
-    return (p.revenue&&p.revenue>0)?((p.revenue-ac)/p.revenue*100):0;
-  });
-  const avgProfit = all.length ? profitRates.reduce((s,v)=>s+v,0)/all.length : 0;
-  const warnCount = all.filter(p=>{
-    const ac = Math.round((p.costBudget||0)*(0.9+Math.random()*0.3));
-    const pr = (p.revenue&&p.revenue>0)?((p.revenue-ac)/p.revenue*100):0;
-    return pr < 5;
-  }).length;
+  // 选项A：实际成本即成本预算（预算即实际）
+  const totalActual = totalBudget;
+  const avgProfit = all.length ? all.reduce((s,p)=>s+(parseFloat(p.profitRate)||0),0)/all.length : 0;
+  const warnCount = all.filter(p=> (parseFloat(p.profitRate)||0) < 5).length;
 
-  // 卡片数据
+  // 卡片数据（极光渐变风格）
   const cards = [
-    { label:'总营收（月度）', value:'¥'+(totalRevenue/10000).toFixed(1)+'万', sub:'', cls:'normal' },
-    { label:'总成本（月度）', value:'¥'+(totalActual/10000).toFixed(1)+'万', sub:'预算内·超支率'+((totalActual-totalBudget)/totalBudget*100||0).toFixed(1)+'%', cls:'normal' },
-    { label:'平均利润率', value:avgProfit.toFixed(1)+'%', sub:'环比+1.2%', cls:'blue' },
+    { label:'总营收（月度）', value:'¥'+(totalRevenue/10000).toFixed(1)+'万', sub: all.length+'个项目合计', cls:'revenue' },
+    { label:'总成本（月度）', value:'¥'+(totalActual/10000).toFixed(1)+'万', sub:'预算内成本', cls:'cost' },
+    { label:'平均利润率', value:avgProfit.toFixed(1)+'%', sub:'基于项目真实利润率', cls:'profit' },
     { label:'预警项目数', value:warnCount+'', sub:warnCount>0?'需立即关注':'全部正常', cls:warnCount>0?'red':'green' }
   ];
 
@@ -3765,14 +3759,20 @@ function renderCost(){
     <div>
 
       <div class="module-title">💰 成本与利润管理</div>
-      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">跟踪项目成本结构与利润情况，利润率低于5%自动预警</div>
+      <div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">数据来源：系统数据管理（中台）项目档案 · 利润率低于5%自动预警</div>
 
+    </div>
+
+    <div class="cost-actions">
+      <button class="btn btn-sm" onclick="exportCost()">📥 导出</button>
+      <button class="btn btn-sm btn-primary" onclick="addCostRecord()">➕ 录入数据</button>
+      <button class="btn btn-sm" onclick="renderModule('cost')">🔄 刷新</button>
     </div>
 
   </div>
 
   <div class="profit-metric-grid">
-    ${cards.map((c,i)=>`
+    ${cards.map((c)=>`
     <div class="profit-metric-card profit-card-${c.cls}">
       <div class="pmc-label">${c.label}</div>
       <div class="pmc-value">${c.value}</div>
@@ -3781,29 +3781,32 @@ function renderCost(){
   </div>
 
   <div class="card">
-    <div style="padding:14px 18px;border-bottom:1px solid var(--c-border-light);font-weight:500;font-size:14px;">📊 项目利润明细</div>
-    <div style="overflow-x:auto;">
-    <table class="data-table profit-table">
-      <thead><tr><th>项目</th><th>营收(万)</th><th>预算成本(万)</th><th>实际成本(万)</th><th>利润率</th><th>预警</th><th>趋势</th></tr></thead>
+    <div class="cost-table-header">
+      <div style="padding:14px 18px;font-weight:500;font-size:14px;">📊 项目利润明细</div>
+      <button class="btn btn-sm btn-primary cost-add-btn" onclick="addCostRecord()">➕ 录入数据</button>
+    </div>
+    <div class="profit-table-wrap">
+    <table class="data-table profit-table profit-table-v2">
+      <thead><tr><th>项目</th><th>营收(万)</th><th>预算成本(万)</th><th>实际成本(万)</th><th>利润率</th><th>预警</th><th>操作</th></tr></thead>
       <tbody>
         ${all.map(p=>{
-          const actualCost = Math.round((p.costBudget||0) * (0.9+Math.random()*0.3));
-          const actualProfit = (p.revenue && p.revenue > 0) ? ((p.revenue - actualCost)/p.revenue*100).toFixed(1) : '0.0';
-          const pr = parseFloat(actualProfit);
+          const pr = parseFloat(p.profitRate||0);
+          const actualCost = p.costBudget||0;
           let rowCls = 'profit-row-normal';
           if (pr < 5) rowCls = 'profit-row-danger';
           else if (pr < 10) rowCls = 'profit-row-warning';
-          let badge = '<span class="profit-badge profit-badge-green">正常</span>';
+          let badge = '<span class="profit-badge profit-badge-green">正常盈利</span>';
           if (pr < 5) badge = '<span class="profit-badge profit-badge-red">利润率过低</span>';
           else if (pr < 10) badge = '<span class="profit-badge profit-badge-yellow">关注</span>';
+          const prColor = pr>=10 ? '#10b981' : (pr<0 ? '#ef4444' : '#f59e0b');
           return `<tr class="${rowCls}">
             <td>${p.name||'未命名'}</td>
             <td>¥${((p.revenue||0)/10000).toFixed(1)}</td>
             <td>¥${((p.costBudget||0)/10000).toFixed(1)}</td>
             <td>¥${(actualCost/10000).toFixed(1)}</td>
-            <td style="color:${pr>=10?'var(--c-green)':pr<0?'var(--c-red)':'var(--c-yellow)'}">${actualProfit}%</td>
+            <td style="color:${prColor};font-weight:600;">${pr.toFixed(1)}%</td>
             <td>${badge}</td>
-            <td class="profit-trend-cell">--</td>
+            <td><button class="btn btn-xs btn-primary" onclick="editCostRecord('${p.id}')">✏️ 编辑</button></td>
           </tr>`;
         }).join('')}
       </tbody>
@@ -3812,11 +3815,59 @@ function renderCost(){
   </div>
 
   <div class="profit-legend">
-    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:var(--c-green)"></span>正常盈利</span>
-    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:var(--c-yellow)"></span>需关注</span>
-    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:var(--c-red)"></span>利润率为负/低于5%</span>
+    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:#10b981"></span>正常盈利（≥10%）</span>
+    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:#f59e0b"></span>需关注（5%-10%）</span>
+    <span class="profit-legend-item"><span class="profit-legend-dot" style="background:#ef4444"></span>利润率过低/为负（<5%）</span>
   </div>`;
 
+}
+
+// 编辑/录入成本与利润数据（写入中台项目档案）
+function editCostRecord(pid){
+  var all = PROJECTS;
+  var selHtml = pid ? '' : '<div style="margin-bottom:14px;"><label style="display:block;font-size:13px;color:#334155;margin-bottom:6px;font-weight:500;">选择项目</label><select id="cc-project" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;">' + all.map(function(p){return '<option value="'+p.id+'" '+(pid===p.id?'selected':'')+'>'+(p.name||p.id)+'</option>';}).join('') + '</select></div>';
+  var target = pid ? all.find(function(p){return p.id===pid;}) : all[0];
+  if(!target){ showConfirmModal('暂无项目数据，请先在系统数据管理录入项目。','提示',function(){}); return; }
+  var body = selHtml
+    + '<div style="margin-bottom:12px;"><label style="display:block;font-size:13px;color:#334155;margin-bottom:6px;font-weight:500;">营收（万）</label><input type="number" id="cc-revenue" value="'+((target.revenue||0)/10000).toFixed(1)+'" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;"></div>'
+    + '<div style="margin-bottom:12px;"><label style="display:block;font-size:13px;color:#334155;margin-bottom:6px;font-weight:500;">成本预算（万）</label><input type="number" id="cc-cost" value="'+((target.costBudget||0)/10000).toFixed(1)+'" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;"></div>'
+    + '<div style="margin-bottom:12px;"><label style="display:block;font-size:13px;color:#334155;margin-bottom:6px;font-weight:500;">利润率（%）</label><input type="number" id="cc-profit" value="'+(target.profitRate!=null?target.profitRate:'')+'" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;"></div>'
+    + '<div style="font-size:12px;color:#94a3b8;background:#f8fafc;padding:8px 12px;border-radius:8px;">修改将同步至「系统数据管理 · 项目数据表」，并自动备份到云端。</div>';
+  showCustomModal('编辑成本与利润数据', body, function(){
+    var pid2 = pid || document.getElementById('cc-project').value;
+    var p = all.find(function(x){return x.id===pid2;});
+    if(!p){ return; }
+    var rev = parseFloat(document.getElementById('cc-revenue').value)*10000;
+    var cost = parseFloat(document.getElementById('cc-cost').value)*10000;
+    var profit = parseFloat(document.getElementById('cc-profit').value);
+    if(isNaN(rev)||isNaN(cost)||isNaN(profit)){ showConfirmModal('请填写有效的数字！','输入有误',function(){}); return; }
+    p.revenue = Math.round(rev);
+    p.costBudget = Math.round(cost);
+    p.profitRate = profit;
+    saveProjects();
+    if(window.CloudBaseSync) window.CloudBaseSync.saveAll();
+    showConfirmModal('保存成功！数据已同步至中台并备份云端。','保存成功',function(){ renderModule('cost'); });
+  });
+}
+function addCostRecord(){ editCostRecord(null); }
+
+// 导出成本与利润数据
+function exportCost(){
+  var all = getFilteredProjects();
+  var rows = [['项目','营收(万)','预算成本(万)','实际成本(万)','利润率(%)','预警状态']];
+  all.forEach(function(p){
+    var pr = parseFloat(p.profitRate||0);
+    var warn = pr<5?'利润率过低':(pr<10?'关注':'正常盈利');
+    rows.push([p.name||'', (p.revenue||0)/10000, (p.costBudget||0)/10000, (p.costBudget||0)/10000, pr, warn]);
+  });
+  var csv = '﻿' + rows.map(function(r){return r.join(',');}).join('\n');
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = '成本与利润数据_'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showConfirmModal('已导出 '+all.length+' 条项目数据（CSV文件）。','导出成功',function(){});
 }
 
 
@@ -7268,6 +7319,9 @@ var SYSTEM_DATA_TABLES = {
       {key:'pm', label:'负责人', type:'text'},
       {key:'status', label:'状态', type:'select', options:['优质健康店','平稳常规店','风险预警店','高危问题店']},
       {key:'health', label:'健康度', type:'text'},
+      {key:'revenue', label:'营收(万)', type:'number'},
+      {key:'costBudget', label:'成本预算(万)', type:'number'},
+      {key:'profitRate', label:'利润率(%)', type:'number'},
       {key:'customerPlatforms', label:'平台', type:'text'}
     ]
   },
@@ -7460,7 +7514,7 @@ var _renderSystemData = function(){
   var pageData = filteredData.slice(startIdx, startIdx + _systemDataPageSize);
 
   var colDefs = {};
-  if(_systemDataTab==='projects') colDefs={headers:['编号','名称','品牌','品类','类型','职场','负责人','状态'],keys:['id','name','brand','category','serviceMode','workplace','pm','status'],showCb:true};
+  if(_systemDataTab==='projects') colDefs={headers:['编号','名称','品牌','品类','类型','职场','负责人','状态','营收(万)','成本预算(万)','利润率(%)'],keys:['id','name','brand','category','serviceMode','workplace','pm','status','revenue','costBudget','profitRate'],showCb:true};
   else if(_systemDataTab==='operations') colDefs={headers:['项目ID','工单量','满意度','响应时间','NPS'],keys:['projectId','ticketVol','csat','responseTime','nps'],showCb:true};
   else if(_systemDataTab==='issues') colDefs={headers:['编号','类别','项目','类型','优先级','责任人','状态'],keys:['id','category','projectName','type','priority','assignee','status'],showCb:true};
   else if(_systemDataTab==='knowledge') colDefs={headers:['ID','标题','类型','权限','浏览'],keys:['id','title','type','permission','views'],showCb:true};

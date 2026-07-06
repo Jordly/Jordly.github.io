@@ -3519,19 +3519,33 @@
   box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 
-/* 普通卡片（总营收、总成本） */
-.profit-card-normal::before { background: var(--c-border-light); }
-.profit-card-normal .pmc-value { color: var(--c-text); }
-
-/* 蓝色卡片（平均利润率） */
-.profit-card-blue {
-  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-  border: 1px solid #93c5fd;
+/* 极光渐变卡片（总营收 / 总成本 / 平均利润率 / 预警） */
+.profit-card-revenue {
+  background: linear-gradient(135deg, #ecfeff 0%, #eff6ff 100%);
+  border: 1px solid #bae6fd;
 }
-.profit-card-blue::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
-.profit-card-blue .pmc-label { color: #1e40af; }
-.profit-card-blue .pmc-value { color: #1e40af; }
-.profit-card-blue .pmc-sub { color: #2563eb; }
+.profit-card-revenue::before { background: linear-gradient(90deg, #0b9b96, #3b82f6); }
+.profit-card-revenue .pmc-label { color: #0f766e; }
+.profit-card-revenue .pmc-value { color: #0f766e; }
+.profit-card-revenue .pmc-sub { color: #0d9488; }
+
+.profit-card-cost {
+  background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%);
+  border: 1px solid #c4b5fd;
+}
+.profit-card-cost::before { background: linear-gradient(90deg, #3b82f6, #8b5cf6); }
+.profit-card-cost .pmc-label { color: #4338ca; }
+.profit-card-cost .pmc-value { color: #4338ca; }
+.profit-card-cost .pmc-sub { color: #6366f1; }
+
+.profit-card-profit {
+  background: linear-gradient(135deg, #f5f3ff 0%, #ecfeff 100%);
+  border: 1px solid #a5b4fc;
+}
+.profit-card-profit::before { background: linear-gradient(90deg, #8b5cf6, #0b9b96); }
+.profit-card-profit .pmc-label { color: #6d28d9; }
+.profit-card-profit .pmc-value { color: #6d28d9; }
+.profit-card-profit .pmc-sub { color: #7c3aed; }
 
 /* 绿色卡片（预警项目数为0时） */
 .profit-card-green {
@@ -3601,20 +3615,20 @@
 }
 
 .profit-badge-green {
-  background: #dcfce7;
-  color: #166534;
-  border: 1px solid #bbf7d0;
+  background: #d1fae5;
+  color: #047857;
+  border: 1px solid #6ee7b7;
 }
 
 .profit-badge-yellow {
-  background: #fef9c3;
-  color: #854d0e;
-  border: 1px solid #fde047;
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fcd34d;
 }
 
 .profit-badge-red {
   background: #fee2e2;
-  color: #991b1b;
+  color: #b91c1c;
   border: 1px solid #fca5a5;
 }
 
@@ -3647,6 +3661,78 @@
   height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
+}
+
+/* ===== 成本与利润管理 - 交互区与表格美化 ===== */
+.cost-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.cost-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--c-border-light);
+}
+
+.cost-add-btn {
+  margin-right: 16px;
+}
+
+/* 小号按钮 */
+.btn-xs {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+.btn-xs.btn-primary {
+  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%);
+  color: #fff;
+  border: none;
+}
+.btn-xs.btn-primary:hover {
+  box-shadow: 0 4px 12px rgba(59,130,246,0.3);
+  transform: translateY(-1px);
+}
+
+/* 利润表横向滚动容器 */
+.profit-table-wrap {
+  overflow-x: auto;
+}
+
+/* 利润表头美化（极光底线 + 浅灰渐变） */
+.profit-table-v2 thead th {
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  color: #334155;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  padding: 12px 14px;
+  border-bottom: 2px solid #e2e8f0;
+  position: relative;
+}
+.profit-table-v2 thead th::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: linear-gradient(90deg, #0b9b96 0%, #3b82f6 50%, #8b5cf6 100%);
+}
+.profit-table-v2 tbody td {
+  padding: 11px 14px;
+  white-space: nowrap;
+  font-size: 13px;
 }
 
 /* ===== 问题与课题协作 - 页面头部 ===== */
