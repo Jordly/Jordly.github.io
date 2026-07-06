@@ -3681,6 +3681,23 @@
   margin-right: 16px;
 }
 
+/* 利润明细-编辑按钮：轻量文字链接，不喧宾夺主 */
+.cost-edit-link {
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  font-size: 12.5px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  border-radius: 5px;
+}
+.cost-edit-link:hover {
+  color: #3b82f6;
+  background: rgba(59,130,246,0.08);
+  text-decoration: underline;
+}
+
 /* 小号按钮 */
 .btn-xs {
   padding: 4px 10px;
@@ -3717,7 +3734,7 @@
   letter-spacing: 0.3px;
   white-space: nowrap;
   padding: 12px 14px;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: none;
   position: relative;
 }
 .profit-table-v2 thead th::after {

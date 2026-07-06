@@ -3780,10 +3780,9 @@ function renderCost(){
     </div>`).join('')}
   </div>
 
-  <div class="card">
+    <div class="card">
     <div class="cost-table-header">
       <div style="padding:14px 18px;font-weight:500;font-size:14px;">📊 项目利润明细</div>
-      <button class="btn btn-sm btn-primary cost-add-btn" onclick="addCostRecord()">➕ 录入数据</button>
     </div>
     <div class="profit-table-wrap">
     <table class="data-table profit-table profit-table-v2">
@@ -3806,7 +3805,7 @@ function renderCost(){
             <td>¥${(actualCost/10000).toFixed(1)}</td>
             <td style="color:${prColor};font-weight:600;">${pr.toFixed(1)}%</td>
             <td>${badge}</td>
-            <td><button class="btn btn-xs btn-primary" onclick="editCostRecord('${p.id}')">✏️ 编辑</button></td>
+            <td><button class="cost-edit-link" onclick="editCostRecord('${p.id}')">✏️ 编辑</button></td>
           </tr>`;
         }).join('')}
       </tbody>
