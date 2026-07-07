@@ -4419,7 +4419,7 @@ function renderKnowledge(){
     </div>
     <div class="kyp-search-box">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input type="search" class="kyp-search-input" id="kyp-search-field" name="kyp_search_query" placeholder="搜索知识标题、标签、内容..." autocomplete="nope" spellcheck="false" oninput="kypSearch(this.value)">
+      <input type="text" class="kyp-search-input" id="kyp-search-field" name="kyp_search_query" placeholder="搜索知识标题、标签、内容..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" oninput="kypSearch(this.value)">
     </div>
   </div>
 
@@ -4514,40 +4514,52 @@ function kypFilterByTag(tag) {
   if (input) { input.value = tag; kypSearch(tag); }
 }
 
-// ===== 知识卡片拖拽排序 =====
+// ===== 知识卡片拖拽排序（DOM 直接移动，所见即所得）=====
 var kypDragSrcId = null;
 function kypDragStart(e) {
   var card = e.currentTarget;
   kypDragSrcId = parseInt(card.dataset.id);
-  card.style.opacity = '0.4';
+  card.classList.add('kyp-dragging');
   e.dataTransfer.effectAllowed = 'move';
   try { e.dataTransfer.setData('text/plain', String(kypDragSrcId)); } catch(err){}
 }
 function kypDragEnd(e) {
-  e.target.style.opacity = '';
-  document.querySelectorAll('.kyp-card').forEach(function(c){ c.classList.remove('kyp-drag-over'); });
+  document.querySelectorAll('.kyp-dragging, .kyp-drag-over').forEach(function(c){
+    c.classList.remove('kyp-dragging', 'kyp-drag-over');
+  });
 }
 function kypDragOver(e) {
   e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
+  if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
   var card = e.target.closest ? e.target.closest('.kyp-card') : null;
   if (!card) return;
-  document.querySelectorAll('.kyp-card').forEach(function(c){ c.classList.remove('kyp-drag-over'); });
+  document.querySelectorAll('.kyp-drag-over').forEach(function(c){ if (c !== card) c.classList.remove('kyp-drag-over'); });
   card.classList.add('kyp-drag-over');
 }
 function kypDrop(e) {
   e.preventDefault();
-  var targetCard = (e.target.closest ? e.target.closest('.kyp-card') : null) || document.querySelector('.kyp-drag-over');
-  if (!targetCard || !kypDragSrcId) return;
-  var targetId = parseInt(targetCard.dataset.id);
-  if (kypDragSrcId === targetId) return;
-  var srcIdx = KNOWLEDGE.findIndex(function(k){ return k.id === kypDragSrcId; });
-  var tgtIdx = KNOWLEDGE.findIndex(function(k){ return k.id === targetId; });
-  if (srcIdx < 0 || tgtIdx < 0) return;
-  var moved = KNOWLEDGE.splice(srcIdx, 1)[0];
-  KNOWLEDGE.splice(tgtIdx, 0, moved);
+  var grid = document.getElementById('kyp-grid');
+  if (!grid) return;
+  var src = grid.querySelector('.kyp-dragging');
+  var over = grid.querySelector('.kyp-drag-over') || (e.target.closest ? e.target.closest('.kyp-card') : null);
+  if (!src || !over || src === over) {
+    kypDragEnd(e);
+    return;
+  }
+  var rect = over.getBoundingClientRect();
+  var after = e.clientY > rect.top + rect.height / 2;
+  if (after) over.parentNode.insertBefore(src, over.nextSibling);
+  else over.parentNode.insertBefore(src, over);
+  // 由 DOM 顺序反推 KNOWLEDGE 数组顺序并保存
+  var ids = Array.prototype.map.call(grid.querySelectorAll('.kyp-card'), function(c){ return parseInt(c.dataset.id); });
+  KNOWLEDGE.sort(function(a, b){ return ids.indexOf(a.id) - ids.indexOf(b.id); });
   saveKnowledge();
-  renderModule('knowledge');
+  kypDragEnd(e);
+}
+function kypDragCleanup() {
+  document.querySelectorAll('.kyp-dragging, .kyp-drag-over').forEach(function(c){
+    c.classList.remove('kyp-dragging', 'kyp-drag-over');
+  });
 }
 
 // ===== 知识详情弹窗（替代原生 alert）=====

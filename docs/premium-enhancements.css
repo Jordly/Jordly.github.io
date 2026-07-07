@@ -4287,6 +4287,10 @@
   box-shadow: 0 0 0 2px #185FA5, 0 8px 24px rgba(24,95,165,0.2) !important;
   transform: scale(1.02) !important;
 }
+.kyp-card.kyp-dragging {
+  opacity: 0.45;
+  cursor: grabbing;
+}
 .kyp-card-top {
   display: flex;
   justify-content: space-between;
