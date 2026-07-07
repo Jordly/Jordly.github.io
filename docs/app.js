@@ -4421,14 +4421,6 @@ function renderKnowledge(){
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
       <input type="text" class="kyp-search-input" placeholder="搜索知识标题、标签、内容..." autocomplete="off" oninput="kypSearch(this.value)">
     </div>
-    <div class="kyp-legend">
-      <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#185FA5;"></i>SOP</span>
-      <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#A32D2D;"></i>风控</span>
-      <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#3B6D11;"></i>成本</span>
-      <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#854F0B;"></i>话术</span>
-      <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#7C3AED;"></i>AI</span>
-      <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#666;"></i>培训</span>
-    </div>
   </div>
 
   <div class="kyp-layout">
