@@ -4514,58 +4514,153 @@ function kypFilterByTag(tag) {
   if (input) { input.value = tag; kypSearch(tag); }
 }
 
-// ===== 知识卡片拖拽排序（鼠标事件实现，不依赖 HTML5 draggable）=====
-var kypMouse = { down:false, id:null, sx:0, sy:0, moved:false };
+// ===== 知识卡片拖拽排序（iOS 长按重排：长按进入拖拽，拖动时其他卡片实时让位，松手落位）=====
+var kypDrag = {
+  timer: null, card: null, sx: 0, sy: 0, started: false,
+  floatEl: null, placeholder: null, grid: null, offX: 0, offY: 0, suppressClick: false
+};
 function kypCardMouseDown(e, id) {
   if (e.button !== 0) return;
-  kypMouse.down = true;
-  kypMouse.id = id;
-  kypMouse.sx = e.clientX;
-  kypMouse.sy = e.clientY;
-  kypMouse.moved = false;
-  document.addEventListener('mousemove', kypCardMouseMove);
-  document.addEventListener('mouseup', kypCardMouseUp);
+  kypDrag.card = e.currentTarget;
+  kypDrag.sx = e.clientX;
+  kypDrag.sy = e.clientY;
+  kypDrag.started = false;
+  kypDrag.timer = setTimeout(function(){ kypStartDrag(); }, 450);
+  document.addEventListener('mousemove', kypDocMove);
+  document.addEventListener('mouseup', kypDocUp);
 }
-function kypCardMouseMove(e) {
-  if (!kypMouse.down) return;
-  var dx = e.clientX - kypMouse.sx, dy = e.clientY - kypMouse.sy;
-  if (!kypMouse.moved && Math.sqrt(dx*dx + dy*dy) > 5) kypMouse.moved = true;
-  if (!kypMouse.moved) return;
-  var srcCard = document.querySelector('.kyp-card[data-id="' + kypMouse.id + '"]');
-  if (srcCard) srcCard.classList.add('kyp-dragging');
-  var el = document.elementFromPoint(e.clientX, e.clientY);
-  var over = el ? el.closest('.kyp-card') : null;
-  document.querySelectorAll('.kyp-drag-over').forEach(function(c){ c.classList.remove('kyp-drag-over'); });
-  if (over && parseInt(over.dataset.id) !== kypMouse.id) over.classList.add('kyp-drag-over');
+function kypDocMove(e) {
+  if (!kypDrag.card) return;
+  if (!kypDrag.started) {
+    if (Math.abs(e.clientX - kypDrag.sx) > 8 || Math.abs(e.clientY - kypDrag.sy) > 8) {
+      // 长按前已移动 => 取消长按，视为普通点击
+      clearTimeout(kypDrag.timer);
+      kypEndListeners();
+      kypDrag.card = null;
+    }
+    return;
+  }
+  e.preventDefault();
+  kypMoveDrag(e);
 }
-function kypCardMouseUp(e) {
-  document.removeEventListener('mousemove', kypCardMouseMove);
-  document.removeEventListener('mouseup', kypCardMouseUp);
-  if (!kypMouse.down) return;
-  kypMouse.down = false;
-  if (kypMouse.moved) {
-    var src = document.querySelector('.kyp-card[data-id="' + kypMouse.id + '"]');
-    var over = document.querySelector('.kyp-drag-over');
-    if (src && over && src !== over) {
-      var rect = over.getBoundingClientRect();
-      var after = e.clientY > rect.top + rect.height / 2;
-      if (after) over.parentNode.insertBefore(src, over.nextSibling);
-      else over.parentNode.insertBefore(src, over);
-      var grid = document.getElementById('kyp-grid');
-      var ids = Array.prototype.map.call(grid.querySelectorAll('.kyp-card'), function(c){ return parseInt(c.dataset.id); });
-      KNOWLEDGE.sort(function(a, b){ return ids.indexOf(a.id) - ids.indexOf(b.id); });
-      saveKnowledge();
+function kypDocUp(e) {
+  clearTimeout(kypDrag.timer);
+  kypEndListeners();
+  if (kypDrag.started) kypFinishDrag();
+  kypDrag.card = null;
+}
+function kypEndListeners() {
+  document.removeEventListener('mousemove', kypDocMove);
+  document.removeEventListener('mouseup', kypDocUp);
+}
+function kypStartDrag() {
+  var card = kypDrag.card;
+  if (!card) return;
+  kypDrag.started = true;
+  var rect = card.getBoundingClientRect();
+  kypDrag.offX = kypDrag.sx - rect.left;
+  kypDrag.offY = kypDrag.sy - rect.top;
+  kypDrag.grid = document.getElementById('kyp-grid');
+  var ph = document.createElement('div');
+  ph.className = 'kyp-drag-placeholder';
+  ph.style.width = rect.width + 'px';
+  ph.style.height = rect.height + 'px';
+  card.parentNode.insertBefore(ph, card);
+  kypDrag.placeholder = ph;
+  card.classList.add('kyp-drag-lift');
+  card.style.position = 'fixed';
+  card.style.width = rect.width + 'px';
+  card.style.height = rect.height + 'px';
+  card.style.left = rect.left + 'px';
+  card.style.top = rect.top + 'px';
+  card.style.margin = '0';
+  card.style.zIndex = '9999';
+  card.style.transition = 'none';
+  kypDrag.floatEl = card;
+  document.body.style.cursor = 'grabbing';
+  kypPositionFloat(kypDrag.sx, kypDrag.sy);
+}
+function kypPositionFloat(x, y) {
+  if (!kypDrag.floatEl) return;
+  kypDrag.floatEl.style.left = (x - kypDrag.offX) + 'px';
+  kypDrag.floatEl.style.top = (y - kypDrag.offY) + 'px';
+}
+function kypMoveDrag(e) {
+  kypPositionFloat(e.clientX, e.clientY);
+  var grid = kypDrag.grid;
+  var ph = kypDrag.placeholder;
+  if (!grid || !ph) return;
+  var cards = Array.prototype.slice.call(grid.querySelectorAll('.kyp-card:not(.kyp-drag-lift)'));
+  var ref = null;
+  for (var i = 0; i < cards.length; i++) {
+    var r = cards[i].getBoundingClientRect();
+    var cy = r.top + r.height / 2;
+    var cx = r.left + r.width / 2;
+    if (e.clientY < cy || (Math.abs(e.clientY - cy) < r.height / 2 && e.clientX < cx)) {
+      ref = cards[i];
+      break;
     }
   }
-  document.querySelectorAll('.kyp-dragging, .kyp-drag-over').forEach(function(c){
-    c.classList.remove('kyp-dragging', 'kyp-drag-over');
+  if (ref) {
+    if (ph !== ref && ph.nextSibling !== ref) kypFlip(grid, function(){ grid.insertBefore(ph, ref); });
+  } else {
+    if (ph !== grid.lastChild) kypFlip(grid, function(){ grid.appendChild(ph); });
+  }
+}
+function kypFlip(container, mutate) {
+  var children = Array.prototype.slice.call(container.children);
+  var first = {};
+  children.forEach(function(c){ if (c.classList.contains('kyp-card')) first[c.dataset.id] = c.getBoundingClientRect(); });
+  mutate();
+  var after = Array.prototype.slice.call(container.children);
+  after.forEach(function(c){
+    if (!c.classList.contains('kyp-card')) return;
+    var f = first[c.dataset.id];
+    if (!f) return;
+    var l = c.getBoundingClientRect();
+    var dx = f.left - l.left, dy = f.top - l.top;
+    if (dx || dy) {
+      c.style.transition = 'none';
+      c.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+      c.offsetWidth; // 强制回流
+      c.style.transition = 'transform 0.2s ease';
+      c.style.transform = '';
+    }
   });
 }
+function kypFinishDrag() {
+  var card = kypDrag.floatEl;
+  var ph = kypDrag.placeholder;
+  if (card && ph) {
+    card.classList.remove('kyp-drag-lift');
+    card.style.position = '';
+    card.style.left = '';
+    card.style.top = '';
+    card.style.width = '';
+    card.style.height = '';
+    card.style.margin = '';
+    card.style.zIndex = '';
+    card.style.transition = '';
+    card.style.transform = '';
+    ph.parentNode.insertBefore(card, ph);
+    ph.remove();
+  }
+  document.body.style.cursor = '';
+  if (kypDrag.grid) {
+    var ids = Array.prototype.map.call(kypDrag.grid.querySelectorAll('.kyp-card'), function(c){ return parseInt(c.dataset.id); });
+    KNOWLEDGE.sort(function(a, b){ return ids.indexOf(a.id) - ids.indexOf(b.id); });
+    saveKnowledge();
+  }
+  kypDrag.suppressClick = true;
+  kypDrag.started = false;
+  kypDrag.floatEl = null;
+  kypDrag.placeholder = null;
+}
 function kypCardClick(e, id) {
-  if (kypMouse.moved) {
+  if (kypDrag.suppressClick) {
+    kypDrag.suppressClick = false;
     e.preventDefault();
     e.stopPropagation();
-    kypMouse.moved = false;
     return;
   }
   showKnowledgeDetail(id);
