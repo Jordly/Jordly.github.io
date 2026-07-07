@@ -4244,15 +4244,24 @@
 .kyp-card {
   background: var(--c-bg-1, #fff);
   border-radius: 12px;
-  border: 0.5px solid var(--c-border-3, #e0e0e0);
+  border: 0.5px solid var(--c-border-4, #f0f0f0);
+  border-left: 3px solid #ccc;
   padding: 16px;
   cursor: pointer;
   transition: all 0.2s;
 }
+/* 左侧色条 + 浅底：按分类着色 */
+.kyp-card[data-type='SOP流程优化'] { border-left-color: #185FA5; background: #f8fbff; }
+.kyp-card[data-type='风控应急预案'] { border-left-color: #A32D2D; background: #fff9f9; }
+.kyp-card[data-type='成本目标控制'] { border-left-color: #3B6D11; background: #f9fdf5; }
+.kyp-card[data-type='优秀话术萃取'] { border-left-color: #854F0B; background: #fefcf5; }
+.kyp-card[data-type='AI提效赋能'] { border-left-color: #7C3AED; background: #faf8ff; }
+.kyp-card[data-type='培训材料'] { border-left-color: #888; background: #fafafa; }
+
 .kyp-card:hover {
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   transform: translateY(-2px);
-  border-color: var(--c-border-2, #bbb);
+  border-color: var(--c-border-3, #e0e0e0);
 }
 .kyp-card-top {
   display: flex;
