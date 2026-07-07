@@ -9624,7 +9624,7 @@ function renderRisk(){
   // 进入页面先从项目数据重新聚合一次，确保实时
   recomputeRiskAlerts();
 
-  let html = `<div class="page-header"><h2>⚠️ 项目风险预警池</h2>
+  let html = `<div class="page-header risk-header"><h2>⚠️ 项目风险预警池</h2>
     <div class="risk-actions">
       <button class="btn" onclick="renderRisk()">🔄 刷新</button>
       <button class="btn btn-sm" onclick="acknowledgeAllRisk()">🔔 全部已读</button>

@@ -5182,6 +5182,13 @@
 }
 
 /* ===== 项目风险预警池 · 头部按钮区与说明条 ===== */
+.risk-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
 .risk-actions {
   display: flex;
   gap: 8px;
