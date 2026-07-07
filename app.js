@@ -4517,10 +4517,11 @@ function kypFilterByTag(tag) {
 // ===== 知识卡片拖拽排序 =====
 var kypDragSrcId = null;
 function kypDragStart(e) {
-  kypDragSrcId = parseInt(e.target.dataset.id);
-  e.target.style.opacity = '0.4';
+  var card = e.currentTarget;
+  kypDragSrcId = parseInt(card.dataset.id);
+  card.style.opacity = '0.4';
   e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/plain', kypDragSrcId);
+  try { e.dataTransfer.setData('text/plain', String(kypDragSrcId)); } catch(err){}
 }
 function kypDragEnd(e) {
   e.target.style.opacity = '';
@@ -4536,7 +4537,7 @@ function kypDragOver(e) {
 }
 function kypDrop(e) {
   e.preventDefault();
-  var targetCard = e.target.closest ? e.target.closest('.kyp-card') : null;
+  var targetCard = (e.target.closest ? e.target.closest('.kyp-card') : null) || document.querySelector('.kyp-drag-over');
   if (!targetCard || !kypDragSrcId) return;
   var targetId = parseInt(targetCard.dataset.id);
   if (kypDragSrcId === targetId) return;
