@@ -4317,33 +4317,29 @@
   color: var(--c-text-2, #666);
 }
 
-/* 卡片描述 */
-.kyp-card-desc {
+/* 卡片简短摘要（1行截断） */
+.kyp-card-short {
   font-size: 13px;
   color: var(--c-text-2, #666);
   margin-bottom: 10px;
   line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* 卡片标签 */
-.kyp-card-tags {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
+/* 卡片标签（详情弹窗内使用，可点击筛选） */
 .kyp-tag-sm {
-  padding: 1px 7px;
+  padding: 3px 9px;
   border-radius: 6px;
-  font-size: 10px;
+  font-size: 11px;
   background: var(--c-bg-2, #f5f5f5);
   color: var(--c-text-2, #666);
   border: 0.5px solid var(--c-border-4, #eee);
+  cursor: pointer;
+  transition: all 0.15s;
 }
+.kyp-tag-sm:hover { background: #E6F1FB; color: #185FA5; border-color: #185FA5; }
 
 /* 卡片底部 */
 .kyp-card-footer {
@@ -5027,4 +5023,104 @@
   background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 100%);
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
+}
+
+/* ===== 核心知识能量池 · 详情弹窗 ===== */
+.kyp-detail-overlay .kyp-detail-box { max-width: 560px; }
+.kyp-detail-header {
+  position: relative;
+  padding: 20px 24px 16px;
+  border-bottom: 0.5px solid var(--c-border-4, #f0f0f0);
+}
+.kyp-detail-head-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.kyp-detail-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--c-text-1, #1a1a1a);
+  line-height: 1.4;
+  padding-right: 28px;
+}
+.kyp-detail-close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--c-text-3, #999);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.kyp-detail-close:hover { color: #A32D2D; }
+.kyp-detail-body {
+  padding: 18px 24px;
+  max-height: 55vh;
+  overflow-y: auto;
+}
+.kyp-detail-desc {
+  font-size: 14px;
+  color: var(--c-text-2, #555);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+.kyp-detail-tags-label {
+  font-size: 12px;
+  color: var(--c-text-3, #999);
+  margin-bottom: 6px;
+}
+.kyp-detail-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.kyp-detail-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--c-text-3, #999);
+  padding-top: 12px;
+  border-top: 0.5px solid var(--c-border-4, #f0f0f0);
+  margin-top: 4px;
+}
+.kyp-del-btn {
+  color: #A32D2D !important;
+  border-color: #F0C9C9 !important;
+}
+.kyp-del-btn:hover { background: #FCEBEB !important; }
+
+/* ===== 核心知识能量池 · 新增/编辑表单 ===== */
+.kyp-form-box { max-width: 560px; }
+.kyp-form-row {
+  display: flex;
+  gap: 12px;
+}
+.kyp-form-row > div { flex: 1; min-width: 0; }
+.kyp-form-box label {
+  font-size: 12px;
+  display: block;
+  margin-bottom: 3px;
+  margin-top: 10px;
+  color: var(--c-text-2, #555);
+}
+.kyp-form-box .sd-prompt-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--c-border-3, #e0e0e0);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--c-text-1, #1a1a1a);
+  background: var(--c-bg-1, #fff);
+  outline: none;
+  box-sizing: border-box;
+}
+.kyp-form-box .sd-prompt-input:focus {
+  border-color: #185FA5;
+  box-shadow: 0 0 0 3px rgba(24,95,165,0.1);
 }

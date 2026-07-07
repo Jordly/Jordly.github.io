@@ -85,23 +85,26 @@ var DEFAULT_RISK_ALERTS = [
 var RISK_ALERTS = [];
 
 
+// 知识种子数据版本：版本号变化时会用新默认数据重置（仅当本地仍是旧默认）
+var KNOWLEDGE_SEED_VERSION = '2026-07-manager';
+
 var DEFAULT_KNOWLEDGE = [
 
-  {id:1, title:"美妆大促客服标准话术SOP", type:"SOP流程优化", tags:"美妆,大促,SOP,话术", scope:"通用", permission:"公开", createdAt:"2025-11-20", updateTime:"2026-06-08", views:328, downloads:56, description:"双11大促期间美妆类目的客服应对标准流程，包含快速回复话术、退换货处理、投诉升级路径等核心内容。"},
+  {id:1, title:"团队人力成本优化模型", type:"成本目标控制", category:"成本控制", tags:"人力成本,排班,降本,模型", scope:"通用", permission:"公开", createdAt:"2026-05-12", updateTime:"2026-07-01", views:286, downloads:52, description:"面向管理者的人力成本优化方法论：通过排班模型、技能矩阵、多项目人力共享池三大抓手，在不影响服务质量的前提下系统性降低人力成本率。", short:"人力成本率系统性优化方法论"},
 
-  {id:2, title:"差评应急处理流程（含模板）", type:"风控应急预案", tags:"差评,应急,模板", scope:"通用", permission:"公开", createdAt:"2026-01-15", updateTime:"2026-06-05", views:256, downloads:43, description:"差评出现后的标准应急处理流程，包含分类型差评回复模板、内部升级机制、数据复盘等环节。"},
+  {id:2, title:"AI客服工具选型与落地指南", type:"AI提效赋能", category:"效率提升", tags:"AI,工具选型,落地,提效", scope:"通用", permission:"公开", createdAt:"2026-03-10", updateTime:"2026-07-02", views:341, downloads:88, description:"管理者视角的AI客服工具评估框架：从选型维度、试点路径、人机协同边界到ROI测算，提供一套可复制的AI提效落地打法，避免盲目上工具。", short:"AI工具选型与落地ROI测算框架"},
 
-  {id:3, title:"AI智能回复配置指南 v2.0", type:"AI提效赋能", tags:"AI,智能回复,配置", scope:"通用", permission:"公开", createdAt:"2026-03-10", updateTime:"2026-06-03", views:198, downloads:67, description:"AI智能回复系统的配置指南v2.0，包含知识库搭建、回复规则配置、人工兜底策略等全流程指引。"},
+  {id:3, title:"跨项目经验快速复制SOP", type:"SOP流程优化", category:"体系搭建", tags:"经验复制,标准化,知识沉淀", scope:"通用", permission:"公开", createdAt:"2026-02-18", updateTime:"2026-06-28", views:209, downloads:41, description:"把一个项目的优秀做法快速复制到多个项目的管理SOP：包含经验萃取、模板化改造、试点验证、规模推广四步，让好经验不再沉淀在某一个团队。", short:"好经验跨项目复制四步法"},
 
-  {id:4, title:"成本控制目标分解表（Q2）", type:"成本目标控制", tags:"成本,目标,分解,Q2", scope:"全平台", permission:"内部", createdAt:"2026-04-01", updateTime:"2026-06-01", views:145, downloads:28, description:"2026年Q2成本控制目标分解表，包含各项目标成本率、实际执行跟踪、偏差分析等核心数据。"},
+  {id:4, title:"核心人员突发离职应急方案", type:"风控应急预案", category:"风险防控", tags:"人才风险,离职,应急,继任", scope:"通用", permission:"内部", createdAt:"2026-04-22", updateTime:"2026-07-03", views:174, downloads:33, description:"针对主管/核心骨干突然离职的应急响应机制：关键岗位识别、继任者预案、业务交接清单、团队情绪维稳，将人员突变对业务的影响降到最低。", short:"核心骨干突发离职应急响应"},
 
-  {id:5, title:"新客服入职培训手册（2026版）", type:"培训材料", tags:"培训,新人,入职,手册", scope:"通用", permission:"公开", createdAt:"2025-09-01", updateTime:"2026-05-28", views:412, downloads:89, description:"2026版新人客服入职培训手册，涵盖平台规则、产品知识、话术基础、系统操作、异常处理五大模块。"},
+  {id:5, title:"难缠客户升级投诉应对话术", type:"优秀话术萃取", category:"沟通协作", tags:"投诉升级,沟通,话术,危机", scope:"通用", permission:"公开", createdAt:"2026-01-15", updateTime:"2026-06-25", views:378, downloads:71, description:"管理者视角的升级投诉处理框架：从情绪安抚、责任界定、补偿边界到对外口径统一，萃取高层级沟通话术，帮你既保住客户又不突破公司底线。", short:"升级投诉的高层级沟通框架"},
 
-  {id:6, title:"高频客诉问题话术精选", type:"优秀话术萃取", tags:"客诉,话术,精选,高频", scope:"通用", permission:"公开", createdAt:"2026-02-20", updateTime:"2026-05-25", views:367, downloads:72, description:"各项目高频客诉问题的优秀回复话术精选集，覆盖物流、质量、退换货等十大类常见客诉场景。"},
+  {id:6, title:"新任主管30天上手指南", type:"培训材料", category:"团队管理", tags:"新任主管,带团队,角色转换", scope:"通用", permission:"公开", createdAt:"2025-12-01", updateTime:"2026-06-20", views:452, downloads:96, description:"从一线客服到管理者的角色转换手册：前7天熟悉业务、第2周建立信任、第3周搭体系、第4周拿结果，附带1对1面谈模板与周会框架，让新主管少走弯路。", short:"一线到管理的30天转换地图"},
 
-  {id:7, title:"BPO项目人力成本优化方案", type:"成本目标控制", tags:"BPO,人力,成本,优化", scope:"特定品类", permission:"受限", createdAt:"2026-05-10", updateTime:"2026-06-07", views:89, downloads:15, description:"BPO项目人力成本优化方案，包含排班模型优化、技能矩阵提升、多项目共享池等降本增效策略。"},
+  {id:7, title:"BPO项目费效比分析方法", type:"成本目标控制", category:"成本控制", tags:"BPO,费效比,核算,外包", scope:"特定品类", permission:"受限", createdAt:"2026-05-28", updateTime:"2026-07-04", views:131, downloads:24, description:"外包客服项目的费效比核算与分析方法：含单价拆解、隐性成本识别、服务质量与成本的平衡点测算，帮你判断外包究竟比自建便宜还是更贵。", short:"外包客服费效比核算测算"},
 
-  {id:8, title:"大促前系统压测操作指引", type:"风控应急预案", tags:"大促,系统,压测,操作", scope:"通用", permission:"内部", createdAt:"2026-04-15", updateTime:"2026-05-30", views:124, downloads:31, description:"大促前系统压力测试的标准操作指引文档，涵盖压测场景设计、执行步骤、问题记录及修复跟踪。"},
+  {id:8, title:"智能质检提效实践", type:"AI提效赋能", category:"效率提升", tags:"质检,AI,自动化,管理", scope:"通用", permission:"内部", createdAt:"2026-04-08", updateTime:"2026-07-05", views:223, downloads:47, description:"用AI质检替代人工抽检的实践路径：从抽检比例提升到全量质检、问题自动归类、整改闭环追踪，让管理者用更少人力掌握更真实的服务质量全貌。", short:"AI全量质检与整改闭环"}
 
 ];
 var DEFAULT_HANDOVERS = [
@@ -620,10 +623,18 @@ var DATA_PERMISSIONS = [];
 // 初始化 KNOWLEDGE
 (function initKnowledge() {
   var raw = localStorage.getItem('chansee_knowledge');
-  if (raw && raw !== 'null' && raw !== '[]') {
+  var seedVer = localStorage.getItem('chansee_knowledge_seed');
+  // 已有数据且种子版本一致 → 直接用本地数据（保留用户增删改）
+  if (raw && raw !== 'null' && raw !== '[]' && seedVer === KNOWLEDGE_SEED_VERSION) {
+    try {
+      KNOWLEDGE = JSON.parse(raw);
+      return;
+    } catch(e) {}
   }
+  // 否则用最新默认种子重新播种
   KNOWLEDGE = JSON.parse(JSON.stringify(DEFAULT_KNOWLEDGE));
   safeSetItem('chansee_knowledge', JSON.stringify(KNOWLEDGE));
+  safeSetItem('chansee_knowledge_seed', KNOWLEDGE_SEED_VERSION);
 })();
 
 // 初始化 HANDOVERS
@@ -4365,9 +4376,9 @@ function renderKnowledge(){
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
         <h1 class="kyp-title">核心知识能量池</h1>
       </div>
-      <p class="kyp-desc">电商客服团队专属知识库 · 沉淀经验 · 赋能团队</p>
+      <p class="kyp-desc">管理者通用技能知识库 · 团队管理 · 成本控制 · 效率提升</p>
     </div>
-    ${can ? '<div class="kyp-add-btn" onclick="alert(\'添加知识功能开发中\')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>添加知识</div>' : ''}
+    ${can ? '<div class="kyp-add-btn" onclick="addKnowledge()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>添加知识</div>' : ''}
   </div>
 
   <div class="kyp-stats">
@@ -4421,22 +4432,15 @@ function renderKnowledge(){
           <div class="kyp-card" data-type="${k.type}" data-search="${k.title}${k.description}${k.tags}" onclick="showKnowledgeDetail(${k.id})">
             <div class="kyp-card-top">
               <span class="kyp-card-title">${k.title}</span>
-              <div class="kyp-card-actions">
-                ${can ? '<span class="kyp-act" onclick="event.stopPropagation();alert(\'编辑功能开发中\')">✎</span>' : ''}
-                ${can ? '<span class="kyp-act kyp-act-del" onclick="event.stopPropagation();alert(\'删除功能开发中\')">✕</span>' : ''}
-              </div>
+              ${can ? '<div class="kyp-card-actions"><span class="kyp-act" onclick="event.stopPropagation();editKnowledge('+k.id+')">✎</span><span class="kyp-act kyp-act-del" onclick="event.stopPropagation();deleteKnowledge('+k.id+')">✕</span></div>' : ''}
             </div>
             <div class="kyp-card-meta">
               <span class="kyp-type-badge ktp-${k.type}">${k.type}</span>
-              <span class="kyp-scope-badge">${k.scope || '通用'}</span>
-              <span class="kyp-perm-badge">${permIcon[perm] || '🌐'} ${permLabel[perm] || ''}</span>
+              ${k.category ? '<span class="kyp-scope-badge">'+k.category+'</span>' : ''}
             </div>
-            <div class="kyp-card-desc">${k.description || '暂无描述'}</div>
-            <div class="kyp-card-tags">
-              ${(k.tags || '').split(',').filter(t=>t.trim()).map(t => '<span class="kyp-tag-sm">' + t.trim() + '</span>').join('')}
-            </div>
+            <div class="kyp-card-short">${k.short || (k.description || '').slice(0, 24)}</div>
             <div class="kyp-card-footer">
-              <span class="kyp-card-time">📅 更新于 ${k.updateTime || k.createdAt || '-'}</span>
+              <span class="kyp-card-time">📅 ${k.updateTime || k.createdAt || '-'}</span>
               <span class="kyp-card-stats">
                 <span class="kyp-stat-item">👁 ${k.views || 0}</span>
                 <span class="kyp-stat-item">⬇ ${k.downloads || 0}</span>
@@ -4511,14 +4515,164 @@ function renderKnowledge(){
     });
     document.getElementById('kyp-empty').style.display = visible === 0 ? '' : 'none';
   }
-  function showKnowledgeDetail(id) {
-    var k = KNOWLEDGE.find(function(item) { return item.id === id; });
-    if (!k) return;
-    var permIcon = {'\u5f53\u524d':'\ud83c\udf10','\u5185\u90e8':'\ud83d\udd35','\u53d7\u9650':'\ud83d\udd34'};
-    alert('\u3010' + k.title + '\u3011\\n\u5206\u7c7b\uff1a' + k.type + ' ' + (permIcon[k.permission||'\u5f53\u524d']||'') + '\\n\u63cf\u8ff0\uff1a' + (k.description||'\u6682\u65e0') + '\\n\u6d4f\u89c8\u91cf\uff1a' + (k.views||0) + ' \u4e0b\u8f7d\u91cf\uff1a' + (k.downloads||0) + '\\n\u66f4\u65b0\u65f6\u95f4\uff1a' + (k.updateTime||k.createdAt||'-'));
+  function kypFilterByTag(tag) {
+    var input = document.querySelector('.kyp-search-input');
+    if (input) { input.value = tag; kypSearch(tag); }
   }
   <\/script>`;
 
+}
+
+// ===== 知识详情弹窗（替代原生 alert）=====
+function showKnowledgeDetail(id) {
+  var k = KNOWLEDGE.find(function(item) { return item.id === id; });
+  if (!k) return;
+  var permIcon = {'公开':'🌐','内部':'🔵','受限':'🔴'};
+  var perm = k.permission || '公开';
+  // 浏览量 +1
+  k.views = (k.views || 0) + 1;
+  saveKnowledge();
+  var tagHtml = (k.tags || '').split(',').filter(function(t){return t.trim();}).map(function(t){
+    return '<span class="kyp-tag-sm" onclick="kypFilterByTag(\'' + t.trim() + '\');closeKnowledgeDetail();" title="点击按此标签筛选">#' + t.trim() + '</span>';
+  }).join('');
+  var overlay = document.createElement('div');
+  overlay.className = 'sd-confirm-overlay kyp-detail-overlay';
+  overlay.id = 'kyp-detail-overlay';
+  overlay.innerHTML = ''
+    + '<div class="sd-confirm-box kyp-detail-box">'
+    + '<div class="kyp-detail-header">'
+    +   '<div class="kyp-detail-head-top">'
+    +     '<span class="kyp-type-badge ktp-' + (k.type||'') + '">' + (k.type||'未分类') + '</span>'
+    +     (k.category ? '<span class="kyp-scope-badge">' + k.category + '</span>' : '')
+    +     '<span class="kyp-perm-badge">' + (permIcon[perm]||'🌐') + ' ' + perm + '</span>'
+    +   '</div>'
+    +   '<div class="kyp-detail-title">' + (k.title||'') + '</div>'
+    +   '<div class="kyp-detail-close" onclick="closeKnowledgeDetail()">&times;</div>'
+    + '</div>'
+    + '<div class="kyp-detail-body">'
+    +   (k.description ? '<div class="kyp-detail-desc">' + k.description + '</div>' : '')
+    +   (tagHtml ? '<div class="kyp-detail-tags"><div class="kyp-detail-tags-label">标签（点击筛选）：</div>' + tagHtml + '</div>' : '')
+    +   '<div class="kyp-detail-meta">'
+    +     '<span>📅 更新于 ' + (k.updateTime || k.createdAt || '-') + '</span>'
+    +     '<span>👁 ' + (k.views||0) + ' 次浏览</span>'
+    +     '<span>⬇ ' + (k.downloads||0) + ' 次下载</span>'
+    +   '</div>'
+    +   (k.scope ? '<div class="kyp-detail-meta"><span>适用范围：' + k.scope + '</span></div>' : '')
+    + '</div>'
+    + '<div class="sd-confirm-footer">'
+    +   (canEdit() ? '<button class="sd-confirm-btn sd-confirm-cancel" onclick="closeKnowledgeDetail();editKnowledge(' + k.id + ')">✎ 编辑</button>' : '')
+    +   (canEdit() ? '<button class="sd-confirm-btn sd-confirm-cancel kyp-del-btn" onclick="closeKnowledgeDetail();deleteKnowledge(' + k.id + ')">🗑 删除</button>' : '')
+    +   '<button class="sd-confirm-btn sd-confirm-ok" onclick="closeKnowledgeDetail()">关闭</button>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(overlay);
+  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
+  overlay.onclick = function(e){ if(e.target === overlay) closeKnowledgeDetail(); };
+}
+function closeKnowledgeDetail() {
+  var o = document.getElementById('kyp-detail-overlay');
+  if (o) { o.classList.remove('sd-confirm-show'); setTimeout(function(){ if(o.parentNode) o.remove(); }, 300); }
+  // 刷新统计（浏览量可能变化）
+  if (typeof currentModule !== 'undefined' && currentModule === 'knowledge') renderModule('knowledge');
+}
+
+// ===== 新增知识 =====
+function addKnowledge() {
+  showKnowledgeForm(null);
+}
+function editKnowledge(id) {
+  var k = KNOWLEDGE.find(function(item){ return item.id === id; });
+  if (!k) return;
+  showKnowledgeForm(k);
+}
+function deleteKnowledge(id) {
+  showConfirmModal('确定删除该知识条目吗？此操作不可恢复。', '删除知识', function(){
+    KNOWLEDGE = KNOWLEDGE.filter(function(item){ return item.id !== id; });
+    saveKnowledge();
+    renderModule('knowledge');
+    if (typeof showToast === 'function') showToast('已删除知识条目');
+  });
+}
+
+// ===== 知识表单弹窗 =====
+function showKnowledgeForm(record) {
+  var isEdit = !!record;
+  var typeOptions = ['SOP流程优化','风控应急预案','成本目标控制','优秀话术萃取','AI提效赋能','培训材料'];
+  var permOptions = ['公开','内部','受限'];
+  var catOptions = ['团队管理','成本控制','效率提升','风险防控','体系搭建','沟通协作'];
+  var k = record || {};
+  var m = document.getElementById('kyp-form-overlay'); if(m) m.remove();
+  var overlay = document.createElement('div');
+  overlay.className = 'sd-prompt-overlay';
+  overlay.id = 'kyp-form-overlay';
+  function optHtml(arr, val) {
+    return arr.map(function(o){ return '<option value="'+o+'"'+(o===val?' selected':'')+'>'+o+'</option>'; }).join('');
+  }
+  overlay.innerHTML = ''
+    + '<div class="sd-prompt-box kyp-form-box">'
+    + '<div class="sd-prompt-header">' + (isEdit?'编辑知识条目':'新增知识条目') + ' <button class="sd-prompt-close" onclick="document.getElementById(\'kyp-form-overlay\').remove()">&times;</button></div>'
+    + '<div class="sd-prompt-body">'
+    +   '<label>标题</label><div class="sd-prompt-input-wrap"><input type="text" id="kf-title" class="sd-prompt-input" value="'+(k.title||'').replace(/"/g,'&quot;')+'"></div>'
+    +   '<div class="kyp-form-row">'
+    +     '<div><label>分类</label><select id="kf-type" class="sd-prompt-input">'+optHtml(typeOptions, k.type||typeOptions[0])+'</select></div>'
+    +     '<div><label>管理方向</label><select id="kf-category" class="sd-prompt-input">'+optHtml(catOptions, k.category||catOptions[0])+'</select></div>'
+    +   '</div>'
+    +   '<div class="kyp-form-row">'
+    +     '<div><label>权限</label><select id="kf-permission" class="sd-prompt-input">'+optHtml(permOptions, k.permission||'公开')+'</select></div>'
+    +     '<div><label>适用范围</label><input type="text" id="kf-scope" class="sd-prompt-input" value="'+(k.scope||'通用').replace(/"/g,'&quot;')+'"></div>'
+    +   '</div>'
+    +   '<label>简短摘要（卡片显示，建议25字内）</label><div class="sd-prompt-input-wrap"><input type="text" id="kf-short" class="sd-prompt-input" value="'+(k.short||'').replace(/"/g,'&quot;')+'"></div>'
+    +   '<label>完整描述</label><div class="sd-prompt-input-wrap"><textarea id="kf-description" class="sd-prompt-input" style="min-height:80px;">'+(k.description||'')+'</textarea></div>'
+    +   '<label>标签（逗号分隔）</label><div class="sd-prompt-input-wrap"><input type="text" id="kf-tags" class="sd-prompt-input" value="'+(k.tags||'').replace(/"/g,'&quot;')+'"></div>'
+    + '</div>'
+    + '<div class="sd-prompt-footer">'
+    +   '<button class="sd-confirm-btn sd-confirm-cancel" onclick="document.getElementById(\'kyp-form-overlay\').remove()">取消</button>'
+    +   '<button class="sd-confirm-btn sd-confirm-ok" onclick="submitKnowledgeForm(' + (isEdit? k.id : 'null') + ')">保存</button>'
+    + '</div>'
+    + '</div>';
+  document.body.appendChild(overlay);
+  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
+  overlay.onclick = function(e){ if(e.target === overlay) overlay.remove(); };
+}
+function submitKnowledgeForm(id) {
+  var title = document.getElementById('kf-title').value.trim();
+  if (!title) { if(typeof showToast==='function') showToast('标题不能为空'); return; }
+  var now = new Date().toISOString().slice(0,10);
+  if (id == null) {
+    var newId = KNOWLEDGE.reduce(function(m, k){ return Math.max(m, k.id||0); }, 0) + 1;
+    KNOWLEDGE.push({
+      id: newId,
+      title: title,
+      type: document.getElementById('kf-type').value,
+      category: document.getElementById('kf-category').value,
+      permission: document.getElementById('kf-permission').value,
+      scope: document.getElementById('kf-scope').value || '通用',
+      short: document.getElementById('kf-short').value.trim(),
+      description: document.getElementById('kf-description').value.trim(),
+      tags: document.getElementById('kf-tags').value.trim(),
+      createdAt: now,
+      updateTime: now,
+      views: 0,
+      downloads: 0
+    });
+  } else {
+    var k = KNOWLEDGE.find(function(item){ return item.id === id; });
+    if (k) {
+      k.title = title;
+      k.type = document.getElementById('kf-type').value;
+      k.category = document.getElementById('kf-category').value;
+      k.permission = document.getElementById('kf-permission').value;
+      k.scope = document.getElementById('kf-scope').value || '通用';
+      k.short = document.getElementById('kf-short').value.trim();
+      k.description = document.getElementById('kf-description').value.trim();
+      k.tags = document.getElementById('kf-tags').value.trim();
+      k.updateTime = now;
+    }
+  }
+  saveKnowledge();
+  var m = document.getElementById('kyp-form-overlay'); if(m) m.remove();
+  renderModule('knowledge');
+  if (typeof showToast === 'function') showToast(id == null ? '已新增知识条目' : '已保存修改');
 }// ===== 项目承接规范 =====
 
 function renderHandover(){
@@ -7366,13 +7520,18 @@ var SYSTEM_DATA_TABLES = {
   },
   knowledge: {
     label: '\u{1F4DA} 知识条目表',
-    desc: '客服团队的知识沉淀，包含SOP、话术、培训材料等。核心知识能量池页面依赖此表。',
+    desc: '管理者通用技能知识库，包含成本控制、效率提升、团队管理等。核心知识能量池页面依赖此表，两处数据实时同步。',
     data: typeof KNOWLEDGE !== 'undefined' ? KNOWLEDGE : [],
     fields: [
       {key:'id', label:'ID', type:'text', required:true},
       {key:'title', label:'标题', type:'text', required:true},
-      {key:'type', label:'类型', type:'select', options:['SOP','话术','培训材料','案例','其他']},
-      {key:'permission', label:'权限', type:'select', options:['公开','仅PM','仅管理员']},
+      {key:'type', label:'分类', type:'select', options:['SOP流程优化','风控应急预案','成本目标控制','优秀话术萃取','AI提效赋能','培训材料']},
+      {key:'category', label:'管理方向', type:'select', options:['团队管理','成本控制','效率提升','风险防控','体系搭建','沟通协作']},
+      {key:'short', label:'简短摘要', type:'text'},
+      {key:'description', label:'完整描述', type:'textarea'},
+      {key:'tags', label:'标签', type:'text'},
+      {key:'scope', label:'适用范围', type:'text'},
+      {key:'permission', label:'权限', type:'select', options:['公开','内部','受限']},
       {key:'views', label:'浏览量', type:'number'},
       {key:'downloads', label:'下载量', type:'number'},
       {key:'updateTime', label:'更新时间', type:'text'}
@@ -7516,7 +7675,7 @@ var _renderSystemData = function(){
   if(_systemDataTab==='projects') colDefs={headers:['编号','名称','品牌','品类','类型','职场','负责人','状态','营收(万)','成本预算(万)','利润率(%)'],keys:['id','name','brand','category','serviceMode','workplace','pm','status','revenue','costBudget','profitRate'],showCb:true};
   else if(_systemDataTab==='operations') colDefs={headers:['项目ID','工单量','满意度','响应时间','NPS'],keys:['projectId','ticketVol','csat','responseTime','nps'],showCb:true};
   else if(_systemDataTab==='issues') colDefs={headers:['编号','类别','项目','类型','优先级','责任人','状态'],keys:['id','category','projectName','type','priority','assignee','status'],showCb:true};
-  else if(_systemDataTab==='knowledge') colDefs={headers:['ID','标题','类型','权限','浏览'],keys:['id','title','type','permission','views'],showCb:true};
+  else if(_systemDataTab==='knowledge') colDefs={headers:['ID','标题','分类','管理方向','权限','浏览','下载'],keys:['id','title','type','category','permission','views','downloads'],showCb:true,goEnergyPool:true};
   else if(_systemDataTab==='handovers') colDefs={headers:['ID','项目','原负责人','新负责人','日期','状态'],keys:['id','projectName','from','to','date','status'],showCb:true};
   else if(_systemDataTab==='kpi') colDefs={headers:['日期','项目ID','销售额(万)','成本(万)','费效比','目标达成率'],keys:['date','projectId','revenue','cost','profitRate','targetRate'],showCb:true};
   else if(_systemDataTab==='changelog') colDefs={headers:['时间','操作人','表名','记录ID','字段名','旧值','新值'],keys:['changedAt','changedBy','tableName','recordId','fieldName','oldValue','newValue'],showCb:false};
@@ -7565,6 +7724,7 @@ var _renderSystemData = function(){
       +'<button class="btn btn-sm" onclick="backSystemDataCatalog()">← 返回目录</button>'
       +(isLog?'':'<button class="btn btn-primary btn-sm" onclick="addSystemDataRow()">+ 新增</button>')
       +(isLog?'':'<button class="btn btn-sm btn-danger" onclick="batchDeleteSystemData()">批量删除</button>')
+      +(colDefs.goEnergyPool?'<button class="btn btn-sm" onclick="renderModule(\'knowledge\')">📖 在能量池查看</button>':'')
       +'<button class="btn btn-sm" onclick="exportSystemData()">导出</button>'
       +'<button class="btn btn-sm" onclick="importSystemData()">导入</button>'
     +'</div>'
