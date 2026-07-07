@@ -108,15 +108,27 @@ var DEFAULT_KNOWLEDGE = [
 
 ];
 var DEFAULT_HANDOVERS = [
+  {id:1, projectId:"P001", projectName:"美妆旗舰店客服项目", from:"王芳", to:"张伟", date:"2026-03-15", status:"已完成", type:"人员离职", planDate:"2026-03-10",
+   checklist:["基础档案资料","目标与权责","运营现状数据","进行中课题","未关闭问题","特殊注意事项"],
+   keyItems:"完成全部基础档案+目标交接，运营数据已同步；大促备货节奏已交代清楚",
+   pending:"无",
+   summary:"完成全部基础档案+目标交接，运营数据已同步"},
 
-  {id:1, projectId:"P001", projectName:"美妆旗舰店客服项目", from:"王芳", to:"张伟", date:"2026-03-15", status:"已完成", summary:"完成全部基础档案+目标交接，运营数据已同步"},
+  {id:2, projectId:"P003", projectName:"服装品牌客服外包", from:"赵丽", to:"陈静", date:"2025-11-20", status:"已完成", type:"内部调动", planDate:"2025-11-15",
+   checklist:["基础档案资料","目标与权责","运营现状数据","未关闭问题","关键客户/联系人"],
+   keyItems:"BPO特殊成本核算方式已重点交接；外包人员排班表已移交",
+   pending:"外包合同续签需关注（2026-01到期）",
+   summary:"BPO特殊成本核算方式已重点交接"},
 
-  {id:2, projectId:"P003", projectName:"服装品牌客服外包", from:"赵丽", to:"陈静", date:"2025-11-20", status:"已完成", summary:"BPO特殊成本核算方式已重点交接"},
-
-  {id:3, projectId:"P005", projectName:"食品生鲜客服项目", from:"孙磊", to:"刘洋", date:"2026-02-28", status:"已完成", summary:"食品类目的特殊退换货政策已交接"},
+  {id:3, projectId:"P005", projectName:"食品生鲜客服项目", from:"孙磊", to:"刘洋", date:"2026-02-28", status:"已完成", type:"人员离职", planDate:"2026-02-25",
+   checklist:["基础档案资料","运营现状数据","进行中课题","未关闭问题","特殊注意事项"],
+   keyItems:"食品类目的特殊退换货政策已交接；冷链客诉处理SOP已共享",
+   pending:"无",
+   summary:"食品类目的特殊退换货政策已交接"},
 
 ];
 var HANDOVERS = [];
+var handoverFilter = { keyword:'', status:'all' };
 
 
 
@@ -645,10 +657,14 @@ var DATA_PERMISSIONS = [];
   safeSetItem('chansee_knowledge_seed', KNOWLEDGE_SEED_VERSION);
 })();
 
-// 初始化 HANDOVERS
+// 初始化 HANDOVERS —— 有用户数据则加载，无则种子化默认值（修复刷新丢失 bug）
 (function initHandovers() {
   var raw = localStorage.getItem('chansee_handovers');
   if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      var parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) { HANDOVERS = parsed; return; }
+    } catch(e) {}
   }
   HANDOVERS = JSON.parse(JSON.stringify(DEFAULT_HANDOVERS));
   safeSetItem('chansee_handovers', JSON.stringify(HANDOVERS));
@@ -4944,43 +4960,34 @@ function renderHandover(){
   <div class="card">
 
     <div class="card-title">交接记录</div>
-      <div class="detail-tab" onclick="switchDetailTab(this,'responsibility')">📋 责任边界</div>
 
+    <div class="handover-toolbar">
+      <input id="h-search" class="h-search-input" value="${handoverFilter.keyword}" oninput="handoverSetKeyword(this.value)" placeholder="🔍 搜索项目名 / 原负责人 / 接收人">
+      <div class="h-filter-tabs">
+        <span class="h-filter-tab ${handoverFilter.status==='all'?'active':''}" onclick="handoverSetStatus('all',this)">全部</span>
+        <span class="h-filter-tab ${handoverFilter.status==='已完成'?'active':''}" onclick="handoverSetStatus('已完成',this)">已完成</span>
+        <span class="h-filter-tab ${handoverFilter.status==='进行中'?'active':''}" onclick="handoverSetStatus('进行中',this)">进行中</span>
+        <span class="h-filter-tab ${handoverFilter.status==='已取消'?'active':''}" onclick="handoverSetStatus('已取消',this)">已取消</span>
+      </div>
+      <div class="handover-toolbar-actions">
+        <button class="btn btn-sm" onclick="exportHandovers()">📤 导出</button>
+        <button class="btn btn-sm" onclick="renderModule('handover')">🔄 刷新</button>
+      </div>
+    </div>
+
+    <div id="handover-list-wrap">
     <table class="data-table">
 
-      <thead><tr><th>交接编号</th><th>项目</th><th>原负责人</th><th>接收人</th><th>交接日期</th><th>状态</th><th>交接摘要</th><th>操作</th></tr></thead>
+      <thead><tr><th>交接编号</th><th>项目</th><th>交接类型</th><th>原负责人</th><th>接收人</th><th>交接日期</th><th>状态</th><th>交接摘要</th><th>操作</th></tr></thead>
 
       <tbody>
 
-        ${HANDOVERS.map(h=>`
-
-          <tr>
-
-            <td>H${String(h.id).padStart(3,'0')}</td>
-
-            <td>${h.projectName}</td>
-
-            <td>${h.from}</td>
-
-            <td>${h.to}</td>
-
-            <td>${h.date}</td>
-
-            <td><span class="archive-tag archive-tag-dp">${h.status}</span></td>
-
-            <td style="max-width:200px;font-size:12px;">${h.summary}</td>
-
-            <td class="actions">
-
-              <button class="btn btn-sm" onclick="alert('交接详情功能开发中')">查看详情</button>
-
-            </td>
-
-          </tr>`).join('')}
+        ${_renderHandoverRows()}
 
       </tbody>
 
     </table>
+    </div>
 
   </div>
 
@@ -5823,11 +5830,68 @@ function showNewHandover(){
 
     </div>
 
+    <div class="form-row">
+
+      <div class="form-group">
+
+        <label class="form-label">交接类型</label>
+
+        <select class="form-select" id="h-type">
+          <option value="人员离职">人员离职</option>
+          <option value="内部调动">内部调动</option>
+          <option value="临时代理">临时代理</option>
+          <option value="项目移交">项目移交</option>
+        </select>
+
+      </div>
+
+      <div class="form-group">
+
+        <label class="form-label">计划交接日期</label>
+
+        <input class="form-input" id="h-planDate" type="date">
+
+      </div>
+
+    </div>
+
     <div class="form-group">
 
-      <label class="form-label">交接说明</label>
+      <label class="form-label">交接范围清单 <span style="font-weight:400;color:var(--c-text-3);font-size:12px;">（勾选已确认交接的内容）</span></label>
 
-      <textarea class="form-textarea" id="h-summary" placeholder="重点交接事项、注意事项等"></textarea>
+      <div class="h-checklist">
+        <label><input type="checkbox" class="h-check" value="基础档案资料" checked> 基础档案资料</label>
+        <label><input type="checkbox" class="h-check" value="目标与权责" checked> 目标与权责</label>
+        <label><input type="checkbox" class="h-check" value="运营现状数据" checked> 运营现状数据</label>
+        <label><input type="checkbox" class="h-check" value="进行中课题" checked> 进行中课题</label>
+        <label><input type="checkbox" class="h-check" value="未关闭问题" checked> 未关闭问题</label>
+        <label><input type="checkbox" class="h-check" value="关键客户/联系人"> 关键客户/联系人</label>
+        <label><input type="checkbox" class="h-check" value="特殊注意事项" checked> 特殊注意事项</label>
+      </div>
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">重点交接事项 *</label>
+
+      <textarea class="form-textarea" id="h-keyitems" placeholder="必填：聚焦最关键的交接内容，例如账号权限、待决策事项、客户特殊约定等"></textarea>
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">遗留问题 / 待跟进</label>
+
+      <textarea class="form-textarea" id="h-pending" placeholder="还有哪些未完成、需要接收人接手跟进的事项（无则留空）"></textarea>
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">补充说明</label>
+
+      <textarea class="form-textarea" id="h-summary" placeholder="其他补充备注（选填）"></textarea>
 
     </div>
 
@@ -5869,11 +5933,22 @@ function doNewHandover(){
 
   const to = document.getElementById("h-to").value.trim();
 
+  const keyItems = document.getElementById("h-keyitems") ? document.getElementById("h-keyitems").value.trim() : "";
+
   if(!pid||!to) { alert("请填写必填项"); return; }
+
+  if(!keyItems) { alert("请填写「重点交接事项」（必填）"); return; }
 
   const p = PROJECTS.find(pp=>pp.id===pid);
 
   const from = p?p.pm:"";
+
+  // 收集勾选的交接范围清单
+
+  const checklist = [];
+  document.querySelectorAll('#modal-body .h-check:checked').forEach(c=>checklist.push(c.value));
+
+  const nowDate = new Date().toISOString().slice(0,10);
 
   // 更新项目负责人
 
@@ -5883,11 +5958,12 @@ function doNewHandover(){
 
   ISSUES.forEach(i=>{ if(i.projectId===pid&&i.status!=="已关闭") i.assignee = to; });
 
-  // 记录交接历史
+  // 记录交接历史（结构化字段）
 
+  const newId = HANDOVERS.reduce((m,h)=>Math.max(m,h.id),0) + 1;
   HANDOVERS.push({
 
-    id: HANDOVERS.length+1,
+    id: newId,
 
     projectId: pid,
 
@@ -5897,28 +5973,145 @@ function doNewHandover(){
 
     to: to,
 
-    date: new Date().toISOString().slice(0,10),
+    date: nowDate,
 
     status:"已完成",
 
-    summary: document.getElementById("h-summary").value||"已完成交接"
+    type: document.getElementById("h-type") ? document.getElementById("h-type").value : "人员离职",
+
+    planDate: document.getElementById("h-planDate") ? document.getElementById("h-planDate").value : "",
+
+    checklist: checklist,
+
+    keyItems: keyItems,
+
+    pending: (document.getElementById("h-pending") ? document.getElementById("h-pending").value.trim() : "") || "无",
+
+    summary: (document.getElementById("h-summary") ? document.getElementById("h-summary").value.trim() : "") || keyItems
 
   });
 
-  // 追加历任负责人记录
+  // 追加历任负责人记录（时间不再硬编码）
 
-  if(p){ p.pmHistory.push({name:from, from:"2026-03", to:new Date().toISOString().slice(0,7), reason:"人员交接"}); }
+  if(p){ p.pmHistory.push({name:from, from: p.pmStartedAt || nowDate.slice(0,7), to: nowDate.slice(0,7), reason:"人员交接"}); }
+
+  // 持久化（修复刷新丢失 bug，并打通其他模块）
+
+  saveHandovers();
+  if(typeof saveProjects==='function') saveProjects();
+  if(typeof saveIssues==='function') saveIssues();
 
   document.getElementById("modal-overlay").classList.add("hidden");
 
   renderModule("handover");
 
-  alert("交接已完成！\n原负责人："+from+"\n接收人："+to+"\n系统已自动更新项目负责人及未关闭问题指派。");
+  alert("交接已完成！\n原负责人："+from+"\n接收人："+to+"\n系统已自动更新项目负责人、未关闭问题指派并归档留痕，可在「项目基础档案」「风险预警池」弹窗及「系统数据管理」中查看。");
 
 }
 
 
 
+// ===== 交接记录：列表渲染 / 搜索 / 筛选 / 导出 / 详情 =====
+function _renderHandoverRows(){
+  const kw = (handoverFilter.keyword||'').toLowerCase();
+  const st = handoverFilter.status;
+  const list = HANDOVERS.filter(h=>{
+    const matchKw = !kw || (h.projectName+' '+h.from+' '+h.to).toLowerCase().indexOf(kw) >= 0;
+    const matchSt = st==='all' || h.status===st;
+    return matchKw && matchSt;
+  });
+  if(list.length===0){
+    return '<div style="padding:28px;text-align:center;color:var(--c-text-3);font-size:13px;">没有符合条件的交接记录</div>';
+  }
+  return list.map(h=>`
+    <tr>
+      <td>H${String(h.id).padStart(3,'0')}</td>
+      <td>${h.projectName||''}</td>
+      <td>${h.type||'—'}</td>
+      <td>${h.from||''}</td>
+      <td>${h.to||''}</td>
+      <td>${h.date||''}</td>
+      <td><span class="archive-tag archive-tag-dp">${h.status||'已完成'}</span></td>
+      <td style="max-width:200px;font-size:12px;">${h.summary||h.keyItems||''}</td>
+      <td class="actions">
+        <button class="btn btn-sm" onclick="showHandoverDetail(${h.id})">查看详情</button>
+      </td>
+    </tr>`).join('');
+}
+function handoverSetKeyword(v){
+  handoverFilter.keyword = v;
+  var wrap = document.getElementById('handover-list-wrap');
+  if(wrap) wrap.innerHTML = _renderHandoverRows();
+}
+function handoverSetStatus(s, el){
+  handoverFilter.status = s;
+  document.querySelectorAll('.h-filter-tab').forEach(function(t){ t.classList.remove('active'); });
+  if(el) el.classList.add('active');
+  var wrap = document.getElementById('handover-list-wrap');
+  if(wrap) wrap.innerHTML = _renderHandoverRows();
+}
+function renderHandoverList(){
+  var wrap = document.getElementById('handover-list-wrap');
+  if(wrap) wrap.innerHTML = _renderHandoverRows();
+}
+function exportHandovers(){
+  if(HANDOVERS.length===0){ alert('暂无交接记录可导出'); return; }
+  var headers = ['交接编号','项目','交接类型','原负责人','接收人','交接日期','计划日期','状态','重点交接事项','遗留问题','交接范围清单','补充说明'];
+  var rows = HANDOVERS.map(function(h){
+    return [ 'H'+String(h.id).padStart(3,'0'), h.projectName||'', h.type||'', h.from||'', h.to||'', h.date||'', h.planDate||'', h.status||'', h.keyItems||'', h.pending||'', (h.checklist||[]).join('、'), h.summary||'' ];
+  });
+  var csv = [headers].concat(rows).map(function(r){
+    return r.map(function(c){ c = (c==null?'':String(c)); return '"'+c.replace(/"/g,'""')+'"'; }).join(',');
+  }).join('\\n');
+  var blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '交接记录表_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+}
+function showHandoverDetail(id){
+  const h = HANDOVERS.find(x=>x.id===id);
+  if(!h){ alert('未找到该交接记录'); return; }
+  const body = document.getElementById('modal-body');
+  document.getElementById('modal-title').textContent = '🔄 交接详情 · H'+String(h.id).padStart(3,'0');
+  const checklistHtml = (h.checklist&&h.checklist.length) ? h.checklist.map(c=>'<li>✅ '+c+'</li>').join('') : '<li style="color:var(--c-text-3);">（未登记交接范围）</li>';
+  body.innerHTML = `
+    <div class="hod-section">
+      <div class="hod-section-title">📋 基本信息</div>
+      <table class="data-table">
+        <tbody>
+          <tr><td style="width:130px;color:var(--c-text-3);">项目</td><td>${h.projectName||''}</td></tr>
+          <tr><td style="color:var(--c-text-3);">交接类型</td><td>${h.type||'—'}</td></tr>
+          <tr><td style="color:var(--c-text-3);">原负责人 → 接收人</td><td>${h.from||''} &nbsp;→&nbsp; ${h.to||''}</td></tr>
+          <tr><td style="color:var(--c-text-3);">交接日期</td><td>${h.date||''}</td></tr>
+          <tr><td style="color:var(--c-text-3);">计划交接日期</td><td>${h.planDate||'—'}</td></tr>
+          <tr><td style="color:var(--c-text-3);">状态</td><td><span class="archive-tag archive-tag-dp">${h.status||'已完成'}</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="hod-section">
+      <div class="hod-section-title">✅ 交接范围确认</div>
+      <ul class="hod-checklist">${checklistHtml}</ul>
+    </div>
+    <div class="hod-section">
+      <div class="hod-section-title">📝 重点交接事项</div>
+      <div class="hod-text">${h.keyItems||h.summary||'（无）'}</div>
+    </div>
+    <div class="hod-section">
+      <div class="hod-section-title">⚠️ 遗留问题 / 待跟进</div>
+      <div class="hod-text">${h.pending||'无'}</div>
+    </div>
+    <div class="form-actions">
+      <button class="btn" onclick="document.getElementById('modal-overlay').classList.add('hidden')">关闭</button>
+      ${h.projectId?('<button class="btn btn-primary" onclick="showProjectFromHandover(\''+h.projectId+'\')">查看关联项目</button>'):''}
+    </div>`;
+  document.getElementById('modal-overlay').classList.remove('hidden');
+}
+function showProjectFromHandover(pid){
+  document.getElementById('modal-overlay').classList.add('hidden');
+  if(typeof showProjectDetail==='function') showProjectDetail(pid);
+}
 function showIssueDetail(id){
   const i = ISSUES.find(ii=>ii.id===id);
   if(!i) return;
@@ -7790,9 +7983,14 @@ var SYSTEM_DATA_TABLES = {
       {key:'projectName', label:'项目名称', type:'text'},
       {key:'from', label:'原负责人', type:'text'},
       {key:'to', label:'新负责人', type:'text'},
-      {key:'date', label:'日期', type:'text'},
+      {key:'type', label:'交接类型', type:'select', options:['人员离职','内部调动','临时代理','项目移交']},
+      {key:'date', label:'交接日期', type:'text'},
+      {key:'planDate', label:'计划日期', type:'text'},
       {key:'status', label:'状态', type:'select', options:['已完成','进行中','已取消']},
-      {key:'summary', label:'摘要', type:'textarea'}
+      {key:'checklist', label:'交接范围清单', type:'textarea'},
+      {key:'keyItems', label:'重点交接事项', type:'textarea'},
+      {key:'pending', label:'遗留问题', type:'textarea'},
+      {key:'summary', label:'补充说明', type:'textarea'}
     ]
   },
   kpi: {
@@ -7921,7 +8119,7 @@ var _renderSystemData = function(){
   else if(_systemDataTab==='operations') colDefs={headers:['项目ID','工单量','满意度','响应时间','NPS'],keys:['projectId','ticketVol','csat','responseTime','nps'],showCb:true};
   else if(_systemDataTab==='issues') colDefs={headers:['编号','类别','项目','类型','优先级','责任人','状态'],keys:['id','category','projectName','type','priority','assignee','status'],showCb:true};
   else if(_systemDataTab==='knowledge') colDefs={headers:['ID','标题','分类','管理方向','权限','浏览','下载'],keys:['id','title','type','category','permission','views','downloads'],showCb:true,goEnergyPool:true};
-  else if(_systemDataTab==='handovers') colDefs={headers:['ID','项目','原负责人','新负责人','日期','状态'],keys:['id','projectName','from','to','date','status'],showCb:true};
+  else if(_systemDataTab==='handovers') colDefs={headers:['ID','项目','交接类型','原负责人','新负责人','日期','状态'],keys:['id','projectName','type','from','to','date','status'],showCb:true};
   else if(_systemDataTab==='kpi') colDefs={headers:['日期','项目ID','销售额(万)','成本(万)','费效比','目标达成率'],keys:['date','projectId','revenue','cost','profitRate','targetRate'],showCb:true};
   else if(_systemDataTab==='changelog') colDefs={headers:['时间','操作人','表名','记录ID','字段名','旧值','新值'],keys:['changedAt','changedBy','tableName','recordId','fieldName','oldValue','newValue'],showCb:false};
   else if(_systemDataTab==='risk') colDefs={headers:['项目编号','项目名称','风险类型','风险等级','触发指标','阈值','状态'],keys:['projectId','projectName','riskType','severity','indicator','threshold','status'],showCb:false,readOnly:true};
