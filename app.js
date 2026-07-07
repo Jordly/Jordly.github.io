@@ -4421,6 +4421,14 @@ function renderKnowledge(){
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
       <input type="text" class="kyp-search-input" placeholder="搜索知识标题、标签、内容..." oninput="kypSearch(this.value)">
     </div>
+    <div class="kyp-legend">
+      <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#185FA5;"></i>SOP</span>
+      <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#A32D2D;"></i>风控</span>
+      <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#3B6D11;"></i>成本</span>
+      <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#854F0B;"></i>话术</span>
+      <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#7C3AED;"></i>AI</span>
+      <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#666;"></i>培训</span>
+    </div>
   </div>
 
   <div class="kyp-layout">
@@ -4477,50 +4485,41 @@ function renderKnowledge(){
     </div>
   </div>
 
-  <div class="kyp-legend">
-    <span><span class="kyp-legend-dot" style="background:#378ADD;"></span> SOP流程优化</span>
-    <span><span class="kyp-legend-dot" style="background:#E24B4A;"></span> 风控应急预案</span>
-    <span><span class="kyp-legend-dot" style="background:#3B6D11;"></span> 成本目标控制</span>
-    <span><span class="kyp-legend-dot" style="background:#E08B1A;"></span> 优秀话术萃取</span>
-    <span><span class="kyp-legend-dot" style="background:#7C3AED;"></span> AI提效赋能</span>
-    <span><span class="kyp-legend-dot" style="background:#888;"></span> 培训材料</span>
-  </div>
+  `;
+}
 
-  <script>
-  var kypCurrentType = 'all';
-  function kypFilter(type) {
-    kypCurrentType = type;
-    document.querySelectorAll('#kyp-filter-tags .kyp-tag').forEach(function(el) {
-      el.classList.toggle('kyp-tag-active', el.dataset.type === type);
-    });
-    var cards = document.querySelectorAll('#kyp-grid .kyp-card');
-    var visible = 0;
-    cards.forEach(function(c) {
-      var match = type === 'all' || c.dataset.type === type;
-      c.style.display = match ? '' : 'none';
-      if (match) visible++;
-    });
-    document.getElementById('kyp-empty').style.display = visible === 0 ? '' : 'none';
-  }
-  function kypSearch(val) {
-    var q = val.toLowerCase().trim();
-    var cards = document.querySelectorAll('#kyp-grid .kyp-card');
-    var visible = 0;
-    cards.forEach(function(c) {
-      var typeMatch = kypCurrentType === 'all' || c.dataset.type === kypCurrentType;
-      var searchMatch = !q || c.dataset.search.toLowerCase().indexOf(q) !== -1;
-      var show = typeMatch && searchMatch;
-      c.style.display = show ? '' : 'none';
-      if (show) visible++;
-    });
-    document.getElementById('kyp-empty').style.display = visible === 0 ? '' : 'none';
-  }
-  function kypFilterByTag(tag) {
-    var input = document.querySelector('.kyp-search-input');
-    if (input) { input.value = tag; kypSearch(tag); }
-  }
-  <\/script>`;
-
+// ===== 知识能量池 · 全局筛选函数 =====
+var kypCurrentType = 'all';
+function kypFilter(type) {
+  kypCurrentType = type;
+  document.querySelectorAll('#kyp-filter-tags .kyp-tag').forEach(function(el) {
+    el.classList.toggle('kyp-tag-active', el.dataset.type === type);
+  });
+  var cards = document.querySelectorAll('#kyp-grid .kyp-card');
+  var visible = 0;
+  cards.forEach(function(c) {
+    var match = type === 'all' || c.dataset.type === type;
+    c.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  document.getElementById('kyp-empty').style.display = visible === 0 ? '' : 'none';
+}
+function kypSearch(val) {
+  var q = val.toLowerCase().trim();
+  var cards = document.querySelectorAll('#kyp-grid .kyp-card');
+  var visible = 0;
+  cards.forEach(function(c) {
+    var typeMatch = kypCurrentType === 'all' || c.dataset.type === kypCurrentType;
+    var searchMatch = !q || c.dataset.search.toLowerCase().indexOf(q) !== -1;
+    var show = typeMatch && searchMatch;
+    c.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.getElementById('kyp-empty').style.display = visible === 0 ? '' : 'none';
+}
+function kypFilterByTag(tag) {
+  var input = document.querySelector('.kyp-search-input');
+  if (input) { input.value = tag; kypSearch(tag); }
 }
 
 // ===== 知识详情弹窗（替代原生 alert）=====
