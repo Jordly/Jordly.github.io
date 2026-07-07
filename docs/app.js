@@ -4980,7 +4980,7 @@ function renderHandover(){
 
       <thead><tr><th>交接编号</th><th>项目</th><th>交接类型</th><th>原负责人</th><th>接收人</th><th>交接日期</th><th>状态</th><th>交接摘要</th><th>操作</th></tr></thead>
 
-      <tbody>
+      <tbody id="handover-tbody">
 
         ${_renderHandoverRows()}
 
@@ -6040,19 +6040,19 @@ function _renderHandoverRows(){
 }
 function handoverSetKeyword(v){
   handoverFilter.keyword = v;
-  var wrap = document.getElementById('handover-list-wrap');
-  if(wrap) wrap.innerHTML = _renderHandoverRows();
+  var tbody = document.getElementById('handover-tbody');
+  if(tbody) tbody.innerHTML = _renderHandoverRows();
 }
 function handoverSetStatus(s, el){
   handoverFilter.status = s;
   document.querySelectorAll('.h-filter-tab').forEach(function(t){ t.classList.remove('active'); });
   if(el) el.classList.add('active');
-  var wrap = document.getElementById('handover-list-wrap');
-  if(wrap) wrap.innerHTML = _renderHandoverRows();
+  var tbody = document.getElementById('handover-tbody');
+  if(tbody) tbody.innerHTML = _renderHandoverRows();
 }
 function renderHandoverList(){
-  var wrap = document.getElementById('handover-list-wrap');
-  if(wrap) wrap.innerHTML = _renderHandoverRows();
+  var tbody = document.getElementById('handover-tbody');
+  if(tbody) tbody.innerHTML = _renderHandoverRows();
 }
 function exportHandovers(){
   if(HANDOVERS.length===0){ alert('暂无交接记录可导出'); return; }
