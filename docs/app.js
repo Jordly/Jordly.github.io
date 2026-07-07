@@ -4419,7 +4419,7 @@ function renderKnowledge(){
     </div>
     <div class="kyp-search-box">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input type="text" class="kyp-search-input" placeholder="搜索知识标题、标签、内容..." oninput="kypSearch(this.value)">
+      <input type="text" class="kyp-search-input" placeholder="搜索知识标题、标签、内容..." autocomplete="off" oninput="kypSearch(this.value)">
     </div>
     <div class="kyp-legend">
       <span class="kyp-legend-item"><i class="kyp-legend-dot" style="background:#185FA5;"></i>SOP</span>
