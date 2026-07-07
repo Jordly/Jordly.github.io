@@ -4208,6 +4208,23 @@
   color: #fff !important;
   border-color: #185FA5 !important;
 }
+
+/* 筛选标签按分类着色（与卡片type-badge一致） */
+.kyp-tag[data-type='SOP流程优化'] { background: #E6F1FB; color: #185FA5; border-color: #c5dff5; }
+.kyp-tag[data-type='风控应急预案'] { background: #FCEBEB; color: #A32D2D; border-color: #f0c0c0; }
+.kyp-tag[data-type='成本目标控制'] { background: #EAF3DE; color: #3B6D11; border-color: #d0e8b5; }
+.kyp-tag[data-type='优秀话术萃取'] { background: #FAEEDA; color: #854F0B; border-color: #ebd9a5; }
+.kyp-tag[data-type='AI提效赋能'] { background: #F0E6FB; color: #7C3AED; border-color: #ddbdfb; }
+.kyp-tag[data-type='培训材料'] { background: #f0f0f0; color: #666; border-color: #ddd; }
+.kyp-tag[data-type='SOP流程优化']:hover,
+.kyp-tag[data-type='风控应急预案']:hover,
+.kyp-tag[data-type='成本目标控制']:hover,
+.kyp-tag[data-type='优秀话术萃取']:hover,
+.kyp-tag[data-type='AI提效赋能']:hover,
+.kyp-tag[data-type='培训材料']:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
 .kyp-search-box {
   display: flex;
   align-items: center;
@@ -4262,6 +4279,13 @@
   box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   transform: translateY(-2px);
   border-color: var(--c-border-3, #e0e0e0);
+}
+/* 拖拽中 */
+.kyp-card[draggable='true'] { cursor: grab; }
+.kyp-card[draggable='true']:active { cursor: grabbing; }
+.kyp-card.kyp-drag-over {
+  box-shadow: 0 0 0 2px #185FA5, 0 8px 24px rgba(24,95,165,0.2) !important;
+  transform: scale(1.02) !important;
 }
 .kyp-card-top {
   display: flex;

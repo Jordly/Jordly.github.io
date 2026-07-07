@@ -4419,17 +4419,17 @@ function renderKnowledge(){
     </div>
     <div class="kyp-search-box">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input type="text" class="kyp-search-input" placeholder="搜索知识标题、标签、内容..." autocomplete="off" oninput="kypSearch(this.value)">
+      <input type="search" class="kyp-search-input" id="kyp-search-field" name="kyp_search_query" placeholder="搜索知识标题、标签、内容..." autocomplete="nope" spellcheck="false" oninput="kypSearch(this.value)">
     </div>
   </div>
 
   <div class="kyp-layout">
     <div class="kyp-main">
-      <div class="kyp-grid" id="kyp-grid">
+      <div class="kyp-grid" id="kyp-grid" ondragover="kypDragOver(event)" ondrop="kypDrop(event)">
         ${KNOWLEDGE.map(k => {
           const perm = k.permission || '公开';
           return `
-          <div class="kyp-card" data-type="${k.type}" data-search="${k.title}${k.description}${k.tags}" onclick="showKnowledgeDetail(${k.id})">
+          <div class="kyp-card" data-type="${k.type}" data-search="${k.title}${k.description}${k.tags}" data-id="${k.id}" draggable="true" ondragstart="kypDragStart(event)" ondragend="kypDragEnd(event)" onclick="showKnowledgeDetail(${k.id})">
             <div class="kyp-card-top">
               <span class="kyp-card-title">${k.title}</span>
               ${can ? '<div class="kyp-card-actions"><span class="kyp-act" onclick="event.stopPropagation();editKnowledge('+k.id+')">✎</span><span class="kyp-act kyp-act-del" onclick="event.stopPropagation();deleteKnowledge('+k.id+')">✕</span></div>' : ''}
@@ -4510,8 +4510,43 @@ function kypSearch(val) {
   document.getElementById('kyp-empty').style.display = visible === 0 ? '' : 'none';
 }
 function kypFilterByTag(tag) {
-  var input = document.querySelector('.kyp-search-input');
+  var input = document.querySelector('#kyp-search-field');
   if (input) { input.value = tag; kypSearch(tag); }
+}
+
+// ===== 知识卡片拖拽排序 =====
+var kypDragSrcId = null;
+function kypDragStart(e) {
+  kypDragSrcId = parseInt(e.target.dataset.id);
+  e.target.style.opacity = '0.4';
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', kypDragSrcId);
+}
+function kypDragEnd(e) {
+  e.target.style.opacity = '';
+  document.querySelectorAll('.kyp-card').forEach(function(c){ c.classList.remove('kyp-drag-over'); });
+}
+function kypDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  var card = e.target.closest ? e.target.closest('.kyp-card') : null;
+  if (!card) return;
+  document.querySelectorAll('.kyp-card').forEach(function(c){ c.classList.remove('kyp-drag-over'); });
+  card.classList.add('kyp-drag-over');
+}
+function kypDrop(e) {
+  e.preventDefault();
+  var targetCard = e.target.closest ? e.target.closest('.kyp-card') : null;
+  if (!targetCard || !kypDragSrcId) return;
+  var targetId = parseInt(targetCard.dataset.id);
+  if (kypDragSrcId === targetId) return;
+  var srcIdx = KNOWLEDGE.findIndex(function(k){ return k.id === kypDragSrcId; });
+  var tgtIdx = KNOWLEDGE.findIndex(function(k){ return k.id === targetId; });
+  if (srcIdx < 0 || tgtIdx < 0) return;
+  var moved = KNOWLEDGE.splice(srcIdx, 1)[0];
+  KNOWLEDGE.splice(tgtIdx, 0, moved);
+  saveKnowledge();
+  renderModule('knowledge');
 }
 
 // ===== 知识详情弹窗（替代原生 alert）=====
