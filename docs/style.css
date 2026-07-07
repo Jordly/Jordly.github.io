@@ -2433,21 +2433,22 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
 
 /* ===== 标题栏：极光渐变 ===== */
 .sd-confirm-header, .sd-prompt-header {
-  padding: 18px 24px; font-size: 15px; font-weight: 600; color: #fff;
-  background: linear-gradient(135deg, #0b9b96 0%, #3b82f6 50%, #8b5cf6 100%);
+  padding: 18px 24px; font-size: 15px; font-weight: 600; color: #065f46;
+  background: linear-gradient(135deg, #f0fdf9 0%, #dcfce7 55%, #ccfbf1 100%);
+  border-bottom: 1px solid #a7f3d0;
   display: flex; justify-content: space-between; align-items: center;
 }
 .sd-prompt-close {
   width: 26px; height: 26px; border-radius: 50%;
-  font-size: 17px; color: rgba(255,255,255,0.85);
-  background: rgba(255,255,255,0.18);
+  font-size: 17px; color: #065f46;
+  background: rgba(6,95,70,0.08);
   border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   line-height: 1; transition: all 0.2s;
 }
 .sd-prompt-close:hover {
-  background: rgba(255,255,255,0.30);
-  color: #fff;
+  background: rgba(6,95,70,0.16);
+  color: #047857;
   transform: rotate(90deg);
 }
 
