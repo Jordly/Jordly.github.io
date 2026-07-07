@@ -5180,3 +5180,21 @@
   border-color: #185FA5;
   box-shadow: 0 0 0 3px rgba(24,95,165,0.1);
 }
+
+/* ===== 项目风险预警池 · 头部按钮区与说明条 ===== */
+.risk-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.risk-summary {
+  font-size: 13px;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 3px solid #f59e0b;
+  padding: 9px 14px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.risk-summary b { color: #334155; }

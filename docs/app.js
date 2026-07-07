@@ -612,12 +612,20 @@ var DATA_PERMISSIONS = [];
 })();
 
 // 初始化 RISK_ALERTS
+// 初始化风险预警：从 PROJECTS + OPERATIONS 自动聚合，并保留用户已确认的"状态"
 (function initRiskAlerts() {
+  // 先尝试恢复已保存的"状态"（未处理/处理中/已忽略等人工标注）
+  var savedStatus = {};
   var raw = localStorage.getItem('chansee_risk_alerts');
   if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      JSON.parse(raw).forEach(function(r) {
+        savedStatus[r.projectId + '|' + r.riskType] = r.status;
+      });
+    } catch (e) {}
   }
-  RISK_ALERTS = JSON.parse(JSON.stringify(DEFAULT_RISK_ALERTS));
-  safeSetItem('chansee_risk_alerts', JSON.stringify(RISK_ALERTS));
+  RISK_ALERTS = [];
+  recomputeRiskAlerts(savedStatus);
 })();
 
 // 初始化 KNOWLEDGE
@@ -706,6 +714,83 @@ function saveAgentPerformance() {
 }
 function saveRiskAlerts() {
   safeSetItem('chansee_risk_alerts', JSON.stringify(RISK_ALERTS));
+}
+// 根据健康度阈值判断健康状态风险等级
+function riskHealthLevel(score) {
+  var lv = getHealthLevels();
+  if (score < (lv.warning || 60)) return score < 40 ? '🔴 高风险' : '🟡 中风险';
+  return null;
+}
+// 从 PROJECTS + OPERATIONS 实时算出所有风险条目（不含人工"状态"字段）
+function calcRawRiskAlerts() {
+  var list = [];
+  PROJECTS.forEach(function(p) {
+    var op = OPERATIONS.find(function(o) { return o.projectId === p.id; });
+    var hs = Number(p.healthScore) || 0;
+    var warningTh = (getHealthLevels().warning || 60);
+    // 1. 健康状态异常
+    var hl = riskHealthLevel(hs);
+    if (hl) {
+      list.push({ projectId: p.id, projectName: p.name, riskType: '健康状态', severity: hl,
+        indicator: '健康分：' + hs, triggerValue: hs + ' < 预警阈值' + warningTh,
+        threshold: '健康分 ≥ ' + warningTh, createdAt: p.endDate || '' });
+    }
+    // 2. SLA超标：响应时长 > SLA响应目标
+    if (op && p.slaResponse && op.responseTime > p.slaResponse) {
+      var over = op.responseTime / p.slaResponse;
+      list.push({ projectId: p.id, projectName: p.name, riskType: 'SLA超标',
+        severity: over > 1.3 ? '🔴 高风险' : '🟡 中风险',
+        indicator: '平均响应：' + op.responseTime + 's',
+        triggerValue: op.responseTime + 's > 目标' + p.slaResponse + 's',
+        threshold: '响应 ≤ ' + p.slaResponse + 's', createdAt: op.period || '' });
+    }
+    // 3. 成本超支：利润率 < 0 为高风险，远低于目标为中等
+    var pr = Number(p.profitRate);
+    if (pr != null && !isNaN(pr)) {
+      if (pr < 0) {
+        list.push({ projectId: p.id, projectName: p.name, riskType: '成本超支',
+          severity: pr < -5 ? '🔴 高风险' : '🟡 中风险',
+          indicator: '利润率：' + pr + '%', triggerValue: pr + '% < 目标≥0%',
+          threshold: '利润率 ≥ 0%', createdAt: p.endDate || '' });
+      } else if (p.targetRate != null && pr < p.targetRate * 0.5) {
+        list.push({ projectId: p.id, projectName: p.name, riskType: '成本超支',
+          severity: '🟡 中风险', indicator: '利润率：' + pr + '%',
+          triggerValue: pr + '% 远低于目标' + p.targetRate + '%',
+          threshold: '利润率 ≥ ' + (p.targetRate * 0.5).toFixed(1) + '%', createdAt: p.endDate || '' });
+      }
+    }
+    // 4. 满意度下滑：CSAT < 4.7
+    if (op && op.csat != null && Number(op.csat) < 4.7) {
+      list.push({ projectId: p.id, projectName: p.name, riskType: '满意度下滑',
+        severity: Number(op.csat) < 4.3 ? '🔴 高风险' : '🟡 中风险',
+        indicator: 'CSAT：' + op.csat, triggerValue: op.csat + ' < 目标4.7',
+        threshold: 'CSAT ≥ 4.7', createdAt: op.period || '' });
+    }
+  });
+  return list;
+}
+// 用实时算出的风险条目刷新 RISK_ALERTS，并保留已确认的状态（原地修改，保持引用有效）
+function recomputeRiskAlerts(savedStatusMap) {
+  var fresh = calcRawRiskAlerts();
+  var saved = savedStatusMap || {};
+  var next = fresh.map(function(f, i) {
+    var key = f.projectId + '|' + f.riskType;
+    return {
+      id: i + 1,
+      projectId: f.projectId, projectName: f.projectName, riskType: f.riskType,
+      severity: f.severity, indicator: f.indicator, triggerValue: f.triggerValue,
+      threshold: f.threshold, status: saved[key] || '未处理', createdAt: f.createdAt
+    };
+  });
+  RISK_ALERTS.length = 0;
+  next.forEach(function(x) { RISK_ALERTS.push(x); });
+  saveRiskAlerts();
+}
+// 全部标为"处理中"（管理者的批量确认动作）
+function acknowledgeAllRisk() {
+  RISK_ALERTS.forEach(function(r) { if (r.status === '未处理') r.status = '处理中'; });
+  saveRiskAlerts();
+  renderRisk();
 }
 function saveKnowledge() {
   safeSetItem('chansee_knowledge', JSON.stringify(KNOWLEDGE));
@@ -7640,6 +7725,21 @@ var SYSTEM_DATA_TABLES = {
       {key:'status', label:'状态', type:'text'}
     ]
   },
+  risk: {
+    label: '\u{26A0}️ 风险预警表（聚合）',
+    desc: '由"项目风险预警池"实时聚合生成，数据来源于项目档案(健康分/利润率/SLA目标)与运营数据(响应时长/满意度)。本表为只读视图，不可直接编辑——如需处置风险请在风险预警池页面操作，修改项目档案或运营数据后点"刷新"即自动更新。',
+    data: typeof RISK_ALERTS !== 'undefined' ? RISK_ALERTS : [],
+    readOnly: true,
+    fields: [
+      {key:'projectId', label:'项目编号', type:'text'},
+      {key:'projectName', label:'项目名称', type:'text'},
+      {key:'riskType', label:'风险类型', type:'text'},
+      {key:'severity', label:'风险等级', type:'text'},
+      {key:'indicator', label:'触发指标', type:'text'},
+      {key:'threshold', label:'阈值', type:'text'},
+      {key:'status', label:'状态', type:'text'}
+    ]
+  },
   issues: {
     label: '\u{1F9F0} 协同事项表',
     desc: '问题与课题的统一登记、跟踪、闭环记录，包含问题(整改/客诉等)和课题(流程优化/调研诊断/销售提升/服务升级等)。问题与课题协作页面依赖此表。',
@@ -7802,8 +7902,10 @@ var _renderSystemData = function(){
 
   var tableDef = SYSTEM_DATA_TABLES[_systemDataTab];
   if(!tableDef) { _systemDataView='catalog'; return _renderSystemData(); }
+  if(_systemDataTab === 'risk') recomputeRiskAlerts();
 
   var isLog = _systemDataTab === 'changelog';
+  var isReadOnly = !!tableDef.readOnly;
   var allData = tableDef.data || [];
   if (!Array.isArray(allData)) allData = [];
   var keyword = _systemDataSearchKeyword;
@@ -7822,6 +7924,7 @@ var _renderSystemData = function(){
   else if(_systemDataTab==='handovers') colDefs={headers:['ID','项目','原负责人','新负责人','日期','状态'],keys:['id','projectName','from','to','date','status'],showCb:true};
   else if(_systemDataTab==='kpi') colDefs={headers:['日期','项目ID','销售额(万)','成本(万)','费效比','目标达成率'],keys:['date','projectId','revenue','cost','profitRate','targetRate'],showCb:true};
   else if(_systemDataTab==='changelog') colDefs={headers:['时间','操作人','表名','记录ID','字段名','旧值','新值'],keys:['changedAt','changedBy','tableName','recordId','fieldName','oldValue','newValue'],showCb:false};
+  else if(_systemDataTab==='risk') colDefs={headers:['项目编号','项目名称','风险类型','风险等级','触发指标','阈值','状态'],keys:['projectId','projectName','riskType','severity','indicator','threshold','status'],showCb:false,readOnly:true};
 
   var tableHtml = '';
   if(colDefs.headers){
@@ -7836,6 +7939,7 @@ var _renderSystemData = function(){
       if(colDefs.showCb) tableHtml += '<td><input type="checkbox" class="sd-row-cb" data-idx="'+idx+'"></td>';
       for(var ci=0; ci<colDefs.keys.length; ci++) tableHtml += '<td>'+(row[colDefs.keys[ci]]!=null?row[colDefs.keys[ci]]:'')+'</td>';
       if(colDefs.showCb) tableHtml += '<td><button class="sd-action-btn sd-action-btn-edit" onclick="editSystemDataRow('+idx+')">✏️ 编辑</button><button class="sd-action-btn sd-action-btn-delete" onclick="deleteSystemDataRow('+idx+')">🗑 删除</button></td>';
+      else if(colDefs.readOnly) tableHtml += '<td><span style="font-size:12px;color:var(--c-text-3);">只读</span></td>';
       tableHtml += '</tr>';
     }
     tableHtml += '</tbody></table>';
@@ -7868,8 +7972,9 @@ var _renderSystemData = function(){
       +(isLog?'':'<button class="btn btn-primary btn-sm" onclick="addSystemDataRow()">+ 新增</button>')
       +(isLog?'':'<button class="btn btn-sm btn-danger" onclick="batchDeleteSystemData()">批量删除</button>')
       +(colDefs.goEnergyPool?'<button class="btn btn-sm" onclick="renderModule(\'knowledge\')">📖 在能量池查看</button>':'')
+      +(isReadOnly?'<button class="btn btn-sm" onclick="renderModule(\'risk\')">⚠️ 去风险池处置</button>':'')
       +'<button class="btn btn-sm" onclick="exportSystemData()">导出</button>'
-      +'<button class="btn btn-sm" onclick="importSystemData()">导入</button>'
+      +(isReadOnly?'':'<button class="btn btn-sm" onclick="importSystemData()">导入</button>')
     +'</div>'
   +'</div>'
   +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">'
@@ -9516,18 +9621,28 @@ function exportPerformance() {
 
 // ===== 项目风险预警池 =====// ===== 项目风险预警池 =====
 function renderRisk(){
+  // 进入页面先从项目数据重新聚合一次，确保实时
+  recomputeRiskAlerts();
+
   let html = `<div class="page-header"><h2>⚠️ 项目风险预警池</h2>
-    <button class="btn btn-primary" onclick="exportRisk()">📤 导出</button>
+    <div class="risk-actions">
+      <button class="btn" onclick="renderRisk()">🔄 刷新</button>
+      <button class="btn btn-sm" onclick="acknowledgeAllRisk()">🔔 全部已读</button>
+      <button class="btn btn-primary" onclick="exportRisk()">📤 导出</button>
+    </div>
   </div>`;
 
   const groups = [
-    {key:'健康状态', icon:'🏥', color:'#ef4444', bg:'#fef2f2', desc:'健康状态连续异常'},
-    {key:'SLA超标', icon:'⏱️', color:'#f59e0b', bg:'#fffbeb', desc:'服务等级协议超标'},
-    {key:'成本超支', icon:'💸', color:'#ef4444', bg:'#fef2f2', desc:'成本超出预算控制'},
-    {key:'满意度下滑', icon:'📉', color:'#f59e0b', bg:'#fffbeb', desc:'客户满意度下降'}
+    {key:'健康状态', icon:'🏥', color:'#ef4444', bg:'#fef2f2', desc:'健康状态低于预警阈值'},
+    {key:'SLA超标', icon:'⏱️', color:'#f59e0b', bg:'#fffbeb', desc:'平均响应超出SLA目标'},
+    {key:'成本超支', icon:'💸', color:'#ef4444', bg:'#fef2f2', desc:'利润率低于安全线'},
+    {key:'满意度下滑', icon:'📉', color:'#f59e0b', bg:'#fffbeb', desc:'客户满意度低于目标'}
   ];
 
-  html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">`;
+  const totalRisk = RISK_ALERTS.length;
+  html += `<div class="risk-summary">共监测 <b>${PROJECTS.length}</b> 个项目，当前识别 <b style="color:#ef4444;">${totalRisk}</b> 项风险 · 数据来源：项目档案 + 运营数据（实时聚合）</div>`;
+
+  html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;align-items:start;">`;
   groups.forEach(g => {
     const items = RISK_ALERTS.filter(r => r.riskType === g.key);
     const high = items.filter(r => r.severity.includes('🔴')).length;
@@ -9542,14 +9657,14 @@ function renderRisk(){
           </div>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:22px;font-weight:700;color:${g.color};">${items.length}</div>
+          <div style="font-size:22px;font-weight:700;color:${items.length === 0 ? '#22c55e' : g.color};">${items.length}</div>
           <div style="font-size:11px;color:#94a3b8;">个项目</div>
         </div>
       </div>
       <div style="padding:0 16px 12px;display:flex;gap:8px;flex-wrap:wrap;">
         ${high > 0 ? `<span style="font-size:11px;color:#ef4444;background:#fef2f2;padding:2px 8px;border-radius:4px;font-weight:500;">🔴 高风险 ${high}</span>` : ''}
         ${mid > 0 ? `<span style="font-size:11px;color:#f59e0b;background:#fffbeb;padding:2px 8px;border-radius:4px;font-weight:500;">🟡 中风险 ${mid}</span>` : ''}
-        ${items.length === 0 ? '<span style="font-size:11px;color:#22c55e;background:#f0fdf4;padding:2px 8px;border-radius:4px;font-weight:500;">✅ 无风险</span>' : ''}
+        ${items.length === 0 ? '<span style="font-size:11px;color:#22c55e;background:#f0fdf4;padding:2px 8px;border-radius:4px;font-weight:500;">✅ 全部正常</span>' : ''}
       </div>
       <div class="risk-detail" style="max-height:0;overflow:hidden;transition:max-height 0.35s ease;">
         <div style="padding:0 16px 16px;">
@@ -9580,7 +9695,7 @@ function toggleRiskCard(el){
     el.style.borderColor = '#e2e8f0';
     el.setAttribute('data-open','false');
   } else {
-    detail.style.maxHeight = detail.scrollHeight + 50 + 'px';
+    detail.style.maxHeight = detail.scrollHeight + 'px';
     el.style.borderColor = '#3b82f6';
     el.setAttribute('data-open','true');
   }
@@ -10391,10 +10506,10 @@ function leaveTeam() {
 }
 
 function exportRisk(){
-  const headers = ['项目编号','预警类型','风险等级','问题描述','发现日期','负责人','状态','解决日期'];
+  const headers = ['项目编号','项目名称','预警类型','风险等级','触发指标','触发值','阈值','状态'];
   const rows = RISK_ALERTS.map(r => [
-    r.projectId, r.type||'', r.level||'', r.description||'',
-    r.foundDate||'', r.owner||'', r.status||'', r.resolvedDate||''
+    r.projectId, r.projectName||'', r.riskType||'', r.severity||'',
+    r.indicator||'', r.triggerValue||'', r.threshold||'', r.status||''
   ]);
   showExportDialog(headers, rows, `项目风险预警_${new Date().toISOString().slice(0,10)}`, '项目风险预警');
 }
