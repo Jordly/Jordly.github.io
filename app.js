@@ -4425,11 +4425,11 @@ function renderKnowledge(){
 
   <div class="kyp-layout">
     <div class="kyp-main">
-      <div class="kyp-grid" id="kyp-grid" ondragover="kypDragOver(event)" ondrop="kypDrop(event)">
+      <div class="kyp-grid" id="kyp-grid">
         ${KNOWLEDGE.map(k => {
           const perm = k.permission || '公开';
           return `
-          <div class="kyp-card" data-type="${k.type}" data-search="${k.title}${k.description}${k.tags}" data-id="${k.id}" draggable="true" ondragstart="kypDragStart(event)" ondragend="kypDragEnd(event)" onclick="showKnowledgeDetail(${k.id})">
+          <div class="kyp-card" data-type="${k.type}" data-search="${k.title}${k.description}${k.tags}" data-id="${k.id}" onmousedown="kypCardMouseDown(event, ${k.id})" onclick="kypCardClick(event, ${k.id})">
             <div class="kyp-card-top">
               <span class="kyp-card-title">${k.title}</span>
               ${can ? '<div class="kyp-card-actions"><span class="kyp-act" onclick="event.stopPropagation();editKnowledge('+k.id+')">✎</span><span class="kyp-act kyp-act-del" onclick="event.stopPropagation();deleteKnowledge('+k.id+')">✕</span></div>' : ''}
@@ -4514,52 +4514,61 @@ function kypFilterByTag(tag) {
   if (input) { input.value = tag; kypSearch(tag); }
 }
 
-// ===== 知识卡片拖拽排序（DOM 直接移动，所见即所得）=====
-var kypDragSrcId = null;
-function kypDragStart(e) {
-  var card = e.currentTarget;
-  kypDragSrcId = parseInt(card.dataset.id);
-  card.classList.add('kyp-dragging');
-  e.dataTransfer.effectAllowed = 'move';
-  try { e.dataTransfer.setData('text/plain', String(kypDragSrcId)); } catch(err){}
+// ===== 知识卡片拖拽排序（鼠标事件实现，不依赖 HTML5 draggable）=====
+var kypMouse = { down:false, id:null, sx:0, sy:0, moved:false };
+function kypCardMouseDown(e, id) {
+  if (e.button !== 0) return;
+  kypMouse.down = true;
+  kypMouse.id = id;
+  kypMouse.sx = e.clientX;
+  kypMouse.sy = e.clientY;
+  kypMouse.moved = false;
+  document.addEventListener('mousemove', kypCardMouseMove);
+  document.addEventListener('mouseup', kypCardMouseUp);
 }
-function kypDragEnd(e) {
+function kypCardMouseMove(e) {
+  if (!kypMouse.down) return;
+  var dx = e.clientX - kypMouse.sx, dy = e.clientY - kypMouse.sy;
+  if (!kypMouse.moved && Math.sqrt(dx*dx + dy*dy) > 5) kypMouse.moved = true;
+  if (!kypMouse.moved) return;
+  var srcCard = document.querySelector('.kyp-card[data-id="' + kypMouse.id + '"]');
+  if (srcCard) srcCard.classList.add('kyp-dragging');
+  var el = document.elementFromPoint(e.clientX, e.clientY);
+  var over = el ? el.closest('.kyp-card') : null;
+  document.querySelectorAll('.kyp-drag-over').forEach(function(c){ c.classList.remove('kyp-drag-over'); });
+  if (over && parseInt(over.dataset.id) !== kypMouse.id) over.classList.add('kyp-drag-over');
+}
+function kypCardMouseUp(e) {
+  document.removeEventListener('mousemove', kypCardMouseMove);
+  document.removeEventListener('mouseup', kypCardMouseUp);
+  if (!kypMouse.down) return;
+  kypMouse.down = false;
+  if (kypMouse.moved) {
+    var src = document.querySelector('.kyp-card[data-id="' + kypMouse.id + '"]');
+    var over = document.querySelector('.kyp-drag-over');
+    if (src && over && src !== over) {
+      var rect = over.getBoundingClientRect();
+      var after = e.clientY > rect.top + rect.height / 2;
+      if (after) over.parentNode.insertBefore(src, over.nextSibling);
+      else over.parentNode.insertBefore(src, over);
+      var grid = document.getElementById('kyp-grid');
+      var ids = Array.prototype.map.call(grid.querySelectorAll('.kyp-card'), function(c){ return parseInt(c.dataset.id); });
+      KNOWLEDGE.sort(function(a, b){ return ids.indexOf(a.id) - ids.indexOf(b.id); });
+      saveKnowledge();
+    }
+  }
   document.querySelectorAll('.kyp-dragging, .kyp-drag-over').forEach(function(c){
     c.classList.remove('kyp-dragging', 'kyp-drag-over');
   });
 }
-function kypDragOver(e) {
-  e.preventDefault();
-  if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
-  var card = e.target.closest ? e.target.closest('.kyp-card') : null;
-  if (!card) return;
-  document.querySelectorAll('.kyp-drag-over').forEach(function(c){ if (c !== card) c.classList.remove('kyp-drag-over'); });
-  card.classList.add('kyp-drag-over');
-}
-function kypDrop(e) {
-  e.preventDefault();
-  var grid = document.getElementById('kyp-grid');
-  if (!grid) return;
-  var src = grid.querySelector('.kyp-dragging');
-  var over = grid.querySelector('.kyp-drag-over') || (e.target.closest ? e.target.closest('.kyp-card') : null);
-  if (!src || !over || src === over) {
-    kypDragEnd(e);
+function kypCardClick(e, id) {
+  if (kypMouse.moved) {
+    e.preventDefault();
+    e.stopPropagation();
+    kypMouse.moved = false;
     return;
   }
-  var rect = over.getBoundingClientRect();
-  var after = e.clientY > rect.top + rect.height / 2;
-  if (after) over.parentNode.insertBefore(src, over.nextSibling);
-  else over.parentNode.insertBefore(src, over);
-  // 由 DOM 顺序反推 KNOWLEDGE 数组顺序并保存
-  var ids = Array.prototype.map.call(grid.querySelectorAll('.kyp-card'), function(c){ return parseInt(c.dataset.id); });
-  KNOWLEDGE.sort(function(a, b){ return ids.indexOf(a.id) - ids.indexOf(b.id); });
-  saveKnowledge();
-  kypDragEnd(e);
-}
-function kypDragCleanup() {
-  document.querySelectorAll('.kyp-dragging, .kyp-drag-over').forEach(function(c){
-    c.classList.remove('kyp-dragging', 'kyp-drag-over');
-  });
+  showKnowledgeDetail(id);
 }
 
 // ===== 知识详情弹窗（替代原生 alert）=====

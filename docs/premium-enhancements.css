@@ -4281,8 +4281,8 @@
   border-color: var(--c-border-3, #e0e0e0);
 }
 /* 拖拽中 */
-.kyp-card[draggable='true'] { cursor: grab; }
-.kyp-card[draggable='true']:active { cursor: grabbing; }
+.kyp-card { user-select: none; }
+.kyp-card:active { cursor: grabbing; }
 .kyp-card.kyp-drag-over {
   box-shadow: 0 0 0 2px #185FA5, 0 8px 24px rgba(24,95,165,0.2) !important;
   transform: scale(1.02) !important;
