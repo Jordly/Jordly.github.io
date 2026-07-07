@@ -4962,7 +4962,7 @@ function renderHandover(){
     <div class="card-title">交接记录</div>
 
     <div class="handover-toolbar">
-      <input id="h-search" class="h-search-input" value="${handoverFilter.keyword}" oninput="handoverSetKeyword(this.value)" placeholder="🔍 搜索项目名 / 原负责人 / 接收人">
+      <input id="h-search" class="h-search-input" value="${handoverFilter.keyword}" readonly onfocus="this.removeAttribute('readonly')" autocomplete="off" oninput="handoverSetKeyword(this.value)" placeholder="🔍 搜索项目名 / 原负责人 / 接收人">
       <div class="h-filter-tabs">
         <span class="h-filter-tab ${handoverFilter.status==='all'?'active':''}" onclick="handoverSetStatus('all',this)">全部</span>
         <span class="h-filter-tab ${handoverFilter.status==='已完成'?'active':''}" onclick="handoverSetStatus('已完成',this)">已完成</span>
