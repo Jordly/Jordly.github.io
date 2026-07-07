@@ -10464,7 +10464,7 @@ function clearArchiveSelection(){
 }
 
 function batchEditProjects(){
-  alert('鎵归噺缂栬緫鍔熻兘寮€鍙戜腑');
+  alert('批量编辑功能开发中');
 }
 
 function toggleCompareCheckbox(projectId) {
@@ -10519,7 +10519,7 @@ function filterIssueByStatus(status, el){
 
 function generateSparklinePath(fieldName){
     if(!KPI_HISTORY || KPI_HISTORY.length < 2){
-      // 鏃犲巻鍙叉暟鎹椂杩斿洖骞崇洿绾?      return {areaPath:'M 4,44 L 104,44 L 104,50 L 4,50 Z', strokePath:'M 4,44 L 104,44'};
+            // 无历史数据时返回平直线段
     }
     var values = [];
     for(var v=0; v<KPI_HISTORY.length; v++){ values.push(KPI_HISTORY[v][fieldName] || 0); }
@@ -10603,24 +10603,24 @@ function openComparePanel() {
           +'<div style="flex:1;text-align:center;padding:12px;background:#f0fdf4;border-radius:10px;">'
             +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+p1.name+'</div>'
             +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+p1.workplace+' 路 '+p1.serviceMode+' 路 PM: '+(p1.pm||'')+'</div>'
-            +'<div style="font-size:32px;font-weight:800;color:#0B9B96;margin-top:4px;">'+s1+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 鍒?/span></div>'
+            +'<div style="font-size:32px;font-weight:800;color:#0B9B96;margin-top:4px;">'+s1+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 分</span></div>'
             +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar1W+'px;background:linear-gradient(90deg,#0B9B96,#00C9A7);border-radius:3px;"></div></div>'
           +'</div>'
           +'<div style="display:flex;align-items:center;font-size:20px;font-weight:800;color:#94a3b8;flex-shrink:0;">VS</div>'
           +'<div style="flex:1;text-align:center;padding:12px;background:#eff6ff;border-radius:10px;">'
             +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+p2.name+'</div>'
             +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+p2.workplace+' 路 '+p2.serviceMode+' 路 PM: '+(p2.pm||'')+'</div>'
-            +'<div style="font-size:32px;font-weight:800;color:#3b82f6;margin-top:4px;">'+s2+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 鍒?/span></div>'
+            +'<div style="font-size:32px;font-weight:800;color:#3b82f6;margin-top:4px;">'+s2+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 分</span></div>'
             +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar2W+'px;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:3px;"></div></div>'
           +'</div>'
         +'</div>'
         // Dimension table
         +'<table style="width:100%;border-collapse:collapse;">'
           +'<thead><tr style="background:#f8fafc;">'
-            +'<th style="padding:8px 14px;text-align:left;font-size:12px;color:#64748b;font-weight:500;">缁村害</th>'
+            +'<th style="padding:8px 14px;text-align:left;font-size:12px;color:#64748b;font-weight:500;">维度</th>'
             +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+p1.name.substring(0,4)+'</th>'
             +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+p2.name.substring(0,4)+'</th>'
-            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">宸紓</th>'
+            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">差距</th>'
           +'</tr></thead>'
           +'<tbody>'+rowsHtml+'</tbody>'
         +'</table>'
@@ -10682,7 +10682,7 @@ function clearArchiveSelection(){
 }
 
 function batchEditProjects(){
-  alert('鎵归噺缂栬緫鍔熻兘寮€鍙戜腑');
+  alert('批量编辑功能开发中');
 }
 
 function toggleCompareCheckbox(projectId) {
@@ -10792,24 +10792,24 @@ function openComparePanel() {
           +'<div style="flex:1;text-align:center;padding:12px;background:#f0fdf4;border-radius:10px;">'
             +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+p1.name+'</div>'
             +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+p1.workplace+' 路 '+p1.serviceMode+' 路 PM: '+(p1.pm||'')+'</div>'
-            +'<div style="font-size:32px;font-weight:800;color:#0B9B96;margin-top:4px;">'+s1+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 鍒?/span></div>'
+            +'<div style="font-size:32px;font-weight:800;color:#0B9B96;margin-top:4px;">'+s1+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 分</span></div>'
             +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar1W+'px;background:linear-gradient(90deg,#0B9B96,#00C9A7);border-radius:3px;"></div></div>'
           +'</div>'
           +'<div style="display:flex;align-items:center;font-size:20px;font-weight:800;color:#94a3b8;flex-shrink:0;">VS</div>'
           +'<div style="flex:1;text-align:center;padding:12px;background:#eff6ff;border-radius:10px;">'
             +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+p2.name+'</div>'
             +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+p2.workplace+' 路 '+p2.serviceMode+' 路 PM: '+(p2.pm||'')+'</div>'
-            +'<div style="font-size:32px;font-weight:800;color:#3b82f6;margin-top:4px;">'+s2+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 鍒?/span></div>'
+            +'<div style="font-size:32px;font-weight:800;color:#3b82f6;margin-top:4px;">'+s2+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 分</span></div>'
             +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar2W+'px;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:3px;"></div></div>'
           +'</div>'
         +'</div>'
         // Dimension table
         +'<table style="width:100%;border-collapse:collapse;">'
           +'<thead><tr style="background:#f8fafc;">'
-            +'<th style="padding:8px 14px;text-align:left;font-size:12px;color:#64748b;font-weight:500;">缁村害</th>'
+            +'<th style="padding:8px 14px;text-align:left;font-size:12px;color:#64748b;font-weight:500;">维度</th>'
             +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+p1.name.substring(0,4)+'</th>'
             +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+p2.name.substring(0,4)+'</th>'
-            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">宸紓</th>'
+            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">差距</th>'
           +'</tr></thead>'
           +'<tbody>'+rowsHtml+'</tbody>'
         +'</table>'
