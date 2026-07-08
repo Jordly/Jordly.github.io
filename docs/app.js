@@ -4879,6 +4879,101 @@ function toggleHealthCard(className) {
   container.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+// 查看项目健康度详情（表格"查看"按钮 + 卡片展开后"查看详情"按钮共用）
+function toggleHealthDetail(projectId) {
+  const project = PROJECTS.find(p => p.id === projectId);
+  if (!project) { showConfirmModal("未找到项目数据"); return; }
+  const health = HEALTH_DATA.find(h => h.projectId === projectId && h.period === "2026-05");
+  const op = OPERATIONS.find(o => o.projectId === projectId);
+  const levelInfo = health ? getHealthLevel(health.overallScore) : { level: "未评估", class: "unrated", icon: "⚪" };
+
+  const panelId = "health-detail-" + projectId;
+  const existing = document.getElementById(panelId);
+  if (existing) { existing.remove(); return; }
+
+  // 维度明细HTML
+  let dimsHtml = "";
+  if (health && health.dimensions) {
+    dimsHtml = health.dimensions.map(d => {
+      const c = scoreColor(d.score);
+      const bg = scoreBg(d.score);
+      const itemsHtml = (d.items || []).map(item =>
+        `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px dashed #e2e8f0;font-size:12px;">
+          <span>${item.name}</span>
+          <span>
+            <span style="color:#64748b;">目标${item.target}</span>
+            <span style="margin:0 6px;color:#cbd5e1;">|</span>
+            <span style="color:${scoreColor(item.score)};font-weight:500;">实际${item.actual}（${item.score}分）</span>
+          </span>
+        </div>`
+      ).join("");
+      return `
+      <div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <div style="font-weight:600;font-size:13px;">${d.name}</div>
+          <div style="background:${bg};color:${c};padding:3px 12px;border-radius:20px;font-size:12px;font-weight:600;">${d.score}分 · ${d.level}</div>
+        </div>
+        ${itemsHtml}
+        <div style="font-size:11px;color:#94a3b8;margin-top:4px;">权重 ${(d.weight * 100).toFixed(0)}%</div>
+      </div>`;
+    }).join("");
+  } else {
+    dimsHtml = '<div style="padding:20px;text-align:center;color:#94a3b8;">暂无健康度评估数据</div>';
+  }
+
+  // 运营数据摘要
+  let opHtml = "";
+  if (op) {
+    opHtml = `
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;margin-bottom:10px;">
+      <div style="font-weight:600;font-size:13px;color:#166534;margin-bottom:8px;">📈 运营数据快照</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        <div style="text-align:center;background:#fff;padding:8px;border-radius:8px;">
+          <div style="font-size:11px;color:#64748b;">工单量</div><div style="font-size:16px;font-weight:700;color:#059669;">${op.ticketVol||0}</div>
+        </div>
+        <div style="text-align:center;background:#fff;padding:8px;border-radius:8px;">
+          <div style="font-size:11px;color:#64748b;">转化量</div><div style="font-size:16px;font-weight:700;color:#2563eb;">${op.convCount||0}</div>
+        </div>
+        <div style="text-align:center;background:#fff;padding:8px;border-radius:8px;">
+          <div style="font-size:11px;color:#64748b;">CSAT</div><div style="font-size:16px;font-weight:700;color:#7c3aed;">${op.csat||"--"}</div>
+        </div>
+        <div style="text-align:center;background:#fff;padding:8px;border-radius:8px;">
+          <div style="font-size:11px;color:#64748b;">解决率</div><div style="font-size:16px;font-weight:700;color:#ea580c;">${((op.resolveRate||0)*100).toFixed(1)}%</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const detailHtml = `
+  <div id="${panelId}" class="card" style="margin-top:16px;border:2px solid var(--c-primary);animation:fadeInUp 0.3s ease;">
+    <div style="padding:14px 18px;border-bottom:2px solid var(--c-border-light);display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <span style="font-size:15px;font-weight:700;">${levelInfo.icon} ${project.name} — 健康度详情</span>
+        <span style="margin-left:10px;background:${scoreBg(health?health.overallScore:0)};color:${scoreColor(health?health.overallScore:0)};padding:2px 12px;border-radius:20px;font-size:13px;font-weight:600;">
+          ${health ? health.overallScore + "分" : "未评估"} · ${levelInfo.level}
+        </span>
+      </div>
+      <button class="btn btn-sm" onclick="document.getElementById('${panelId}').remove()" style="padding:4px 12px;">✕ 收起</button>
+    </div>
+    <div style="padding:14px 18px;">
+      <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
+        <span style="background:#f1f5f9;padding:4px 12px;border-radius:6px;font-size:12px;">📍 ${project.workplace}</span>
+        <span style="background:#f1f5f9;padding:4px 12px;border-radius:6px;font-size:12px;">🏷️ ${project.serviceMode}</span>
+        <span style="background:#f1f5f9;padding:4px 12px;border-radius:6px;font-size:12px;">👤 PM：${project.pm}</span>
+        <span style="background:#f1f5f9;padding:4px 12px;border-radius:6px;font-size:12px;">📊 目标达成率：${project.targetRate}%</span>
+        <span style="background:#f1f5f9;padding:4px 12px;border-radius:6px;font-size:12px;">💰 利润率：${project.profitRate}%</span>
+      </div>
+      ${opHtml}
+      <div style="font-size:13px;font-weight:600;margin:10px 0 8px;color:#334155;">🔍 六维度评分明细</div>
+      ${dimsHtml}
+    </div>
+  </div>`;
+
+  const container = document.getElementById("health-detail-panels");
+  if (container) { container.insertAdjacentHTML("beforeend", detailHtml); }
+  document.getElementById(panelId).scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 // 排序表格
 function sortHealthTable(key) {
   const dir = (window._healthSort && window._healthSort.key === key && window._healthSort.dir === "desc") ? "asc" : "desc";
