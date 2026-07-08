@@ -5663,36 +5663,60 @@ function renderHandover(){
 
   <div class="card" style="margin-top:16px;">
 
-    <div class="card-title">项目交接状态总览</div>
+    <div class="card-title">📋 项目交接状态总览</div>
+    <div style="font-size:12px;color:#64748b;margin-top:-8px;margin-bottom:10px;">基于交接记录动态计算各项目当前PM承接状态</div>
 
     <table class="data-table">
 
-      <thead><tr><th>项目</th><th>现任负责人</th><th>交接状态</th><th>历史交接次数</th><th>上次交接日期</th></tr></thead>
+      <thead><tr><th>项目</th><th>现任负责人</th><th>交接状态</th><th>历史交接次数</th><th>上次交接日期</th><th>备注</th></tr></thead>
 
       <tbody>
 
         ${PROJECTS.filter(p=>filterState.workplace==='all'||p.workplace===filterState.workplace).map(p=>{
+          const projectHandovers = HANDOVERS.filter(h=>h.projectId===p.id);
+          const ongoing = projectHandovers.filter(h=>h.status==='进行中');
+          const lastH = projectHandovers.sort((a,b)=>b.date.localeCompare(a.date))[0];
 
-          const lastH = HANDOVERS.filter(h=>h.projectId===p.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
+          // 动态判断交接状态
+          let statusHtml = '';
+          let remark = '';
+          if (ongoing.length > 0) {
+            const oh = ongoing[0];
+            const isOverdue = oh.planDate && new Date(oh.planDate) < new Date();
+            if (isOverdue) {
+              statusHtml = '<span class="archive-tag" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca;">⚠️ 已逾期</span>';
+              remark = '超过计划日期未完成';
+            } else {
+              statusHtml = '<span class="archive-tag" style="background:#fff7ed;color:#ea580c;border:1px solid #fed7aa;">🔄 交接中</span>';
+              remark = oh.from + ' → ' + oh.to;
+            }
+          } else if (!lastH) {
+            statusHtml = '<span class="archive-tag archive-tag-dp">🔵 无记录</span>';
+            remark = '该项目从未有过交接记录';
+          } else {
+            const daysSince = Math.floor((new Date() - new Date(lastH.date)) / (1000*60*60*24));
+            if (daysSince <= 30) {
+              statusHtml = '<span class="archive-tag" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">✅ 刚完成</span>';
+              remark = lastH.completed + '天前完成';
+            } else if (daysSince <= 90) {
+              statusHtml = '<span class="archive-tag" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;">💚 稳定运行</span>';
+              remark = '已稳定' + Math.floor(daysSince/30) + '个月';
+            } else {
+              statusHtml = '<span class="archive-tag" style="background:#eff6ff;color:#2563eb;border:1px solid #bfdbfe;">📌 长期稳定</span>';
+              remark = '已稳定' + Math.floor(daysSince/30) + '+个月';
+            }
+          }
 
           return `<tr>
-
             <td>${p.name}</td>
-
             <td>${p.pm}</td>
-
-            <td><span class="archive-tag archive-tag-dp">正常</span></td>
-
-            <td>${(p.pmHistory||[]).length + HANDOVERS.filter(h=>h.projectId===p.id).length}</td>
-
-            <td>${lastH?lastH.date:'无'}</td>
-
+            <td>${statusHtml}</td>
+            <td>${(p.pmHistory||[]).length + projectHandovers.length}</td>
+            <td>${lastH?lastH.date:'—'}</td>
+            <td style="font-size:12px;color:#64748b;">${remark}</td>
           </tr>`;
-
         }).join('')}
-
       </tbody>
-
     </table>
 
   </div>`;
