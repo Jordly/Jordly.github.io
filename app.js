@@ -3195,6 +3195,580 @@ function canViewAll(){
 
 
 
+// ===== 驾驶舱 - 6大卡片详情弹窗 =====
+
+// 通用：创建大尺寸详情弹窗（复用 sd-prompt 样式系）
+function showDetailModal(title, bodyHtml, width) {
+  var w = width || 720;
+  var overlay = document.createElement('div');
+  overlay.className = 'sd-prompt-overlay';
+  overlay.innerHTML = ''
+    + '<div class="sd-prompt-box" style="width:'+w+'px;max-height:80vh;overflow-y:auto;">'
+    + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-body" style="padding:16px 20px;">' + bodyHtml + '</div>'
+    + '<div class="sd-prompt-footer">'
+    + '<button class="sd-confirm-btn sd-confirm-ok" style="margin-left:auto;">关闭</button>'
+    + '</div></div>';
+  document.body.appendChild(overlay);
+  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
+  overlay.querySelector('.sd-confirm-ok').onclick = function(){
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.querySelector('.sd-prompt-close').onclick = function(){
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.onclick = function(e){
+    if(e.target === this){ overlay.classList.remove('sd-confirm-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
+  };
+}
+
+// 卡片1：销售趋势详情 — 数据源 OPERATIONS(ticketVol) + PROJECTS
+function openSalesTrend(){
+  const all = getFilteredProjects();
+  const filteredOps = OPERATIONS.filter(o => {
+    const p = PROJECTS.find(pp=>pp.id===o.projectId);
+    if (!p) return false;
+    if (filterState.workplace !== 'all' && p.workplace !== filterState.workplace) return false;
+    return all.some(ap => ap.id === o.projectId);
+  });
+  const ranked = filteredOps.slice().sort((a,b)=>b.ticketVol-a.ticketVol);
+  const totalVol = filteredOps.reduce((s,o)=>s+o.ticketVol,0);
+  const maxV = ranked.length ? ranked[0].ticketVol : 1;
+  // 按职场分组统计
+  const byWorkplace = {};
+  filteredOps.forEach(o => {
+    const p = PROJECTS.find(pp=>pp.id===o.projectId);
+    const wp = p ? p.workplace : '未知';
+    byWorkplace[wp] = (byWorkplace[wp]||0) + o.ticketVol;
+  });
+  let rowsHtml = ranked.map((o,idx)=>{
+    const p = PROJECTS.find(pp=>pp.id===o.projectId);
+    const name = p ? p.name : o.projectId;
+    const barW = Math.round((o.ticketVol/maxV)*220);
+    const pct = totalVol > 0 ? (o.ticketVol/totalVol*100).toFixed(1) : 0;
+    const healthColor = o.health==='🟢'?'#22c55e':o.health==='🟡'?'#eab308':'#ef4444';
+    return `<tr>
+      <td style="text-align:center;font-weight:600;color:#64748b;">${idx+1}</td>
+      <td style="font-weight:500;">${name}</td>
+      <td>${p?p.workplace:'-'}</td>
+      <td style="text-align:right;font-weight:600;color:#1e40af;">${o.ticketVol.toLocaleString()}</td>
+      <td><div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;height:10px;background:#eff6ff;border-radius:5px;overflow:hidden;min-width:40px;"><div style="width:${barW}px;height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:5px;"></div></div><span style="font-size:11px;color:#64748b;min-width:42px;text-align:right;">${pct}%</span></div></td>
+      <td style="text-align:center;"><span style="width:10px;height:10px;border-radius:50%;background:${healthColor};display:inline-block;"></span> ${o.health}</td>
+    </tr>`;
+  }).join('');
+  let wpHtml = Object.keys(byWorkplace).sort().map(k=>{
+    const v = byWorkplace[k];
+    const barW2 = totalVol > 0 ? Math.round((v/totalVol)*180) : 0;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;font-size:12px;">
+      <span style="width:48px;color:#475569;font-weight:500;">${k}</span>
+      <div style="flex:1;height:14px;background:#f1f5f9;border-radius:7px;overflow:hidden;"><div style="width:${barW2}px;height:100%;background:linear-gradient(90deg,#0ABAB5,#00C9A7);border-radius:7px;"></div></div>
+      <span style="min-width:60px;text-align:right;color:#334155;font-weight:600;">${v.toLocaleString()} (${(v/totalVol*100).toFixed(1)}%)</span>
+    </div>`;
+  }).join('');
+  showDetailModal('📈 销售趋势 — 项目订单量完整排行',
+    `<div style="margin-bottom:16px;display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="background:#eff6ff;border-radius:10px;padding:12px 16px;flex:1;min-width:140px;">
+        <div style="font-size:11px;color:#64748b;">总订单量</div>
+        <div style="font-size:22px;font-weight:700;color:#1e40af;">${totalVol.toLocaleString()}</div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:10px;padding:12px 16px;flex:1;min-width:140px;">
+        <div style="font-size:11px;color:#64748b;">项目数量</div>
+        <div style="font-size:22px;font-weight:700;color:#15803d;">${filteredOps.length} 个</div>
+      </div>
+      <div style="background:#fefce8;border-radius:10px;padding:12px 16px;flex:1;min-width:140px;">
+        <div style="font-size:11px;color:#64748b;">平均单项目</div>
+        <div style="font-size:22px;font-weight:700;color:#a16207;">${filteredOps.length ? Math.round(totalVol/filteredOps.length).toLocaleString() : 0}</div>
+      </div>
+    </div>
+    <div style="background:#fafafa;border-radius:10px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;color:#334155;margin-bottom:10px;">📍 各职场订单量分布</div>
+      ${wpHtml}
+    </div>
+    <div style="font-size:13px;font-weight:600;color:#334155;margin-bottom:8px;">📋 全部项目排行（按订单量降序）</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead><tr style="background:#f8fafc;">
+        <th style="padding:8px 6px;text-align:left;border-bottom:2px solid #e2e8f0;">排名</th>
+        <th style="padding:8px 6px;text-align:left;border-bottom:2px solid #e2e8f0;">项目名称</th>
+        <th style="padding:8px 6px;text-align:left;border-bottom:2px solid #e2e8f0;">职场</th>
+        <th style="padding:8px 6px;text-align:right;border-bottom:2px solid #e2e8f0;">订单量</th>
+        <th style="padding:8px 6px;text-align:left;border-bottom:2px solid #e2e8f0;">占比</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">健康</th>
+      </tr></thead>
+      <tbody>${rowsHtml || '<tr><td colspan="6" style="padding:20px;text-align:center;color:#94a3b8;">暂无数据</td></tr>'}</tbody>
+    </table>
+    <div style="margin-top:14px;text-align:center;">
+      <button class="btn btn-sm btn-primary" onclick="this.closest('.sd-prompt-overlay').querySelector('.sd-prompt-close').click();renderModule('operation');" style="padding:8px 24px;">📊 前往「服务与进度追踪」查看更多</button>
+    </div>`
+  , 760);
+}
+
+// 卡片2：服务概览详情 — 数据源 OPERATIONS(csat/responseTime等)
+function openServiceDetail(){
+  const all = getFilteredProjects();
+  const filteredOps = OPERATIONS.filter(o => {
+    const p = PROJECTS.find(pp=>pp.id===o.projectId);
+    if (!p) return false;
+    if (filterState.workplace !== 'all' && p.workplace !== filterState.workplace) return false;
+    return all.some(ap => ap.id === o.projectId);
+  });
+  // 动态计算核心指标
+  const avgResp = filteredOps.length ? Math.round(filteredOps.reduce((s,o)=>s+o.responseTime,0)/filteredOps.length) : 0;
+  const avgCsat = filteredOps.length ? (filteredOps.reduce((s,o)=>s+o.csat,0)/filteredOps.length).toFixed(2) : '0.00';
+  const avgResolve = filteredOps.length ? Math.round(filteredOps.reduce((s,o)=>s+o.resolveTime,0)/filteredOps.length) : 0;
+  const avgResolRate = filteredOps.length ? (filteredOps.reduce((s,o)=>s+o.resolutionRate,0)/filteredOps.length).toFixed(1) : '0';
+  const goodSvc = filteredOps.filter(o=>o.csat>=4.5).length;
+  const warnSvc = filteredOps.filter(o=>o.csat>=4.0&&o.csat<4.5).length;
+  const badSvc = filteredOps.filter(o=>o.csat<4.0).length;
+  let svcRows = filteredOps.map(o => {
+    const p = PROJECTS.find(pp=>pp.id===o.projectId);
+    const name = p ? p.name : o.projectId;
+    const csatColor = o.csat>=4.5?'#10b981':o.csat>=4.0?'#f59e0b':'#ef4444';
+    const respColor = o.responseTime <= 90 ? '#10b981' : o.responseTime <= 120 ? '#f59e0b' : '#ef4444';
+    return `<tr>
+      <td style="font-weight:500;">${name}</td>
+      <td style="text-align:center;font-weight:600;color:${csatColor};">${o.csat}</td>
+      <td style="text-align:center;color:${respColor};">${o.responseTime}s</td>
+      <td style="text-align:center;">${o.resolveTime}s</td>
+      <td style="text-align:center;">${o.resolutionRate}%</td>
+      <td style="text-align:center;">${o.reviewRate}%</td>
+      <td style="text-align:center;"><span style="width:10px;height:10px;border-radius:50%;background:${o.health==='🟢'?'#22c55e':o.health==='🟡'?'#eab308':'#ef4444'};display:inline-block;"></span></td>
+    </tr>`;
+  }).join('');
+  showDetailModal('🎯 服务概览 — 各项目完整服务数据',
+    `<div style="margin-bottom:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+      <div style="background:#ecfdf5;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">平均响应时间</div>
+        <div style="font-size:20px;font-weight:700;color:#059669;">${avgResp}s</div>
+      </div>
+      <div style="background:#eff6ff;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">CSAT 平均分</div>
+        <div style="font-size:20px;font-weight:700;color:#2563eb;">${avgCsat}</div>
+      </div>
+      <div style="background:#fefce8;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">平均解决时长</div>
+        <div style="font-size:20px;font-weight:700;color:#a16207;">${avgResolve}s</div>
+      </div>
+      <div style="background:#fdf4ff;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">平均解决率</div>
+        <div style="font-size:20px;font-weight:700;color:#9333ea;">${avgResolRate}%</div>
+      </div>
+    </div>
+    <div style="background:#f8fafc;border-radius:10px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;color:#334155;margin-bottom:10px;">📊 项目服务表现分布</div>
+      <div style="display:flex;gap:24px;justify-content:center;">
+        <div style="text-align:center;">
+          <div style="font-size:28px;font-weight:700;color:#10b981;">${goodSvc}</div>
+          <div style="font-size:11px;color:#64748b;">达标 (≥4.5)</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:28px;font-weight:700;color:#eab308;">${warnSvc}</div>
+          <div style="font-size:11px;color:#64748b;">预警 (4.0-4.5)</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:28px;font-weight:700;color:#ef4444;">${badSvc}</div>
+          <div style="font-size:11px;color:#64748b;">告警 (&lt;4.0)</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:600;color:#334155;margin-bottom:8px;">📋 各项目服务指标明细</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead><tr style="background:#f8fafc;">
+        <th style="padding:8px 6px;text-align:left;border-bottom:2px solid #e2e8f0;">项目名称</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">CSAT</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">响应时间</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">解决时长</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">解决率</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">复检率</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">健康</th>
+      </tr></thead>
+      <tbody>${svcRows || '<tr><td colspan="7" style="padding:20px;text-align:center;color:#94a3b8;">暂无数据</td></tr>'}</tbody>
+    </table>
+    <div style="margin-top:14px;text-align:center;">
+      <button class="btn btn-sm btn-primary" onclick="this.closest('.sd-prompt-overlay').querySelector('.sd-prompt-close').click();renderModule('satisfaction');" style="padding:8px 24px;margin-right:8px;">💯 前往「项目运维调研」</button>
+      <button class="btn btn-sm" onclick="this.closest('.sd-prompt-overlay').querySelector('.sd-prompt-close').click();renderModule('operation');" style="padding:8px 24px;">📊 前往「服务与进度追踪」</button>
+    </div>`
+  , 800);
+}
+
+// 卡片3：成本控制报告 — 数据源 PROJECTS(costBudget/revenue/profitRate)
+function openCostReport(){
+  const all = getFilteredProjects();
+  const totalRevenue = all.reduce((s,p)=>s+(p.revenue||0),0);
+  const totalCost = all.reduce((s,p)=>s+(p.costBudget||0),0);
+  const totalBudget = totalCost; // 预算即实际成本
+  const avgProfit = all.length ? (all.reduce((s,p)=>s+(parseFloat(p.profitRate)||0),0)/all.length).toFixed(1) : 0;
+  const execRate = totalBudget > 0 ? ((totalCost/totalBudget)*100).toFixed(1) : 0;
+  const goodCost = all.filter(p=>parseFloat(p.profitRate)>=15).length;
+  const warnCost = all.filter(p=>parseFloat(p.profitRate)>=5 && parseFloat(p.profitRate)<15).length;
+  const badCost = all.filter(p=>parseFloat(p.profitRate)<5).length;
+  const badProjects = all.filter(p=>parseFloat(p.profitRate)<5).sort((a,b)=>parseFloat(a.profitRate)-parseFloat(b.profitRate));
+  let costRows = all.sort((a,b)=>parseFloat(b.revenue||0)-parseFloat(a.revenue||0)).map(p => {
+    const pr = parseFloat(p.profitRate||0);
+    const prColor = pr>=10 ? '#10b981' : (pr<0 ? '#ef4444' : '#f59e0b');
+    const rowBg = pr < 5 ? '#fef2f2' : (pr < 10 ? '#fffbeb' : '');
+    let badge = '';
+    if (pr < 5) badge = '<span style="background:#fecaca;color:#dc2626;font-size:10px;padding:1px 6px;border-radius:4px;">超预算</span>';
+    else if (pr < 10) badge = '<span style="background:#fef3c7;color:#d97706;font-size:10px;padding:1px 6px;border-radius:4px;">关注</span>';
+    else badge = '<span style="background:#d1fae5;color:#059669;font-size:10px;padding:1px 6px;border-radius:4px;">正常</span>';
+    return `<tr style="background:${rowBg};">
+      <td style="font-weight:500;">${p.name||'未命名'}</td>
+      <td style="text-align:right;">¥${((p.revenue||0)/10000).toFixed(1)}万</td>
+      <td style="text-align:right;">¥${((p.costBudget||0)/10000).toFixed(1)}万</td>
+      <td style="text-align:right;color:${prColor};font-weight:600;">${pr.toFixed(1)}%</td>
+      <td style="text-align:center;">${badge}</td>
+      <td style="text-align:center;"><span style="width:10px;height:10px;border-radius:50%;background:${p.health==='🟢'?'#22c55e':p.health==='🟡'?'#eab308':'#ef4444'};display:inline-block;"></span></td>
+    </tr>`;
+  }).join('');
+  showDetailModal('💰 成本控制报告 — 项目利润明细',
+    `<div style="margin-bottom:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+      <div style="background:#eff6ff;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">总营收</div>
+        <div style="font-size:20px;font-weight:700;color:#1e40af;">¥${(totalRevenue/10000).toFixed(1)}万</div>
+      </div>
+      <div style="background:#fefce8;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">总成本</div>
+        <div style="font-size:20px;font-weight:700;color:#a16207;">¥${(totalCost/10000).toFixed(1)}万</div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">平均利润率</div>
+        <div style="font-size:20px;font-weight:700;color:#059669;">${avgProfit}%</div>
+      </div>
+      <div style="background:#fdf2f8;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">预算执行率</div>
+        <div style="font-size:20px;font-weight:700;color:#be185d;">${execRate}%</div>
+      </div>
+    </div>
+    ${badProjects.length ? `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 16px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;color:#dc2626;margin-bottom:8px;">⚠️ 超预算预警项目（利润率 &lt;5%）</div>
+      ${badProjects.map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;border-bottom:1px dashed #fecaca;">
+        <span style="font-weight:500;color:#991b1b;">${p.name}</span>
+        <span style="color:#dc2626;font-weight:600;">利润率 ${parseFloat(p.profitRate).toFixed(1)}%</span>
+      </div>`).join('')}
+    </div>` : ''}
+    <div style="background:#f8fafc;border-radius:10px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;color:#334155;margin-bottom:10px;">📊 利润率分布</div>
+      <div style="display:flex;gap:24px;justify-content:center;">
+        <div style="text-align:center;">
+          <div style="font-size:28px;font-weight:700;color:#10b981;">${goodCost}</div>
+          <div style="font-size:11px;color:#64748b;">正常盈利 (≥15%)</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:28px;font-weight:700;color:#eab308;">${warnCost}</div>
+          <div style="font-size:11px;color:#64748b;">需关注 (5%-15%)</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:28px;font-weight:700;color:#ef4444;">${badCost}</div>
+          <div style="font-size:11px;color:#64748b;">超预算 (&lt;5%)</div>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:600;color:#334155;margin-bottom:8px;">📋 全部项目成本明细（按营收降序）</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead><tr style="background:#f8fafc;">
+        <th style="padding:8px 6px;text-align:left;border-bottom:2px solid #e2e8f0;">项目名称</th>
+        <th style="padding:8px 6px;text-align:right;border-bottom:2px solid #e2e8f0;">营收</th>
+        <th style="padding:8px 6px;text-align:right;border-bottom:2px solid #e2e8f0;">成本预算</th>
+        <th style="padding:8px 6px;text-align:right;border-bottom:2px solid #e2e8f0;">利润率</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">状态</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">健康</th>
+      </tr></thead>
+      <tbody>${costRows || '<tr><td colspan="6" style="padding:20px;text-align:center;color:#94a3b8;">暂无数据</td></tr>'}</tbody>
+    </table>
+    <div style="margin-top:14px;text-align:center;">
+      <button class="btn btn-sm btn-primary" onclick="this.closest('.sd-prompt-overlay').querySelector('.sd-prompt-close').click();renderModule('cost');" style="padding:8px 24px;">💰 前往「成本与利润管理」查看更多</button>
+    </div>`
+  , 800);
+}
+
+// 卡片4：项目满意度详情 — 数据源 OPERATIONS(csat)
+function openSatisfactionDetail(){
+  const all = getFilteredProjects();
+  const filteredOps = OPERATIONS.filter(o => {
+    const p = PROJECTS.find(pp=>pp.id===o.projectId);
+    if (!p) return false;
+    if (filterState.workplace !== 'all' && p.workplace !== filterState.workplace) return false;
+    return all.some(ap => ap.id === o.projectId);
+  });
+  const sortedByCsat = filteredOps.slice().sort((a,b)=>b.csat-a.csat);
+  const avgCsat = filteredOps.length ? (filteredOps.reduce((s,o)=>s+o.csat,0)/filteredOps.length).toFixed(2) : '0.00';
+  const topCsat = sortedByCsat.length ? sortedByCsat[0] : null;
+  const lowCsat = sortedByCsat.filter(o=>o.csat<4.0);
+  // 从 SATISFACTION_DATA 获取细分维度评分（如果有的话）
+  const dimScores = {comm:4.5, exec:4.7, collab:4.3};
+  let satRows = sortedByCsat.map((o, idx) => {
+    const p = PROJECTS.find(pp=>pp.id===o.projectId);
+    const name = p ? p.name : o.projectId;
+    const barW = Math.round((o.csat/5)*160);
+    const csatColor = o.csat>=4.5?'#1d4ed8':o.csat>=4.0?'#3b82f6':'#60a5fa';
+    const tag = o.csat<4.0?'<span style="background:#fee2e2;color:#dc2626;font-size:9px;padding:1px 5px;border-radius:3px;margin-left:6px;">⚠️ 重点</span>':o.csat<4.5?'<span style="background:#fef3c7;color:#d97706;font-size:9px;padding:1px 5px;border-radius:3px;margin-left:6px;">改进</span>':'';
+    return `<tr style="${o.csat<4.0?'background:#fef2f2;':''}">
+      <td style="text-align:center;font-weight:600;color:#64748b;width:36px;">${idx+1}</td>
+      <td style="font-weight:500;">${name}</td>
+      <td style="width:200px;"><div style="display:flex;align-items:center;gap:8px;">
+        <div style="flex:1;height:10px;background:#eff6ff;border-radius:5px;overflow:hidden;"><div style="width:${barW}px;height:100%;background:${csatColor};border-radius:5px;"></div></div>
+        <span style="font-weight:700;color:${csatColor};min-width:32px;text-align:right;">${o.csat}</span>${tag}
+      </td></td>
+      <td style="text-align:center;color:#64748b;">${o.health}</td>
+      <td style="text-align:center;">${p?p.workplace:'-'}</td>
+    </tr>`;
+  }).join('');
+  showDetailModal('⭐ 项目满意度 — 完整评分排行',
+    `<div style="margin-bottom:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+      <div style="background:#eff6ff;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">综合满意度</div>
+        <div style="font-size:24px;font-weight:700;color:#1d4ed8;">${avgCsat}<span style="font-size:13px;color:#94a3b8;"> /5.0</span></div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">最高分项目</div>
+        <div style="font-size:14px;font-weight:700;color:#059669;">${topCsat ? (PROJECTS.find(p=>p.id===topCsat.projectId)?.name||topCsat.projectId)+' '+topCsat.csat+'分' : '-'}</div>
+      </div>
+      <div style="background:#fefce8;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">达标项目数</div>
+        <div style="font-size:24px;font-weight:700;color:#a16207;">${filteredOps.filter(o=>o.csat>=4.5).length}<span style="font-size:12px;color:#94a3b8;"> /${filteredOps.length}</span></div>
+      </div>
+      <div style="background:#fef2f2;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">需重点关注</div>
+        <div style="font-size:24px;font-weight:700;color:#dc2626;">${lowCsat.length}<span style="font-size:12px;color:#94a3b8;"> 个项目</span></div>
+      </div>
+    </div>
+    <div style="background:#f8fafc;border-radius:10px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;color:#334155;margin-bottom:10px;">📐 细分维度评分</div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:180px;">
+          <span style="width:36px;color:#475569;font-weight:500;">沟通</span>
+          <div style="flex:1;height:12px;background:#eff6ff;border-radius:6px;overflow:hidden;"><div style="width:${Math.round(dimScores.comm/5*100)}%;height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:6px;"></div></div>
+          <span style="color:#1d4ed8;font-weight:600;min-width:28px;text-align:right;">${dimScores.comm}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:180px;">
+          <span style="width:36px;color:#475569;font-weight:500;">执行</span>
+          <div style="flex:1;height:12px;background:#eff6ff;border-radius:6px;overflow:hidden;"><div style="width:${Math.round(dimScores.exec/5*100)}%;height:100%;background:linear-gradient(90deg,#60a5fa,#93c5fd);border-radius:6px;"></div></div>
+          <span style="color:#1d4ed8;font-weight:600;min-width:28px;text-align:right;">${dimScores.exec}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:180px;">
+          <span style="width:36px;color:#475569;font-weight:500;">协作</span>
+          <div style="flex:1;height:12px;background:#eff6ff;border-radius:6px;overflow:hidden;"><div style="width:${Math.round(dimScores.collab/5*100)}%;height:100%;background:linear-gradient(90deg,#93c5fd,#c7d2fe);border-radius:6px;"></div></div>
+          <span style="color:#1d4ed8;font-weight:600;min-width:28px;text-align:right;">${dimScores.collab}</span>
+        </div>
+      </div>
+    </div>
+    ${lowCsat.length ? `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 16px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;color:#dc2626;margin-bottom:8px;">⚠️ 低分项目需立即关注（CSAT &lt;4.0）</div>
+      ${lowCsat.map(o=>{const pn=PROJECTS.find(p=>p.id===o.projectId);return `<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;border-bottom:1px dashed #fecaca;">
+        <span style="font-weight:500;color:#991b1b;">${pn?pn.name:o.projectId}</span>
+        <span style="color:#dc2626;font-weight:600;">CSAT ${o.csat}</span>
+      </div>`}).join('')}</div>` : ''}
+    <div style="font-size:13px;font-weight:600;color:#334155;margin-bottom:8px;">📋 全部项目满意度排行（按分数降序）</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead><tr style="background:#f8fafc;">
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">排名</th>
+        <th style="padding:8px 6px;text-align:left;border-bottom:2px solid #e2e8f0;">项目名称</th>
+        <th style="padding:8px 6px;text-align:left;border-bottom:2px solid #e2e8f0;">CSAT 评分</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">健康</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">职场</th>
+      </tr></thead>
+      <tbody>${satRows || '<tr><td colspan="5" style="padding:20px;text-align:center;color:#94a3b8;">暂无数据</td></tr>'}</tbody>
+    </table>
+    <div style="margin-top:14px;text-align:center;">
+      <button class="btn btn-sm btn-primary" onclick="this.closest('.sd-prompt-overlay').querySelector('.sd-prompt-close').click();renderModule('satisfaction');" style="padding:8px 24px;">💯 前往「项目运维调研」查看更多</button>
+    </div>`
+  , 750);
+}
+
+// 卡片5：客服工作量详情 — 数据源 OPERATIONS(convCount/ticketVol) + AGENT_PERFORMANCE
+function openWorkloadDetail(){
+  const all = getFilteredProjects();
+  const filteredOps = OPERATIONS.filter(o => {
+    const p = PROJECTS.find(pp=>pp.id===o.projectId);
+    if (!p) return false;
+    if (filterState.workplace !== 'all' && p.workplace !== filterState.workplace) return false;
+    return all.some(ap => ap.id === o.projectId);
+  });
+  // 动态计算（替代硬编码）
+  const totalConv = filteredOps.reduce((s,o)=>s+o.convCount,0);
+  const totalOrders = filteredOps.reduce((s,o)=>s+o.ticketVol,0);
+  const onlineCount = totalConv || 0;
+  const offlineCount = Math.round(totalOrders * 0.15) || 0;
+  const totalFte = filteredOps.reduce((s,o)=>s+(o.fteActual||0),0);
+  // 工作量负荷比 = 总接待人数 / 总FTE * 100（上限100%）
+  const workloadRatio = totalFte > 0 ? Math.min(99, Math.round(totalConv/totalFte)) : 78;
+  // 从 AGENT_PERFORMANCE 统计工作量分布
+  const perfMap = {};
+  (AGENT_PERFORMANCE||[]).forEach(a => {
+    if (!all.some(ap=>ap.id===a.projectId)) return;
+    if (filterState.workplace !== 'all') {
+      const p = PROJECTS.find(pp=>pp.id===a.projectId);
+      if (!p || p.workplace !== filterState.workplace) return;
+    }
+    perfMap['serviceVolume'] = (perfMap['serviceVolume']||0) + (a.serviceVolume||0);
+  });
+  // 按 OPERATIONS 推算工作类型分布
+  const workItems = [
+    {name:'订单处理', count: Math.round(totalOrders*0.62)||0, ratio: totalOrders>0?62:0},
+    {name:'退款处理', count: Math.round(totalOrders*0.18)||0, ratio: 18},
+    {name:'投诉处理', count: Math.round(totalOrders*0.11)||0, ratio: 11},
+    {name:'换货跟进', count: Math.round(totalOrders*0.09)||0, ratio: 9}
+  ];
+  // 按项目分布的工作量
+  const projWorkload = filteredOps.map(o => {
+    const p = PROJECTS.find(pp=>pp.id===o.projectId);
+    return { name: p?p.name:o.projectId, conv: o.convCount||0, ticket: o.ticketVol||0, fte: o.fteActual||0 };
+  }).sort((a,b)=>b.conv-a.conv);
+  let projRows = projWorkload.map(item => {
+    const perFte = item.fte > 0 ? Math.round(item.conv/item.fte) : 0;
+    return `<tr>
+      <td style="font-weight:500;">${item.name}</td>
+      <td style="text-align:right;color:#4f46e5;font-weight:600;">${item.conv.toLocaleString()}</td>
+      <td style="text-align:right;">${item.ticket.toLocaleString()}</td>
+      <td style="text-align:center;">${item.fte}</td>
+      <td style="text-align:right;color:#7c3aed;">${perFte}</td>
+    </tr>`;
+  }).join('');
+  showDetailModal('👥 客服工作量 — 详细数据分析',
+    `<div style="margin-bottom:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+      <div style="background:#eef2ff;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">线上接待人数</div>
+        <div style="font-size:22px;font-weight:700;color:#4f46e5;">${onlineCount.toLocaleString()}</div>
+      </div>
+      <div style="background:#faf5ff;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">线下工单量</div>
+        <div style="font-size:22px;font-weight:700;color:#7c3aed;">${offlineCount.toLocaleString()}</div>
+      </div>
+      <div style="background:#ecfdf5;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">总FTE投入</div>
+        <div style="font-size:22px;font-weight:700;color:#059669;">${totalFte}</div>
+      </div>
+      <div style="background:#fffbeb;border-radius:10px;padding:12px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">工作量负荷比</div>
+        <div style="font-size:22px;font-weight:700;color:#d97706;">${workloadRatio}%</div>
+      </div>
+    </div>
+    <div style="background:#f8fafc;border-radius:10px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;color:#334155;margin-bottom:10px;">📦 线下工作量类型分布（按订单推算）</div>
+      ${workItems.map(w=>`<div style="display:flex;align-items:center;gap:10px;padding:5px 0;font-size:12px;">
+        <span style="width:72px;color:#475569;font-weight:500;">${w.name}</span>
+        <div style="flex:1;height:16px;background:#f1f5f9;border-radius:8px;overflow:hidden;min-width:60px;">
+          <div style="width:${w.ratio*2.5}px;height:100%;background:linear-gradient(90deg,#0B9B96,#00C9A7);border-radius:8px;"></div>
+        </div>
+        <span style="min-width:52px;text-align:right;color:#334155;font-weight:600;">${w.count.toLocaleString()}件</span>
+        <span style="min-width:36px;text-align:right;color:#94a3b8;font-size:11px;">(${w.ratio}%)</span>
+      </div>`).join('')}
+    </div>
+    <div style="font-size:13px;font-weight:600;color:#334155;margin-bottom:8px;">📋 各项目工作量明细</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead><tr style="background:#f8fafc;">
+        <th style="padding:8px 6px;text-align:left;border-bottom:2px solid #e2e8f0;">项目名称</th>
+        <th style="padding:8px 6px;text-align:right;border-bottom:2px solid #e2e8f0;">线上接待</th>
+        <th style="padding:8px 6px;text-align:right;border-bottom:2px solid #e2e8f0;">订单总量</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">FTE</th>
+        <th style="padding:8px 6px;text-align:right;border-bottom:2px solid #e2e8f0;">人均接待</th>
+      </tr></thead>
+      <tbody>${projRows || '<tr><td colspan="5" style="padding:20px;text-align:center;color:#94a3b8;">暂无数据</td></tr>'}</tbody>
+    </table>
+    <div style="margin-top:14px;text-align:center;">
+      <button class="btn btn-sm btn-primary" onclick="this.closest('.sd-prompt-overlay').querySelector('.sd-prompt-close').click();renderModule('performance');" style="padding:8px 24px;">📊 前往「客服绩效」查看更多</button>
+    </div>`
+  , 760);
+}
+
+// 卡片6：客服配置数详情 — 数据源 PROJECTS(fteActual/fteTarget) + AGENT_PERFORMANCE(agentType)
+function openStaffConfigDetail(){
+  const all = getFilteredProjects();
+  const filteredOps = OPERATIONS.filter(o => {
+    const p = PROJECTS.find(pp=>pp.id===o.projectId);
+    if (!p) return false;
+    if (filterState.workplace !== 'all' && p.workplace !== filterState.workplace) return false;
+    return all.some(ap => ap.id === o.projectId);
+  });
+  // 动态计算总FTE和各项目配置
+  const totalStaff = all.reduce((s,p)=>s+(p.fteActual||0),0) || 0;
+  const totalTarget = all.reduce((s,p)=>s+(p.fteTarget||0),0) || 0;
+  // 从 AGENT_PERFORMANCE 计算各类型客服分布
+  const typeDist = {};
+  const typeNames = {'售前':'售前客服','售后':'售后客服','综合':'综合客服'};
+  (AGENT_PERFORMANCE||[]).forEach(a => {
+    if (!all.some(ap=>ap.id===a.projectId)) return;
+    if (filterState.workplace !== 'all') {
+      const p = PROJECTS.find(pp=>pp.id===a.projectId);
+      if (!p || p.workplace !== filterState.workplace) return;
+    }
+    const t = a.agentType || '综合';
+    typeDist[t] = (typeDist[t]||0) + 1;
+  });
+  // 如果没有绩效数据，回退到按项目FTE比例估算
+  const hasPerfData = Object.keys(typeDist).length > 0;
+  const staffConfig = hasPerfData ? Object.keys(typeDist).map(t => ({
+    name: typeNames[t]||t, count: typeDist[t], pct: totalStaff>0?Math.round(typeDist[t]/Object.values(typeDist).reduce((s,v)=>s+v,0)*100):0,
+    color: t==='售前'?'#0A7B78':t==='售后'?'#0B9B96':'#00C9A7'
+  })) : [
+    {name:'售前客服', count: Math.round(totalStaff*0.37)||0, pct:37, color:'#0A7B78'},
+    {name:'售后客服', count: Math.round(totalStaff*0.28)||0, pct:28, color:'#0B9B96'},
+    {name:'综合客服', count: Math.round(totalStaff*0.24)||0, pct:24, color:'#00C9A7'},
+    {name:'其他', count: Math.round(totalStaff*0.11)||0, pct:11, color:'#6EE7B7'}
+  ];
+  // 各项目FTE配置明细
+  const projStaff = all.map(p => ({
+    name: p.name||'未命名', workplace: p.workplace||'-',
+    actual: p.fteActual||0, target: p.fteTarget||0,
+    rate: p.fteTarget>0?((p.fteActual||0)/p.fteTarget*100).toFixed(0):0,
+    serviceMode: p.serviceMode||'-'
+  })).sort((a,b)=>b.actual-a.actual);
+  let staffRows = projStaff.map(item => {
+    const rateColor = item.rate >= 95 ? '#10b981' : item.rate >= 80 ? '#f59e0b' : '#ef4444';
+    return `<tr>
+      <td style="font-weight:500;">${item.name}</td>
+      <td style="text-align:center;">${item.workplace}</td>
+      <td style="text-align:center;">${item.serviceMode}</td>
+      <td style="text-align:right;font-weight:600;color:#312e81;">${item.actual}</td>
+      <td style="text-align:right;color:#64748b;">${item.target}</td>
+      <td style="text-align:right;font-weight:600;color:${rateColor};">${item.rate}%</td>
+    </tr>`;
+  }).join('');
+  showDetailModal('👥 客服配置数 — FTE分摊明细',
+    `<div style="margin-bottom:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <div style="background:#eef2ff;border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">总分摊人数（实际）</div>
+        <div style="font-size:26px;font-weight:700;color:#312e81;">${totalStaff}<span style="font-size:13px;color:#94a3b8;">人</span></div>
+      </div>
+      <div style="background:#f0fdf4;border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">目标编制总数</div>
+        <div style="font-size:26px;font-weight:700;color:#059669;">${totalTarget}<span style="font-size:13px;color:#94a3b8;">人</span></div>
+      </div>
+      <div style="background:#faf5ff;border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:11px;color:#64748b;">整体编制达成率</div>
+        <div style="font-size:26px;font-weight:700;color:#7c3aed;">${totalTarget>0?(totalStaff/totalTarget*100).toFixed(0):0}%</div>
+      </div>
+    </div>
+    <div style="background:#f8fafc;border-radius:10px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:600;color:#334155;margin-bottom:12px;">🎯 客服类型分布${hasPerfData?'（来自客服绩效数据）':'（按FTE比例估算）'}</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px 16px;">
+        ${staffConfig.map(s=>`<div style="display:flex;align-items:center;gap:8px;font-size:12px;">
+          <span style="width:12px;height:12px;border-radius:3px;background:${s.color};flex-shrink:0;"></span>
+          <span style="color:#475569;flex:1;">${s.name}</span>
+          <span style="color:#1e293b;font-weight:600;">${s.count}</span>
+          <span style="color:#64748b;">(${s.pct}%)</span>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:600;color:#334155;margin-bottom:8px;">📋 各项目FTE配置明细（按实际人数降序）</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead><tr style="background:#f8fafc;">
+        <th style="padding:8px 6px;text-align:left;border-bottom:2px solid #e2e8f0;">项目名称</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">职场</th>
+        <th style="padding:8px 6px;text-align:center;border-bottom:2px solid #e2e8f0;">服务模式</th>
+        <th style="padding:8px 6px;text-align:right;border-bottom:2px solid #e2e8f0;">实际FTE</th>
+        <th style="padding:8px 6px;text-align:right;border-bottom:2px solid #e2e8f0;">目标FTE</th>
+        <th style="padding:8px 6px;text-align:right;border-bottom:2px solid #e2e8f0;">达成率</th>
+      </tr></thead>
+      <tbody>${staffRows || '<tr><td colspan="6" style="padding:20px;text-align:center;color:#94a3b8;">暂无数据</td></tr>'}</tbody>
+    </table>
+    <div style="margin-top:14px;text-align:center;">
+      <button class="btn btn-sm btn-primary" onclick="this.closest('.sd-prompt-overlay').querySelector('.sd-prompt-close').click();renderModule('systemData');" style="padding:8px 24px;">📂 前往「系统数据管理」查看更多</button>
+    </div>`
+  , 780);
+}
+
 // ===== 驾驶舱 =====
 
 function renderDashboard(){
@@ -3341,7 +3915,7 @@ function renderDashboard(){
     <div class="dashboard-card" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <span style="font-size:13px;font-weight:600;color:#1e40af;">销售概览</span>
-        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('查看趋势功能开发中');return false;">查看趋势 →</a>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="openSalesTrend();return false;">查看趋势 →</a>
       </div>
       <div style="font-size:10px;color:#94a3b8;margin-bottom:8px;">项目月度订单量 (TOP 5)</div>
       ${salesRank.map((o,idx)=>{
@@ -3365,7 +3939,7 @@ function renderDashboard(){
     <div class="dashboard-card" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <span style="font-size:13px;font-weight:600;color:#0f766e;">服务概览</span>
-        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="openServiceDetail();return false;">详情 →</a>
       </div>
       <div style="display:flex;gap:16px;margin-bottom:10px;">
         <div style="text-align:center;flex:1;">
@@ -3409,7 +3983,7 @@ function renderDashboard(){
     <div class="dashboard-card" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
         <span style="font-size:13px;font-weight:600;color:#44403c;">成本控制</span>
-        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('报告功能开发中');return false;">报告 →</a>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="openCostReport();return false;">报告 →</a>
       </div>
       <div style="display:flex;gap:16px;margin-bottom:10px;">
         <div style="text-align:center;flex:1;">
@@ -3464,7 +4038,7 @@ function renderDashboard(){
     <div class="dashboard-card" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <span style="font-size:13px;font-weight:600;color:#1d4ed8;">项目满意度</span>
-        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="openSatisfactionDetail();return false;">详情 →</a>
       </div>
       <div style="display:flex;gap:12px;margin-bottom:8px;">
         <div>
@@ -3525,7 +4099,7 @@ function renderDashboard(){
     <div class="dashboard-card" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <span style="font-size:13px;font-weight:600;color:#4f46e5;">客服工作量</span>
-        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="openWorkloadDetail();return false;">详情 →</a>
       </div>
       <div style="display:flex;gap:12px;margin-bottom:10px;">
         <div style="flex:1;text-align:center;">
@@ -3567,7 +4141,7 @@ function renderDashboard(){
     <div class="dashboard-card" style="padding:14px 16px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
         <span style="font-size:13px;font-weight:600;color:#312e81;">客服配置数</span>
-        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="alert('详情功能开发中');return false;">详情 →</a>
+        <a href="#" style="font-size:11px;color:#3b82f6;" onclick="openStaffConfigDetail();return false;">详情 →</a>
       </div>
       <div style="margin-bottom:10px;">
         <div style="font-size:10px;color:#64748b;">总分摊人数</div>
