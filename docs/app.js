@@ -2297,7 +2297,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         var _authStr = localStorage.getItem('chanseen_auth');
         if (_authStr) {
           var _auth = JSON.parse(_authStr);
-          var _maxAge = _auth.remember ? 86400000 : 3600000;
+          var _maxAge = _auth.remember ? 7200000 : 3600000;
           if (_auth.token && (Date.now() - _auth.loginAt) < _maxAge) {
             var _u = USERS.find(function(u){ return u.id === (_auth.user && _auth.user.id) || u.username === (_auth.user && _auth.user.username); }) || USERS[0] || {};
             currentUser = {
