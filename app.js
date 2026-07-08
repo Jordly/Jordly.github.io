@@ -6516,7 +6516,7 @@ function showNewHandover(){
 
         <label class="form-label">接收人 *</label>
 
-        <input class="form-input" id="h-to" placeholder="请输入接收人姓名">
+        <input class="form-input" id="h-to" placeholder="请输入接收人姓名" autocomplete="off">
 
       </div>
 
