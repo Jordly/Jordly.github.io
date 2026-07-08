@@ -3386,8 +3386,7 @@ function openServiceDetail(){
       <tbody>${svcRows || '<tr><td colspan="7" style="padding:20px;text-align:center;color:#94a3b8;">暂无数据</td></tr>'}</tbody>
     </table>
     <div style="margin-top:14px;text-align:center;">
-      <button class="btn btn-sm btn-primary" onclick="this.closest('.sd-prompt-overlay').querySelector('.sd-prompt-close').click();renderModule('satisfaction');" style="padding:8px 24px;margin-right:8px;">💯 前往「项目运维调研」</button>
-      <button class="btn btn-sm" onclick="this.closest('.sd-prompt-overlay').querySelector('.sd-prompt-close').click();renderModule('operation');" style="padding:8px 24px;">📊 前往「服务与进度追踪」</button>
+      <button class="btn btn-sm btn-primary" onclick="this.closest('.sd-prompt-overlay').querySelector('.sd-prompt-close').click();renderModule('operation');" style="padding:8px 24px;">📊 前往「服务与进度追踪」</button>
     </div>`
   , 800);
 }
