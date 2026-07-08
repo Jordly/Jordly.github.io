@@ -342,7 +342,7 @@ body {
   font-size: 18px;
   font-weight: 600;
 }
-.module-actions { display: flex; gap: 8px; }
+.module-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 
 /* 按钮 */
 .btn {
@@ -407,6 +407,21 @@ body {
 }
 .data-table tr:hover td { background: #FAFBFC; }
 .data-table .actions { display: flex; gap: 4px; }
+.sd-action-btn { padding: 4px 8px; font-size: 12px; white-space: nowrap; }
+
+/* 难度评估表：固定列宽，避免间距过大 */
+.assess-table { table-layout: fixed; }
+.assess-table th:nth-child(1), .assess-table td:nth-child(1) { width: 38px; }   /* 复选框 */
+.assess-table th:nth-child(2), .assess-table td:nth-child(2) { width: 80px; }   /* 评估周期 */
+.assess-table th:nth-child(3), .assess-table td:nth-child(3) { width: 88px; }   /* 事业部 */
+.assess-table th:nth-child(4), .assess-table td:nth-child(4) { width: 130px; }  /* 评估单元 */
+.assess-table th:nth-child(5), .assess-table td:nth-child(5) { width: 76px; }   /* 管理人 */
+.assess-table th:nth-child(6), .assess-table td:nth-child(6) { width: 92px; }   /* 管理等级 */
+.assess-table th:nth-child(7), .assess-table td:nth-child(7) { width: 64px; }   /* 总分 */
+.assess-table th:nth-child(8), .assess-table td:nth-child(8) { width: 64px; }   /* 定量 */
+.assess-table th:nth-child(9), .assess-table td:nth-child(9) { width: 64px; }   /* 定性 */
+.assess-table th:nth-child(10), .assess-table td:nth-child(10) { width: 116px; } /* 操作 */
+.assess-table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* 表格内可点击链接 */
 .table-link {
