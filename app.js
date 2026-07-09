@@ -9327,11 +9327,19 @@ function getDifficultyLevel(score) {
 }
 
 // 渲染项目难度评估页面（优化版）
+// 筛选状态缓存（防止重新渲染时丢失选中值）
+var _asmtFilterCache = { dept: '', mgr: '' };
+
 function renderAssessment(){
-  // 数据准备
+  // 数据准备 —— 先从DOM读取（若DOM尚未销毁），否则用缓存
+  var _deptEl = document.getElementById('asmt-dept-filter');
+  var _mgrEl = document.getElementById('asmt-mgr-filter');
+  if (_deptEl) _asmtFilterCache.dept = _deptEl.value || '';
+  if (_mgrEl) _asmtFilterCache.mgr = _mgrEl.value || '';
+  const deptFilter = _asmtFilterCache.dept;
+  const mgrFilter = _asmtFilterCache.mgr;
+
   let assessments = ASSESSMENTS.filter(a => a.group && !a.month.includes('依据'));
-  const deptFilter = document.getElementById('asmt-dept-filter') ? document.getElementById('asmt-dept-filter').value : '';
-  const mgrFilter = document.getElementById('asmt-mgr-filter') ? document.getElementById('asmt-mgr-filter').value : '';
   if (deptFilter) assessments = assessments.filter(a => a.dept === deptFilter);
   if (mgrFilter) assessments = assessments.filter(a => a.manager === mgrFilter);
 
@@ -9358,7 +9366,7 @@ function renderAssessment(){
 
   // ===== 开始渲染 =====
   let html = `<div class="page-header"><h2>📊 项目难度评估</h2>
-    <div class="page-actions">
+    <div class="page-actions" style="justify-content:flex-end;">
       <button class="btn btn-sm" onclick="importAssessment()">📥 导入</button>
       <button class="btn btn-sm" onclick="exportAssessment()">📤 导出</button>
       <button class="btn btn-sm btn-primary" onclick="showCompareModal()">🔄 自由对比</button>
@@ -9372,18 +9380,18 @@ function renderAssessment(){
   html += `  <div style="display:flex;align-items:center;gap:6px;">`;
   html += `    <span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">筛选项目</span>`;
   html += `    <select id="asmt-dept-filter" class="fb-select">`;
-  html += `      <option value="">全部</option>`;
+  html += `      <option value=""${deptFilter===''?' selected':''}>全部</option>`;
   [...new Set(ASSESSMENTS.map(a => a.dept))].filter(Boolean).forEach(d => {
-    html += `      <option value="${d}">${d}</option>`;
+    html += `      <option value="${d}"${deptFilter===d?' selected':''}>${d}</option>`;
   });
   html += `    </select>`;
   html += `  </div>`;
   html += `  <div style="display:flex;align-items:center;gap:6px;">`;
   html += `    <span style="font-size:13px;color:var(--c-text-2);white-space:nowrap;">筛选管理人</span>`;
   html += `    <select id="asmt-mgr-filter" class="fb-select">`;
-  html += `      <option value="">全部</option>`;
+  html += `      <option value=""${mgrFilter===''?' selected':''}>全部</option>`;
   ASSESSMENTS.map(a => a.manager).filter((v,i, a2) => v && a2.indexOf(v) === i).forEach(m => {
-    html += `      <option value="${m}">${m}</option>`;
+    html += `      <option value="${m}"${mgrFilter===m?' selected':''}>${m}</option>`;
   });
   html += `    </select>`;
   html += `  </div>`;
@@ -9668,22 +9676,35 @@ function processAssessmentRows(rows) {
 
 // 自由对比弹窗
 function showCompareModal() {
-  let body = `<div style="font-size:13px;line-height:2;">`;
-  body += `<p>请选择要对比的组别（可多选）：</p>`;
-  body += `<div id="compare-checkboxes" style="display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;">`;
   const groups = ASSESSMENTS.filter(a => a.group && !a.month.includes('依据'));
+  let body = `<div style="font-size:13px;">`;
+  body += `<div style="margin-bottom:10px;">`;
+  body += `  <input type="text" id="compare-search" placeholder="🔍 搜索组别名称..." oninput="filterCompareCheckboxes(this.value)" style="width:100%;padding:8px 12px;border:1px solid #d9d9d9;border-radius:6px;font-size:13px;box-sizing:border-box;outline:none;">`;
+  body += `</div>`;
+  body += `<div id="compare-checkboxes" style="max-height:220px;overflow-y:auto;border:1px solid #eee;border-radius:6px;padding:8px;">`;
   groups.forEach(a => {
-    body += `<label style="cursor:pointer;font-size:13px;"><input type="checkbox" class="compare-cb" value="${a.group}" style="margin-right:4px;">${a.group}</label>`;
+    body += `<label class="compare-label" data-name="${a.group.toLowerCase()}" style="display:flex;align-items:center;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:13px;"><input type="checkbox" class="compare-cb" value="${a.group}" style="margin-right:8px;">${a.group}</label>`;
   });
   body += `</div>`;
-  body += `<div id="compare-result" style="margin-top:12px;"></div>`;
-  body += `<div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">`;
-  body += `  <button class="btn" onclick="var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove();">取消</button>`;
-  body += `  <button class="btn btn-primary" onclick="runAssessmentCompare()">开始对比</button>`;
+  body += `<div style="margin-top:8px;font-size:12px;color:#888;">已选：<span id="compare-count">0</span> / ${groups.length} 个组别</div>`;
+  body += `<div id="compare-result" style="margin-top:14px;"></div>`;
   body += `</div>`;
-  body += `</div>`;
-  showCustomModal('🔄 自由对比模拟', body);
+  showCustomModal('🔄 自由对比模拟', body, function(){
+    runAssessmentCompare();
+  });
 }
+
+// 搜索过滤组别checkbox
+window.filterCompareCheckboxes = function(keyword) {
+  const labels = document.querySelectorAll('.compare-label');
+  const kw = (keyword||'').toLowerCase();
+  let visibleCount = 0;
+  labels.forEach(function(lbl){
+    const name = (lbl.getAttribute('data-name')||'');
+    lbl.style.display = (name.indexOf(kw)>=0) ? '' : 'none';
+    if(name.indexOf(kw)>=0) visibleCount++;
+  });
+};
 
 // 执行对比
 function runAssessmentCompare() {
@@ -9692,7 +9713,8 @@ function runAssessmentCompare() {
   const groups = Array.from(cbs).map(cb => cb.value);
   let html = `<div>`;
   html += `<div style="font-size:14px;font-weight:600;margin-bottom:12px;">对比结果（共${groups.length}个组别）</div>`;
-  html += `<table class="data-table" style="font-size:12px;">`;
+  html += `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">`;
+  html += `<table class="data-table" style="font-size:12px;min-width:max-content;">`;
   html += `<thead><tr><th>指标</th>${groups.map(g=>`<th>${g}</th>`).join('')}</tr></thead>`;
   html += `<tbody>`;
   const headers = ['总分','定量得分','定性得分','适配度'];
@@ -9715,7 +9737,7 @@ function runAssessmentCompare() {
     html += `</tr>`;
   });
   html += `  </tbody></table>`;
-  html += `</div>`;
+  html += `</div></div>`;
   document.getElementById('compare-result').innerHTML = html;
 }
 
