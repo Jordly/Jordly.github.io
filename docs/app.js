@@ -298,6 +298,26 @@ function showCustomModal(title, bodyHtml, onConfirm) {
   };
 }
 
+// 详情弹窗（无底部 取消/确定 按钮，避免与内容区功能按钮重复）
+function showDetailModal(title, bodyHtml) {
+  var overlay = document.createElement('div');
+  overlay.className = 'sd-prompt-overlay';
+  overlay.innerHTML = ''
+    + '<div class="sd-prompt-box" style="width:520px;">'
+    + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-body">' + bodyHtml + '</div>'
+    + '</div>';
+  document.body.appendChild(overlay);
+  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
+  overlay.querySelector('.sd-prompt-close').onclick = function(){
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  };
+  overlay.onclick = function(e){
+    if(e.target === this){ overlay.classList.remove('sd-confirm-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
+  };
+}
+
 // ===== 数据持久化（彻底修复版）=====
 // 安全写入 localStorage（带 quota 处理和用户提示）
 function safeSetItem(key, value) {
@@ -9366,7 +9386,7 @@ function renderAssessment(){
 
   // ===== 开始渲染 =====
   let html = `<div class="page-header"><h2>📊 项目难度评估</h2>
-    <div class="page-actions" style="justify-content:flex-end;">
+    <div class="page-actions" style="display:flex;justify-content:flex-end;gap:8px;">
       <button class="btn btn-sm" onclick="importAssessment()">📥 导入</button>
       <button class="btn btn-sm" onclick="exportAssessment()">📤 导出</button>
       <button class="btn btn-sm btn-primary" onclick="showCompareModal()">🔄 自由对比</button>
@@ -9614,7 +9634,7 @@ function showManagerDetail(mgrName){
   body += `</tbody></table>`;
   body += `<hr><div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn btn-sm btn-primary" onclick="var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove();goToSystemDataTable('assessments');">✏️ 去系统数据管理编辑</button></div>`;
   body += `</div>`;
-  showCustomModal(mgrName + ' - 管理能力详情', body);
+  showDetailModal(mgrName + ' - 管理能力详情', body);
 }
 
 // 导入评估报告
@@ -9688,10 +9708,9 @@ function showCompareModal() {
   body += `</div>`;
   body += `<div style="margin-top:8px;font-size:12px;color:#888;">已选：<span id="compare-count">0</span> / ${groups.length} 个组别</div>`;
   body += `<div id="compare-result" style="margin-top:14px;"></div>`;
+  body += `<div style="margin-top:14px;text-align:right;"><button class="btn btn-sm btn-primary" onclick="runAssessmentCompare()">🔄 开始对比</button></div>`;
   body += `</div>`;
-  showCustomModal('🔄 自由对比模拟', body, function(){
-    runAssessmentCompare();
-  });
+  showCustomModal('🔄 自由对比模拟', body);
 }
 
 // 搜索过滤组别checkbox
@@ -9758,7 +9777,7 @@ function showGroupDetail(groupName){
   body += `  <button class="btn btn-sm btn-primary" onclick="var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove();goToSystemDataTable('assessments');">✏️ 去系统数据管理编辑</button>`;
   body += `  <button class="btn btn-sm" style="color:#f5222d;border-color:#f5222d;" onclick="if(confirm('确定删除「${a.group.replace(/'/g,"\\'")}」的评估记录？')){ var i=ASSESSMENTS.findIndex(x=>x.group==='${a.group.replace(/'/g,"\\'")}'); if(i>=0){ASSESSMENTS.splice(i,1);} _saveSystemData('assessments'); var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove(); renderModule('assessment'); }">🗑️ 删除</button>`;
   body += `</div></div>`;
-  showCustomModal(groupName + ' - 难度评估详情', body);
+  showDetailModal(groupName + ' - 难度评估详情', body);
 }
 
 
