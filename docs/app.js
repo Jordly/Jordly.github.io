@@ -9708,9 +9708,12 @@ function showCompareModal() {
   body += `</div>`;
   body += `<div style="margin-top:8px;font-size:12px;color:#888;">已选：<span id="compare-count">0</span> / ${groups.length} 个组别</div>`;
   body += `<div id="compare-result" style="margin-top:14px;"></div>`;
-  body += `<div style="margin-top:14px;text-align:right;"><button class="btn btn-sm btn-primary" onclick="runAssessmentCompare()">🔄 开始对比</button></div>`;
+  body += `<div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;">`;
+  body += `  <button class="btn btn-sm" onclick="var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove();">✖ 退出</button>`;
+  body += `  <button class="btn btn-sm btn-primary" onclick="runAssessmentCompare()">🔄 开始对比</button>`;
   body += `</div>`;
-  showCustomModal('🔄 自由对比模拟', body);
+  body += `</div>`;
+  showDetailModal('🔄 自由对比模拟', body);
 }
 
 // 搜索过滤组别checkbox
