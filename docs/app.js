@@ -298,26 +298,6 @@ function showCustomModal(title, bodyHtml, onConfirm) {
   };
 }
 
-// 详情弹窗（无底部 取消/确定 按钮，避免与内容区功能按钮重复）
-function showDetailModal(title, bodyHtml) {
-  var overlay = document.createElement('div');
-  overlay.className = 'sd-prompt-overlay';
-  overlay.innerHTML = ''
-    + '<div class="sd-prompt-box" style="width:520px;">'
-    + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close">&times;</button></div>'
-    + '<div class="sd-prompt-body">' + bodyHtml + '</div>'
-    + '</div>';
-  document.body.appendChild(overlay);
-  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
-  overlay.querySelector('.sd-prompt-close').onclick = function(){
-    overlay.classList.remove('sd-confirm-show');
-    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
-  };
-  overlay.onclick = function(e){
-    if(e.target === this){ overlay.classList.remove('sd-confirm-show'); setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300); }
-  };
-}
-
 // ===== 数据持久化（彻底修复版）=====
 // 安全写入 localStorage（带 quota 处理和用户提示）
 function safeSetItem(key, value) {
@@ -3226,15 +3206,9 @@ function showDetailModal(title, bodyHtml, width) {
     + '<div class="sd-prompt-box" style="width:'+w+'px;max-height:80vh;overflow-y:auto;">'
     + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close">&times;</button></div>'
     + '<div class="sd-prompt-body" style="padding:16px 20px;">' + bodyHtml + '</div>'
-    + '<div class="sd-prompt-footer">'
-    + '<button class="sd-confirm-btn sd-confirm-ok" style="margin-left:auto;">关闭</button>'
-    + '</div></div>';
+    + '</div>';
   document.body.appendChild(overlay);
   setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
-  overlay.querySelector('.sd-confirm-ok').onclick = function(){
-    overlay.classList.remove('sd-confirm-show');
-    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
-  };
   overlay.querySelector('.sd-prompt-close').onclick = function(){
     overlay.classList.remove('sd-confirm-show');
     setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
@@ -9708,8 +9682,8 @@ function showCompareModal() {
   body += `</div>`;
   body += `<div style="margin-top:8px;font-size:12px;color:#888;">已选：<span id="compare-count">0</span> / ${groups.length} 个组别</div>`;
   body += `<div id="compare-result" style="margin-top:14px;"></div>`;
-  body += `<div style="margin-top:14px;display:flex;gap:8px;justify-content:flex-end;">`;
-  body += `  <button class="btn btn-sm" onclick="var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove();">✖ 退出</button>`;
+  body += `<div style="margin-top:14px;display:flex;gap:8px;justify-content:center;">`;
+  body += `  <button class="btn btn-sm btn-primary" onclick="var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove();">✖ 退出</button>`;
   body += `  <button class="btn btn-sm btn-primary" onclick="runAssessmentCompare()">🔄 开始对比</button>`;
   body += `</div>`;
   body += `</div>`;
