@@ -7385,7 +7385,7 @@ function renderSatisfaction(){
 
     </select>
 
-    <button class="btn btn-sm" onclick="SAT_FILTER={projectId:'',scoreRange:'',evaluator:''};renderSatisfaction()" style="color:var(--c-text-3);">清除筛选</button>
+    <button class="btn btn-sm" onclick="SAT_FILTER={projectId:'',scoreRange:'',evaluator:''};renderModule('satisfaction')" style="color:var(--c-text-3);">清除筛选</button>
 
     <button class="btn btn-sm btn-primary" onclick="applySatFilter()">确定</button>
 
@@ -7502,7 +7502,7 @@ function applySatFilter(){
   SAT_FILTER.projectId = pf?pf.value:'';
   SAT_FILTER.scoreRange = sf?sf.value:'';
   SAT_FILTER.evaluator = ef?ef.value:'';
-  renderSatisfaction();
+  renderModule('satisfaction');
 }
 
 function showSatisfactionDetail(id){
