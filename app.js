@@ -1589,6 +1589,49 @@ const SATISFACTION_DATA = [
 
 ];
 
+// 把嵌套结构拍平成顶层字段（供系统数据管理统一增删改查）
+function flattenSat(r){
+  var pf = r.projectFeedback || {};
+  var rep = pf.reporting || {};
+  var comm = pf.communication || {};
+  return {
+    id: r.id,
+    projectId: r.projectId,
+    period: r.period,
+    overall: pf.overall || '',
+    busiPerf: pf.busiLima2sPerf || '',
+    professionalism: pf.professionalism || '',
+    execution: pf.execution || '',
+    repTime: rep.timeliLima2s || '',
+    repAcc: rep.accuracy || '',
+    repFull: rep.completeLima2s || '',
+    riskControl: pf.riskControl || '',
+    commFreq: comm.frequency || '',
+    commUnd: comm.understanding || '',
+    commSync: comm.sync || '',
+    leaderScore: r.leaderScore || 0,
+    leaderComment: r.leaderComment || '',
+    evaluatedBy: r.evaluatedBy || '',
+    evaluatedAt: r.evaluatedAt || '',
+    status: r.status || '待评定'
+  };
+}
+
+// 数据落 localStorage，首次从内置种子拍平初始化
+function loadSatisfaction(){
+  var arr = null;
+  try { var s = localStorage.getItem('chansee_satisfaction'); if(s) arr = JSON.parse(s); } catch(e){}
+  if(arr && arr.length){
+    SATISFACTION_DATA.length = 0;
+    for(var i=0;i<arr.length;i++) SATISFACTION_DATA.push(arr[i]);
+  } else {
+    var seed = SATISFACTION_DATA.map(flattenSat);
+    SATISFACTION_DATA.length = 0;
+    for(var j=0;j<seed.length;j++) SATISFACTION_DATA.push(seed[j]);
+    try { localStorage.setItem('chansee_satisfaction', JSON.stringify(SATISFACTION_DATA)); } catch(e){}
+  }
+}
+loadSatisfaction();
 
 
 const HEALTH_DATA = [
@@ -7312,7 +7355,7 @@ function renderSatisfaction(){
 
     <span style="font-size:12px;color:var(--c-text-3);font-weight:500;">筛选条件：</span>
 
-    <select class="form-select form-select-sm" id="sat-filter-project" onchange="SAT_FILTER.projectId=this.value;renderSatisfaction()" style="max-width:200px;">
+    <select class="form-select form-select-sm" id="sat-filter-project" onchange="SAT_FILTER.projectId=this.value;" style="max-width:200px;">
 
       <option value="">全部项目</option>
 
@@ -7320,7 +7363,7 @@ function renderSatisfaction(){
 
     </select>
 
-    <select class="form-select form-select-sm" id="sat-filter-score" onchange="SAT_FILTER.scoreRange=this.value;renderSatisfaction()" style="max-width:160px;">
+    <select class="form-select form-select-sm" id="sat-filter-score" onchange="SAT_FILTER.scoreRange=this.value;" style="max-width:160px;">
 
       <option value="">全部得分</option>
 
@@ -7334,7 +7377,7 @@ function renderSatisfaction(){
 
     </select>
 
-    <select class="form-select form-select-sm" id="sat-filter-evaluator" onchange="SAT_FILTER.evaluator=this.value;renderSatisfaction()" style="max-width:160px;">
+    <select class="form-select form-select-sm" id="sat-filter-evaluator" onchange="SAT_FILTER.evaluator=this.value;" style="max-width:160px;">
 
       <option value="">全部评定人</option>
 
@@ -7343,6 +7386,8 @@ function renderSatisfaction(){
     </select>
 
     <button class="btn btn-sm" onclick="SAT_FILTER={projectId:'',scoreRange:'',evaluator:''};renderSatisfaction()" style="color:var(--c-text-3);">清除筛选</button>
+
+    <button class="btn btn-sm btn-primary" onclick="applySatFilter()">确定</button>
 
     <span style="margin-left:auto;font-size:12px;color:var(--c-text-3);">共 ${filtered.length} 条记录</span>
 
@@ -7416,15 +7461,15 @@ function renderSatisfaction(){
 
             <td>${s.period}</td>
 
-            <td><span class="badge ${s.projectFeedback.overall==='非常满意'?'badge-green':s.projectFeedback.overall==='满意'?'badge-green':'badge-yellow'}">${s.projectFeedback.overall}</span></td>
+            <td><span class="badge ${s.overall==='非常满意'?'badge-green':s.overall==='满意'?'badge-green':'badge-yellow'}">${s.overall}</span></td>
 
-            <td>${s.projectFeedback.busiLima2sPerf.length > 10 ? s.projectFeedback.busiLima2sPerf.slice(0,10) + '…' : s.projectFeedback.busiLima2sPerf}</td>
+            <td>${s.busiPerf.length > 10 ? s.busiPerf.slice(0,10) + '…' : s.busiPerf}</td>
 
-            <td>${s.projectFeedback.professionalism.length > 8 ? s.projectFeedback.professionalism.slice(0,8) + '…' : s.projectFeedback.professionalism}</td>
+            <td>${s.professionalism.length > 8 ? s.professionalism.slice(0,8) + '…' : s.professionalism}</td>
 
-            <td>${s.projectFeedback.execution.length > 8 ? s.projectFeedback.execution.slice(0,8) + '…' : s.projectFeedback.execution}</td>
+            <td>${s.execution.length > 8 ? s.execution.slice(0,8) + '…' : s.execution}</td>
 
-            <td>${s.projectFeedback.communication.frequency}</td>
+            <td>${s.commFreq}</td>
 
             <td><span style="font-weight:700;color:${scoreColor};font-size:15px;">${s.leaderScore}分</span> <span style="font-size:11px;color:${scoreColor};">${scoreLabel}</span></td>
 
@@ -7449,6 +7494,16 @@ function renderSatisfaction(){
 }
 
 
+
+function applySatFilter(){
+  var pf=document.getElementById('sat-filter-project');
+  var sf=document.getElementById('sat-filter-score');
+  var ef=document.getElementById('sat-filter-evaluator');
+  SAT_FILTER.projectId = pf?pf.value:'';
+  SAT_FILTER.scoreRange = sf?sf.value:'';
+  SAT_FILTER.evaluator = ef?ef.value:'';
+  renderSatisfaction();
+}
 
 function showSatisfactionDetail(id){
 
@@ -7510,7 +7565,7 @@ function showSatisfactionDetail(id){
 
         <div style="font-size:12px;color:var(--c-text-3);">综合感受</div>
 
-        <div style="font-size:14px;font-weight:500;margin-top:2px;"><span class="badge ${s.projectFeedback.overall==='非常满意'?'badge-green':s.projectFeedback.overall==='满意'?'badge-green':'badge-yellow'}">${s.projectFeedback.overall}</span></div>
+        <div style="font-size:14px;font-weight:500;margin-top:2px;"><span class="badge ${s.overall==='非常满意'?'badge-green':s.overall==='满意'?'badge-green':'badge-yellow'}">${s.overall}</span></div>
 
       </div>
 
@@ -7522,7 +7577,7 @@ function showSatisfactionDetail(id){
 
           <div style="font-size:11px;color:var(--c-text-3);">团队业务表现</div>
 
-          <div style="font-size:12px;margin-top:2px;">${s.projectFeedback.busiLima2sPerf}</div>
+          <div style="font-size:12px;margin-top:2px;">${s.busiPerf}</div>
 
         </div>
 
@@ -7530,7 +7585,7 @@ function showSatisfactionDetail(id){
 
           <div style="font-size:11px;color:var(--c-text-3);">团队专业度</div>
 
-          <div style="font-size:12px;margin-top:2px;">${s.projectFeedback.professionalism}</div>
+          <div style="font-size:12px;margin-top:2px;">${s.professionalism}</div>
 
         </div>
 
@@ -7538,7 +7593,7 @@ function showSatisfactionDetail(id){
 
           <div style="font-size:11px;color:var(--c-text-3);">团队执行力</div>
 
-          <div style="font-size:12px;margin-top:2px;">${s.projectFeedback.execution}</div>
+          <div style="font-size:12px;margin-top:2px;">${s.execution}</div>
 
         </div>
 
@@ -7546,7 +7601,7 @@ function showSatisfactionDetail(id){
 
           <div style="font-size:11px;color:var(--c-text-3);">风险管控</div>
 
-          <div style="font-size:12px;margin-top:2px;">${s.projectFeedback.riskControl}</div>
+          <div style="font-size:12px;margin-top:2px;">${s.riskControl}</div>
 
         </div>
 
@@ -7558,7 +7613,7 @@ function showSatisfactionDetail(id){
 
         <div style="font-size:11px;color:var(--c-text-3);">汇报能力</div>
 
-        <div style="font-size:12px;margin-top:2px;">时效性：${s.projectFeedback.reporting.timeliLima2s} ｜ 准确性：${s.projectFeedback.reporting.accuracy} ｜ 全面性：${s.projectFeedback.reporting.completeLima2s}</div>
+        <div style="font-size:12px;margin-top:2px;">时效性：${s.repTime} ｜ 准确性：${s.repAcc} ｜ 全面性：${s.repFull}</div>
 
       </div>
 
@@ -7568,7 +7623,7 @@ function showSatisfactionDetail(id){
 
         <div style="font-size:11px;color:var(--c-text-3);">沟通配合</div>
 
-        <div style="font-size:12px;margin-top:2px;">沟通频率：${s.projectFeedback.communication.frequency} ｜ 理解能力：${s.projectFeedback.communication.understanding} ｜ 信息同步：${s.projectFeedback.communication.sync}</div>
+        <div style="font-size:12px;margin-top:2px;">沟通频率：${s.commFreq} ｜ 理解能力：${s.commUnd} ｜ 信息同步：${s.commSync}</div>
 
       </div>
 
@@ -7880,7 +7935,7 @@ function doAddSatisfaction(){
 
   const p = PROJECTS.find(pp => pp.id === pid);
 
-  SATISFACTION_DATA.push({
+  var _nr = {
 
     id: SATISFACTION_DATA.length + 1,
 
@@ -7932,7 +7987,9 @@ function doAddSatisfaction(){
 
     status: "待评定"
 
-  });
+  };
+
+  SATISFACTION_DATA.push(flattenSat(_nr));
 
   document.getElementById("modal-overlay").classList.add("hidden");
 
@@ -7953,17 +8010,17 @@ function exportSatisfaction(){
     return [
       p ? p.name : s.projectId,
       s.period,
-      s.projectFeedback.overall,
-      s.projectFeedback.busiLima2sPerf,
-      s.projectFeedback.professionalism,
-      s.projectFeedback.execution,
-      s.projectFeedback.reporting.timeliness,
-      s.projectFeedback.reporting.accuracy,
-      s.projectFeedback.reporting.completeness,
-      s.projectFeedback.riskControl,
-      s.projectFeedback.communication.frequency,
-      s.projectFeedback.communication.understanding,
-      s.projectFeedback.communication.sync,
+      s.overall,
+      s.busiPerf,
+      s.professionalism,
+      s.execution,
+      s.repTime,
+      s.repAcc,
+      s.repFull,
+      s.riskControl,
+      s.commFreq,
+      s.commUnd,
+      s.commSync,
       s.leaderScore,
       s.leaderComment,
       s.evaluatedBy,
@@ -8073,7 +8130,7 @@ function processSatisfactionRows(rows) {
     const projectName = vals[headers.indexOf('项目')] || vals[0] || '';
     const p = PROJECTS.find(pp => pp.name === projectName);
     if(!p) continue;
-    SATISFACTION_DATA.push({
+    var _nr = {
       id: SATISFACTION_DATA.length + 1,
       projectId: p.id,
       period: period,
@@ -8099,7 +8156,8 @@ function processSatisfactionRows(rows) {
       evaluatedBy: vals[headers.indexOf('评定人')] || currentRole,
       evaluatedAt: vals[headers.indexOf('评定日期')] || new Date().toISOString().slice(0,10),
       status: vals[headers.indexOf('状态')] || '待评定'
-    });
+    };
+    SATISFACTION_DATA.push(flattenSat(_nr));
     importCount++;
   }
   document.getElementById("modal-overlay").classList.add("hidden");
@@ -8768,6 +8826,32 @@ var SYSTEM_DATA_TABLES = {
       {key:'qual7', label:'客诉难度', type:'number'},
       {key:'qual8', label:'突发事件', type:'number'}
     ]
+  },
+  satisfaction: {
+    label: '📋 运维调研表',
+    desc: '项目运维调研与满意度评估数据，包含项目方感受（综合/业务/专业/执行/汇报/风控/沟通）与上级评定。项目运维调研页面依赖此表。在系统数据管理中可新增、编辑、删除、导入、导出，所有修改实时同步到运维调研页面。',
+    data: SATISFACTION_DATA,
+    fields: [
+      {key:'id', label:'ID', type:'number'},
+      {key:'projectId', label:'项目ID', type:'text'},
+      {key:'period', label:'评估周期', type:'text'},
+      {key:'overall', label:'综合感受', type:'select', options:['非常满意','满意','一般','不满意','待评定']},
+      {key:'busiPerf', label:'业务表现', type:'textarea'},
+      {key:'professionalism', label:'专业度', type:'textarea'},
+      {key:'execution', label:'执行力', type:'textarea'},
+      {key:'repTime', label:'汇报时效性', type:'textarea'},
+      {key:'repAcc', label:'汇报准确性', type:'textarea'},
+      {key:'repFull', label:'汇报全面性', type:'textarea'},
+      {key:'riskControl', label:'风险管控', type:'textarea'},
+      {key:'commFreq', label:'沟通频率', type:'select', options:['非常满意','满意','一般','不满意','待填写']},
+      {key:'commUnd', label:'沟通理解', type:'textarea'},
+      {key:'commSync', label:'信息同步', type:'textarea'},
+      {key:'leaderScore', label:'领导评分', type:'number'},
+      {key:'leaderComment', label:'上级评语', type:'textarea'},
+      {key:'evaluatedBy', label:'评定人', type:'text'},
+      {key:'evaluatedAt', label:'评定日期', type:'text'},
+      {key:'status', label:'状态', type:'select', options:['已评定','待评定']}
+    ]
   }
 };
 
@@ -8780,7 +8864,8 @@ var _SD_LS_MAP = {
   handovers: 'chansee_handovers',
   kpi: 'chansee_kpi_history',
   changelog: 'chansee_data_change_log',
-  assessments: 'chansee_assessments'
+  assessments: 'chansee_assessments',
+  satisfaction: 'chansee_satisfaction'
 };
 
 // ===== 跳转到系统数据管理对应表 =====
@@ -8857,6 +8942,7 @@ var _renderSystemData = function(){
   else if(_systemDataTab==='kpi') colDefs={headers:['日期','项目ID','销售额(万)','成本(万)','费效比','目标达成率'],keys:['date','projectId','revenue','cost','profitRate','targetRate'],showCb:true};
   else if(_systemDataTab==='changelog') colDefs={headers:['时间','操作人','表名','记录ID','字段名','旧值','新值'],keys:['changedAt','changedBy','tableName','recordId','fieldName','oldValue','newValue'],showCb:false};
   else if(_systemDataTab==='assessments') colDefs={headers:['评估周期','事业部','评估单元','管理人','管理等级','总分','定量','定性'],keys:['month','dept','group','manager','level','totalScore','quantScore','qualScore'],showCb:true,numberKeys:['totalScore','quantScore']};
+  else if(_systemDataTab==='satisfaction') colDefs={headers:['项目ID','周期','综合感受','执行力','风险管控','沟通频率','领导评分','状态'],keys:['projectId','period','overall','execution','riskControl','commFreq','leaderScore','status'],showCb:true,numberKeys:['leaderScore']};
   else if(_systemDataTab==='risk') colDefs={headers:['项目编号','项目名称','风险类型','风险等级','触发指标','阈值','状态'],keys:['projectId','projectName','riskType','severity','indicator','threshold','status'],showCb:false,readOnly:true};
 
   var tableHtml = '';
