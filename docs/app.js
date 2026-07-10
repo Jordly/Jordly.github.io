@@ -7171,7 +7171,7 @@ function importData() {
 
 // 全局筛选状态
 
-let SAT_FILTER = { projectId:'', scoreRange:'', evaluator:'' };
+var SAT_FILTER = { projectId:'', scoreRange:'', evaluator:'' };
 
 
 
@@ -7259,11 +7259,11 @@ function renderSatisfaction(){
 
     <div class="module-actions">
 
-      ${isLeader||currentRole==='pm' ? '<button class="btn btn-primary btn-sm" onclick="showAddSatisfaction()">＋ 新增评估</button>' : ''}
+      ${isLeader||currentRole==='pm'||currentRole==='客服总监'||currentRole==='超级管理员'||currentRole==='管理员'||canEdit() ? '<button class="btn btn-primary btn-sm" onclick="showAddSatisfaction()">＋ 新增评估</button>' : ''}
 
       <button class="btn btn-sm" onclick="exportSatisfaction()">📤 导出</button>
 
-      ${isLeader||currentRole==='pm' ? '<button class="btn btn-sm" onclick="importSatisfaction()">📥 导入</button>' : ''}
+      ${isLeader||currentRole==='pm'||currentRole==='客服总监'||currentRole==='超级管理员'||currentRole==='管理员'||canEdit() ? '<button class="btn btn-sm" onclick="importSatisfaction()">📥 导入</button>' : ''}
 
       ${isLeader||currentRole==='pm' ? '<button class="btn btn-sm" onclick="showSatisfactionPermission()">🔐 权限设置</button>' : ''}
 
