@@ -9900,6 +9900,7 @@ function togglePermAction(role, module, action, checked) {
   }
   rolePermissions[role][module] = mp;
   savePermissions();
+  renderPermissions();
   var hint = document.getElementById('perm-save-hint');
   if (hint) { hint.classList.add('show'); setTimeout(function(){ hint.classList.remove('show'); }, 2000); }
   
@@ -9923,6 +9924,7 @@ function togglePermScope(role, module, scope) {
   mp.scope = scope;
   rolePermissions[role][module] = mp;
   savePermissions();
+  renderPermissions();
   var hint = document.getElementById('perm-save-hint');
   if (hint) { hint.classList.add('show'); setTimeout(function(){ hint.classList.remove('show'); }, 2000); }
 }
