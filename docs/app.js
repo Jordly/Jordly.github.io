@@ -9867,11 +9867,15 @@ function savePermissions() {
 function selectPermRole(role) {
   window._permSelectedRole = role;
   renderModule("permissions");
-  
-  // 延迟执行，等待渲染完成
+
+  // 保险：50ms 后再次强制刷新 DOM，确保切换视觉立即生效
   setTimeout(function() {
+    var area = document.getElementById("module-content");
+    if (area && typeof renderPermissions === 'function') {
+      area.innerHTML = renderPermissions();
+    }
     updateAffectedUsers(role);
-  }, 100);
+  }, 50);
 }
 
 // 切换某个操作的勾选状态
