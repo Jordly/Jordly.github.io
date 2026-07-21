@@ -9042,7 +9042,7 @@ var _renderSystemData = function(){
       +'</div>'
     +'</div>'
     +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">'
-      +'<input type="text" id="sysdata-catalog-search" placeholder="🔍 搜索表名、描述..." style="flex:1;max-width:300px;padding:6px 10px;border:1px solid var(--c-border,#e2e8f0);border-radius:8px;font-size:13px;" oninput="catalogSearchSystemData(this.value)">'
+      +'<input type="text" id="sysdata-catalog-search" placeholder="" style="flex:1;max-width:300px;padding:6px 10px;border:1px solid var(--c-border,#e2e8f0);border-radius:8px;font-size:13px;" oninput="catalogSearchSystemData(this.value)">'
       +(kw?'<button class="btn btn-xs" onclick="clearCatalogSearch()">清除</button>':'')
     +'</div>'
     +allHtml;
@@ -9178,7 +9178,9 @@ function showSystemDataForm(tableKey, record, fields, editIdx){
   document.body.appendChild(modal);
 }
 window.submitSystemDataForm = function(tableKey, editIdx) {
-  var td = SYSTEM_DATA_TABLES[tableKey]; if(!td||!td.fields) return; var rec = {};
+  var td = SYSTEM_DATA_TABLES[tableKey]; if(!td||!td.fields) return;
+  // 修复：编辑时基于原记录复制，保留表单未覆盖的所有字段（如 project 的 director/pmHistory/startDate 等）
+  var rec = (editIdx>=0 && td.data && td.data[editIdx]) ? JSON.parse(JSON.stringify(td.data[editIdx])) : {};
   for(var i=0; i<td.fields.length; i++){ var f=td.fields[i], el=document.getElementById('sdf-'+f.key); if(el){ var v=el.value; if(f.type==='number') v=parseFloat(v)||0; rec[f.key]=v; } }
   if(editIdx>=0) td.data[editIdx]=rec; else td.data.push(rec); _saveSystemData(tableKey);
   var mod=document.getElementById('sd-form-modal'); if(mod) mod.remove(); renderModule('systemData');
