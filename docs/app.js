@@ -298,11 +298,17 @@ function showCustomModal(title, bodyHtml, onConfirm) {
   };
 }
 
-// ===== 数据持久化（彻底修复版）=====
-// 安全写入 localStorage（带 quota 处理和用户提示）
+// ===== 数据持久化（彻底修复版 + 自动备份）= 2026-07-21 =====
+// 安全写入 localStorage（带 quota 处理、自动备份和用户提示）
 function safeSetItem(key, value) {
+  // 跳过对备份 key 再做备份（防止无限循环）
+  if (key.slice(-4) === '_bak') {
+    try { localStorage.setItem(key, value); return true; } catch(e) { return false; }
+  }
   try {
     localStorage.setItem(key, value);
+    // 自动备份：同步写入备份 key（静默失败不影响主写入）
+    try { localStorage.setItem(key + '_bak', value); } catch(e) {}
     return true;
   } catch(e) {
     if (e.name === 'QuotaExceededError' || e.code === 22) {
@@ -316,12 +322,59 @@ function safeSetItem(key, value) {
         if (cleaned > 0) {
           localStorage.setItem('chansee_users', JSON.stringify(users));
           localStorage.setItem(key, value);
+          try { localStorage.setItem(key + '_bak', value); } catch(e) {}
           return true;
         }
       } catch(e2) {}
       alert('浏览器存储空间不足，无法保存修改！\n请清理浏览器数据（设置→隐私和安全→清除浏览数据），然后重新登录。');
     }
     return false;
+  }
+}
+
+// 安全读取 localStorage（带备份自动恢复和损坏检测）
+// 优先读主 key，如果 JSON 解析失败则尝试从 _bak 备份恢复
+function safeGetItem(key) {
+  var raw = localStorage.getItem(key);
+  // 主 key 有有效数据 → 直接返回
+  if (raw && raw !== 'null') {
+    try {
+      JSON.parse(raw);
+      return raw;
+    } catch(e) {
+      // JSON 损坏，尝试从备份恢复
+    }
+  }
+  // 尝试从备份读取
+  var bak = localStorage.getItem(key + '_bak');
+  if (bak && bak !== 'null') {
+    try {
+      JSON.parse(bak);
+      // 备份有效，修复主 key
+      localStorage.setItem(key, bak);
+      return bak;
+    } catch(e) {}
+  }
+  // 都没有有效数据
+  return null;
+}
+
+// 防抖工具：高频触发时延迟执行，只在停止触发后执行一次
+function debounce(fn, delay) {
+  var timer = null;
+  return function() {
+    var ctx = this, args = arguments;
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(function() { fn.apply(ctx, args); }, delay || 200);
+  };
+}
+
+// 延迟初始化工具：非关键数据在页面首次渲染后再加载，让首页更快出现
+function deferInit(fn) {
+  if (window.requestIdleCallback) {
+    requestIdleCallback(fn, { timeout: 500 });
+  } else {
+    setTimeout(fn, 50);
   }
 }
 
@@ -344,7 +397,7 @@ var DEFAULT_PROJECTS = [
 // 初始化 USERS
 var USERS = [];
 (function initUsers() {
-  var raw = localStorage.getItem('chansee_users');
+  var raw = safeGetItem('chansee_users');
   if (raw && raw !== 'null' && raw !== '[]') {
     try {
       USERS = JSON.parse(raw);
@@ -400,7 +453,7 @@ var PRESET_CATEGORIES = [
   '虚拟服务'
 ];
 (function initProjects() {
-  var raw = localStorage.getItem('chansee_projects');
+  var raw = safeGetItem('chansee_projects');
   if (raw && raw !== 'null' && raw !== '[]') {
     try {
       PROJECTS = JSON.parse(raw);
@@ -458,41 +511,41 @@ var PRESET_CATEGORIES = [
   safeSetItem('chansee_operations', JSON.stringify(OPERATIONS));
 })();
 
-// 初始化 ISSUES
-(function initIssues() {
+// 初始化 ISSUES（延迟加载：首屏不需要）
+deferInit(function() {
   var raw = localStorage.getItem('chansee_issues');
   if (raw && raw !== 'null' && raw !== '[]') {
   }
   ISSUES = JSON.parse(JSON.stringify(DEFAULT_ISSUES));
   safeSetItem('chansee_issues', JSON.stringify(ISSUES));
-})();
+});
 
-// 初始化 AGENT_PERFORMANCE
-(function initAgentPerformance() {
+// 初始化 AGENT_PERFORMANCE（延迟加载）
+deferInit(function() {
   var raw = localStorage.getItem('chansee_agent_performance');
   if (raw && raw !== 'null' && raw !== '[]') {
   }
   AGENT_PERFORMANCE = JSON.parse(JSON.stringify(DEFAULT_AGENT_PERFORMANCE));
   safeSetItem('chansee_agent_performance', JSON.stringify(AGENT_PERFORMANCE));
-})();
+});
 
-// 初始化 GROUP_LOAD_RATIO
-(function initGroupLoadRatio() {
+// 初始化 GROUP_LOAD_RATIO（延迟加载）
+deferInit(function() {
   var raw = localStorage.getItem('chansee_group_load_ratio');
   if (raw && raw !== 'null' && raw !== '[]') {
   }
   GROUP_LOAD_RATIO = JSON.parse(JSON.stringify(DEFAULT_GROUP_LOAD_RATIO || []));
   safeSetItem('chansee_group_load_ratio', JSON.stringify(GROUP_LOAD_RATIO));
-})();
+});
 
-// 初始化 PERFORMANCE_WEIGHTS
-(function initPerformanceWeights() {
+// 初始化 PERFORMANCE_WEIGHTS（延迟加载）
+deferInit(function() {
   var raw = localStorage.getItem('chansee_performance_weights');
   if (raw && raw !== 'null' && raw !== '{}') {
   }
   PERFORMANCE_WEIGHTS = JSON.parse(JSON.stringify(DEFAULT_PERFORMANCE_WEIGHTS || {}));
   safeSetItem('chansee_performance_weights', JSON.stringify(PERFORMANCE_WEIGHTS));
-})();
+});
 
 // ===== 新增：看板数据模型 =====
 
@@ -507,7 +560,7 @@ var DEFAULT_STAFF_CONFIG = [
 
 var STAFF_CONFIG = [];
 (function initStaffConfig() {
-  var raw = localStorage.getItem('chansee_staff_config');
+  var raw = safeGetItem('chansee_staff_config');
   if (raw && raw !== 'null' && raw !== '[]') {
     try {
       STAFF_CONFIG = JSON.parse(raw);
@@ -528,7 +581,7 @@ var DEFAULT_WORKLOAD_DATA = [
 
 var WORKLOAD_DATA = [];
 (function initWorkloadData() {
-  var raw = localStorage.getItem('chansee_workload_data');
+  var raw = safeGetItem('chansee_workload_data');
   if (raw && raw !== 'null' && raw !== '[]') {
     try {
       WORKLOAD_DATA = JSON.parse(raw);
@@ -548,7 +601,7 @@ var DEFAULT_KPI_HISTORY = [
 
 var KPI_HISTORY = [];
 (function initKpiHistory() {
-  var raw = localStorage.getItem('chansee_kpi_history');
+  var raw = safeGetItem('chansee_kpi_history');
   if (raw && raw !== 'null' && raw !== '[]') {
     try {
       KPI_HISTORY = JSON.parse(raw);
@@ -562,7 +615,7 @@ var KPI_HISTORY = [];
 // 数据修改历史
 var DATA_CHANGE_LOG = [];
 (function initDataChangeLog() {
-  var raw = localStorage.getItem('chansee_data_change_log');
+  var raw = safeGetItem('chansee_data_change_log');
   if (raw && raw !== 'null' && raw !== '[]') {
     try {
       DATA_CHANGE_LOG = JSON.parse(raw);
@@ -612,7 +665,7 @@ var DEFAULT_DATA_PERMISSIONS = [
 
 var DATA_PERMISSIONS = [];
 (function initDataPermissions() {
-  var raw = localStorage.getItem('chansee_data_permissions');
+  var raw = safeGetItem('chansee_data_permissions');
   if (raw && raw !== 'null' && raw !== '[]') {
     try {
       DATA_PERMISSIONS = JSON.parse(raw);
@@ -4304,7 +4357,7 @@ function renderArchive(){
       <!-- 搜索框 -->
       <input type="text" id="archive-search" placeholder="🔍 搜索项目编号/名称/品牌..." 
         style="flex:1;min-width:180px;padding:8px 12px;border-radius:8px;border:1px solid var(--c-border);font-size:13px;"
-        oninput="filterArchiveTable(this.value)">
+        oninput="debouncedArchiveSearch(this.value)">
 
       <button class="btn btn-sm" onclick="showImportDialog()" style="margin-right:4px;">📤 导入</button>
       <button class="btn btn-sm" onclick="exportProjects()" style="margin-right:8px;">📥 导出</button>
@@ -4330,7 +4383,7 @@ function renderArchive(){
 
         ${all.map((p, idx)=>`
 
-          <tr data-id="${p.id}" data-name="${p.name}" data-brand="${p.brand}" data-pm="${p.pm}">
+          <tr data-id="${p.id}" data-name="${p.name}" data-brand="${p.brand}" data-pm="${p.pm}" data-search="${(p.id+' '+p.name+' '+p.brand+' '+p.pm).toLowerCase()}">
 
             ${can?`<td><input type="checkbox" class="archive-row-check" value="${p.id}" onchange="updateBatchDeleteBtn()"></td>`:''}
 
@@ -4376,7 +4429,9 @@ function renderArchive(){
 
 
 
-function filterArchiveTable(kw){kw=(kw||'').toLowerCase().trim();var r=document.querySelectorAll('#archive-tbody tr'),c=0;r.forEach(function(row){if(!kw){row.style.display='';c++;return;}var t=(row.dataset.id+' '+row.dataset.name+' '+row.dataset.brand+' '+row.dataset.pm).toLowerCase();var m=t.indexOf(kw)!==-1;row.style.display=m?'':'none';if(m)c++});var h=document.getElementById('archive-empty-hint');if(h)h.style.display=c===0?'':'none'}
+function filterArchiveTable(kw){kw=(kw||'').toLowerCase().trim();var s=kw?document.querySelectorAll('#archive-tbody tr'):null,c=0;if(!s){document.querySelectorAll('#archive-tbody tr').forEach(function(r){r.style.display='';c++});}else{s.forEach(function(row){var t=row.dataset.search||'';var m=t.indexOf(kw)!==-1;row.style.display=m?'':'none';if(m)c++});}var h=document.getElementById('archive-empty-hint');if(h)h.style.display=c===0?'':'none'}
+// 防抖搜索：用户停止输入 150ms 后执行搜索，避免高频触发
+var debouncedArchiveSearch = debounce(function(kw){ filterArchiveTable(kw); }, 150);
 function toggleArchiveSelectAll(c){var cb=document.querySelectorAll('.archive-row-check');for(var i=0;i<cb.length;i++)cb[i].checked=c;updateBatchDeleteBtn()}
 function updateBatchDeleteBtn(){var c=document.querySelectorAll('.archive-row-check:checked'),b=document.querySelectorAll("[onclick='batchDeleteProjects()']");for(var i=0;i<b.length;i++){b[i].disabled=c.length===0;b[i].style.opacity=c.length>0?1:0.5}}
 function batchDeleteProjects(){var c=document.querySelectorAll('.archive-row-check:checked');if(!c.length){alert('请先勾选要删除的项目');return}var ids=[];for(var i=0;i<c.length;i++)ids.push(c[i].value);if(!confirm('确定删除选中的'+ids.length+'个项目？此操作不可恢复！'))return;ids.forEach(function(id){deleteProjectDirectly(id)});showToast('已删除'+ids.length+'个项目');renderModule('archive')}
@@ -9904,8 +9959,7 @@ function togglePermAction(role, module, action, checked) {
   }
   rolePermissions[role][module] = mp;
   savePermissions();
-  var area = document.getElementById("module-content");
-  if (area) area.innerHTML = renderPermissions();
+  renderPermissions();
   var hint = document.getElementById('perm-save-hint');
   if (hint) { hint.classList.add('show'); setTimeout(function(){ hint.classList.remove('show'); }, 2000); }
   
@@ -9929,8 +9983,7 @@ function togglePermScope(role, module, scope) {
   mp.scope = scope;
   rolePermissions[role][module] = mp;
   savePermissions();
-  var area = document.getElementById("module-content");
-  if (area) area.innerHTML = renderPermissions();
+  renderPermissions();
   var hint = document.getElementById('perm-save-hint');
   if (hint) { hint.classList.add('show'); setTimeout(function(){ hint.classList.remove('show'); }, 2000); }
 }
