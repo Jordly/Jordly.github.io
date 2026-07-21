@@ -8675,6 +8675,7 @@ var _systemDataPageSize = 20;
 var _systemDataSortField = '';
 var _systemDataSortDir = 'asc';
 var _systemDataSearchKeyword = '';
+var _systemDataCatalogSearch = '';
 
 // ===== 系统数据管理 - 数据表定义 =====
 // ===== 难度评估数据（运行时由系统数据管理统一维护，不再硬编码写死） =====
@@ -8923,6 +8924,33 @@ var _SD_LS_MAP = {
   satisfaction: 'chansee_satisfaction'
 };
 
+// ===== 数据表分组配置（用于目录分类展示）=====
+var _SD_GROUPS = [
+  {key:'核心业务', icon:'📊', desc:'核心业务数据', tables:['projects','operations','kpi']},
+  {key:'运营协作', icon:'🔄', desc:'运营与协同数据', tables:['issues','knowledge','handovers']},
+  {key:'评估风控', icon:'🛡️', desc:'评估与风险数据', tables:['risk','assessments','satisfaction']},
+  {key:'系统管理', icon:'⚙️', desc:'系统与审计数据', tables:['personnel','sysconfig','changelog']}
+];
+// 表→分组反向映射
+var _SD_TABLE_GROUP = {};
+for(var _sgi=0;_sgi<_SD_GROUPS.length;_sgi++){var _sg=_SD_GROUPS[_sgi];for(var _sgi2=0;_sgi2<_sg.tables.length;_sgi2++)_SD_TABLE_GROUP[_sg.tables[_sgi2]]=_sg;}
+
+// ===== 关联页面映射（卡片上的快捷跳转标签）=====
+var _SD_RELATED_PAGES = {
+  projects: [{label:'🏠 首页看板',mod:'dashboard'},{label:'📋 项目档案',mod:'archive'},{label:'📊 运营数据',mod:'operation'}],
+  operations: [{label:'📊 运营数据',mod:'operation'},{label:'📈 目标与权责',mod:'target'}],
+  risk: [{label:'⚠️ 风险预警池',mod:'risk'}],
+  issues: [{label:'🧰 问题与课题',mod:'issue'}],
+  knowledge: [{label:'📚 知识能量池',mod:'knowledge'}],
+  handovers: [{label:'⏳ 项目承接规范',mod:'handover'}],
+  kpi: [{label:'📈 目标与权责',mod:'target'},{label:'💰 成本管理',mod:'cost'}],
+  personnel: [{label:'📊 客服绩效看板',mod:'performance'},{label:'📈 运营数据',mod:'operation'}],
+  sysconfig: [{label:'👥 系统用户管理',mod:'notifications'},{label:'🔐 系统权限管理',mod:'permissions'}],
+  changelog: [],
+  assessments: [{label:'📋 项目难度评估',mod:'assessment'}],
+  satisfaction: [{label:'📋 项目运维调研',mod:'satisfaction'}]
+};
+
 // ===== 跳转到系统数据管理对应表 =====
 function goToSystemDataTable(key) {
   _systemDataView = 'detail';
@@ -8941,27 +8969,71 @@ function renderSystemData(){return _renderSystemData();}
 var _renderSystemData = function(){
   // 卡片目录视图
   if(_systemDataView === 'catalog'){
-    var cardsHtml = '';
-    var tables = Object.keys(SYSTEM_DATA_TABLES);
-    for(var i=0; i<tables.length; i++){
-      var t = SYSTEM_DATA_TABLES[tables[i]];
-      var count = t.data ? t.data.length : 0;
-      var bgClass = '';
-      var accentColor = '';
-      if(i%3===0) { bgClass = 'sd-card-clr1'; accentColor = '#0B9B96'; }
-      else if(i%3===1) { bgClass = 'sd-card-clr2'; accentColor = '#3B82F6'; }
-      else { bgClass = 'sd-card-clr3'; accentColor = '#8B5CF6'; }
-      cardsHtml += ''
-        +'<div class="sd-card" style="cursor:pointer;" onclick="goSystemDataDetail(\''+tables[i]+'\')">'
-          +'<div style="height:4px;background:linear-gradient(90deg,'+accentColor+','+accentColor+'88);"></div>'
-          +'<div class="sd-card-inner '+bgClass+'">'
-            +'<div class="sd-card-icon">'+t.label.charAt(0)+t.label.charAt(1)+'</div>'
-            +'<div class="sd-card-label">'+t.label.substring(2)+'</div>'
-            +'<div class="sd-card-count">'+count+' 条记录</div>'
-            +'<div class="sd-card-desc">'+(t.desc||'').substring(0,42)+'...</div>'
-          +'</div>'
-        +'</div>';
+    var kw = (_systemDataCatalogSearch||'').toLowerCase().trim();
+
+    // 按组依次渲染
+    var allHtml = '';
+    for(var _gi=0;_gi<_SD_GROUPS.length;_gi++){
+      var grp = _SD_GROUPS[_gi];
+      // 收集本组要显示的卡片
+      var groupCards = [];
+      for(var _ti=0;_ti<grp.tables.length;_ti++){
+        var tk = grp.tables[_ti];
+        var t = SYSTEM_DATA_TABLES[tk];
+        if(!t) continue;
+        // 搜索过滤：按表名+描述匹配
+        if(kw && (t.label+' '+t.desc).toLowerCase().indexOf(kw)<0) continue;
+        groupCards.push({key:tk, def:t});
+      }
+      if(groupCards.length===0) continue;
+
+      // 分组标题横幅
+      allHtml += ''
+        +'<div style="display:flex;align-items:center;gap:8px;margin:16px 0 10px 0;padding-bottom:6px;border-bottom:1px solid var(--c-border, #e2e8f0);">'
+          +'<span style="font-size:16px;">'+grp.icon+'</span>'
+          +'<span style="font-size:14px;font-weight:600;color:var(--c-text-2,#475569);">'+grp.key+'</span>'
+          +'<span style="font-size:12px;color:var(--c-text-3,#94a3b8);">'+grp.desc+'</span>'
+        +'</div>'
+        +'<div class="sd-cards-grid" style="margin-bottom:4px;">';
+
+      for(var _gci=0;_gci<groupCards.length;_gci++){
+        var t = groupCards[_gci].def;
+        var tk = groupCards[_gci].key;
+        var count = t.data ? t.data.length : 0;
+        var isReadOnly = !!t.readOnly;
+        // 保持原来的三色循环逻辑（不改色调）
+        var bgClass = ''; var accentColor = '';
+        var grpIdx = _SD_GROUPS.indexOf(grp);
+        // 每组内按原始顺序分配颜色，与原来一致
+        if(groupCards.indexOf(groupCards[_gci])%3===0){ bgClass='sd-card-clr1'; accentColor='#0B9B96'; }
+        else if(groupCards.indexOf(groupCards[_gci])%3===1){ bgClass='sd-card-clr2'; accentColor='#3B82F6'; }
+        else { bgClass='sd-card-clr3'; accentColor='#8B5CF6'; }
+
+        // 关联页面标签
+        var pages = _SD_RELATED_PAGES[tk]||[];
+        var pagesHtml = pages.length ? '<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap;">' : '';
+        for(var _pi=0;_pi<pages.length;_pi++){
+          var p = pages[_pi];
+          pagesHtml += '<span style="font-size:11px;cursor:pointer;padding:1px 6px;border-radius:3px;background:'+accentColor+'18;color:'+accentColor+';border:1px solid '+accentColor+'44;" onclick="event.stopPropagation();renderModule(\''+p.mod+'\')">'+p.label+'</span>';
+        }
+        if(pages.length) pagesHtml += '</div>';
+
+        allHtml += ''
+          +'<div class="sd-card" style="cursor:pointer;position:relative;" onclick="goSystemDataDetail(\''+tk+'\')">'
+            +'<div style="height:4px;background:linear-gradient(90deg,'+accentColor+','+accentColor+'88);"></div>'
+            +'<div class="sd-card-inner '+bgClass+'">'
+              +(isReadOnly?'<span style="position:absolute;top:8px;right:8px;font-size:10px;padding:1px 5px;border-radius:3px;background:#f1f5f9;color:#94a3b8;border:1px solid #e2e8f0;">🔒 只读</span>':'')
+              +'<div class="sd-card-icon">'+t.label.charAt(0)+t.label.charAt(1)+'</div>'
+              +'<div class="sd-card-label">'+t.label.substring(2)+'</div>'
+              +'<div class="sd-card-count">'+count+' 条记录</div>'
+              +'<div class="sd-card-desc">'+(t.desc||'').substring(0,80)+(t.desc&&t.desc.length>80?'...':'')+'</div>'
+              +pagesHtml
+            +'</div>'
+          +'</div>';
+      }
+      allHtml += '</div>';
     }
+
     return ''
     +'<div class="module-header">'
       +'<div>'
@@ -8969,7 +9041,11 @@ var _renderSystemData = function(){
         +'<div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">统一数据管理中心 · 所有数据的唯一入口与维护中心</div>'
       +'</div>'
     +'</div>'
-    +'<div class="sd-cards-grid">'+cardsHtml+'</div>';
+    +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">'
+      +'<input type="text" id="sysdata-catalog-search" placeholder="🔍 搜索表名、描述..." style="flex:1;max-width:300px;padding:6px 10px;border:1px solid var(--c-border,#e2e8f0);border-radius:8px;font-size:13px;" oninput="catalogSearchSystemData(this.value)">'
+      +(kw?'<button class="btn btn-xs" onclick="clearCatalogSearch()">清除</button>':'')
+    +'</div>'
+    +allHtml;
   }
 
   var tableDef = SYSTEM_DATA_TABLES[_systemDataTab];
@@ -9026,9 +9102,16 @@ var _renderSystemData = function(){
     }
     tableHtml += '</tbody></table>';
   } else if(_systemDataTab==='personnel'){
-    tableHtml = '<div style="padding:20px;text-align:center;color:var(--c-text-3);">人员数据为聚合视图，请在对应功能页面中查看详情</div>';
+    tableHtml = '<div style="padding:24px;text-align:center;"><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:var(--c-text-2,#475569);">👥 人员数据为聚合视图</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">'
+      +'<button class="btn btn-sm" onclick="renderModule(\'performance\')" style="padding:8px 16px;">📊 客服绩效看板</button>'
+      +'<button class="btn btn-sm" onclick="renderModule(\'operation\')" style="padding:8px 16px;">📈 运营数据</button>'
+      +'<button class="btn btn-sm" onclick="renderModule(\'dashboard\')" style="padding:8px 16px;">🏠 首页看板</button>'
+      +'</div><div style="margin-top:12px;font-size:12px;color:var(--c-text-3,#94a3b8);">人员配置、工作量、绩效数据由各功能页面维护，此处统一展示聚合概览。</div></div>';
   } else if(_systemDataTab==='sysconfig'){
-    tableHtml = '<div style="padding:20px;text-align:center;color:var(--c-text-3);">系统配置为聚合视图，请在对应功能页面中查看详情</div>';
+    tableHtml = '<div style="padding:24px;text-align:center;"><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:var(--c-text-2,#475569);">🔒 系统配置为聚合视图</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">'
+      +'<button class="btn btn-sm" onclick="renderModule(\'notifications\')" style="padding:8px 16px;">👥 系统用户管理</button>'
+      +'<button class="btn btn-sm" onclick="renderModule(\'permissions\')" style="padding:8px 16px;">🔐 系统权限管理</button>'
+      +'</div><div style="margin-top:12px;font-size:12px;color:var(--c-text-3,#94a3b8);">用户账号与权限配置由「系统用户管理」和「系统权限管理」页面维护。</div></div>';
   } else {
     tableHtml = '<div style="padding:40px;text-align:center;color:var(--c-text-3);">暂无数据</div>';
   }
@@ -9073,6 +9156,10 @@ function backSystemDataCatalog() { _systemDataView='catalog'; renderModule('syst
 function switchSystemDataTab(key) { _systemDataView='detail'; _systemDataTab=key; _systemDataPage=1; _systemDataSearchKeyword=''; renderModule('systemData'); }
 function searchSystemData(e) { if(e.key==='Enter'||e.type==='click'){ _systemDataSearchKeyword=document.getElementById('sysdata-search')?document.getElementById('sysdata-search').value:''; _systemDataPage=1; renderModule('systemData'); } }
 function clearSystemDataSearch() { _systemDataSearchKeyword=''; _systemDataPage=1; renderModule('systemData'); }
+// 目录页搜索（实时筛选卡片，按表名+描述匹配）
+window._systemDataCatalogSearch = '';
+function catalogSearchSystemData(val) { _systemDataCatalogSearch = val; renderModule('systemData'); }
+function clearCatalogSearch() { _systemDataCatalogSearch = ''; renderModule('systemData'); }
 function toggleSelectAll(cb) { var cbs=document.querySelectorAll('.sd-row-cb'); for(var i=0;i<cbs.length;i++) cbs[i].checked=cb.checked; }
 function _saveSystemData(tableKey) { var lsKey = _SD_LS_MAP[tableKey]; var td = SYSTEM_DATA_TABLES[tableKey]; if(lsKey && td && td.data) try { localStorage.setItem(lsKey, JSON.stringify(td.data)); } catch(e){} }
 
