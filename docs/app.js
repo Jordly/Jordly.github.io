@@ -1,4 +1,22 @@
-// VERSION: 202607031345 - 权限管理弹窗UI全面美化：极光质感设计
+// VERSION: 20260723 - 密码加密+XSS防护+代码优化
+
+// ===== XSS 防护：HTML 转义函数 =====
+function escHtml(s) {
+  return (s || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// ===== 密码加密：SHA-256 哈希（Web Crypto API，无需外部库）=====
+function hashPassword(password) {
+  if (!password) return Promise.resolve('');
+  var encoder = new TextEncoder();
+  var data = encoder.encode(password);
+  return crypto.subtle.digest('SHA-256', data).then(function(hashBuffer) {
+    var hashArray = Array.from(new Uint8Array(hashBuffer));
+    var hashHex = hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+    return '$SHA$' + hashHex;
+  });
+}
+
 // ===== Mock 数据 =====
 
 // 管理难度评估数据（自动生成）
@@ -145,8 +163,7 @@ function showToast(msg, type) {
     } else {
       // fallback：用 alert 代替
     }
-  } catch(e) {
-  }
+  } catch(e) { console.error('[showToast]', e); }
 }
 
 // ===== 自定义确认弹窗（替代原生 confirm）=====
@@ -156,7 +173,7 @@ function showConfirmModal(msg, title, onConfirm, onCancel) {
   overlay.className = 'sd-confirm-overlay';
   overlay.innerHTML = ''
     + '<div class="sd-confirm-box">'
-    + '<div class="sd-confirm-header">'+title+'</div>'
+    + '<div class="sd-confirm-header">'+escHtml(title)+'</div>'
     + '<div class="sd-confirm-body">'+msg+'</div>'
     + '<div class="sd-confirm-footer">'
     + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
@@ -185,8 +202,8 @@ function showPromptModal(title, label, defaultValue, onConfirm) {
   overlay.className = 'sd-prompt-overlay';
   overlay.innerHTML = ''
     + '<div class="sd-prompt-box">'
-    + '<div class="sd-prompt-header">'+title+' <button class="sd-prompt-close">&times;</button></div>'
-    + '<div class="sd-prompt-body"><label>'+label+'</label><div class="sd-prompt-input-wrap"><input type="text" class="sd-prompt-input" value="'+(defaultValue||'').replace(/"/g,'&quot;')+'"></div></div>'
+    + '<div class="sd-prompt-header">'+escHtml(title)+' <button class="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-body"><label>'+escHtml(label)+'</label><div class="sd-prompt-input-wrap"><input type="text" class="sd-prompt-input" value="'+(defaultValue||'').replace(/"/g,'&quot;')+'"></div></div>'
     + '<div class="sd-prompt-footer">'
     + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
     + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
@@ -220,13 +237,13 @@ function showSelectModal(title, label, options, onConfirm) {
   overlay.className = 'sd-prompt-overlay';
   
   var optionsHtml = options.map(function(opt, idx) {
-    return '<option value="' + opt + '">' + opt + '</option>';
+    return '<option value="' + escHtml(opt) + '">' + escHtml(opt) + '</option>';
   }).join('');
   
   overlay.innerHTML = ''
     + '<div class="sd-prompt-box">'
-    + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close">&times;</button></div>'
-    + '<div class="sd-prompt-body"><label>' + label + '</label><div class="sd-prompt-input-wrap"><select class="sd-prompt-input">'
+    + '<div class="sd-prompt-header">' + escHtml(title) + ' <button class="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-body"><label>' + escHtml(label) + '</label><div class="sd-prompt-input-wrap"><select class="sd-prompt-input">'
     + '<option value="">-- 请选择 --</option>'
     + optionsHtml
     + '</select></div></div>'
@@ -272,7 +289,7 @@ function showCustomModal(title, bodyHtml, onConfirm) {
   overlay.className = 'sd-prompt-overlay';
   overlay.innerHTML = ''
     + '<div class="sd-prompt-box" style="width:460px;">'
-    + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-header">' + escHtml(title) + ' <button class="sd-prompt-close">&times;</button></div>'
     + '<div class="sd-prompt-body">' + bodyHtml + '</div>'
     + '<div class="sd-prompt-footer">'
     + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
@@ -378,10 +395,10 @@ function deferInit(fn) {
   }
 }
 
-// 默认用户数据（只在首次初始化时使用）
+// 默认用户数据（只在首次初始化时使用），密码已预哈希
 var DEFAULT_USERS = [
-  {id:"U001", name:"周东利", nickname:"Jordly", username:"admin", role:"超级管理员", status:"已激活", registerTime:"2025-01-01", password:"admin666", phone:"18510084943", email:"zhoudongli@xcxd.com", birthday:"1991-12-18", position:"客服总监", workplace:"济南/淄博/杭州", approvedBy:"system", remark:"系统初始化超级管理员"},
-  {id:"U002", name:"jordly", nickname:"", username:"jordly", role:"管理员", status:"已激活", registerTime:"2025-03-15", password:"jordly1218", phone:"", email:"", birthday:"", position:"", workplace:"", approvedBy:"admin", remark:""}
+  {id:"U001", name:"周东利", nickname:"Jordly", username:"admin", role:"超级管理员", status:"已激活", registerTime:"2025-01-01", password:"$SHA$344bba4200ad08694896aafa0b7507101798ac975744914bcc40856e87c3626d", phone:"18510084943", email:"zhoudongli@xcxd.com", birthday:"1991-12-18", position:"客服总监", workplace:"济南/淄博/杭州", approvedBy:"system", remark:"系统初始化超级管理员"},
+  {id:"U002", name:"jordly", nickname:"", username:"jordly", role:"管理员", status:"已激活", registerTime:"2025-03-15", password:"$SHA$530875c3cfd0e165ec4a397bc735bb8697d71950dd02da699d95651928fc8958", phone:"", email:"", birthday:"", position:"", workplace:"", approvedBy:"admin", remark:""}
 ];
 
 var DEFAULT_PROJECTS = [
@@ -402,8 +419,7 @@ var USERS = [];
     try {
       USERS = JSON.parse(raw);
       return;
-    } catch(e) {
-    }
+    } catch(e) { console.error('[initUsers] 用户数据损坏:', e); }
   }
   // 首次初始化
   USERS = JSON.parse(JSON.stringify(DEFAULT_USERS));
@@ -482,8 +498,7 @@ var PRESET_CATEGORIES = [
       });
       if (migrated || platformMigrated) safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
       return;
-    } catch(e) {
-    }
+    } catch(e) { console.error('[initUsers] 用户数据损坏:', e); }
   }
   PROJECTS = JSON.parse(JSON.stringify(DEFAULT_PROJECTS));
   // 同时迁移默认项目数据的品类名和平台名
@@ -506,6 +521,10 @@ var PRESET_CATEGORIES = [
 (function initOperations() {
   var raw = localStorage.getItem('chansee_operations');
   if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      OPERATIONS = JSON.parse(raw);
+      return;
+    } catch(e) { console.error('[initOperations] 数据损坏，重置:', e); }
   }
   OPERATIONS = JSON.parse(JSON.stringify(DEFAULT_OPERATIONS));
   safeSetItem('chansee_operations', JSON.stringify(OPERATIONS));
@@ -515,6 +534,10 @@ var PRESET_CATEGORIES = [
 deferInit(function() {
   var raw = localStorage.getItem('chansee_issues');
   if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      ISSUES = JSON.parse(raw);
+      return;
+    } catch(e) { console.error('[initIssues] 数据损坏，重置:', e); }
   }
   ISSUES = JSON.parse(JSON.stringify(DEFAULT_ISSUES));
   safeSetItem('chansee_issues', JSON.stringify(ISSUES));
@@ -524,6 +547,10 @@ deferInit(function() {
 deferInit(function() {
   var raw = localStorage.getItem('chansee_agent_performance');
   if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      AGENT_PERFORMANCE = JSON.parse(raw);
+      return;
+    } catch(e) { console.error('[initAgentPerformance] 数据损坏，重置:', e); }
   }
   AGENT_PERFORMANCE = JSON.parse(JSON.stringify(DEFAULT_AGENT_PERFORMANCE));
   safeSetItem('chansee_agent_performance', JSON.stringify(AGENT_PERFORMANCE));
@@ -533,6 +560,10 @@ deferInit(function() {
 deferInit(function() {
   var raw = localStorage.getItem('chansee_group_load_ratio');
   if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      GROUP_LOAD_RATIO = JSON.parse(raw);
+      return;
+    } catch(e) { console.error('[initGroupLoadRatio] 数据损坏，重置:', e); }
   }
   GROUP_LOAD_RATIO = JSON.parse(JSON.stringify(DEFAULT_GROUP_LOAD_RATIO || []));
   safeSetItem('chansee_group_load_ratio', JSON.stringify(GROUP_LOAD_RATIO));
@@ -542,6 +573,10 @@ deferInit(function() {
 deferInit(function() {
   var raw = localStorage.getItem('chansee_performance_weights');
   if (raw && raw !== 'null' && raw !== '{}') {
+    try {
+      PERFORMANCE_WEIGHTS = JSON.parse(raw);
+      return;
+    } catch(e) { console.error('[initPerformanceWeights] 数据损坏，重置:', e); }
   }
   PERFORMANCE_WEIGHTS = JSON.parse(JSON.stringify(DEFAULT_PERFORMANCE_WEIGHTS || {}));
   safeSetItem('chansee_performance_weights', JSON.stringify(PERFORMANCE_WEIGHTS));
@@ -870,11 +905,12 @@ function saveHandovers() {
 
 // 级联删除项目及所有关联数据
 function deleteProject(id) {
-  if (!confirm('确认删除项目 ' + id + '？\n\n此操作不可恢复！')) return;
-  PROJECTS = PROJECTS.filter(function(p){ return p.id !== id; });
-  saveProjects();
-  alert('项目 ' + id + ' 已删除！');
-  renderArchive();
+  showConfirmModal('确认删除项目 ' + id + '？<br><br><b style="color:var(--c-red)">⚠️ 此操作不可恢复！</b><br>将同时清除该项目关联的运营数据、目标、问题记录等。', '删除确认', function() {
+    PROJECTS = PROJECTS.filter(function(p){ return p.id !== id; });
+    saveProjects();
+    showToast('项目 ' + id + ' 已删除！');
+    renderArchive();
+  });
 }
 
 // 持久化当前用户（同步到 USERS 数组 + 更新 session）
@@ -1226,23 +1262,27 @@ function updateUserDisplay() {
   const displayName = currentUser.nickname || currentUser.name || "?";
   const firstChar = (displayName || '').charAt(0).toUpperCase() || '?';
   const avatar = currentUser.avatar || "";
+  const safeName = escHtml(displayName);
+  const safeRole = escHtml(currentUser.role || '');
+  const safeAvatar = escHtml(avatar);
+  const safeFirstChar = escHtml(firstChar);
   const avatarHtml = avatar
-    ? `<div class="user-avatar" style="background-image:url(${avatar});background-size:cover;background-position:center;color:transparent;">${firstChar}</div>`
-    : `<div class="user-avatar">${firstChar}</div>`;
+    ? `<div class="user-avatar" style="background-image:url(${safeAvatar});background-size:cover;background-position:center;color:transparent;">${safeFirstChar}</div>`
+    : `<div class="user-avatar">${safeFirstChar}</div>`;
   const dropdownAvatarHtml = avatar
-    ? `<div class="user-dropdown-avatar" style="background-image:url(${avatar});background-size:cover;background-position:center;color:transparent;">${firstChar}</div>`
-    : `<div class="user-dropdown-avatar">${firstChar}</div>`;
+    ? `<div class="user-dropdown-avatar" style="background-image:url(${safeAvatar});background-size:cover;background-position:center;color:transparent;">${safeFirstChar}</div>`
+    : `<div class="user-dropdown-avatar">${safeFirstChar}</div>`;
   el.innerHTML = `
     <div class="user-avatar-wrap" onclick="toggleUserMenu(event)">
       ${avatarHtml}
-      <span class="user-name">${displayName}</span>
+      <span class="user-name">${safeName}</span>
       <span class="user-arrow">▼</span>
       <div class="user-dropdown" id="user-dropdown">
         <div class="user-dropdown-header">
           ${dropdownAvatarHtml}
           <div>
-            <div class="user-dropdown-name">${displayName}</div>
-            <div class="user-dropdown-role">${currentUser.role}</div>
+            <div class="user-dropdown-name">${safeName}</div>
+            <div class="user-dropdown-role">${safeRole}</div>
           </div>
         </div>
         <div class="user-dropdown-divider"></div>
@@ -1326,41 +1366,59 @@ function doLogin() {
   const btn = document.querySelector("#login-form .btn-primary");
   if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "登录中"; }
 
-  const user = USERS.find(u => u.username === username && u.password === password);
-  if (!user) { alert("账号或密码错误"); return; }
-  if (user.status !== "已激活") { alert("账号状态：" + user.status + "，请联系管理员审批"); return; }
-
-  // 浅拷贝完整用户对象（保留 avatar/position/brand 等所有字段）
-  currentUser = {};
-  const keys = Object.keys(user);
-  for (var i = 0; i < keys.length; i++) {
-    if (keys[i] !== "password") {
-      currentUser[keys[i]] = user[keys[i]];
+  // 哈希比对（支持新版哈希和旧版明文迁移）
+  hashPassword(password).then(function(hashedInput) {
+    // 先按哈希找
+    var user = USERS.find(function(u) { return u.username === username && u.password === hashedInput; });
+    if (!user) {
+      // 没找到，尝试明文匹配（旧版数据迁移）
+      var plainUser = USERS.find(function(u) { return u.username === username && u.password.indexOf('$SHA$') !== 0 && u.password === password; });
+      if (!plainUser) {
+        if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "登  录"; }
+        alert("账号或密码错误");
+        return;
+      }
+      // 迁移：把明文密码升级为哈希
+      user = plainUser;
+      hashPassword(password).then(function(hash) {
+        plainUser.password = hash;
+        saveUsers();
+      });
     }
-  }
-  currentRole = user.role || "新用户";
+    if (user.status !== "已激活") { alert("账号状态：" + user.status + "，请联系管理员审批"); return; }
 
-  const expiry = Date.now() + 3600000; // 1小时有效期
-  // session 只存 id + 过期时间，不存完整用户数据
-  const sessionData = JSON.stringify({id: user.id, _expiry: expiry});
+    // 浅拷贝完整用户对象（保留 avatar/position/brand 等所有字段）
+    currentUser = {};
+    const keys = Object.keys(user);
+    for (var i = 0; i < keys.length; i++) {
+      if (keys[i] !== "password") {
+        currentUser[keys[i]] = user[keys[i]];
+      }
+    }
+    currentRole = user.role || "新用户";
 
-  if (remember) {
-    sessionStorage.removeItem("chansee_current_user");
-    safeSetItem("chansee_current_user", sessionData);
-  } else {
-    localStorage.removeItem("chansee_current_user");
-    sessionStorage.setItem("chansee_current_user", sessionData);
-  }
+    const expiry = Date.now() + 3600000; // 1小时有效期
+    // session 只存 id + 过期时间，不存完整用户数据
+    const sessionData = JSON.stringify({id: user.id, _expiry: expiry});
 
-  hideLoginModal();
-  updateUserDisplay();
-  setAppContentVisible(true);
-  showToast("登录成功，欢迎回来！");
-  
-  // 根据当前用户角色过滤导航菜单
-  setTimeout(function() {
-    filterNavByPermissions();
-  }, 100);
+    if (remember) {
+      sessionStorage.removeItem("chansee_current_user");
+      safeSetItem("chansee_current_user", sessionData);
+    } else {
+      localStorage.removeItem("chansee_current_user");
+      sessionStorage.setItem("chansee_current_user", sessionData);
+    }
+
+    hideLoginModal();
+    updateUserDisplay();
+    setAppContentVisible(true);
+    showToast("登录成功，欢迎回来！");
+    
+    // 根据当前用户角色过滤导航菜单
+    setTimeout(function() {
+      filterNavByPermissions();
+    }, 100);
+  });
 }
 
 // 注册
@@ -1377,58 +1435,35 @@ function doRegister() {
   const btn = document.querySelector("#register-form .btn-primary");
   if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "注册中"; }
   if (password !== confirm) { alert("两次密码不一致"); return; }
+  if (password.length < 6) { alert("密码至少6位"); btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "注册"; return; }
   if (USERS.some(u => u.username === username)) { alert("该账号已被注册"); return; }
 
-  const newUser = {
-    id: "U" + String(USERS.length + 1).padStart(3, "0"),
-    name, username, password, role: "",
-    status: "待审核", registerTime: new Date().toISOString().slice(0, 10),
-    phone: phone || "", email: email || "", approvedBy: "", remark: ""
-  };
-  USERS.push(newUser);
-  saveUsers();
-  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "注册"; }
-  alert("注册成功！请等待管理员审批后登录。");
-  switchAuthTab("login");
+  // 密码哈希后保存
+  var that = btn;
+  hashPassword(password).then(function(hashed) {
+    const newUser = {
+      id: "U" + String(USERS.length + 1).padStart(3, "0"),
+      name: name, username: username, password: hashed, role: "",
+      status: "待审核", registerTime: new Date().toISOString().slice(0, 10),
+      phone: phone || "", email: email || "", approvedBy: "", remark: ""
+    };
+    USERS.push(newUser);
+    saveUsers();
+    if (that) { that.classList.remove("btn-loading"); that.disabled = false; that.textContent = "注册"; }
+    alert("注册成功！请等待管理员审批后登录。");
+    switchAuthTab("login");
+  });
 }
 
-// ===== 密码显示/隐藏切换 =====
-function togglePassword() {
-  const inp = document.getElementById("login-password");
-  const eye = document.getElementById("password-eye");
+// ===== 密码显示/隐藏切换（通用函数）=====
+function togglePwd(inpId, eyeId) {
+  const inp = document.getElementById(inpId);
+  const eye = document.getElementById(eyeId);
   if (!inp || !eye) return;
-  if (inp.type === "password") {
-    inp.type = "text";
-    eye.textContent = "👁️"; // 睁眼 = 密码可见
-  } else {
-    inp.type = "password";
-    eye.textContent = "🙈"; // 闭眼 = 密码隐藏
-  }
+  if (inp.type === "password") { inp.type = "text"; eye.textContent = "👁️"; }
+  else { inp.type = "password"; eye.textContent = "🙈"; }
 }
-function toggleRegPassword() {
-  const inp = document.getElementById("reg-password");
-  const eye = document.getElementById("reg-password-eye");
-  if (!inp || !eye) return;
-  if (inp.type === "password") {
-    inp.type = "text";
-    eye.textContent = "👁️";
-  } else {
-    inp.type = "password";
-    eye.textContent = "🙈";
-  }
-}
-function toggleRegConfirm() {
-  const inp = document.getElementById("reg-confirm");
-  const eye = document.getElementById("reg-confirm-eye");
-  if (!inp || !eye) return;
-  if (inp.type === "password") {
-    inp.type = "text";
-    eye.textContent = "👁️";
-  } else {
-    inp.type = "password";
-    eye.textContent = "🙈";
-  }
-}
+window.togglePwd = togglePwd;
 
 // 演示登录（快速进入系统）
 function demoLogin() {
@@ -2393,7 +2428,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         var _authStr = localStorage.getItem('chanseen_auth');
         if (_authStr) {
           var _auth = JSON.parse(_authStr);
-          var _maxAge = _auth.remember ? 7200000 : 3600000;
+          var _maxAge = _auth.remember ? 604800000 : 3600000;
           if (_auth.token && (Date.now() - _auth.loginAt) < _maxAge) {
             var _u = USERS.find(function(u){ return u.id === (_auth.user && _auth.user.id) || u.username === (_auth.user && _auth.user.username); }) || USERS[0] || {};
             currentUser = {
@@ -3300,7 +3335,7 @@ function showDetailModal(title, bodyHtml, width) {
   overlay.className = 'sd-prompt-overlay';
   overlay.innerHTML = ''
     + '<div class="sd-prompt-box" style="width:'+w+'px;max-height:80vh;overflow-y:auto;">'
-    + '<div class="sd-prompt-header">' + title + ' <button class="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-header">' + escHtml(title) + ' <button class="sd-prompt-close">&times;</button></div>'
     + '<div class="sd-prompt-body" style="padding:16px 20px;">' + bodyHtml + '</div>'
     + '</div>';
   document.body.appendChild(overlay);
@@ -4382,36 +4417,22 @@ function renderArchive(){
       <tbody id="archive-tbody">
 
         ${all.map((p, idx)=>`
-
-          <tr data-id="${p.id}" data-name="${p.name}" data-brand="${p.brand}" data-pm="${p.pm}" data-search="${(p.id+' '+p.name+' '+p.brand+' '+p.pm).toLowerCase()}">
-
-            ${can?`<td><input type="checkbox" class="archive-row-check" value="${p.id}" onchange="updateBatchDeleteBtn()"></td>`:''}
-
-            <td>${p.id}</td>
-
+          <tr data-id="${escHtml(p.id)}" data-name="${escHtml(p.name)}" data-brand="${escHtml(p.brand)}" data-pm="${escHtml(p.pm)}" data-search="${(p.id+' '+p.name+' '+p.brand+' '+p.pm).toLowerCase()}">
+            ${can?`<td><input type="checkbox" class="archive-row-check" value="${escHtml(p.id)}" onchange="updateBatchDeleteBtn()"></td>`:''}
+            <td>${escHtml(p.id)}</td>
             <td><a href="#" style="color:#3b82f6;cursor:pointer;border-bottom:1px dashed #3b82f6;text-decoration:none;" 
                 onmouseover="this.style.borderBottom='1px solid #3b82f6'" 
                 onmouseout="this.style.borderBottom='1px dashed #3b82f6'"
-                onclick="showProjectDetail('${p.id}');return false;" title="点击查看项目详情">${p.name}</a></td>
-
-            <td>${p.brand} / ${p.category}</td>
-
-            <td><span class="badge ${p.serviceMode==='TP项目'?'badge-blue':p.serviceMode==='DP项目'?'badge-green':'badge-orange'}">${p.serviceMode}</span></td>
-
-            <td><span class="wp-tag wp-${p.workplace}">${p.workplace}</span></td>
-
-            <td>${p.pm}</td>
-
-            <td>${p.director}</td>
-
-            <td>${(p.pmHistory||[]).length>0?`<span class="badge badge-gray" title="${(p.pmHistory||[]).map(h=>h.name+'('+h.from+'~'+h.to+')').join('; ')}">${(p.pmHistory||[]).length}次交接</span>`:'无'}</td>
-
+                onclick="showProjectDetail('${escHtml(p.id)}');return false;" title="点击查看项目详情">${escHtml(p.name)}</a></td>
+            <td>${escHtml(p.brand)} / ${escHtml(p.category)}</td>
+            <td><span class="badge ${p.serviceMode==='TP项目'?'badge-blue':p.serviceMode==='DP项目'?'badge-green':'badge-orange'}">${escHtml(p.serviceMode)}</span></td>
+            <td><span class="wp-tag wp-${p.workplace}">${escHtml(p.workplace)}</span></td>
+            <td>${escHtml(p.pm)}</td>
+            <td>${escHtml(p.director)}</td>
+            <td>${(p.pmHistory||[]).length>0?'<span class="badge badge-gray" title="'+(p.pmHistory||[]).map(h=>escHtml(h.name)+'('+escHtml(h.from)+'~'+escHtml(h.to)+')').join('; ')+'">'+(p.pmHistory||[]).length+'次交接</span>':'无'}</td>
             <td class="actions">
-              ${can?`<button class="btn btn-sm" style="background:#eff6ff;color:#2563eb;border-color:#bfdbfe;" onclick="editProject('${p.id}')">编辑</button>&nbsp;
-              <button class="btn btn-sm" style="color:#dc2626;background:#fef2f2;border-color:#fecaca;" onclick="deleteProjectConfirm('${p.id}','${p.name}')">删除</button>`:''}
-
+              ${can?'<button class="btn btn-sm" style="background:#eff6ff;color:#2563eb;border-color:#bfdbfe;" onclick="editProject(\''+escHtml(p.id)+'\')">编辑</button>&nbsp;<button class="btn btn-sm" style="color:#dc2626;background:#fef2f2;border-color:#fecaca;" onclick="deleteProjectConfirm(\''+escHtml(p.id)+'\',\''+escHtml(p.name)+'\')">删除</button>':''}
             </td>
-
           </tr>`).join('')}
 
       </tbody>
@@ -4434,8 +4455,15 @@ function filterArchiveTable(kw){kw=(kw||'').toLowerCase().trim();var s=kw?docume
 var debouncedArchiveSearch = debounce(function(kw){ filterArchiveTable(kw); }, 150);
 function toggleArchiveSelectAll(c){var cb=document.querySelectorAll('.archive-row-check');for(var i=0;i<cb.length;i++)cb[i].checked=c;updateBatchDeleteBtn()}
 function updateBatchDeleteBtn(){var c=document.querySelectorAll('.archive-row-check:checked'),b=document.querySelectorAll("[onclick='batchDeleteProjects()']");for(var i=0;i<b.length;i++){b[i].disabled=c.length===0;b[i].style.opacity=c.length>0?1:0.5}}
-function batchDeleteProjects(){var c=document.querySelectorAll('.archive-row-check:checked');if(!c.length){alert('请先勾选要删除的项目');return}var ids=[];for(var i=0;i<c.length;i++)ids.push(c[i].value);if(!confirm('确定删除选中的'+ids.length+'个项目？此操作不可恢复！'))return;ids.forEach(function(id){deleteProjectDirectly(id)});showToast('已删除'+ids.length+'个项目');renderModule('archive')}
-function deleteProjectConfirm(id,name){if(confirm('确定删除「'+name+'」？仅删此条，不影响其他模块'))deleteProject(id)}
+function batchDeleteProjects(){var c=document.querySelectorAll('.archive-row-check:checked');if(!c.length){showToast('请先勾选要删除的项目','warning');return}var ids=[];for(var i=0;i<c.length;i++)ids.push(c[i].value);showConfirmModal('确定删除选中的 <b>'+ids.length+'</b> 个项目？<br><br><b style="color:var(--c-red)">⚠️ 此操作不可恢复！</b>', '批量删除确认', function(){ids.forEach(function(id){deleteProjectDirectly(id)});showToast('已删除'+ids.length+'个项目');renderModule('archive')});}
+function deleteProjectConfirm(id,name){
+  showConfirmModal('确定删除项目「<b>' + escHtml(name) + '</b>」？<br><br><b style="color:var(--c-red)">⚠️ 此操作不可恢复！</b><br>将清除该项目所有关联数据（运营、目标、问题等）。', '删除确认', function(){
+    PROJECTS = PROJECTS.filter(function(p){ return p.id !== id; });
+    saveProjects();
+    showToast('已删除项目「' + escHtml(name) + '」');
+    renderArchive();
+  });
+}
 function deleteProjectDirectly(id){PROJECTS=PROJECTS.filter(function(p){return p.id!==id});safeSetItem('chansee_projects',JSON.stringify(PROJECTS));if(window.CloudBaseSync)window.CloudBaseSync.saveAll()}
 
 // ===== 目标与权责管理 =====
@@ -5897,25 +5925,25 @@ function showProjectDetail(projectId){
 
       <div class="detail-grid">
 
-        <div class="detail-item"><div class="detail-label">项目编号</div><div class="detail-value">${p.id}</div></div>
+        <div class="detail-item"><div class="detail-label">项目编号</div><div class="detail-value">${escHtml(p.id)}</div></div>
 
-        <div class="detail-item"><div class="detail-label">品牌</div><div class="detail-value">${p.brand}</div></div>
+        <div class="detail-item"><div class="detail-label">品牌</div><div class="detail-value">${escHtml(p.brand)}</div></div>
 
-        <div class="detail-item"><div class="detail-label">品类</div><div class="detail-value">${p.category}</div></div>
+        <div class="detail-item"><div class="detail-label">品类</div><div class="detail-value">${escHtml(p.category)}</div></div>
 
-        <div class="detail-item"><div class="detail-label">项目类型</div><div class="detail-value">${p.serviceMode}</div></div>
+        <div class="detail-item"><div class="detail-label">项目类型</div><div class="detail-value">${escHtml(p.serviceMode)}</div></div>
 
-        <div class="detail-item"><div class="detail-label">所属职场</div><div class="detail-value">${p.workplace}</div></div>
+        <div class="detail-item"><div class="detail-label">所属职场</div><div class="detail-value">${escHtml(p.workplace)}</div></div>
 
-        <div class="detail-item"><div class="detail-label">客服base</div><div class="detail-value">${p.base}</div></div>
+        <div class="detail-item"><div class="detail-label">客服base</div><div class="detail-value">${escHtml(p.base)}</div></div>
 
-        <div class="detail-item"><div class="detail-label">服务周期</div><div class="detail-value">${p.startDate} ~ ${p.endDate}</div></div>
+        <div class="detail-item"><div class="detail-label">服务周期</div><div class="detail-value">${escHtml(p.startDate)} ~ ${escHtml(p.endDate)}</div></div>
 
-        <div class="detail-item"><div class="detail-label">服务渠道</div><div class="detail-value">${p.platforms}</div></div>
+        <div class="detail-item"><div class="detail-label">服务渠道</div><div class="detail-value">${escHtml(p.platforms)}</div></div>
 
-        <div class="detail-item"><div class="detail-label">服务时间</div><div class="detail-value">${p.serviceHours}</div></div>
+        <div class="detail-item"><div class="detail-label">服务时间</div><div class="detail-value">${escHtml(p.serviceHours)}</div></div>
 
-        <div class="detail-item"><div class="detail-label">项目状态</div><div class="detail-value">${p.status}</div></div>
+        <div class="detail-item"><div class="detail-label">项目状态</div><div class="detail-value">${escHtml(p.status)}</div></div>
 
       </div>
 
@@ -5930,9 +5958,7 @@ function showProjectDetail(projectId){
           <tbody>
 
             ${p.pmHistory.map(h=>`
-
-              <tr><td>${h.name}</td><td>${h.from}</td><td>${h.to}</td><td>${h.reason}</td></tr>
-
+              <tr><td>${escHtml(h.name)}</td><td>${escHtml(h.from)}</td><td>${escHtml(h.to)}</td><td>${escHtml(h.reason)}</td></tr>
             `).join('')}
 
           </tbody>
@@ -8449,9 +8475,9 @@ function renderNotifications(){
       <tbody>
         ${filtered.map(u => `
           <tr>
-            <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--c-primary-light);color:var(--c-primary);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;">${u.name ? u.name.charAt(0) : '?'}</div><span style="font-weight:500;">${u.name || '未命名'}</span></div></td>
-            <td>${u.username}</td>
-            <td><span class="badge ${roleBadge[u.role]||'badge-gray'}">${u.role}</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div style="width:32px;height:32px;border-radius:50%;background:var(--c-primary-light);color:var(--c-primary);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;">${u.name ? escHtml(u.name).charAt(0) : '?'}</div><span style="font-weight:500;">${escHtml(u.name || '未命名')}</span></div></td>
+            <td>${escHtml(u.username)}</td>
+            <td><span class="badge ${roleBadge[u.role]||'badge-gray'}">${escHtml(u.role)}</span></td>
             <td><span class="badge ${statusBadge[u.status]||'badge-gray'}">${u.status}</span></td>
             <td>${u.registerTime}</td>
             <td><div style="font-size:12px;color:var(--c-text-2);">${u.phone}<br/>${u.email}</div></td>
@@ -8559,9 +8585,12 @@ function resetUserPassword(userId){
   if (!user) return;
   showPromptModal('重置 '+user.name+' 的密码', '请输入新密码（至少6位）：', '', function(newPwd){
     if (newPwd && newPwd.length >= 6) {
-      user.password = newPwd;
-      saveUsers();
-      showToast('已重置 '+user.name+' 的密码', 'success');
+      var that = user;
+      hashPassword(newPwd).then(function(hashed) {
+        that.password = hashed;
+        saveUsers();
+        showToast('已重置 '+that.name+' 的密码', 'success');
+      });
     } else if (newPwd) {
       showToast('密码长度不足6位，请重新操作', 'error');
     }
@@ -11684,18 +11713,33 @@ function doChangePassword() {
   const newPwd = document.getElementById("cp-new").value;
   const confirm = document.getElementById("cp-confirm").value;
   if (!oldPwd || !newPwd || !confirm) { alert("请填写完整"); return; }
+  if (newPwd.length < 6) { alert("新密码至少6位"); return; }
+  if (newPwd !== confirm) { alert("两次输入的新密码不一致"); return; }
   const btn = document.querySelector("#change-password-modal .btn-primary");
   if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
-  if (!userInDb || userInDb.password !== oldPwd) { alert("原密码不正确"); return; }
-  if (newPwd.length < 6) { alert("新密码至少6位"); return; }
-  if (newPwd !== confirm) { alert("两次输入的新密码不一致"); return; }
-  userInDb.password = newPwd;
-  if (currentUser) { currentUser.password = newPwd; localStorage.setItem("chansee_current_user", JSON.stringify(currentUser)); }
-  saveUsers();
-  if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "确认修改"; }
-  showToast("密码修改成功，请牢记新密码");
-  hideChangePasswordModal();
+  if (!userInDb) { alert("用户不存在"); return; }
+  // 验证原密码（支持哈希和旧版明文迁移）
+  var stored = userInDb.password || '';
+  function doHashAndSave() {
+    hashPassword(newPwd).then(function(hashedNew) {
+      userInDb.password = hashedNew;
+      if (currentUser) { currentUser.password = hashedNew; localStorage.setItem("chansee_current_user", JSON.stringify(currentUser)); }
+      saveUsers();
+      if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "确认修改"; }
+      showToast("密码修改成功，请牢记新密码");
+      hideChangePasswordModal();
+    });
+  }
+  if (stored.indexOf('$SHA$') === 0) {
+    hashPassword(oldPwd).then(function(hashedOld) {
+      if (hashedOld !== stored) { alert("原密码不正确"); if(btn){btn.classList.remove('btn-loading');btn.disabled=false;btn.textContent='确认修改';} return; }
+      doHashAndSave();
+    });
+  } else {
+    if (stored !== oldPwd) { alert("原密码不正确"); if(btn){btn.classList.remove('btn-loading');btn.disabled=false;btn.textContent='确认修改';} return; }
+    doHashAndSave();
+  }
 }
 // 忘记密码功能
 let forgotVerifyCode = '';
@@ -11780,13 +11824,14 @@ function resetPassword() {
   if (newPwd !== confirmPwd) { alert('两次输入的新密码不一致'); return; }
   if (!forgotTargetUser) { alert('操作超时，请重新操作'); hideForgotPassword(); return; }
   
-  // Update password
-  forgotTargetUser.password = newPwd;
-  if (currentUser && forgotTargetUser.id === currentUser.id) { currentUser.password = newPwd; localStorage.setItem("chansee_current_user", JSON.stringify(currentUser)); }
-  saveUsers();
-  
-  showToast('密码重置成功，请使用新密码登录');
-  hideForgotPassword();
+  // Update password (hash before saving)
+  hashPassword(newPwd).then(function(hashed) {
+    forgotTargetUser.password = hashed;
+    if (currentUser && forgotTargetUser.id === currentUser.id) { currentUser.password = hashed; localStorage.setItem("chansee_current_user", JSON.stringify(currentUser)); }
+    saveUsers();
+    showToast('密码重置成功，请使用新密码登录');
+    hideForgotPassword();
+  });
 }
 
 

@@ -996,6 +996,17 @@
       }
     }
 
+    // SHA-256 密码哈希（Web Crypto API，无需外部库）
+    async function hashPassword(password) {
+      if (!password) return '';
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+      return '$SHA$' + hashHex;
+    }
+
     // Toast 通知
     function showToast(message, type) {
       const container = document.getElementById('toastContainer');
@@ -1070,10 +1081,10 @@
       } catch(e) {}
     }
 
-    // 内置默认用户（首次部署时兜底）
+        // 内置默认用户（首次部署时兜底），密码已预哈希
         var defaultUsers = [
-          {id:"U001", username:"admin", password:"admin666", name:"admin", nickname:"", role:"超级管理员", position:"", birthday:""},
-          {id:"U002", username:"jordly", password:"jordly1218", name:"jordly", nickname:"", role:"管理员", position:"", birthday:""}
+          {id:"U001", username:"admin", password:"$SHA$344bba4200ad08694896aafa0b7507101798ac975744914bcc40856e87c3626d", name:"admin", nickname:"", role:"超级管理员", position:"", birthday:""},
+          {id:"U002", username:"jordly", password:"$SHA$530875c3cfd0e165ec4a397bc735bb8697d71950dd02da699d95651928fc8958", name:"jordly", nickname:"", role:"管理员", position:"", birthday:""}
         ];
         // 从 localStorage 读取用户数据，然后合并默认用户（默认用户覆盖同名旧数据）
         var savedUsers = [];
@@ -1111,37 +1122,71 @@
           showToast('用户名或密码错误', 'error');
           return;
         }
-        // 验证密码
-        if (foundUser.password !== password) {
-          recordFailedLogin(username);
-          btnText.textContent = '登 录';
-          btn.disabled = false;
-          btn.style.opacity = '1';
-          showToast('用户名或密码错误', 'error');
-          return;
+        // 验证密码（支持新版哈希和旧版明文迁移）
+        (function verifyPassword() {
+          var stored = foundUser.password || '';
+          // 如果是哈希存储
+          if (stored.indexOf('$SHA$') === 0) {
+            hashPassword(password).then(function(hashedInput) {
+              if (hashedInput !== stored) {
+                recordFailedLogin(username);
+                btnText.textContent = '登 录';
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                showToast('用户名或密码错误', 'error');
+                return;
+              }
+              loginSuccess();
+            });
+          } else {
+            // 旧版明文密码：直接比较
+            if (stored !== password) {
+              recordFailedLogin(username);
+              btnText.textContent = '登 录';
+              btn.disabled = false;
+              btn.style.opacity = '1';
+              showToast('用户名或密码错误', 'error');
+              return;
+            }
+            // 迁移：登录成功后把密码升级为哈希
+            hashPassword(password).then(function(hash) {
+              foundUser.password = hash;
+              for (var si = 0; si < savedUsers.length; si++) {
+                if (savedUsers[si].username === foundUser.username) {
+                  savedUsers[si].password = hash;
+                  break;
+                }
+              }
+              localStorage.setItem('chansee_users', JSON.stringify(savedUsers));
+              loginSuccess();
+            });
+          }
+        })();
+
+        // 登录成功公共处理
+        function loginSuccess() {
+          const auth = {
+            token: 'demo_' + Date.now(),
+            user: {
+              id: foundUser.id,
+              username: foundUser.username,
+              name: foundUser.name || username,
+              role: foundUser.role || '超级管理员',
+              nickname: foundUser.nickname || '',
+              position: foundUser.position || '',
+              birthday: foundUser.birthday || ''
+            },
+            loginAt: Date.now(),
+            remember: remember
+          };
+          localStorage.setItem('chanseen_auth', JSON.stringify(auth));
+          showToast('登录成功！正在进入系统...', 'success');
+          setTimeout(function() {
+            window.location.href = 'index.html?from=login&_=' + Date.now();
+          }, 800);
         }
 
-        const auth = {
-          token: 'demo_' + Date.now(),
-          user: {
-            id: foundUser.id,
-            username: foundUser.username,
-            name: foundUser.name || username,
-            role: foundUser.role || '超级管理员',
-            nickname: foundUser.nickname || '',
-            position: foundUser.position || '',
-            birthday: foundUser.birthday || ''
-          },
-          loginAt: Date.now(),
-          remember: remember
-        };
-        localStorage.setItem('chanseen_auth', JSON.stringify(auth));
-
-        showToast('登录成功！正在进入系统...', 'success');
-
-        setTimeout(() => {
-          window.location.href = 'index.html?from=login&_=' + Date.now();
-        }, 800);
+        // 开始验证（verifyPassword 中会调用 loginSuccess）
       }, 800);
 
       return false;
