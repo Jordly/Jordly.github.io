@@ -9146,7 +9146,6 @@ var _renderSystemData = function(){
         groupSections += ''
           +'<div class="sd-card" style="cursor:pointer;position:relative;padding:10px 12px;border-left:3px solid '+accentColor+';background:var(--c-surface);border-radius:6px;display:flex;align-items:center;gap:10px;min-height:44px;" onclick="goSystemDataDetail(\''+ctk+'\')">'
             +(isReadOnly?'<span style="position:absolute;top:4px;right:6px;font-size:9px;color:#94a3b8;">🔒</span>':'')
-            +'<span style="font-size:20px;flex-shrink:0;">'+ct.label.charAt(0)+ct.label.charAt(1)+'</span>'
             +'<div style="flex:1;min-width:0;">'
               +'<div style="font-size:13px;font-weight:600;color:var(--c-text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+ct.label.substring(2)+'</div>'
               +'<div style="font-size:11px;color:var(--c-text-3);margin-top:2px;">'
@@ -9196,7 +9195,7 @@ var _renderSystemData = function(){
       +'</div>'
     +'</div>'
     +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">'
-      +'<input type="text" id="sysdata-catalog-search" value="" autocomplete="off" placeholder="🔍 搜索数据表（表名/描述）..." style="flex:1;max-width:400px;padding:6px 10px;border:1px solid var(--c-border,#e2e8f0);border-radius:8px;font-size:13px;" oninput="catalogSearchSystemData(this.value)">'
+      +'<input type="text" id="sysdata-catalog-search" value="" readonly autocomplete="off" name="chanseen_sdsearch_unique" data-lpignore="true" data-1p-ignore="true" data-form-type="other" placeholder="🔍 搜索数据表（表名/描述）..." style="flex:1;max-width:400px;padding:6px 10px;border:1px solid var(--c-border,#e2e8f0);border-radius:8px;font-size:13px;background-color:#fff;" onfocus="this.removeAttribute(\'readonly\');this.value=\'\';" oninput="catalogSearchSystemData(this.value)">'
       +(kw?'<button class="btn btn-xs" onclick="clearCatalogSearch()">清除</button>':'')
     +'</div>'
     +groupSections;
@@ -9312,7 +9311,7 @@ var _renderSystemData = function(){
     +'</div>'
   +'</div>'
   +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">'
-    +'<input type="text" id="sysdata-search" placeholder="搜索..." value="'+(keyword||'')+'" style="width:200px;padding:6px 10px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;" onkeyup="searchSystemData(event)">'
+    +'<input type="text" id="sysdata-search" placeholder="搜索..." value="'+(keyword||'')+'" readonly autocomplete="off" name="chanseen_sysdsearch_unique" data-lpignore="true" data-1p-ignore="true" data-form-type="other" style="width:200px;padding:6px 10px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;background-color:#fff;" onfocus="this.removeAttribute(\'readonly\');if(!this._touched){this.value=\'\';this._touched=true;}" onkeyup="searchSystemData(event)">'
     +'<button class="btn btn-xs" onclick="clearSystemDataSearch()">清除</button>'
     +'<span style="font-size:12px;color:var(--c-text-3);">共 '+totalRecords+' 条记录</span>'
   +'</div>'
