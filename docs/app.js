@@ -9117,7 +9117,7 @@ var _renderSystemData = function(){
       // 分组标题（可点击折叠/展开）
       groupSections += ''
         +'<div style="display:flex;align-items:center;gap:8px;margin:8px 0 4px 0;padding:6px 10px;background:var(--c-bg);border-radius:6px;cursor:pointer;" onclick="var b=document.getElementById(\''+grpId+'\');if(b){if(b.style.display===\'none\'){b.style.display=\'block\';this.querySelector(\'.sd-arrow\').textContent=\'▾\';}else{b.style.display=\'none\';this.querySelector(\'.sd-arrow\').textContent=\'▸\';}}">'
-          +'<span style="font-size:11px;transition:0.2s;" class="sd-arrow">'+(_sdAllExpanded?'▾':'▸')+'</span>'
+          +'<span style="font-size:14px;transition:0.2s;" class="sd-arrow">'+(_sdAllExpanded?'▾':'▸')+'</span>'
           +'<span style="font-size:16px;">'+grp.icon+'</span>'
           +'<span style="font-size:13px;font-weight:600;color:var(--c-text-2);">'+grp.key+'</span>'
           +'<span style="font-size:11px;color:var(--c-text-3);">('+visibleCount+'/'+cardCount+' 张表)</span>'
