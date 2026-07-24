@@ -9162,6 +9162,19 @@ var _renderSystemData = function(){
     // 无搜索结果
     if(!groupSections) groupSections = '<div style="padding:40px;text-align:center;color:var(--c-text-3);">未找到匹配的数据表，请尝试其他搜索关键词</div>';
 
+    // 计算存储用量
+    var totalUsed = 0;
+    try {
+      for(var lsKey in localStorage){
+        if(localStorage.hasOwnProperty(lsKey) && (lsKey.indexOf('chansee')===0 || lsKey.indexOf('chanseen')===0)){
+          totalUsed += (localStorage[lsKey]||'').length * 2; // UTF-16 ≈ 2 bytes per char
+        }
+      }
+    } catch(e){}
+    var totalMB = (totalUsed / 1048576).toFixed(2);
+    var pctUsed = Math.min(100, Math.round(totalUsed / 5242880 * 100)); // 5MB limit
+    var barColor = pctUsed > 80 ? '#f5222d' : pctUsed > 60 ? '#faad14' : '#0B9B96';
+
     return ''
     +'<div class="module-header">'
       +'<div>'
@@ -9171,6 +9184,15 @@ var _renderSystemData = function(){
       +'<div style="display:flex;gap:8px;align-items:center;">'
         +'<button class="btn btn-xs" onclick="window._sdAllExpanded=true;renderModule(\'systemData\')">展开全部</button>'
         +'<button class="btn btn-xs" onclick="window._sdAllExpanded=false;renderModule(\'systemData\')">折叠全部</button>'
+      +'</div>'
+    +'</div>'
+    +'<div style="margin-bottom:10px;padding:8px 12px;background:var(--c-surface);border-radius:8px;border:1px solid var(--c-border);">'
+      +'<div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--c-text-2);margin-bottom:4px;">'
+        +'<span>💾 存储用量：<b style="color:'+barColor+';">'+totalMB+' MB</b> / 5 MB（'+pctUsed+'%）</span>'
+        +(pctUsed > 80 ? '<span style="color:#f5222d;">⚠️ 空间紧张，请及时导出或清理旧数据</span>' : pctUsed > 60 ? '<span style="color:#faad14;">⚡ 使用过半，建议留意空间</span>' : '')
+      +'</div>'
+      +'<div style="height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden;">'
+        +'<div style="height:100%;width:'+pctUsed+'%;background:'+barColor+';border-radius:3px;transition:width 0.3s;"></div>'
       +'</div>'
     +'</div>'
     +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">'
