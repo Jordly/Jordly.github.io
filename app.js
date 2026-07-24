@@ -9094,82 +9094,90 @@ var _renderSystemData = function(){
   // 卡片目录视图
   if(_systemDataView === 'catalog'){
     var kw = (_systemDataCatalogSearch||'').toLowerCase().trim();
+    var _sdAllExpanded = window._sdAllExpanded !== false; // 默认全部展开
 
-    // 按组依次渲染
-    var allHtml = '';
+    // 生成全部组的内容
+    var groupSections = '';
     for(var _gi=0;_gi<_SD_GROUPS.length;_gi++){
       var grp = _SD_GROUPS[_gi];
-      // 收集本组要显示的卡片
       var groupCards = [];
       for(var _ti=0;_ti<grp.tables.length;_ti++){
         var tk = grp.tables[_ti];
         var t = SYSTEM_DATA_TABLES[tk];
         if(!t) continue;
-        // 搜索过滤：按表名+描述匹配
         if(kw && (t.label+' '+t.desc).toLowerCase().indexOf(kw)<0) continue;
         groupCards.push({key:tk, def:t});
       }
       if(groupCards.length===0) continue;
 
-      // 分组标题横幅
-      allHtml += ''
-        +'<div style="display:flex;align-items:center;gap:8px;margin:16px 0 10px 0;padding-bottom:6px;border-bottom:1px solid var(--c-border, #e2e8f0);">'
+      var grpId = 'sd-grp-'+_gi;
+      var cardCount = grp.tables.length;
+      var visibleCount = groupCards.length;
+
+      // 分组标题（可点击折叠/展开）
+      groupSections += ''
+        +'<div style="display:flex;align-items:center;gap:8px;margin:8px 0 4px 0;padding:6px 10px;background:var(--c-bg);border-radius:6px;cursor:pointer;" onclick="var b=document.getElementById(\''+grpId+'\');if(b){if(b.style.display===\'none\'){b.style.display=\'block\';this.querySelector(\'.sd-arrow\').textContent=\'▾\';}else{b.style.display=\'none\';this.querySelector(\'.sd-arrow\').textContent=\'▸\';}}">'
+          +'<span style="font-size:11px;transition:0.2s;" class="sd-arrow">'+(_sdAllExpanded?'▾':'▸')+'</span>'
           +'<span style="font-size:16px;">'+grp.icon+'</span>'
-          +'<span style="font-size:14px;font-weight:600;color:var(--c-text-2,#475569);">'+grp.key+'</span>'
-          +'<span style="font-size:12px;color:var(--c-text-3,#94a3b8);">'+grp.desc+'</span>'
-        +'</div>'
-        +'<div class="sd-cards-grid" style="margin-bottom:4px;">';
+          +'<span style="font-size:13px;font-weight:600;color:var(--c-text-2);">'+grp.key+'</span>'
+          +'<span style="font-size:11px;color:var(--c-text-3);">('+visibleCount+'/'+cardCount+' 张表)</span>'
+          +'<span style="font-size:11px;color:var(--c-text-3);">'+grp.desc+'</span>'
+        +'</div>';
+
+      // 卡片网格
+      var displayStyle = _sdAllExpanded ? 'block' : 'none';
+      groupSections += '<div id="'+grpId+'" style="display:'+displayStyle+';margin-bottom:6px;">';
+      groupSections += '<div class="sd-cards-grid">';
 
       for(var _gci=0;_gci<groupCards.length;_gci++){
-        var t = groupCards[_gci].def;
-        var tk = groupCards[_gci].key;
-        var count = t.data ? t.data.length : 0;
-        var isReadOnly = !!t.readOnly;
-        // 保持原来的三色循环逻辑（不改色调）
+        var ct = groupCards[_gci].def;
+        var ctk = groupCards[_gci].key;
+        var count = ct.data ? (Array.isArray(ct.data) ? ct.data.length : Object.keys(ct.data).length) : 0;
+        var isReadOnly = !!ct.readOnly;
         var bgClass = ''; var accentColor = '';
-        var grpIdx = _SD_GROUPS.indexOf(grp);
-        // 每组内按原始顺序分配颜色，与原来一致
-        if(groupCards.indexOf(groupCards[_gci])%3===0){ bgClass='sd-card-clr1'; accentColor='#0B9B96'; }
-        else if(groupCards.indexOf(groupCards[_gci])%3===1){ bgClass='sd-card-clr2'; accentColor='#3B82F6'; }
-        else { bgClass='sd-card-clr3'; accentColor='#8B5CF6'; }
+        if(_gci%3===0){ accentColor='#0B9B96'; }
+        else if(_gci%3===1){ accentColor='#3B82F6'; }
+        else { accentColor='#8B5CF6'; }
 
-        // 关联页面标签
-        var pages = _SD_RELATED_PAGES[tk]||[];
-        var pagesHtml = pages.length ? '<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap;">' : '';
-        for(var _pi=0;_pi<pages.length;_pi++){
-          var p = pages[_pi];
-          pagesHtml += '<span style="font-size:11px;cursor:pointer;padding:1px 6px;border-radius:3px;background:'+accentColor+'18;color:'+accentColor+';border:1px solid '+accentColor+'44;" onclick="event.stopPropagation();renderModule(\''+p.mod+'\')">'+p.label+'</span>';
-        }
-        if(pages.length) pagesHtml += '</div>';
+        // 关联页面 - 只保留1个，作为卡片副标题
+        var pages = _SD_RELATED_PAGES[ctk]||[];
+        var shortcutLabel = pages.length ? pages[0].label : '';
 
-        allHtml += ''
-          +'<div class="sd-card" style="cursor:pointer;position:relative;" onclick="goSystemDataDetail(\''+tk+'\')">'
-            +'<div style="height:4px;background:linear-gradient(90deg,'+accentColor+','+accentColor+'88);"></div>'
-            +'<div class="sd-card-inner '+bgClass+'">'
-              +(isReadOnly?'<span style="position:absolute;top:8px;right:8px;font-size:10px;padding:1px 5px;border-radius:3px;background:#f1f5f9;color:#94a3b8;border:1px solid #e2e8f0;">🔒 只读</span>':'')
-              +'<div class="sd-card-icon">'+t.label.charAt(0)+t.label.charAt(1)+'</div>'
-              +'<div class="sd-card-label">'+t.label.substring(2)+'</div>'
-              +'<div class="sd-card-count">'+count+' 条记录</div>'
-              +'<div class="sd-card-desc">'+(t.desc||'').substring(0,80)+(t.desc&&t.desc.length>80?'...':'')+'</div>'
-              +pagesHtml
+        groupSections += ''
+          +'<div class="sd-card" style="cursor:pointer;position:relative;padding:10px 12px;border-left:3px solid '+accentColor+';background:var(--c-surface);border-radius:6px;display:flex;align-items:center;gap:10px;min-height:44px;" onclick="goSystemDataDetail(\''+ctk+'\')">'
+            +(isReadOnly?'<span style="position:absolute;top:4px;right:6px;font-size:9px;color:#94a3b8;">🔒</span>':'')
+            +'<span style="font-size:20px;flex-shrink:0;">'+ct.label.charAt(0)+ct.label.charAt(1)+'</span>'
+            +'<div style="flex:1;min-width:0;">'
+              +'<div style="font-size:13px;font-weight:600;color:var(--c-text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+ct.label.substring(2)+'</div>'
+              +'<div style="font-size:11px;color:var(--c-text-3);margin-top:2px;">'
+                +(shortcutLabel ? '<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:'+accentColor+'18;color:'+accentColor+';border:1px solid '+accentColor+'44;margin-right:4px;">'+shortcutLabel+'</span>' : '')
+                +'<span>'+count+' 条记录</span>'
+              +'</div>'
             +'</div>'
           +'</div>';
       }
-      allHtml += '</div>';
+      groupSections += '</div></div>';
     }
+
+    // 无搜索结果
+    if(!groupSections) groupSections = '<div style="padding:40px;text-align:center;color:var(--c-text-3);">未找到匹配的数据表，请尝试其他搜索关键词</div>';
 
     return ''
     +'<div class="module-header">'
       +'<div>'
         +'<div class="module-title">🗄️ 系统数据管理</div>'
-        +'<div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">统一数据管理中心 · 所有数据的唯一入口与维护中心</div>'
+        +'<div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">统一数据管理中心 · 共 '+_SD_GROUPS.reduce(function(s,g){return s+g.tables.length;},0)+' 个数据表</div>'
+      +'</div>'
+      +'<div style="display:flex;gap:8px;align-items:center;">'
+        +'<button class="btn btn-xs" onclick="window._sdAllExpanded=true;renderModule(\'systemData\')">展开全部</button>'
+        +'<button class="btn btn-xs" onclick="window._sdAllExpanded=false;renderModule(\'systemData\')">折叠全部</button>'
       +'</div>'
     +'</div>'
     +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">'
-      +'<input type="text" id="sysdata-catalog-search" placeholder="" style="flex:1;max-width:300px;padding:6px 10px;border:1px solid var(--c-border,#e2e8f0);border-radius:8px;font-size:13px;" oninput="catalogSearchSystemData(this.value)">'
+      +'<input type="text" id="sysdata-catalog-search" value="" autocomplete="off" placeholder="🔍 搜索数据表（表名/描述）..." style="flex:1;max-width:400px;padding:6px 10px;border:1px solid var(--c-border,#e2e8f0);border-radius:8px;font-size:13px;" oninput="catalogSearchSystemData(this.value)">'
       +(kw?'<button class="btn btn-xs" onclick="clearCatalogSearch()">清除</button>':'')
     +'</div>'
-    +allHtml;
+    +groupSections;
   }
 
   var tableDef = SYSTEM_DATA_TABLES[_systemDataTab];
