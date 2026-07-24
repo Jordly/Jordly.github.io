@@ -8937,6 +8937,88 @@ var SYSTEM_DATA_TABLES = {
       {key:'evaluatedAt', label:'评定日期', type:'text'},
       {key:'status', label:'状态', type:'select', options:['已评定','待评定']}
     ]
+  },
+  // ===== 新增数据源（补全所有模块的数据挂载）=====
+  goals: {
+    label: '\u{1F3AF} 目标与权责表',
+    desc: '项目目标与权责数据，包含业务指标、分摊成本、问题改善、课题推进等目标。目标与权责管理页面依赖此表，数据双向实时同步。',
+    data: typeof GOALS !== 'undefined' ? GOALS : [],
+    fields: [
+      {key:'id', label:'目标ID', type:'text', required:true},
+      {key:'projectId', label:'关联项目', type:'text', required:true},
+      {key:'type', label:'目标类型', type:'select', options:['业务指标类','分摊成本类','问题改善类','课题推进类']},
+      {key:'target', label:'目标描述', type:'textarea', required:true},
+      {key:'metric', label:'衡量指标', type:'textarea'},
+      {key:'owner', label:'负责人', type:'text'},
+      {key:'deadline', label:'截止日期', type:'text'},
+      {key:'status', label:'状态', type:'select', options:['进行中','已完成','已逾期']},
+      {key:'createTime', label:'创建时间', type:'text'}
+    ]
+  },
+  agent_performance: {
+    label: '\u{1F4C8} 坐席绩效表',
+    desc: '各坐席月度绩效数据，包含销售额、转化率、首次解决率、CSAT等。客服绩效看板页面依赖此表，数据双向实时同步。',
+    data: typeof AGENT_PERFORMANCE !== 'undefined' ? AGENT_PERFORMANCE : [],
+    fields: [
+      {key:'id', label:'绩效ID', type:'text', required:true},
+      {key:'agentName', label:'坐席名称', type:'text'},
+      {key:'projectId', label:'所属项目', type:'text'},
+      {key:'period', label:'绩效周期', type:'text'},
+      {key:'salesAmount', label:'销售额', type:'number'},
+      {key:'conversionRate', label:'转化率(%)', type:'number'},
+      {key:'firstResolveRate', label:'首次解决率(%)', type:'number'},
+      {key:'csat', label:'CSAT', type:'number'},
+      {key:'attendance', label:'出勤率(%)', type:'number'}
+    ]
+  },
+  staff_config: {
+    label: '\u{1F465} 客服配置表',
+    desc: '客服人员岗位配置数据，包含角色、人数、占比、工作地点等。首页看板与系统数据管理依赖此表，数据双向实时同步。',
+    data: typeof STAFF_CONFIG !== 'undefined' ? STAFF_CONFIG : [],
+    fields: [
+      {key:'id', label:'配置ID', type:'text', required:true},
+      {key:'role', label:'客服角色', type:'text'},
+      {key:'count', label:'人数', type:'number'},
+      {key:'pct', label:'占比(%)', type:'number'},
+      {key:'workplace', label:'工作地点', type:'text'},
+      {key:'updatedAt', label:'更新时间', type:'text'},
+      {key:'updatedBy', label:'更新人', type:'text'}
+    ]
+  },
+  workload_data: {
+    label: '\u{1F4CA} 工作量数据表',
+    desc: '客服工作量统计数据，包含工单类型、数量、占比等。运营数据与看板页面依赖此表，数据双向实时同步。',
+    data: typeof WORKLOAD_DATA !== 'undefined' ? WORKLOAD_DATA : [],
+    fields: [
+      {key:'id', label:'数据ID', type:'text', required:true},
+      {key:'name', label:'工单类型', type:'text'},
+      {key:'count', label:'数量', type:'number'},
+      {key:'ratio', label:'占比(%)', type:'number'},
+      {key:'workplace', label:'工作地点', type:'text'},
+      {key:'updatedAt', label:'更新时间', type:'text'},
+      {key:'updatedBy', label:'更新人', type:'text'}
+    ]
+  },
+  performance_weights: {
+    label: '\u{2696}️ 绩效权重表',
+    desc: '绩效考核权重配置，定义不同维度的评分占比。绩效评估与看板页面依赖此配置。',
+    data: typeof PERFORMANCE_WEIGHTS !== 'undefined' ? PERFORMANCE_WEIGHTS : {},
+    fields: [
+      {key:'key', label:'配置项', type:'text'},
+      {key:'value', label:'权重值', type:'number'}
+    ],
+    isKvTable: true
+  },
+  group_load_ratio: {
+    label: '\u{1F4CA} 团队负荷比表',
+    desc: '客服团队组别负荷比数据，辅助资源分配与绩效评估。',
+    data: typeof GROUP_LOAD_RATIO !== 'undefined' ? GROUP_LOAD_RATIO : [],
+    fields: [
+      {key:'groupId', label:'组别ID', type:'text'},
+      {key:'groupName', label:'组别名称', type:'text'},
+      {key:'loadRatio', label:'负荷比', type:'number'},
+      {key:'period', label:'统计周期', type:'text'}
+    ]
   }
 };
 
@@ -8950,13 +9032,20 @@ var _SD_LS_MAP = {
   kpi: 'chansee_kpi_history',
   changelog: 'chansee_data_change_log',
   assessments: 'chansee_assessments',
-  satisfaction: 'chansee_satisfaction'
+  satisfaction: 'chansee_satisfaction',
+  goals: 'chansee_goals',
+  agent_performance: 'chansee_agent_performance',
+  staff_config: 'chansee_staff_config',
+  workload_data: 'chansee_workload_data',
+  performance_weights: 'chansee_performance_weights',
+  group_load_ratio: 'chansee_group_load_ratio'
 };
 
 // ===== 数据表分组配置（用于目录分类展示）=====
 var _SD_GROUPS = [
-  {key:'核心业务', icon:'📊', desc:'核心业务数据', tables:['projects','operations','kpi']},
+  {key:'核心业务', icon:'📊', desc:'核心业务数据', tables:['projects','operations','kpi','goals']},
   {key:'运营协作', icon:'🔄', desc:'运营与协同数据', tables:['issues','knowledge','handovers']},
+  {key:'人员绩效', icon:'👥', desc:'人员与绩效数据', tables:['agent_performance','staff_config','workload_data','performance_weights','group_load_ratio']},
   {key:'评估风控', icon:'🛡️', desc:'评估与风险数据', tables:['risk','assessments','satisfaction']},
   {key:'系统管理', icon:'⚙️', desc:'系统与审计数据', tables:['personnel','sysconfig','changelog']}
 ];
@@ -8973,6 +9062,12 @@ var _SD_RELATED_PAGES = {
   knowledge: [{label:'📚 知识能量池',mod:'knowledge'}],
   handovers: [{label:'⏳ 项目承接规范',mod:'handover'}],
   kpi: [{label:'📈 目标与权责',mod:'target'},{label:'💰 成本管理',mod:'cost'}],
+  goals: [{label:'🎯 目标与权责',mod:'target'}],
+  agent_performance: [{label:'📊 客服绩效看板',mod:'performance'}],
+  staff_config: [{label:'🏠 首页看板',mod:'dashboard'},{label:'👥 人员数据',mod:'operation'}],
+  workload_data: [{label:'📊 运营数据',mod:'operation'}],
+  performance_weights: [{label:'📊 客服绩效看板',mod:'performance'}],
+  group_load_ratio: [{label:'📊 客服绩效看板',mod:'performance'}],
   personnel: [{label:'📊 客服绩效看板',mod:'performance'},{label:'📈 运营数据',mod:'operation'}],
   sysconfig: [{label:'👥 系统用户管理',mod:'notifications'},{label:'🔐 系统权限管理',mod:'permissions'}],
   changelog: [],
@@ -9083,7 +9178,16 @@ var _renderSystemData = function(){
 
   var isLog = _systemDataTab === 'changelog';
   var isReadOnly = !!tableDef.readOnly;
+  var isKvTable = !!tableDef.isKvTable;
   var allData = tableDef.data || [];
+  // KV表特殊处理：将对象转为数组格式 [{key,value},...]
+  if(isKvTable && !Array.isArray(allData)) {
+    var kvArr = [];
+    var kvObj = allData;
+    var kvKeys = Object.keys(kvObj);
+    for(var ki=0; ki<kvKeys.length; ki++) kvArr.push({key:kvKeys[ki], value:kvObj[kvKeys[ki]]});
+    allData = kvArr;
+  }
   if (!Array.isArray(allData)) allData = [];
   var keyword = _systemDataSearchKeyword;
   var filteredData = keyword ? allData.filter(function(row) {return JSON.stringify(row).toLowerCase().indexOf(keyword.toLowerCase()) >= 0;}) : allData;
@@ -9100,6 +9204,12 @@ var _renderSystemData = function(){
   else if(_systemDataTab==='knowledge') colDefs={headers:['ID','标题','分类','管理方向','权限','浏览','下载'],keys:['id','title','type','category','permission','views','downloads'],showCb:true,goEnergyPool:true};
   else if(_systemDataTab==='handovers') colDefs={headers:['ID','项目','交接类型','原负责人','新负责人','日期','状态'],keys:['id','projectName','type','from','to','date','status'],showCb:true};
   else if(_systemDataTab==='kpi') colDefs={headers:['日期','项目ID','销售额(万)','成本(万)','费效比','目标达成率'],keys:['date','projectId','revenue','cost','profitRate','targetRate'],showCb:true};
+  else if(_systemDataTab==='goals') colDefs={headers:['ID','项目ID','类型','目标描述','负责人','截止日','状态'],keys:['id','projectId','type','target','owner','deadline','status'],showCb:true};
+  else if(_systemDataTab==='agent_performance') colDefs={headers:['ID','坐席','项目','周期','销售额','转化率(%)','首次解决率','CSAT','出勤率'],keys:['id','agentName','projectId','period','salesAmount','conversionRate','firstResolveRate','csat','attendance'],showCb:true};
+  else if(_systemDataTab==='staff_config') colDefs={headers:['ID','角色','人数','占比(%)','工作地点','更新时间','更新人'],keys:['id','role','count','pct','workplace','updatedAt','updatedBy'],showCb:true};
+  else if(_systemDataTab==='workload_data') colDefs={headers:['ID','工单类型','数量','占比(%)','工作地点','更新时间','更新人'],keys:['id','name','count','ratio','workplace','updatedAt','updatedBy'],showCb:true};
+  else if(_systemDataTab==='performance_weights') colDefs={headers:['配置项','权重值'],keys:['key','value'],showCb:false};
+  else if(_systemDataTab==='group_load_ratio') colDefs={headers:['组别ID','组别名称','负荷比','统计周期'],keys:['groupId','groupName','loadRatio','period'],showCb:true};
   else if(_systemDataTab==='changelog') colDefs={headers:['时间','操作人','表名','记录ID','字段名','旧值','新值'],keys:['changedAt','changedBy','tableName','recordId','fieldName','oldValue','newValue'],showCb:false};
   else if(_systemDataTab==='assessments') colDefs={headers:['评估周期','事业部','评估单元','管理人','管理等级','总分','定量','定性'],keys:['month','dept','group','manager','level','totalScore','quantScore','qualScore'],showCb:true,numberKeys:['totalScore','quantScore']};
   else if(_systemDataTab==='satisfaction') colDefs={headers:['项目ID','周期','综合感受','执行力','风险管控','沟通频率','领导评分','状态'],keys:['projectId','period','overall','execution','riskControl','commFreq','leaderScore','status'],showCb:true,numberKeys:['leaderScore']};
@@ -9190,7 +9300,7 @@ window._systemDataCatalogSearch = '';
 function catalogSearchSystemData(val) { _systemDataCatalogSearch = val; renderModule('systemData'); }
 function clearCatalogSearch() { _systemDataCatalogSearch = ''; renderModule('systemData'); }
 function toggleSelectAll(cb) { var cbs=document.querySelectorAll('.sd-row-cb'); for(var i=0;i<cbs.length;i++) cbs[i].checked=cb.checked; }
-function _saveSystemData(tableKey) { var lsKey = _SD_LS_MAP[tableKey]; var td = SYSTEM_DATA_TABLES[tableKey]; if(lsKey && td && td.data) try { localStorage.setItem(lsKey, JSON.stringify(td.data)); } catch(e){} }
+function _saveSystemData(tableKey) { var lsKey = _SD_LS_MAP[tableKey]; var td = SYSTEM_DATA_TABLES[tableKey]; if(lsKey && td && td.data) try { localStorage.setItem(lsKey, JSON.stringify(td.data)); } catch(e){} if(window.CloudBaseSync) try{window.CloudBaseSync.saveAll();}catch(e){} }
 
 function showSystemDataForm(tableKey, record, fields, editIdx){
   var m = document.getElementById('sd-form-modal'); if(m) m.remove();
@@ -9208,15 +9318,20 @@ function showSystemDataForm(tableKey, record, fields, editIdx){
 }
 window.submitSystemDataForm = function(tableKey, editIdx) {
   var td = SYSTEM_DATA_TABLES[tableKey]; if(!td||!td.fields) return;
-  // 修复：编辑时基于原记录复制，保留表单未覆盖的所有字段（如 project 的 director/pmHistory/startDate 等）
   var rec = (editIdx>=0 && td.data && td.data[editIdx]) ? JSON.parse(JSON.stringify(td.data[editIdx])) : {};
   for(var i=0; i<td.fields.length; i++){ var f=td.fields[i], el=document.getElementById('sdf-'+f.key); if(el){ var v=el.value; if(f.type==='number') v=parseFloat(v)||0; rec[f.key]=v; } }
-  if(editIdx>=0) td.data[editIdx]=rec; else td.data.push(rec); _saveSystemData(tableKey);
+  if(td.isKvTable){
+    // KV表：直接写入原对象的键值对
+    if(rec.key) td.data[rec.key] = rec.value;
+  } else {
+    if(editIdx>=0) td.data[editIdx]=rec; else td.data.push(rec);
+  }
+  _saveSystemData(tableKey);
   var mod=document.getElementById('sd-form-modal'); if(mod) mod.remove(); renderModule('systemData');
 };
 function addSystemDataRow() { var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td||!td.fields||td.fields.length===0){ alert('该表不支持新增'); return; } showSystemDataForm(_systemDataTab, null, td.fields); }
-function editSystemDataRow(idx) { var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td||!td.fields||td.fields.length===0){ alert('该表不支持编辑'); return; } var rec=td.data[idx]; if(!rec) return; showSystemDataForm(_systemDataTab, rec, td.fields, idx); }
-function deleteSystemDataRow(idx) { if(!confirm('确定删除该条记录吗？')) return; var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td) return; td.data.splice(idx,1); _saveSystemData(_systemDataTab); renderModule('systemData'); }
+function editSystemDataRow(idx) { var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td||!td.fields||td.fields.length===0){ alert('该表不支持编辑'); return; } if(td.isKvTable){ var keys=Object.keys(td.data||{}); if(idx<0||idx>=keys.length) return; showSystemDataForm(_systemDataTab, {key:keys[idx],value:td.data[keys[idx]]}, td.fields, idx); } else { var rec=td.data[idx]; if(!rec) return; showSystemDataForm(_systemDataTab, rec, td.fields, idx); } }
+function deleteSystemDataRow(idx) { if(!confirm('确定删除该条记录吗？')) return; var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td) return; if(td.isKvTable){ var keys=Object.keys(td.data||{}); if(idx>=0&&idx<keys.length){ delete td.data[keys[idx]]; } } else { td.data.splice(idx,1); } _saveSystemData(_systemDataTab); renderModule('systemData'); }
 function batchDeleteSystemData() { var cbs=document.querySelectorAll('.sd-row-cb:checked'); if(cbs.length===0){ alert('请先勾选要删除的记录'); return; } if(!confirm('确定删除选中的 '+cbs.length+' 条记录吗？')) return; var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td) return; var idxs=[]; for(var i=0;i<cbs.length;i++) idxs.push(parseInt(cbs[i].dataset.idx)); idxs.sort(function(a,b){return b-a;}); for(var j=0;j<idxs.length;j++) td.data.splice(idxs[j],1); _saveSystemData(_systemDataTab); renderModule('systemData'); }
 
 // ===== 导入数据（通用：针对当前打开的表）=====
