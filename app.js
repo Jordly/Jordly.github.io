@@ -93,6 +93,23 @@ var DEFAULT_PERFORMANCE_WEIGHTS = {
 var PERFORMANCE_WEIGHTS = {};
 var AGENT_PERFORMANCE = [];
 
+// ===== 薪资配置数据（基础配置Tab设置）=====
+var SALARY_BASE = {};      // { agentId: baseAmount } - 每人基本工资
+var SOCIAL_INSURANCE = {}; // { companyName: {socialBase, socialRate, fundBase, fundRate} }
+var SUBSIDY_RATES = {};    // { city: {meal, attendance, computer} }
+var DEDUCTION_RATES = {};  // { latePerMin: 2, missPunch: 0 }
+var POOL_DIST_RATIO = {};  // { presale: 60, afterSale: 60, mixed: 30 }
+// 初始化薪资配置（首次从localStorage加载或设默认值）
+(function initSalaryConfig(){
+  try{ var r = localStorage.getItem('chansee_salary_base'); if(r) SALARY_BASE = JSON.parse(r); } catch(e){}
+  try{ var r = localStorage.getItem('chansee_social_ins'); if(r) SOCIAL_INSURANCE = JSON.parse(r); } catch(e){}
+  try{ var r = localStorage.getItem('chansee_subsidies'); if(r) SUBSIDY_RATES = JSON.parse(r); } catch(e){}
+  try{ var r = localStorage.getItem('chansee_deductions'); if(r) DEDUCTION_RATES = JSON.parse(r); } catch(e){}
+  try{ var r = localStorage.getItem('chansee_pool_dist'); if(r) POOL_DIST_RATIO = JSON.parse(r); } catch(e){}
+  // 默认值
+  if(Object.keys(POOL_DIST_RATIO).length===0) POOL_DIST_RATIO = {presale:60, afterSale:60, mixed:30};
+})();
+
 var DEFAULT_RISK_ALERTS = [
   {id:1, projectId:"P003", projectName:"服装品牌客服外包", riskType:"健康状态", severity:"🔴 高风险", indicator:"健康状态：🔴 风险", triggerValue:"连续3周红色", threshold:"健康状态不得连续2周红色", status:"未处理", createdAt:"2026-05-28"},
   {id:2, projectId:"P002", projectName:"家电自营客服项目", riskType:"SLA超标", severity:"🟡 中风险", indicator:"平均响应时长：88s", triggerValue:"88s > 目标90s", threshold:"响应时长 ≤ SLA响应目标", status:"处理中", createdAt:"2026-05-30"},
@@ -10697,8 +10714,51 @@ function calcFinalPerformance(agent, month) {
   return share * score + agent.reward - agent.penalty;
 }
 
-// ===== 客服绩效看板（重写）=====
+// ===== 薪资配置保存函数 =====
+function saveSalaryConfig() {
+  try{ localStorage.setItem('chansee_salary_base', JSON.stringify(SALARY_BASE)); }catch(e){}
+  try{ localStorage.setItem('chansee_social_ins', JSON.stringify(SOCIAL_INSURANCE)); }catch(e){}
+  try{ localStorage.setItem('chansee_subsidies', JSON.stringify(SUBSIDY_RATES)); }catch(e){}
+  try{ localStorage.setItem('chansee_deductions', JSON.stringify(DEDUCTION_RATES)); }catch(e){}
+  try{ localStorage.setItem('chansee_pool_dist', JSON.stringify(POOL_DIST_RATIO)); }catch(e){}
+}
+function getBaseSalaryForAgent(agentId) {
+  return SALARY_BASE[agentId] || (agentId ? 1700 : 1700);
+}
+function getSocialInsurance(company) {
+  var cfg = SOCIAL_INSURANCE[company] || SOCIAL_INSURANCE['default'] || {socialBase:4630, socialRate:0.101, fundBase:0, fundRate:0};
+  var social = cfg.socialBase * cfg.socialRate;
+  var fund = cfg.fundBase * (cfg.fundRate || 0);
+  return {social:Math.round(social*100)/100, fund:Math.round(fund*100)/100};
+}
+function getSubsidies(city, attendanceDays) {
+  var cfg = SUBSIDY_RATES[city] || {meal:0, attendance:0, computer:0};
+  return {meal:cfg.meal||0, attendance:cfg.attendance||0, computer:cfg.computer||0};
+}
+function getDeductionRule() {
+  return DEDUCTION_RATES.latePerMin || 2;
+}
+
+// ===== 客服绩效看板（三Tab重构）=====
+window._perfTab = window._perfTab || 'performance';
 function renderPerformance() {
+  var tab = window._perfTab;
+  var tabBar = ''
+    +'<div class="module-header" style="margin-bottom:0;">'
+      +'<div><div class="module-title">📈 客服绩效看板</div><div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">绩效测算 → 薪资测算 → 全员工资条</div></div>'
+    +'</div>'
+    +'<div style="display:flex;gap:0;border-bottom:1px solid var(--c-border,#e2e8f0);margin-bottom:16px;">'
+      +'<div style="padding:10px 20px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(tab==='performance'?'#0B9B96':'transparent')+';color:'+(tab==='performance'?'#0B9B96':'var(--c-text-2)')+';font-weight:'+(tab==='performance'?'600':'400')+';" onclick="window._perfTab=\'performance\';renderModule(\'performance\')">📊 绩效测算</div>'
+      +'<div style="padding:10px 20px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(tab==='salary'?'#3B82F6':'transparent')+';color:'+(tab==='salary'?'#3B82F6':'var(--c-text-2)')+';font-weight:'+(tab==='salary'?'600':'400')+';" onclick="window._perfTab=\'salary\';renderModule(\'performance\')">💰 薪资测算</div>'
+      +'<div style="padding:10px 20px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(tab==='config'?'#8B5CF6':'transparent')+';color:'+(tab==='config'?'#8B5CF6':'var(--c-text-2)')+';font-weight:'+(tab==='config'?'600':'400')+';" onclick="window._perfTab=\'config\';renderModule(\'performance\')">⚙️ 基础配置</div>'
+    +'</div>';
+
+  if(tab === 'salary') return tabBar + _renderSalaryTab();
+  if(tab === 'config') return tabBar + _renderConfigTab();
+  return tabBar + _renderPerfTab();
+}
+
+function _renderPerfTab() {
   var monthFilter = document.getElementById('pf-month')?.value || '2026-05';
   var projectFilter = document.getElementById('pf-project')?.value || 'all';
   var typeFilter = document.getElementById('pf-type')?.value || 'all';
@@ -10899,7 +10959,107 @@ function toggleWeightConfig() {
   }
 }
 
-// 更新客服类型
+// ===== 薪资测算 Tab =====
+function _renderSalaryTab() {
+  var monthFilter = document.getElementById('pf-month')?.value || '2026-05';
+  var html = ''
+    +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">'
+      +'<select id="pf-month" class="fb-select"><option value="2026-06" '+(monthFilter==='2026-06'?'selected':'')+'>2026-06</option><option value="2026-05" '+(monthFilter==='2026-05'?'selected':'')+'>2026-05</option></select>'
+      +'<button class="btn btn-sm btn-primary" onclick="renderModule(\'performance\')">查询</button>'
+    +'</div>'
+    +'<div style="overflow-x:auto;"><table class="data-table"><thead><tr>'
+      +'<th>姓名</th><th>基本工资</th><th style="color:#0B9B96;">绩效工资</th><th>全勤/餐补</th><th>加班费</th><th>奖金</th><th>扣除</th><th>应发合计</th><th>社保</th><th>个税</th><th style="font-weight:600;">到手工资</th>'
+    +'</tr></thead><tbody>';
+
+  // 从AGENT_PERFORMANCE取绩效数据，再从工资条数据算薪资
+  var agents = (monthFilter ? AGENT_PERFORMANCE.filter(function(a){return a.month===monthFilter;}) : AGENT_PERFORMANCE);
+  agents.forEach(function(a){
+    var base = getBaseSalaryForAgent(a.id);
+    var perf = calcFinalPerformance(a, monthFilter);
+    var att = a.attendanceDays || 21;
+    var sub = getSubsidies(a.workplace || a.group || '', att);
+    var ins = getSocialInsurance(a.company || 'default');
+    var deductions = a.penalty || 0;
+    var bonus = a.reward || 0;
+    var totalIncome = base + perf + (sub.meal||0) + (sub.attendance||0) + bonus;
+    var afterDeduct = totalIncome - deductions;
+    var netPay = afterDeduct - ins.social - ins.fund;
+    if(netPay < 0) netPay = 0;
+
+    html += '<tr>'
+      +'<td style="font-weight:500;">'+(a.agentName||'未知')+'</td>'
+      +'<td>¥'+Math.round(base).toLocaleString()+'</td>'
+      +'<td style="color:#0B9B96;font-weight:500;text-align:right;">¥'+Math.round(perf).toLocaleString()+'</td>'
+      +'<td style="text-align:right;">¥'+Math.round((sub.meal||0)+(sub.attendance||0)).toLocaleString()+'</td>'
+      +'<td style="text-align:right;">¥0</td>'
+      +'<td style="text-align:right;">¥'+Math.round(bonus).toLocaleString()+'</td>'
+      +'<td style="text-align:right;color:'+(deductions>0?'#dc2626':'')+';">¥'+Math.round(deductions).toLocaleString()+'</td>'
+      +'<td style="text-align:right;font-weight:500;">¥'+Math.round(totalIncome).toLocaleString()+'</td>'
+      +'<td style="text-align:right;">¥'+Math.round(ins.social).toLocaleString()+'</td>'
+      +'<td style="text-align:right;">¥'+Math.round(ins.fund).toLocaleString()+'</td>'
+      +'<td style="text-align:right;font-weight:600;color:#3B82F6;">¥'+Math.round(netPay).toLocaleString()+'</td>'
+    +'</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  return html;
+}
+
+// ===== 基础配置 Tab =====
+function _renderConfigTab() {
+  var baseHtml = '<div class="card" style="padding:16px;">'
+    +'<div style="font-size:14px;font-weight:600;margin-bottom:12px;">⚙️ 基础配置（一次配置，月月复用）</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'
+      // 基本工资配置
+      +'<div style="background:var(--c-bg);border-radius:8px;padding:12px;">'
+        +'<div style="font-size:13px;font-weight:600;margin-bottom:8px;">员工基本工资</div>'
+        +'<div id="salary-base-config"></div>'
+      +'</div>'
+      // 社保基数
+      +'<div style="background:var(--c-bg);border-radius:8px;padding:12px;">'
+        +'<div style="font-size:13px;font-weight:600;margin-bottom:8px;">社保/公积金基数</div>'
+        +'<div style="display:flex;flex-direction:column;gap:6px;font-size:12px;">'
+          +'<div style="display:flex;justify-content:space-between;"><span>淄博长信</span><input type="text" value="'+(SOCIAL_INSURANCE['淄博长信']?SOCIAL_INSURANCE['淄博长信'].socialBase:'4630')+'" style="width:60px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="SOCIAL_INSURANCE[\'淄博长信\']={socialBase:parseFloat(this.value)||4630,socialRate:0.101};saveSalaryConfig();"></div>'
+          +'<div style="display:flex;justify-content:space-between;"><span>济南长信</span><input type="text" value="'+(SOCIAL_INSURANCE['济南长信']?SOCIAL_INSURANCE['济南长信'].socialBase:'4630')+'" style="width:60px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="SOCIAL_INSURANCE[\'济南长信\']={socialBase:parseFloat(this.value)||4630,socialRate:0.101};saveSalaryConfig();"></div>'
+          +'<div style="display:flex;justify-content:space-between;"><span>浙江长信</span><input type="text" value="'+(SOCIAL_INSURANCE['浙江长信']?SOCIAL_INSURANCE['浙江长信'].socialBase:'5220')+'" style="width:60px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="SOCIAL_INSURANCE[\'浙江长信\']={socialBase:parseFloat(this.value)||5220,socialRate:0.101};saveSalaryConfig();"></div>'
+        +'</div>'
+      +'</div>'
+      // 补贴标准
+      +'<div style="background:var(--c-bg);border-radius:8px;padding:12px;">'
+        +'<div style="font-size:13px;font-weight:600;margin-bottom:8px;">补贴标准（按城市）</div>'
+        +'<div style="display:flex;flex-direction:column;gap:6px;font-size:12px;">'
+          +'<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:4px;color:var(--c-text-3);"><span>城市</span><span>餐补</span><span>全勤</span></div>'
+          +'<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:4px;"><span>淄博</span><input type="text" value="'+(SUBSIDY_RATES['淄博']?SUBSIDY_RATES['淄博'].meal:'158')+'" style="width:44px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="SUBSIDY_RATES[\'淄博\']=SUBSIDY_RATES[\'淄博\']||{};SUBSIDY_RATES[\'淄博\'].meal=parseFloat(this.value)||0;saveSalaryConfig();"><input type="text" value="'+(SUBSIDY_RATES['淄博']?SUBSIDY_RATES['淄博'].attendance:'100')+'" style="width:44px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="SUBSIDY_RATES[\'淄博\']=SUBSIDY_RATES[\'淄博\']||{};SUBSIDY_RATES[\'淄博\'].attendance=parseFloat(this.value)||0;saveSalaryConfig();"></div>'
+          +'<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:4px;"><span>济南</span><input type="text" value="'+(SUBSIDY_RATES['济南']?SUBSIDY_RATES['济南'].meal:'390')+'" style="width:44px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="SUBSIDY_RATES[\'济南\']=SUBSIDY_RATES[\'济南\']||{};SUBSIDY_RATES[\'济南\'].meal=parseFloat(this.value)||0;saveSalaryConfig();"><input type="text" value="'+(SUBSIDY_RATES['济南']?SUBSIDY_RATES['济南'].attendance:'0')+'" style="width:44px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="SUBSIDY_RATES[\'济南\']=SUBSIDY_RATES[\'济南\']||{};SUBSIDY_RATES[\'济南\'].attendance=parseFloat(this.value)||0;saveSalaryConfig();"></div>'
+          +'<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:4px;"><span>杭州</span><input type="text" value="'+(SUBSIDY_RATES['杭州']?SUBSIDY_RATES['杭州'].meal:'380')+'" style="width:44px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="SUBSIDY_RATES[\'杭州\']=SUBSIDY_RATES[\'杭州\']||{};SUBSIDY_RATES[\'杭州\'].meal=parseFloat(this.value)||0;saveSalaryConfig();"><input type="text" value="'+(SUBSIDY_RATES['杭州']?SUBSIDY_RATES['杭州'].attendance:'100')+'" style="width:44px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="SUBSIDY_RATES[\'杭州\']=SUBSIDY_RATES[\'杭州\']||{};SUBSIDY_RATES[\'杭州\'].attendance=parseFloat(this.value)||0;saveSalaryConfig();"></div>'
+        +'</div>'
+      +'</div>'
+      // 扣款规则
+      +'<div style="background:var(--c-bg);border-radius:8px;padding:12px;">'
+        +'<div style="font-size:13px;font-weight:600;margin-bottom:8px;">扣款规则</div>'
+        +'<div style="display:flex;flex-direction:column;gap:6px;font-size:12px;">'
+          +'<div style="display:flex;justify-content:space-between;"><span>迟到扣款</span><input type="text" value="'+(DEDUCTION_RATES.latePerMin||'2')+'" style="width:40px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:center;" onchange="DEDUCTION_RATES.latePerMin=parseFloat(this.value)||0;saveSalaryConfig();"> 元/分钟</div>'
+        +'</div>'
+      +'</div>'
+    +'</div>'
+  +'</div>';
+
+  // 基本工资列表（动态根据 AGENT_PERFORMANCE 去重）
+  var agentNames = {};
+  AGENT_PERFORMANCE.forEach(function(a){if(!agentNames[a.id])agentNames[a.id]={name:a.agentName||'未知',base:SALARY_BASE[a.id]||1700};});
+  var baseList = '';
+  var first = true;
+  for(var id in agentNames){
+    var an = agentNames[id];
+    baseList += '<div style="display:flex;justify-content:space-between;padding:4px 0;'+(first?'':'border-top:1px solid var(--c-border);')+'font-size:12px;">'
+      +'<span>'+an.name+'</span>'
+      +'<input type="text" value="'+an.base+'" style="width:56px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="SALARY_BASE[\''+id+'\']=parseFloat(this.value)||1700;saveSalaryConfig();">'
+    +'</div>';
+    first = false;
+  }
+  baseHtml = baseHtml.replace('<div id="salary-base-config"></div>', baseList || '<div style="font-size:12px;color:var(--c-text-3);">暂无人员数据</div>');
+  return baseHtml;
+}
 function updateAgentType(id, newType) {
   var agent = AGENT_PERFORMANCE.find(a => a.id === id);
   if (agent) {
