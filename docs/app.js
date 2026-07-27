@@ -99,6 +99,7 @@ var SOCIAL_INSURANCE = {}; // { companyName: {socialBase, socialRate, fundBase, 
 var SUBSIDY_RATES = {};    // { city: {meal, attendance, computer} }
 var DEDUCTION_RATES = {};  // { latePerMin: 2, missPunch: 0 }
 var POOL_DIST_RATIO = {};  // { presale: 60, afterSale: 60, mixed: 30 }
+var _PERF_RESULTS = {};    // { agentId: {perfSalary, shareAmount, score} } — Tab1写入, Tab2读取
 // 初始化薪资配置（首次从localStorage加载或设默认值）
 (function initSalaryConfig(){
   try{ var r = localStorage.getItem('chansee_salary_base'); if(r) SALARY_BASE = JSON.parse(r); } catch(e){}
@@ -10877,7 +10878,9 @@ function _renderPerfTab() {
     var score = calcPerformanceScore(a, monthFilter);
     var share = calcShareAmount(a, monthFilter);
     var final = calcFinalPerformance(a, monthFilter);
-    
+    // 写入绩效结果缓存（供Tab2薪资测算使用）
+    _PERF_RESULTS[a.id] = {perfSalary:Math.round(final), shareAmount:Math.round(share), score:score, month:monthFilter};
+
     html += `<tr>`;
     html += `<td>${a.group || '-'}</td>`;
     html += `<td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${p?p.name:''}">${p?p.name:a.projectId || '-'}</td>`;
@@ -10885,12 +10888,12 @@ function _renderPerfTab() {
     html += `<td><select value="${a.agentType || '售前'}" onchange="updateAgentType(${a.id},this.value)" style="padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;"><option value="售前" ${a.agentType==='售前'?'selected':''}>售前</option><option value="售后" ${a.agentType==='售后'?'selected':''}>售后</option><option value="综合" ${a.agentType==='综合'?'selected':''}>综合</option></select></td>`;
     html += `<td>${a.status || '转正'}</td>`;
     html += `<td>¥${base}</td>`;
-    html += `<td>${a.salesAmount > 0 ? '¥'+a.salesAmount.toLocaleString():'-'}</td>`;
-    html += `<td>${a.conversionRate > 0 ? a.conversionRate+'%':'-'}</td>`;
-    html += `<td>${a.workVolume > 0 ? a.workVolume:'-'}</td>`;
+    html += `<td><input type="number" value="${a.salesAmount||0}" style="width:60px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="updateAgentKPI(${a.id},'salesAmount',parseFloat(this.value)||0);"></td>`;
+    html += `<td><input type="number" value="${a.conversionRate||0}" style="width:48px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="updateAgentKPI(${a.id},'conversionRate',parseFloat(this.value)||0);">%</td>`;
+    html += `<td><input type="number" value="${a.workVolume||0}" style="width:56px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="updateAgentKPI(${a.id},'workVolume',parseFloat(this.value)||0);"></td>`;
     html += `<td>${a.firstResolveRate > 0 ? a.firstResolveRate+'%':'-'}</td>`;
     html += `<td style="color:${a.responseTime > 120 ? 'var(--c-red)':'var(--c-green)'}">${a.responseTime || '-'}s</td>`;
-    html += `<td style="color:${a.csat >= 4.5 ? 'var(--c-green)':'var(--c-red)'}">${a.csat || '-'}</td>`;
+    html += `<td><input type="number" value="${a.csat||0}" step="0.1" min="0" max="5" style="width:44px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="updateAgentKPI(${a.id},'csat',parseFloat(this.value)||0);"></td>`;
     var scorePct = (score * 100).toFixed(0);
     html += `<td style="color:${score >= 1.0 ? 'var(--c-green)':'var(--c-red)'}">${scorePct}%</td>`;
     html += `<td>¥${isNaN(share) ? '0' : share.toFixed(0)}</td>`;
@@ -10959,41 +10962,70 @@ function toggleWeightConfig() {
   }
 }
 
+// 更新坐席KPI指标（实时重算）
+function updateAgentKPI(id, field, value) {
+  var agent = AGENT_PERFORMANCE.find(function(a){return a.id===id;});
+  if(!agent) return;
+  agent[field] = value;
+  // 持久化到 localStorage
+  try{ localStorage.setItem('chansee_agent_performance', JSON.stringify(AGENT_PERFORMANCE)); }catch(e){}
+  if(window.CloudBaseSync) try{ window.CloudBaseSync.saveAll(); }catch(e){}
+  // 同步到系统数据管理
+  var sdTbl = SYSTEM_DATA_TABLES['agent_performance'];
+  if(sdTbl) {
+    for(var i=0; i<sdTbl.data.length; i++) {
+      if(sdTbl.data[i].id === id) { sdTbl.data[i][field] = value; break; }
+    }
+  }
+  renderModule('performance');
+}
+
 // ===== 薪资测算 Tab =====
 function _renderSalaryTab() {
-  var monthFilter = document.getElementById('pf-month')?.value || '2026-05';
+  var monthFilter = document.getElementById('pf-salary-month')?.value || '2026-05';
+  // 筛选当月有绩效结果的坐席
+  var agents = [];
+  AGENT_PERFORMANCE.forEach(function(a){
+    if(a.month === monthFilter) agents.push(a);
+  });
+
   var html = ''
     +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">'
-      +'<select id="pf-month" class="fb-select"><option value="2026-06" '+(monthFilter==='2026-06'?'selected':'')+'>2026-06</option><option value="2026-05" '+(monthFilter==='2026-05'?'selected':'')+'>2026-05</option></select>'
-      +'<button class="btn btn-sm btn-primary" onclick="renderModule(\'performance\')">查询</button>'
+      +'<select id="pf-salary-month" class="fb-select" onchange="renderModule(\'performance\')"><option value="2026-06" '+(monthFilter==='2026-06'?'selected':'')+'>2026-06</option><option value="2026-05" '+(monthFilter==='2026-05'?'selected':'')+'>2026-05</option></select>'
+      +'<span style="font-size:12px;color:var(--c-text-3);">当月坐席 '+agents.length+' 人 · 已保存绩效结果 '+Object.keys(_PERF_RESULTS).filter(function(k){return _PERF_RESULTS[k].month===monthFilter;}).length+' 条</span>'
     +'</div>'
     +'<div style="overflow-x:auto;"><table class="data-table"><thead><tr>'
-      +'<th>姓名</th><th>基本工资</th><th style="color:#0B9B96;">绩效工资</th><th>全勤/餐补</th><th>加班费</th><th>奖金</th><th>扣除</th><th>应发合计</th><th>社保</th><th>个税</th><th style="font-weight:600;">到手工资</th>'
+      +'<th>姓名</th><th>基本工资</th><th style="color:#0B9B96;">绩效工资</th>'
+      +'<th>出勤天数</th><th>迟到(分)</th><th>餐补</th><th>全勤</th>'
+      +'<th>奖/惩</th><th>应发</th><th>社保</th><th>个税</th><th style="font-weight:600;">到手</th>'
     +'</tr></thead><tbody>';
 
-  // 从AGENT_PERFORMANCE取绩效数据，再从工资条数据算薪资
-  var agents = (monthFilter ? AGENT_PERFORMANCE.filter(function(a){return a.month===monthFilter;}) : AGENT_PERFORMANCE);
   agents.forEach(function(a){
     var base = getBaseSalaryForAgent(a.id);
-    var perf = calcFinalPerformance(a, monthFilter);
-    var att = a.attendanceDays || 21;
-    var sub = getSubsidies(a.workplace || a.group || '', att);
+    // 优先取绩效缓存结果，没有再实时算
+    var cached = _PERF_RESULTS[a.id];
+    var perf = (cached && cached.month===monthFilter) ? cached.perfSalary : Math.round(calcFinalPerformance(a, monthFilter));
+    var attDays = a.attendanceDays || 21;
+    var lateMin = a.lateMinutes || 0;
+    var sub = getSubsidies(a.workplace || a.group || '', attDays);
     var ins = getSocialInsurance(a.company || 'default');
-    var deductions = a.penalty || 0;
     var bonus = a.reward || 0;
-    var totalIncome = base + perf + (sub.meal||0) + (sub.attendance||0) + bonus;
-    var afterDeduct = totalIncome - deductions;
-    var netPay = afterDeduct - ins.social - ins.fund;
+    var penalty = a.penalty || 0;
+    // 迟到扣款
+    var lateDeduct = lateMin * getDeductionRule();
+    var totalIncome = base + perf + (sub.meal||0) + (sub.attendance||0) + bonus - lateDeduct - penalty;
+    var netPay = totalIncome - ins.social - ins.fund;
     if(netPay < 0) netPay = 0;
 
     html += '<tr>'
       +'<td style="font-weight:500;">'+(a.agentName||'未知')+'</td>'
       +'<td>¥'+Math.round(base).toLocaleString()+'</td>'
       +'<td style="color:#0B9B96;font-weight:500;text-align:right;">¥'+Math.round(perf).toLocaleString()+'</td>'
-      +'<td style="text-align:right;">¥'+Math.round((sub.meal||0)+(sub.attendance||0)).toLocaleString()+'</td>'
-      +'<td style="text-align:right;">¥0</td>'
-      +'<td style="text-align:right;">¥'+Math.round(bonus).toLocaleString()+'</td>'
-      +'<td style="text-align:right;color:'+(deductions>0?'#dc2626':'')+';">¥'+Math.round(deductions).toLocaleString()+'</td>'
+      +'<td style="text-align:right;"><input type="number" value="'+attDays+'" min="0" max="31" style="width:40px;padding:2px;border:1px solid var(--c-border);border-radius:4px;text-align:center;" onchange="AGENT_PERFORMANCE.find(function(x){return x.id==='+a.id+';}).attendanceDays=parseFloat(this.value)||21;try{localStorage.setItem(\'chansee_agent_performance\',JSON.stringify(AGENT_PERFORMANCE));}catch(e){}renderModule(\'performance\');"></td>'
+      +'<td style="text-align:right;"><input type="number" value="'+lateMin+'" min="0" style="width:40px;padding:2px;border:1px solid var(--c-border);border-radius:4px;text-align:center;" onchange="AGENT_PERFORMANCE.find(function(x){return x.id==='+a.id+';}).lateMinutes=parseFloat(this.value)||0;try{localStorage.setItem(\'chansee_agent_performance\',JSON.stringify(AGENT_PERFORMANCE));}catch(e){}renderModule(\'performance\');"></td>'
+      +'<td style="text-align:right;">¥'+Math.round(sub.meal||0).toLocaleString()+'</td>'
+      +'<td style="text-align:right;">¥'+Math.round(sub.attendance||0).toLocaleString()+'</td>'
+      +'<td style="text-align:right;color:'+(bonus>0?'#0B9B96':penalty>0?'#dc2626':'')+';">'+(bonus>0?'+¥'+Math.round(bonus).toLocaleString():penalty>0?'-¥'+Math.round(penalty).toLocaleString():'¥0')+'</td>'
       +'<td style="text-align:right;font-weight:500;">¥'+Math.round(totalIncome).toLocaleString()+'</td>'
       +'<td style="text-align:right;">¥'+Math.round(ins.social).toLocaleString()+'</td>'
       +'<td style="text-align:right;">¥'+Math.round(ins.fund).toLocaleString()+'</td>'
