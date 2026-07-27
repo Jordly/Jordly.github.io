@@ -10221,10 +10221,12 @@ function togglePermAction(role, module, action, checked) {
   }
   rolePermissions[role][module] = mp;
   savePermissions();
-  renderPermissions();
+  // 修复：重新渲染权限面板到 DOM（原代码只调用不赋值，导致界面不刷新）
+  var _permContent = document.getElementById('module-content');
+  if (_permContent) _permContent.innerHTML = renderPermissions();
   var hint = document.getElementById('perm-save-hint');
   if (hint) { hint.classList.add('show'); setTimeout(function(){ hint.classList.remove('show'); }, 2000); }
-  
+
   // 显示受影响的用户数
   updateAffectedUsers(role);
 }
@@ -10245,7 +10247,9 @@ function togglePermScope(role, module, scope) {
   mp.scope = scope;
   rolePermissions[role][module] = mp;
   savePermissions();
-  renderPermissions();
+  // 修复：重新渲染权限面板到 DOM
+  var _permContent = document.getElementById('module-content');
+  if (_permContent) _permContent.innerHTML = renderPermissions();
   var hint = document.getElementById('perm-save-hint');
   if (hint) { hint.classList.add('show'); setTimeout(function(){ hint.classList.remove('show'); }, 2000); }
 }
