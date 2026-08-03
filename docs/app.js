@@ -311,16 +311,17 @@ function showSelectModal(title, label, options, onConfirm) {
 }
 
 // ===== 自定义内容弹窗（支持任意HTML内容，用于复杂编辑场景）=====
-function showCustomModal(title, bodyHtml, onConfirm) {
+function showCustomModal(title, bodyHtml, onConfirm, okText) {
+  okText = okText || '确定';
   var overlay = document.createElement('div');
   overlay.className = 'sd-prompt-overlay';
   overlay.innerHTML = ''
-    + '<div class="sd-prompt-box" style="width:460px;">'
+    + '<div class="sd-prompt-box" style="width:520px;">'
     + '<div class="sd-prompt-header">' + escHtml(title) + ' <button class="sd-prompt-close">&times;</button></div>'
     + '<div class="sd-prompt-body">' + bodyHtml + '</div>'
     + '<div class="sd-prompt-footer">'
     + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
-    + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
+    + '<button class="sd-confirm-btn sd-confirm-ok" style="background:#0B9B96;border-color:#0B9B96;">'+okText+'</button>'
     + '</div></div>';
   document.body.appendChild(overlay);
   setTimeout(function(){ overlay.classList.add('sd-confirm-show'); }, 10);
@@ -10807,7 +10808,8 @@ function renderPerformance() {
 }
 
 function _renderPerfTab() {
-  var monthFilter = document.getElementById('pf-month')?.value || '2026-05';
+  // 默认显示最新月份的数据（AGENT_PERFORMANCE初始数据集中在2026-06）
+  var monthFilter = document.getElementById('pf-month')?.value || '2026-06';
   var projectFilter = document.getElementById('pf-project')?.value || 'all';
   var typeFilter = document.getElementById('pf-type')?.value || 'all';
   var groupFilter = document.getElementById('pf-group')?.value || 'all';
@@ -11357,13 +11359,8 @@ function editAgentPerformance(id) {
     + field('惩罚 (¥)', '<input type="number" id="edit-agent-penalty" value="'+(agent.penalty||0)+'" style="'+inputStyle+'">')
     + '</div>';
 
-  // 按钮区（弹窗底部固定）
-  var buttonHtml = '<div style="display:flex;gap:8px;justify-content:flex-end;padding:10px 14px;background:#f8fafc;border-top:1px solid #e2e8f0;border-radius:0 0 8px 8px;">'
-    + '<button class="btn" onclick="closeModal()" style="padding:6px 18px;">取消</button>'
-    + '<button class="btn btn-primary" onclick="saveAgentEdit('+agent.id+')" style="padding:6px 18px;background:#0B9B96;border-color:#0B9B96;">保存</button>'
-    + '</div>';
-
-  showCustomModal('编辑坐席绩效 · '+escHtml(agent.agentName||''), html + buttonHtml, null);
+  // 弹窗由showCustomModal自带底部"取消/保存"按钮（已传第4参数"保存"和onConfirm=saveAgentEdit）
+  showCustomModal('编辑坐席绩效 · '+escHtml(agent.agentName||''), html, function(){ saveAgentEdit(agent.id); }, '保存');
 }
 
 // 保存编辑
