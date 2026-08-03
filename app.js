@@ -99,6 +99,7 @@ var SOCIAL_INSURANCE = {}; // { companyName: {socialBase, socialRate, fundBase, 
 var SUBSIDY_RATES = {};    // { city: {meal, attendance, computer} }
 var DEDUCTION_RATES = {};  // { latePerMin: 2, missPunch: 0 }
 var POOL_DIST_RATIO = {};  // { presale: 60, afterSale: 60, mixed: 30 }
+var PERF_BASE_LEVELS = {trial:1400, regular:1700}; // 绩效基数档位（试用期/转正）
 var _PERF_RESULTS = {};    // { agentId: {perfSalary, shareAmount, score} } — Tab1写入, Tab2读取
 // 初始化薪资配置（首次从localStorage加载或设默认值）
 (function initSalaryConfig(){
@@ -107,6 +108,7 @@ var _PERF_RESULTS = {};    // { agentId: {perfSalary, shareAmount, score} } — 
   try{ var r = localStorage.getItem('chansee_subsidies'); if(r) SUBSIDY_RATES = JSON.parse(r); } catch(e){}
   try{ var r = localStorage.getItem('chansee_deductions'); if(r) DEDUCTION_RATES = JSON.parse(r); } catch(e){}
   try{ var r = localStorage.getItem('chansee_pool_dist'); if(r) POOL_DIST_RATIO = JSON.parse(r); } catch(e){}
+  try{ var r = localStorage.getItem('chansee_perf_base_levels'); if(r) PERF_BASE_LEVELS = JSON.parse(r); } catch(e){}
   // 默认值
   if(Object.keys(POOL_DIST_RATIO).length===0) POOL_DIST_RATIO = {presale:60, afterSale:60, mixed:30};
 })();
@@ -10593,9 +10595,9 @@ function exportSystemData() {
 // ===== 客服绩效看板 =====
 // ===== 绩效计算辅助函数 =====
 
-// 计算绩效基数（试用期1400，转正1700）
+// 计算绩效基数（可从Tab3基础配置修改）
 function getBaseSalary(status) {
-  return status === '试用期' ? 1400 : 1700;
+  return status === '试用期' ? (PERF_BASE_LEVELS.trial || 1400) : (PERF_BASE_LEVELS.regular || 1700);
 }
 
 // 计算绩效分数（基于权重配置，80%~120%）
@@ -10688,22 +10690,26 @@ function calcShareAmount(agent, month) {
   var totalBase = groupAgents.reduce((s, a) => s + getBaseSalary(a.status), 0);
   var totalPool = totalBase * loadRatio;
   
-  // 按类型分配
+  // 按类型分配（比例从POOL_DIST_RATIO配置读取，可自定义）
+  var presaleRatio = (POOL_DIST_RATIO.presale != null ? POOL_DIST_RATIO.presale : 60) / 100;
+  var afterRatio = (POOL_DIST_RATIO.afterSale != null ? POOL_DIST_RATIO.afterSale : 60) / 100;
+  var mixedRatio = (POOL_DIST_RATIO.mixed != null ? POOL_DIST_RATIO.mixed : 30) / 100;
+
   if (agent.agentType === '售前') {
     var totalSales = groupAgents.filter(a => a.agentType === '售前').reduce((s, a) => s + a.salesAmount, 0);
     if (totalSales === 0) return 0;
-    return (agent.salesAmount / totalSales) * (totalPool * 0.6);  // 售前分60%池子
+    return (agent.salesAmount / totalSales) * (totalPool * presaleRatio);
   } else if (agent.agentType === '售后') {
     var totalWork = groupAgents.filter(a => a.agentType === '售后').reduce((s, a) => s + a.workVolume, 0);
     if (totalWork === 0) return 0;
-    return (agent.workVolume / totalWork) * (totalPool * 0.6);  // 售后分60%池子
+    return (agent.workVolume / totalWork) * (totalPool * afterRatio);
   } else {
     // 综合：按销售额+工作量综合占比
     var totalSalesAll = groupAgents.reduce((s, a) => s + a.salesAmount, 0);
     var totalWorkAll = groupAgents.reduce((s, a) => s + a.workVolume, 0);
     var share = 0;
-    if (totalSalesAll > 0) share += (agent.salesAmount / totalSalesAll) * (totalPool * 0.3);
-    if (totalWorkAll > 0) share += (agent.workVolume / totalWorkAll) * (totalPool * 0.3);
+    if (totalSalesAll > 0) share += (agent.salesAmount / totalSalesAll) * (totalPool * mixedRatio);
+    if (totalWorkAll > 0) share += (agent.workVolume / totalWorkAll) * (totalPool * mixedRatio);
     return share;
   }
 }
@@ -10722,6 +10728,7 @@ function saveSalaryConfig() {
   try{ localStorage.setItem('chansee_subsidies', JSON.stringify(SUBSIDY_RATES)); }catch(e){}
   try{ localStorage.setItem('chansee_deductions', JSON.stringify(DEDUCTION_RATES)); }catch(e){}
   try{ localStorage.setItem('chansee_pool_dist', JSON.stringify(POOL_DIST_RATIO)); }catch(e){}
+  try{ localStorage.setItem('chansee_perf_base_levels', JSON.stringify(PERF_BASE_LEVELS)); }catch(e){}
 }
 function getBaseSalaryForAgent(agentId) {
   return SALARY_BASE[agentId] || (agentId ? 1700 : 1700);
@@ -10832,40 +10839,38 @@ function _renderPerfTab() {
   html += `<div class="metric-card metric-card-kpi"><div class="metric-value">¥${totalPool.toLocaleString()}</div><div class="metric-label">绩效总池</div></div>`;
   html += `</div>`;
   
-  // 组别负荷比配置（可折叠）
-  html += `<div class="card"><div class="card-title" style="cursor:pointer;" onclick="toggleLoadRatioConfig()">📊 组别负荷比配置（点击展开/收起）</div>`;
-  html += `<div id="load-ratio-config" style="display:none;margin-top:12px;">`;
+  // 组别负荷比配置（常驻可编辑）
+  html += `<div class="card" style="margin-bottom:12px;"><div class="card-title">📊 组别负荷比配置</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">`;
   Object.keys(groups).forEach(g => {
-    html += `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--c-bg);border-radius:6px;">`;
+    html += `<div style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--c-bg);border-radius:6px;">`;
     html += `<span style="font-size:13px;color:var(--c-text);">${g}：</span>`;
-    html += `<input type="number" step="0.01" value="${groups[g].loadRatio}" style="width:60px;padding:4px 6px;border:1px solid var(--c-border);border-radius:4px;" onchange="updateGroupLoadRatio('${g}','${monthFilter}',this.value)">`;
+    html += `<input type="number" step="0.01" value="${groups[g].loadRatio}" style="width:60px;padding:3px 6px;border:1px solid var(--c-border);border-radius:4px;" onchange="updateGroupLoadRatio('${g}','${monthFilter}',this.value)">`;
     html += `<span style="font-size:12px;color:var(--c-text-3);">倍</span>`;
     html += `</div>`;
   });
   html += `</div></div>`;
   
-  // 指标权重配置
+  // 指标权重配置（常驻可编辑）
   var weights = PERFORMANCE_WEIGHTS[monthFilter] || {};
-  html += `<div class="card"><div class="card-title" style="cursor:pointer;" onclick="toggleWeightConfig()">📊 指标权重配置（点击展开/收起）</div>`;
-  html += `<div id="weight-config" style="display:none;margin-top:12px;">`;
+  html += `<div class="card" style="margin-bottom:12px;"><div class="card-title">📊 指标权重配置</div>`;
+  html += `<div style="margin-top:8px;">`;
   ['售前','售后','综合'].forEach(type => {
     var w = weights[type] || {};
-    html += `<div style="margin-bottom:12px;padding:10px;background:var(--c-bg);border-radius:6px;">`;
-    html += `<div style="font-size:13px;font-weight:600;color:var(--c-text);margin-bottom:8px;">${type}客服</div>`;
-    html += `<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">`;
+    html += `<div style="margin-bottom:8px;padding:8px 10px;background:var(--c-bg);border-radius:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">`;
+    html += `<span style="font-size:13px;font-weight:600;color:var(--c-text);">${type}客服</span>`;
     if (type === '售前' || type === '综合') {
-      html += `销售额权重：<input type="number" value="${w.salesAmount||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','salesAmount',this.value)">% `;
-      html += `转化率权重：<input type="number" value="${w.conversionRate||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','conversionRate',this.value)">% `;
+      html += `<span style="font-size:12px;">销售额 <input type="number" value="${w.salesAmount||0}" style="width:46px;" onchange="updateWeight('${monthFilter}','${type}','salesAmount',this.value)">%</span> `;
+      html += `<span style="font-size:12px;">转化率 <input type="number" value="${w.conversionRate||0}" style="width:46px;" onchange="updateWeight('${monthFilter}','${type}','conversionRate',this.value)">%</span> `;
     }
     if (type === '售后' || type === '综合') {
-      html += `工作量权重：<input type="number" value="${w.workVolume||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','workVolume',this.value)">% `;
-      html += `解决率权重：<input type="number" value="${w.firstResolveRate||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','firstResolveRate',this.value)">% `;
+      html += `<span style="font-size:12px;">工作量 <input type="number" value="${w.workVolume||0}" style="width:46px;" onchange="updateWeight('${monthFilter}','${type}','workVolume',this.value)">%</span> `;
+      html += `<span style="font-size:12px;">解决率 <input type="number" value="${w.firstResolveRate||0}" style="width:46px;" onchange="updateWeight('${monthFilter}','${type}','firstResolveRate',this.value)">%</span> `;
     }
-    html += `响应时间权重：<input type="number" value="${w.responseTime||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','responseTime',this.value)">% `;
-    html += `满意度权重：<input type="number" value="${w.csat||0}" style="width:50px;" onchange="updateWeight('${monthFilter}','${type}','csat',this.value)">%`;
-    html += `</div></div>`;
+    html += `<span style="font-size:12px;">响应时间 <input type="number" value="${w.responseTime||0}" style="width:46px;" onchange="updateWeight('${monthFilter}','${type}','responseTime',this.value)">%</span> `;
+    html += `<span style="font-size:12px;">满意度 <input type="number" value="${w.csat||0}" style="width:46px;" onchange="updateWeight('${monthFilter}','${type}','csat',this.value)">%</span>`;
+    html += `</div>`;
   });
-  html += `<button class="btn btn-primary" onclick="savePerformanceWeights()" style="margin-top:8px;">保存权重配置</button>`;
+  html += `<div style="text-align:right;"><button class="btn btn-sm btn-primary" onclick="savePerformanceWeights()">保存权重配置</button></div>`;
   html += `</div></div>`;
   
   // 坐席绩效明细表
@@ -10937,6 +10942,14 @@ function updateGroupLoadRatio(group, month, value) {
     GROUP_LOAD_RATIO.push({group:group, month:month, loadRatio:ratio});
   }
   saveAgentPerformance();
+  // 同步到系统数据管理 group_load_ratio 表
+  var sdGlr = SYSTEM_DATA_TABLES['group_load_ratio'];
+  if(sdGlr && Array.isArray(sdGlr.data)){
+    var gIdx = sdGlr.data.findIndex(function(g){return g.group===group && g.month===month;});
+    if(gIdx>=0) sdGlr.data[gIdx].loadRatio = ratio;
+    else sdGlr.data.push({group:group, month:month, loadRatio:ratio});
+    try{ localStorage.setItem('chansee_group_load_ratio', JSON.stringify(sdGlr.data)); }catch(e){}
+  }
   renderModule('performance');
 }
 
@@ -10950,6 +10963,12 @@ function updateWeight(month, type, indicator, value) {
 // 保存权重配置
 function savePerformanceWeights() {
   saveAgentPerformance();
+  // 同步到系统数据管理 performance_weights 表
+  var sdPw = SYSTEM_DATA_TABLES['performance_weights'];
+  if(sdPw && sdPw.data && typeof sdPw.data === 'object'){
+    sdPw.data[monthFilterForWeights()] = JSON.parse(JSON.stringify(PERFORMANCE_WEIGHTS[monthFilterForWeights()]||{}));
+    try{ localStorage.setItem('chansee_performance_weights', JSON.stringify(sdPw.data)); }catch(e){}
+  }
   alert('✅ 权重配置已保存');
   renderModule('performance');
 }
@@ -10960,6 +10979,12 @@ function toggleWeightConfig() {
   if (el) {
     el.style.display = el.style.display === 'none' ? 'block' : 'none';
   }
+}
+
+// 当前权重配置的月份（用于同步到系统数据管理）
+function monthFilterForWeights() {
+  var el = document.getElementById('pf-month');
+  return el ? el.value : '2026-05';
 }
 
 // 更新坐席KPI指标（实时重算）
@@ -11071,6 +11096,24 @@ function _renderConfigTab() {
         +'<div style="font-size:13px;font-weight:600;margin-bottom:8px;">扣款规则</div>'
         +'<div style="display:flex;flex-direction:column;gap:6px;font-size:12px;">'
           +'<div style="display:flex;justify-content:space-between;"><span>迟到扣款</span><input type="text" value="'+(DEDUCTION_RATES.latePerMin||'2')+'" style="width:40px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:center;" onchange="DEDUCTION_RATES.latePerMin=parseFloat(this.value)||0;saveSalaryConfig();"> 元/分钟</div>'
+          +'<div style="display:flex;justify-content:space-between;"><span>忘打卡扣款</span><input type="text" value="'+(DEDUCTION_RATES.missPunch||'0')+'" style="width:40px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:center;" onchange="DEDUCTION_RATES.missPunch=parseFloat(this.value)||0;saveSalaryConfig();"> 元/次</div>'
+        +'</div>'
+      +'</div>'
+      // 瓜分比例配置
+      +'<div style="background:var(--c-bg);border-radius:8px;padding:12px;">'
+        +'<div style="font-size:13px;font-weight:600;margin-bottom:8px;">绩效池瓜分比例</div>'
+        +'<div style="display:flex;flex-direction:column;gap:6px;font-size:12px;">'
+          +'<div style="display:flex;justify-content:space-between;"><span>售前类型 池子占比</span><input type="text" value="'+(POOL_DIST_RATIO.presale||60)+'" style="width:40px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:center;" onchange="POOL_DIST_RATIO.presale=parseFloat(this.value)||0;saveSalaryConfig();"> %</div>'
+          +'<div style="display:flex;justify-content:space-between;"><span>售后类型 池子占比</span><input type="text" value="'+(POOL_DIST_RATIO.afterSale||60)+'" style="width:40px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:center;" onchange="POOL_DIST_RATIO.afterSale=parseFloat(this.value)||0;saveSalaryConfig();"> %</div>'
+          +'<div style="display:flex;justify-content:space-between;"><span>综合类型 单项占比</span><input type="text" value="'+(POOL_DIST_RATIO.mixed||30)+'" style="width:40px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:center;" onchange="POOL_DIST_RATIO.mixed=parseFloat(this.value)||0;saveSalaryConfig();"> %</div>'
+        +'</div>'
+      +'</div>'
+      // 绩效基数档位
+      +'<div style="background:var(--c-bg);border-radius:8px;padding:12px;">'
+        +'<div style="font-size:13px;font-weight:600;margin-bottom:8px;">绩效基数档位</div>'
+        +'<div style="display:flex;flex-direction:column;gap:6px;font-size:12px;">'
+          +'<div style="display:flex;justify-content:space-between;"><span>试用期</span><input type="text" value="'+(PERF_BASE_LEVELS.trial||1400)+'" style="width:60px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="PERF_BASE_LEVELS.trial=parseFloat(this.value)||1400;saveSalaryConfig();"></div>'
+          +'<div style="display:flex;justify-content:space-between;"><span>转正</span><input type="text" value="'+(PERF_BASE_LEVELS.regular||1700)+'" style="width:60px;padding:2px 4px;border:1px solid var(--c-border);border-radius:4px;text-align:right;" onchange="PERF_BASE_LEVELS.regular=parseFloat(this.value)||1700;saveSalaryConfig();"></div>'
         +'</div>'
       +'</div>'
     +'</div>'
