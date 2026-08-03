@@ -11318,27 +11318,52 @@ function addAgentPerformance() {
 function editAgentPerformance(id) {
   var agent = AGENT_PERFORMANCE.find(a => a.id === id);
   if (!agent) return;
-  
-  var html = `<div style="padding:16px;">`;
-  html += `<div style="margin-bottom:12px;"><label>坐席姓名：</label><input type="text" id="edit-agent-name" value="${agent.agentName}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>组别：</label><input type="text" id="edit-agent-group" value="${agent.group}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>状态：</label><select id="edit-agent-status" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"><option value="试用期" ${agent.status==='试用期'?'selected':''}>试用期</option><option value="转正" ${agent.status==='转正'?'selected':''}>转正</option></select></div>`;
-  html += `<div style="margin-bottom:12px;"><label>客服类型：</label><select id="edit-agent-type" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"><option value="售前" ${agent.agentType==='售前'?'selected':''}>售前</option><option value="售后" ${agent.agentType==='售后'?'selected':''}>售后</option><option value="综合" ${agent.agentType==='综合'?'selected':''}>综合</option></select></div>`;
-  html += `<div style="margin-bottom:12px;"><label>销售额：</label><input type="number" id="edit-agent-sales" value="${agent.salesAmount}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>转化率(%)：</label><input type="number" step="0.1" id="edit-agent-conv" value="${agent.conversionRate}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>工作量：</label><input type="number" id="edit-agent-work" value="${agent.workVolume}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>一次性解决率(%)：</label><input type="number" step="0.1" id="edit-agent-resolve" value="${agent.firstResolveRate}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>平均响应时长(s)：</label><input type="number" id="edit-agent-resp" value="${agent.responseTime}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>CSAT：</label><input type="number" step="0.1" id="edit-agent-csat" value="${agent.csat}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>服务量：</label><input type="number" id="edit-agent-sv" value="${agent.serviceVolume}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>奖励(¥)：</label><input type="number" id="edit-agent-reward" value="${agent.reward}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="margin-bottom:12px;"><label>惩罚(¥)：</label><input type="number" id="edit-agent-penalty" value="${agent.penalty}" style="padding:6px 10px;border:1px solid var(--c-border);border-radius:6px;width:100%;box-sizing:border-box;"></div>`;
-  html += `<div style="display:flex;gap:8px;justify-content:flex-end;">`;
-  html += `<button class="btn" onclick="closeModal()">取消</button>`;
-  html += `<button class="btn btn-primary" onclick="saveAgentEdit(${agent.id})">保存</button>`;
-  html += `</div></div>`;
-  
-  showModal('编辑坐席绩效', html);
+
+  // 用网格布局（2列），避免弹窗太高超出屏幕
+  var field = function(label, inputHtml, full) {
+    return '<div style="' + (full ? 'grid-column:1/-1;' : '') + 'margin-bottom:10px;">'
+      + '<label style="display:block;font-size:12px;font-weight:500;color:#475569;margin-bottom:4px;">'+label+'</label>'
+      + inputHtml
+      + '</div>';
+  };
+
+  var inputStyle = 'padding:6px 10px;border:1px solid #cbd5e1;border-radius:6px;font-size:12px;box-sizing:border-box;width:100%;background:#fff;';
+
+  var html = ''
+    + '<div style="padding:14px;max-height:60vh;overflow-y:auto;">'
+    // 基本信息（2列）
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px;">'
+    + field('坐席姓名', '<input type="text" id="edit-agent-name" value="'+escHtml(agent.agentName||'')+'" style="'+inputStyle+'">')
+    + field('组别', '<input type="text" id="edit-agent-group" value="'+escHtml(agent.group||'')+'" style="'+inputStyle+'">')
+    + field('状态', '<select id="edit-agent-status" style="'+inputStyle+'"><option value="试用期" '+(agent.status==='试用期'?'selected':'')+'>试用期</option><option value="转正" '+(agent.status==='转正'?'selected':'')+'>转正</option></select>')
+    + field('客服类型', '<select id="edit-agent-type" style="'+inputStyle+'"><option value="售前" '+(agent.agentType==='售前'?'selected':'')+'>售前</option><option value="售后" '+(agent.agentType==='售后'?'selected':'')+'>售后</option><option value="综合" '+(agent.agentType==='综合'?'selected':'')+'>综合</option></select>')
+    + '</div>'
+    // KPI数据（标题分隔）
+    + '<div style="font-size:11px;font-weight:600;color:#0B9B96;margin:6px 0 8px 0;padding:4px 8px;background:#E1F5EE;border-radius:4px;">📊 KPI数据</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px;">'
+    + field('销售额', '<input type="number" id="edit-agent-sales" value="'+(agent.salesAmount||0)+'" style="'+inputStyle+'">')
+    + field('转化率 (%)', '<input type="number" step="0.1" id="edit-agent-conv" value="'+(agent.conversionRate||0)+'" style="'+inputStyle+'">')
+    + field('工作量', '<input type="number" id="edit-agent-work" value="'+(agent.workVolume||0)+'" style="'+inputStyle+'">')
+    + field('一次性解决率 (%)', '<input type="number" step="0.1" id="edit-agent-resolve" value="'+(agent.firstResolveRate||0)+'" style="'+inputStyle+'">')
+    + field('平均响应时长 (s)', '<input type="number" id="edit-agent-resp" value="'+(agent.responseTime||0)+'" style="'+inputStyle+'">')
+    + field('CSAT (0-5)', '<input type="number" step="0.1" min="0" max="5" id="edit-agent-csat" value="'+(agent.csat||0)+'" style="'+inputStyle+'">')
+    + field('服务量', '<input type="number" id="edit-agent-sv" value="'+(agent.serviceVolume||0)+'" style="'+inputStyle+'">')
+    + field('月份', '<input type="text" id="edit-agent-month" value="'+escHtml(agent.month||'')+'" style="'+inputStyle+'">')
+    + '</div>'
+    // 奖罚（标题分隔）
+    + '<div style="font-size:11px;font-weight:600;color:#3B82F6;margin:6px 0 8px 0;padding:4px 8px;background:#E6F1FB;border-radius:4px;">💰 奖罚</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 12px;">'
+    + field('奖励 (¥)', '<input type="number" id="edit-agent-reward" value="'+(agent.reward||0)+'" style="'+inputStyle+'">')
+    + field('惩罚 (¥)', '<input type="number" id="edit-agent-penalty" value="'+(agent.penalty||0)+'" style="'+inputStyle+'">')
+    + '</div>';
+
+  // 按钮区（弹窗底部固定）
+  var buttonHtml = '<div style="display:flex;gap:8px;justify-content:flex-end;padding:10px 14px;background:#f8fafc;border-top:1px solid #e2e8f0;border-radius:0 0 8px 8px;">'
+    + '<button class="btn" onclick="closeModal()" style="padding:6px 18px;">取消</button>'
+    + '<button class="btn btn-primary" onclick="saveAgentEdit('+agent.id+')" style="padding:6px 18px;background:#0B9B96;border-color:#0B9B96;">保存</button>'
+    + '</div>';
+
+  showCustomModal('编辑坐席绩效 · '+escHtml(agent.agentName||''), html + buttonHtml, null);
 }
 
 // 保存编辑
@@ -11349,6 +11374,7 @@ function saveAgentEdit(id) {
   agent.group = document.getElementById('edit-agent-group').value;
   agent.status = document.getElementById('edit-agent-status').value;
   agent.agentType = document.getElementById('edit-agent-type').value;
+  agent.month = document.getElementById('edit-agent-month').value;
   agent.salesAmount = parseFloat(document.getElementById('edit-agent-sales').value) || 0;
   agent.conversionRate = parseFloat(document.getElementById('edit-agent-conv').value) || 0;
   agent.workVolume = parseFloat(document.getElementById('edit-agent-work').value) || 0;
@@ -11360,19 +11386,26 @@ function saveAgentEdit(id) {
   agent.penalty = parseFloat(document.getElementById('edit-agent-penalty').value) || 0;
   saveAgentPerformance();
   closeModal();
+  showToast('已保存坐席数据');
   renderModule('performance');
 }
 
 // 删除坐席绩效数据
 function deleteAgentPerformance(id) {
-  showConfirmModal('确认删除', '确定删除该坐席的绩效数据？<br><b style="color:var(--c-red);">⚠️ 此操作不可恢复！</b>', '删除', '取消', function(){
-    var idx = AGENT_PERFORMANCE.findIndex(a => a.id === id);
-    if (idx >= 0) {
-      AGENT_PERFORMANCE.splice(idx, 1);
-      saveAgentPerformance();
-      renderModule('performance');
+  // showConfirmModal(msg, title, onConfirm, onCancel) - msg是正文(支持HTML), title是标题
+  showConfirmModal(
+    '确定删除该坐席的绩效数据？<br><span style="color:#dc2626;font-weight:500;">⚠️ 此操作不可恢复！</span>',
+    '确认删除',
+    function(){
+      var idx = AGENT_PERFORMANCE.findIndex(a => a.id === id);
+      if (idx >= 0) {
+        AGENT_PERFORMANCE.splice(idx, 1);
+        saveAgentPerformance();
+        renderModule('performance');
+        showToast('已删除坐席数据');
+      }
     }
-  });
+  );
 }
 
 // 导入绩效数据
