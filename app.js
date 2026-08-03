@@ -10768,83 +10768,85 @@ function _renderPerfTab() {
   var html = '';
 
   // L1: 筛选栏（青绿竖条）
-  html += '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:16px;padding:12px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);border-left:3px solid #0B9B96;">';
-  html += '<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:10px;color:var(--color-text-tertiary);">月份</span><select id="pf-month" class="fb-select"><option value="2026-06" '+ (monthFilter==='2026-06'?'selected':'') +'>2026-06</option><option value="2026-05" '+ (monthFilter==='2026-05'?'selected':'') +'>2026-05</option></select></div>';
-  html += '<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:10px;color:var(--color-text-tertiary);">项目</span><select id="pf-project" class="fb-select"><option value="all">全部项目</option>'+PROJECTS.map(function(p){return '<option value="'+p.id+'" '+ (projectFilter===p.id?'selected':'') +'>'+p.name+'</option>';}).join('')+'</select></div>';
-  html += '<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:10px;color:var(--color-text-tertiary);">类型</span><select id="pf-type" class="fb-select"><option value="all">全部类型</option><option value="售前" '+ (typeFilter==='售前'?'selected':'') +'>售前</option><option value="售后" '+ (typeFilter==='售后'?'selected':'') +'>售后</option><option value="综合" '+ (typeFilter==='综合'?'selected':'') +'>综合</option></select></div>';
-  html += '<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:10px;color:var(--color-text-tertiary);">组别</span><select id="pf-group" class="fb-select"><option value="all">全部组别</option>'+[...new Set(AGENT_PERFORMANCE.map(function(a){return a.group;}))].map(function(g){return '<option value="'+g+'" '+ (groupFilter===g?'selected':'') +'>'+g+'</option>';}).join('')+'</select></div>';
-  html += '<button class="btn btn-sm btn-primary" onclick="renderModule(\'performance\')" style="background:#0B9B96;border-color:#0B9B96;">查询</button>';
+  html += '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-bottom:16px;padding:12px 14px;background:#f8fafc;border-radius:8px;border-left:4px solid #0B9B96;border:1px solid #cbd5e1;border-left:4px solid #0B9B96;">';
+  html += '<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:10px;color:#64748b;">月份</span><select id="pf-month" class="fb-select" style="padding:4px 8px;font-size:12px;border:1px solid #cbd5e1;border-radius:5px;background:#fff;"><option value="2026-06" '+ (monthFilter==='2026-06'?'selected':'') +'>2026-06</option><option value="2026-05" '+ (monthFilter==='2026-05'?'selected':'') +'>2026-05</option></select></div>';
+  html += '<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:10px;color:#64748b;">项目</span><select id="pf-project" class="fb-select" style="padding:4px 8px;font-size:12px;border:1px solid #cbd5e1;border-radius:5px;background:#fff;"><option value="all">全部项目</option>'+PROJECTS.map(function(p){return '<option value="'+p.id+'" '+ (projectFilter===p.id?'selected':'') +'>'+p.name+'</option>';}).join('')+'</select></div>';
+  html += '<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:10px;color:#64748b;">类型</span><select id="pf-type" class="fb-select" style="padding:4px 8px;font-size:12px;border:1px solid #cbd5e1;border-radius:5px;background:#fff;"><option value="all">全部类型</option><option value="售前" '+ (typeFilter==='售前'?'selected':'') +'>售前</option><option value="售后" '+ (typeFilter==='售后'?'selected':'') +'>售后</option><option value="综合" '+ (typeFilter==='综合'?'selected':'') +'>综合</option></select></div>';
+  html += '<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:10px;color:#64748b;">组别</span><select id="pf-group" class="fb-select" style="padding:4px 8px;font-size:12px;border:1px solid #cbd5e1;border-radius:5px;background:#fff;"><option value="all">全部组别</option>'+[...new Set(AGENT_PERFORMANCE.map(function(a){return a.group;}))].map(function(g){return '<option value="'+g+'" '+ (groupFilter===g?'selected':'') +'>'+g+'</option>';}).join('')+'</select></div>';
+  html += '<button class="btn btn-sm btn-primary" onclick="renderModule(\'performance\')" style="background:#0B9B96;border-color:#0B9B96;padding:6px 18px;">查询</button>';
   html += '<div style="flex:1;"></div>';
-  html += '<button class="btn btn-sm" onclick="importPerformance()">导入</button>';
-  html += '<button class="btn btn-sm" onclick="exportPerformance()">导出</button>';
+  html += '<button class="btn btn-sm" onclick="importPerformance()" style="border:1px solid #cbd5e1;">导入</button>';
+  html += '<button class="btn btn-sm" onclick="exportPerformance()" style="border:1px solid #cbd5e1;">导出</button>';
   html += '<button class="btn btn-sm btn-primary" onclick="addAgentPerformance()" style="background:#0B9B96;border-color:#0B9B96;">+ 新增</button>';
   html += '</div>';
 
   // L2: 度量卡片（4列）
   html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">';
-  html += '<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;border-left:3px solid #0B9B96;"><div style="font-size:10px;color:var(--color-text-tertiary);">参评坐席</div><div style="font-size:19px;font-weight:500;">'+data.length+'</div></div>';
-  html += '<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;"><div style="font-size:10px;color:var(--color-text-tertiary);">绩效基数总池</div><div style="font-size:19px;font-weight:500;">'+totalBase.toLocaleString()+'</div></div>';
-  html += '<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;"><div style="font-size:10px;color:var(--color-text-tertiary);">加权负荷比</div><div style="font-size:19px;font-weight:500;color:#0B9B96;">'+(totalBase>0?(totalPool/totalBase*100).toFixed(0)+'%':'-')+'</div></div>';
-  html += '<div style="background:#E1F5EE;border-radius:var(--border-radius-md);padding:10px 14px;border:0.5px solid #9FE1CB;border-left:3px solid #0B9B96;"><div style="font-size:10px;color:#0B9B96;">绩效总池</div><div style="font-size:19px;font-weight:500;color:#0B9B96;">'+totalPool.toLocaleString()+'</div></div>';
+  html += '<div style="background:#fff;border-radius:8px;padding:10px 14px;border:1px solid #e2e8f0;border-left:4px solid #0B9B96;"><div style="font-size:10px;color:#64748b;">参评坐席</div><div style="font-size:19px;font-weight:600;color:#0f172a;">'+data.length+'</div></div>';
+  html += '<div style="background:#fff;border-radius:8px;padding:10px 14px;border:1px solid #e2e8f0;"><div style="font-size:10px;color:#64748b;">绩效基数总池</div><div style="font-size:19px;font-weight:600;color:#0f172a;">'+totalBase.toLocaleString()+'</div></div>';
+  html += '<div style="background:#fff;border-radius:8px;padding:10px 14px;border:1px solid #e2e8f0;"><div style="font-size:10px;color:#64748b;">加权负荷比</div><div style="font-size:19px;font-weight:600;color:#0B9B96;">'+(totalBase>0?(totalPool/totalBase*100).toFixed(0)+'%':'-')+'</div></div>';
+  html += '<div style="background:#E1F5EE;border-radius:8px;padding:10px 14px;border:1px solid #9FE1CB;border-left:4px solid #0B9B96;"><div style="font-size:10px;color:#0B9B96;">绩效总池</div><div style="font-size:19px;font-weight:600;color:#0B9B96;">'+totalPool.toLocaleString()+'</div></div>';
   html += '</div>';
 
   // L3: 参数配置区标题
-  html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">';
+  html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;margin-top:4px;">';
   html += '<span style="display:inline-block;width:4px;height:14px;background:#3B82F6;border-radius:2px;"></span>';
-  html += '<span style="font-size:12px;font-weight:500;color:var(--color-text-primary);">参数配置区</span>';
-  html += '<span style="font-size:10px;font-weight:400;color:var(--color-text-tertiary);margin-left:4px;">修改后自动生效，数据同步至系统数据管理</span>';
+  html += '<span style="font-size:12px;font-weight:600;color:#0f172a;">参数配置区</span>';
+  html += '<span style="font-size:10px;font-weight:400;color:#64748b;margin-left:4px;">修改后自动生效，数据同步至系统数据管理</span>';
   html += '</div>';
 
   // L3b: 配置区域（左1: 负荷比+瓜分比例，右2: KPI自定义）
   html += '<div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-bottom:16px;">';
 
   // 左列：负荷比 + 瓜分比例
-  html += '<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;">';
-  html += '<div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;">组别负荷比</div>';
+  html += '<div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:12px;">';
+  html += '<div style="font-size:12px;font-weight:600;color:#0f172a;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e2e8f0;">组别负荷比</div>';
   var grpKeys = Object.keys(groups);
   html += '<div style="display:flex;flex-direction:column;gap:4px;">';
   grpKeys.forEach(function(g){
-    html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:var(--color-background-secondary);border-radius:4px;font-size:11px;">';
-    html += '<span>'+g+'</span>';
-    html += '<span><input type="number" step="0.01" value="'+groups[g].loadRatio+'" style="width:46px;padding:2px;text-align:center;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="updateGroupLoadRatio(\''+g+'\',\''+monthFilter+'\',this.value)"> 倍</span>';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;font-size:11px;border:1px solid #e2e8f0;">';
+    html += '<span style="font-weight:500;">'+g+'</span>';
+    html += '<span style="display:flex;align-items:center;gap:4px;"><input type="number" step="0.01" value="'+groups[g].loadRatio+'" style="width:54px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="updateGroupLoadRatio(\''+g+'\',\''+monthFilter+'\',this.value)"><span style="color:#64748b;">倍</span></span>';
     html += '</div>';
   });
   html += '</div>';
-  html += '<div style="margin-top:10px;font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;">瓜分比例</div>';
-  html += '<div style="display:flex;flex-direction:column;gap:3px;font-size:11px;">';
-  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 8px;background:var(--color-background-secondary);border-radius:4px;"><span>售前</span><input type="text" value="'+(POOL_DIST_RATIO.presale||60)+'" style="width:32px;padding:1px;text-align:center;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="POOL_DIST_RATIO.presale=parseFloat(this.value)||0;saveSalaryConfig();">%</div>';
-  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 8px;background:var(--color-background-secondary);border-radius:4px;"><span>售后</span><input type="text" value="'+(POOL_DIST_RATIO.afterSale||60)+'" style="width:32px;padding:1px;text-align:center;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="POOL_DIST_RATIO.afterSale=parseFloat(this.value)||0;saveSalaryConfig();">%</div>';
-  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 8px;background:var(--color-background-secondary);border-radius:4px;"><span>综合</span><input type="text" value="'+(POOL_DIST_RATIO.mixed||30)+'" style="width:32px;padding:1px;text-align:center;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="POOL_DIST_RATIO.mixed=parseFloat(this.value)||0;saveSalaryConfig();">%</div>';
+  html += '<div style="margin-top:12px;font-size:12px;font-weight:600;color:#0f172a;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e2e8f0;">瓜分比例</div>';
+  html += '<div style="display:flex;flex-direction:column;gap:4px;font-size:11px;">';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;border:1px solid #e2e8f0;"><span style="font-weight:500;">售前</span><input type="text" value="'+(POOL_DIST_RATIO.presale||60)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="POOL_DIST_RATIO.presale=parseFloat(this.value)||0;saveSalaryConfig();"><span style="color:#64748b;">%</span></div>';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;border:1px solid #e2e8f0;"><span style="font-weight:500;">售后</span><input type="text" value="'+(POOL_DIST_RATIO.afterSale||60)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="POOL_DIST_RATIO.afterSale=parseFloat(this.value)||0;saveSalaryConfig();"><span style="color:#64748b;">%</span></div>';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;border:1px solid #e2e8f0;"><span style="font-weight:500;">综合</span><input type="text" value="'+(POOL_DIST_RATIO.mixed||30)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="POOL_DIST_RATIO.mixed=parseFloat(this.value)||0;saveSalaryConfig();"><span style="color:#64748b;">%</span></div>';
   html += '</div></div>';
 
   // 右列：KPI自定义配置
-  html += '<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;">';
-  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">';
-  html += '<span style="font-size:12px;font-weight:500;color:var(--color-text-primary);">KPI指标自定义配置</span>';
-  html += '<button class="btn btn-xs" onclick="addKpiDefinition()" style="background:#0B9B96;color:#fff;border:none;font-size:10px;">+ 新增KPI</button>';
+  html += '<div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:12px;">';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e2e8f0;">';
+  html += '<span style="font-size:12px;font-weight:600;color:#0f172a;">KPI指标自定义配置</span>';
+  html += '<button class="btn btn-xs" onclick="addKpiDefinition()" style="background:#0B9B96;color:#fff;border:none;font-size:10px;padding:3px 10px;">+ 新增KPI</button>';
   html += '</div>';
-  html += '<div style="font-size:10px;color:var(--color-text-tertiary);margin-bottom:10px;">每种类型独立配置KPI组合及权重</div>';
+  html += '<div style="font-size:10px;color:#64748b;margin-bottom:10px;">每种类型独立配置KPI组合及权重</div>';
 
   var kpiTypeColors = {presale:'#0B9B96', afterSale:'#3B82F6', mixed:'#8B5CF6'};
+  var kpiTypeBgs = {presale:'#E1F5EE', afterSale:'#E6F1FB', mixed:'#EEEDFE'};
   ['presale','afterSale','mixed'].forEach(function(type){
     var typeName = {presale:'售前', afterSale:'售后', mixed:'综合'}[type];
     var kpis = KPI_DEFINITIONS[type] || [];
     var totalWeight = kpis.reduce(function(s,k){return s+(k.weight||0);}, 0);
-    html += '<div style="margin-bottom:10px;">';
-    html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">';
-    html += '<span style="font-weight:500;font-size:11px;color:'+kpiTypeColors[type]+';">'+typeName+'</span>';
-    html += '<span style="font-size:10px;color:var(--color-text-tertiary);">权重合计:</span>';
-    html += '<span style="font-weight:500;font-size:11px;color:'+kpiTypeColors[type]+';">'+totalWeight+'%</span>';
+    html += '<div style="margin-bottom:10px;padding:8px;background:'+kpiTypeBgs[type]+';border-radius:6px;border:1px solid '+kpiTypeColors[type]+'44;">';
+    html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">';
+    html += '<span style="font-weight:600;font-size:11px;color:'+kpiTypeColors[type]+';padding:1px 6px;background:#fff;border-radius:3px;">'+typeName+'</span>';
+    html += '<span style="font-size:10px;color:#64748b;">权重合计:</span>';
+    html += '<span style="font-weight:600;font-size:11px;color:'+kpiTypeColors[type]+';">'+totalWeight+'%</span>';
     html += '</div>';
-    html += '<div style="display:flex;flex-wrap:wrap;gap:4px;font-size:10px;padding:6px 8px;background:var(--color-background-secondary);border-radius:5px;">';
+    html += '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">';
     kpis.forEach(function(k,ki){
-      html += '<div style="display:flex;align-items:center;gap:2px;background:#fff;border:0.5px solid var(--color-border-tertiary);border-radius:3px;padding:2px 5px;">';
-      html += '<span>'+k.name+'</span>';
-      html += '<input type="text" value="'+k.weight+'" style="width:26px;padding:1px;border:none;text-align:right;font-size:10px;" onchange="KPI_DEFINITIONS[\''+type+'\']['+ki+'].weight=parseFloat(this.value)||0;saveKpiDefinitions();">%';
-      html += '<span style="cursor:pointer;color:#dc2626;margin-left:2px;" onclick="KPI_DEFINITIONS[\''+type+'\'].splice('+ki+',1);saveKpiDefinitions();renderModule(\'performance\');">x</span>';
+      html += '<div style="display:flex;align-items:center;gap:3px;background:#fff;border:1px solid #cbd5e1;border-radius:4px;padding:3px 6px;">';
+      html += '<span style="font-size:10px;">'+k.name+'</span>';
+      html += '<input type="text" value="'+k.weight+'" style="width:30px;padding:2px 4px;border:1px solid #cbd5e1;border-radius:3px;text-align:right;font-size:10px;font-family:monospace;background:#fff;" onchange="KPI_DEFINITIONS[\''+type+'\']['+ki+'].weight=parseFloat(this.value)||0;saveKpiDefinitions();">';
+      html += '<span style="font-size:10px;color:#64748b;">%</span>';
+      html += '<span style="cursor:pointer;color:#dc2626;font-weight:700;margin-left:2px;font-size:12px;" onclick="KPI_DEFINITIONS[\''+type+'\'].splice('+ki+',1);saveKpiDefinitions();renderModule(\'performance\');">×</span>';
       html += '</div>';
     });
-    html += '<div style="display:flex;align-items:center;gap:2px;border:0.5px dashed var(--color-border-tertiary);border-radius:3px;padding:2px 5px;cursor:pointer;color:var(--color-text-tertiary);" onclick="addKpiToType(\''+type+'\')">+ 添加</div>';
+    html += '<div style="display:flex;align-items:center;gap:3px;border:1px dashed #94a3b8;border-radius:4px;padding:3px 8px;cursor:pointer;color:#64748b;font-size:10px;background:#fff;" onclick="addKpiToType(\''+type+'\')">+ 添加</div>';
     html += '</div></div>';
   });
   html += '</div></div>';
@@ -10856,10 +10858,19 @@ function _renderPerfTab() {
   html += '<span style="font-size:10px;color:var(--color-text-tertiary);">KPI数据可直接编辑，自动重算，结果同步至薪资测算Tab</span>';
   html += '</div>';
 
-  html += '<div style="overflow-x:auto;font-size:12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);">';
+  html += '<div style="overflow-x:auto;font-size:12px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;">';
   html += '<table style="width:100%;border-collapse:collapse;white-space:nowrap;">';
-  html += '<thead><tr style="background:var(--color-background-secondary);text-align:left;font-size:11px;color:var(--color-text-secondary);">';
-  html += '<th style="padding:7px 8px;font-weight:400;">组别</th><th style="padding:7px 8px;font-weight:400;">坐席</th><th style="padding:7px 8px;font-weight:400;">类型</th><th style="padding:7px 8px;font-weight:400;text-align:right;">基数</th><th style="padding:7px 8px;font-weight:400;">KPI值</th><th style="padding:7px 8px;font-weight:400;text-align:center;">系数</th><th style="padding:7px 8px;font-weight:400;text-align:right;">瓜分</th><th style="padding:7px 8px;font-weight:400;text-align:right;">奖/惩</th><th style="padding:7px 8px;font-weight:500;text-align:right;">绩效工资</th><th style="padding:7px 8px;font-weight:400;">操作</th>';
+  html += '<thead><tr style="background:#f1f5f9;text-align:left;font-size:11px;color:#475569;">';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;">组别</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;">坐席</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;">类型</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:right;">基数</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;">KPI值</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:center;">系数</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:right;">瓜分</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:right;">奖/惩</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:right;">绩效工资</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;">操作</th>';
   html += '</tr></thead><tbody>';
 
   data.forEach(function(a){
@@ -10873,26 +10884,25 @@ function _renderPerfTab() {
     var typeTag = a.agentType === '售前' ? 'color:#0B9B96;background:#E1F5EE;' : a.agentType === '售后' ? 'color:#3B82F6;background:#E6F1FB;' : 'color:#8B5CF6;background:#EEEDFE;';
     var scoreColor = score >= 1.0 ? '#0B9B96' : '#dc2626';
 
-    html += '<tr style="border-bottom:0.5px solid var(--color-border-tertiary);">';
-    html += '<td style="padding:7px 8px;">'+(a.group||'-')+'</td>';
-    html += '<td style="padding:7px 8px;font-weight:500;">'+(a.agentName||'-')+'</td>';
-    html += '<td style="padding:7px 8px;"><span style="'+typeTag+'padding:1px 5px;border-radius:3px;font-size:10px;">'+(a.agentType||'售前')+'</span></td>';
-    html += '<td style="padding:7px 8px;text-align:right;color:var(--color-text-tertiary);">'+base+'</td>';
-    html += '<td style="padding:7px 8px;"><div style="display:flex;gap:3px;">';
-    // 根据KPI定义生成输入框
+    html += '<tr style="border-bottom:1px solid #e2e8f0;">';
+    html += '<td style="padding:8px 10px;border-right:1px solid #e2e8f0;">'+(a.group||'-')+'</td>';
+    html += '<td style="padding:8px 10px;font-weight:600;border-right:1px solid #e2e8f0;">'+(a.agentName||'-')+'</td>';
+    html += '<td style="padding:8px 10px;border-right:1px solid #e2e8f0;"><span style="'+typeTag+'padding:2px 8px;border-radius:4px;font-size:10px;display:inline-block;">'+(a.agentType||'售前')+'</span></td>';
+    html += '<td style="padding:8px 10px;text-align:right;color:var(--color-text-tertiary);border-right:1px solid #e2e8f0;">'+base+'</td>';
+    html += '<td style="padding:8px 10px;border-right:1px solid #e2e8f0;"><div style="display:flex;gap:4px;align-items:center;">';
     var kpis = KPI_DEFINITIONS[a.agentType==='售前'?'presale':a.agentType==='售后'?'afterSale':'mixed'] || [];
     var shownKeys = {};
     kpis.forEach(function(k){
       if(shownKeys[k.key]) return; shownKeys[k.key] = true;
       var val = a[k.key]||0;
-      html += '<input type="text" value="'+val+'" style="width:'+(k.key==='salesAmount'?52:36)+'px;padding:2px;text-align:right;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:10px;" onchange="updateAgentKPI('+a.id+',\''+k.key+'\',parseFloat(this.value)||0);">';
+      html += '<input type="text" value="'+val+'" style="width:'+(k.key==='salesAmount'?54:38)+'px;padding:3px 6px;text-align:right;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;background:#fff;font-family:monospace;" onchange="updateAgentKPI('+a.id+',\''+k.key+'\',parseFloat(this.value)||0);">';
     });
     html += '</div></td>';
-    html += '<td style="padding:7px 8px;text-align:center;color:'+scoreColor+';font-weight:500;">'+Math.round(score*100)+'%</td>';
-    html += '<td style="padding:7px 8px;text-align:right;">'+Math.round(share)+'</td>';
-    html += '<td style="padding:7px 8px;text-align:right;color:'+(a.reward>0?'#0B9B96':a.penalty>0?'#dc2626':'')+';">'+(a.reward>0?'+'+a.reward:a.penalty>0?'-'+a.penalty:'0')+'</td>';
-    html += '<td style="padding:7px 8px;text-align:right;font-weight:500;color:'+scoreColor+';">'+Math.round(final)+'</td>';
-    html += '<td style="padding:7px 8px;"><span style="font-size:11px;color:var(--color-text-tertiary);cursor:pointer;" onclick="editAgentPerformance('+a.id+')">编辑</span> <span style="font-size:11px;color:#dc2626;cursor:pointer;" onclick="deleteAgentPerformance('+a.id+')">删除</span></td>';
+    html += '<td style="padding:8px 10px;text-align:center;color:'+scoreColor+';font-weight:600;border-right:1px solid #e2e8f0;">'+Math.round(score*100)+'%</td>';
+    html += '<td style="padding:8px 10px;text-align:right;border-right:1px solid #e2e8f0;">'+Math.round(share)+'</td>';
+    html += '<td style="padding:8px 10px;text-align:right;border-right:1px solid #e2e8f0;color:'+(a.reward>0?'#0B9B96':a.penalty>0?'#dc2626':'#475569')+';">'+(a.reward>0?'+'+a.reward:a.penalty>0?'-'+a.penalty:'0')+'</td>';
+    html += '<td style="padding:8px 10px;text-align:right;font-weight:600;color:'+scoreColor+';border-right:1px solid #e2e8f0;">'+Math.round(final)+'</td>';
+    html += '<td style="padding:8px 10px;"><span style="font-size:11px;color:#3B82F6;cursor:pointer;margin-right:6px;" onclick="editAgentPerformance('+a.id+')">编辑</span> <span style="font-size:11px;color:#dc2626;cursor:pointer;" onclick="deleteAgentPerformance('+a.id+')">删除</span></td>';
     html += '</tr>';
   });
   html += '</tbody></table></div>';
@@ -11015,11 +11025,11 @@ function _renderSalaryTab() {
 
   var html = '';
   // L1: 筛选栏
-  html += '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:16px;padding:12px 14px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);border-left:3px solid #3B82F6;">';
-  html += '<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:10px;color:var(--color-text-tertiary);">月份</span><select id="pf-salary-month" class="fb-select" onchange="renderModule(\'performance\')"><option value="2026-06" '+ (monthFilter==='2026-06'?'selected':'') +'>2026-06</option><option value="2026-05" '+ (monthFilter==='2026-05'?'selected':'') +'>2026-05</option></select></div>';
-  html += '<button class="btn btn-sm btn-primary" onclick="renderModule(\'performance\')" style="background:#3B82F6;border-color:#3B82F6;">查询</button>';
+  html += '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-bottom:16px;padding:12px 14px;background:#f8fafc;border-radius:8px;border:1px solid #cbd5e1;border-left:4px solid #3B82F6;">';
+  html += '<div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:10px;color:#64748b;">月份</span><select id="pf-salary-month" class="fb-select" onchange="renderModule(\'performance\')" style="padding:4px 8px;font-size:12px;border:1px solid #cbd5e1;border-radius:5px;background:#fff;"><option value="2026-06" '+ (monthFilter==='2026-06'?'selected':'') +'>2026-06</option><option value="2026-05" '+ (monthFilter==='2026-05'?'selected':'') +'>2026-05</option></select></div>';
+  html += '<button class="btn btn-sm btn-primary" onclick="renderModule(\'performance\')" style="background:#3B82F6;border-color:#3B82F6;padding:6px 18px;">查询</button>';
   html += '<div style="flex:1;"></div>';
-  html += '<span style="font-size:10px;color:var(--color-text-tertiary);">当月 '+agents.length+' 人 · 绩效结果缓存 '+Object.keys(_PERF_RESULTS).filter(function(k){return _PERF_RESULTS[k].month===monthFilter;}).length+' 条</span>';
+  html += '<span style="font-size:10px;color:#64748b;">当月 '+agents.length+' 人 · 绩效结果缓存 '+Object.keys(_PERF_RESULTS).filter(function(k){return _PERF_RESULTS[k].month===monthFilter;}).length+' 条</span>';
   html += '</div>';
 
   // 汇总指标
@@ -11035,22 +11045,32 @@ function _renderSalaryTab() {
     totalNet += base + perf + (sub.meal||0) + (sub.attendance||0) + (a.reward||0) - (a.penalty||0) - ((a.lateMinutes||0)*getDeductionRule()) - ins.social - ins.fund;
   });
   html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;">';
-  html += '<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;border-left:3px solid #3B82F6;"><div style="font-size:10px;color:var(--color-text-tertiary);">绩效工资汇总</div><div style="font-size:19px;font-weight:500;color:#0B9B96;">'+Math.round(totalPerf).toLocaleString()+'</div></div>';
-  html += '<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;"><div style="font-size:10px;color:var(--color-text-tertiary);">应发合计汇总</div><div style="font-size:19px;font-weight:500;color:var(--color-text-primary);">'+Math.round(totalIncome).toLocaleString()+'</div></div>';
-  html += '<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 14px;border-left:3px solid #3B82F6;"><div style="font-size:10px;color:var(--color-text-tertiary);">实发合计汇总</div><div style="font-size:19px;font-weight:500;color:#3B82F6;">'+Math.round(totalNet).toLocaleString()+'</div></div>';
+  html += '<div style="background:#fff;border-radius:8px;padding:10px 14px;border:1px solid #e2e8f0;border-left:4px solid #3B82F6;"><div style="font-size:10px;color:#64748b;">绩效工资汇总</div><div style="font-size:19px;font-weight:600;color:#0B9B96;">'+Math.round(totalPerf).toLocaleString()+'</div></div>';
+  html += '<div style="background:#fff;border-radius:8px;padding:10px 14px;border:1px solid #e2e8f0;"><div style="font-size:10px;color:#64748b;">应发合计汇总</div><div style="font-size:19px;font-weight:600;color:#0f172a;">'+Math.round(totalIncome).toLocaleString()+'</div></div>';
+  html += '<div style="background:#E6F1FB;border-radius:8px;padding:10px 14px;border:1px solid #B5D4F4;border-left:4px solid #3B82F6;"><div style="font-size:10px;color:#3B82F6;">实发合计汇总</div><div style="font-size:19px;font-weight:600;color:#3B82F6;">'+Math.round(totalNet).toLocaleString()+'</div></div>';
   html += '</div>';
 
   // 工资条明细标题
   html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">';
   html += '<span style="display:inline-block;width:4px;height:14px;background:#3B82F6;border-radius:2px;"></span>';
-  html += '<span style="font-size:12px;font-weight:500;">工资条明细</span>';
-  html += '<span style="font-size:10px;color:var(--color-text-tertiary);">考勤可在此直接编辑，数据实时重算</span>';
+  html += '<span style="font-size:12px;font-weight:600;color:#0f172a;">工资条明细</span>';
+  html += '<span style="font-size:10px;color:#64748b;">考勤可在此直接编辑，数据实时重算</span>';
   html += '</div>';
 
-  html += '<div style="overflow-x:auto;font-size:12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);">';
+  html += '<div style="overflow-x:auto;font-size:12px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;">';
   html += '<table style="width:100%;border-collapse:collapse;white-space:nowrap;">';
-  html += '<thead><tr style="background:var(--color-background-secondary);font-size:11px;color:var(--color-text-secondary);">';
-  html += '<th style="padding:6px 7px;font-weight:400;">姓名</th><th style="padding:6px 7px;font-weight:400;">岗位</th><th style="padding:6px 7px;font-weight:400;text-align:right;">基本工资</th><th style="padding:6px 7px;font-weight:400;text-align:right;">绩效工资</th><th style="padding:6px 7px;font-weight:400;text-align:right;">出勤(天)</th><th style="padding:6px 7px;font-weight:400;text-align:right;">迟到(分)</th><th style="padding:6px 7px;font-weight:400;text-align:right;">餐补</th><th style="padding:6px 7px;font-weight:400;text-align:right;">奖/惩</th><th style="padding:6px 7px;font-weight:400;text-align:right;">应发</th><th style="padding:6px 7px;font-weight:400;text-align:right;">社保</th><th style="padding:6px 7px;font-weight:500;text-align:right;">到手</th>';
+  html += '<thead><tr style="background:#f1f5f9;font-size:11px;color:#475569;">';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;">姓名</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;">岗位</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:right;">基本工资</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:right;">绩效工资</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:right;">出勤(天)</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:right;">迟到(分)</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:right;">餐补</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:right;">奖/惩</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:right;">应发</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;border-right:1px solid #e2e8f0;text-align:right;">社保</th>';
+  html += '<th style="padding:8px 10px;font-weight:600;border-bottom:2px solid #cbd5e1;text-align:right;">到手</th>';
   html += '</tr></thead><tbody>';
 
   agents.forEach(function(a){
@@ -11068,18 +11088,18 @@ function _renderSalaryTab() {
     var netPay = income - ins.social - ins.fund;
     if(netPay < 0) netPay = 0;
 
-    html += '<tr style="border-bottom:0.5px solid var(--color-border-tertiary);">';
-    html += '<td style="padding:6px 7px;font-weight:500;">'+(a.agentName||'未知')+'</td>';
-    html += '<td style="padding:6px 7px;font-size:10px;color:var(--color-text-tertiary);">'+(a.agentType||'')+'</td>';
-    html += '<td style="padding:6px 7px;text-align:right;">'+Math.round(base).toLocaleString()+'</td>';
-    html += '<td style="padding:6px 7px;text-align:right;font-weight:500;color:'+(perf>=base?'#0B9B96':'#dc2626')+';">'+Math.round(perf).toLocaleString()+'</td>';
-    html += '<td style="padding:6px 7px;text-align:right;"><input type="text" value="'+attDays+'" style="width:32px;padding:2px;text-align:center;border:0.5px solid #3B82F6;border-radius:3px;background:#E6F1FB;font-size:10px;" onchange="var x=AGENT_PERFORMANCE.find(function(aa){return aa.id==='+a.id+';});if(x){x.attendanceDays=parseFloat(this.value)||21;}renderModule(\'performance\');"></td>';
-    html += '<td style="padding:6px 7px;text-align:right;"><input type="text" value="'+lateMin+'" style="width:28px;padding:2px;text-align:center;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:10px;" onchange="var x=AGENT_PERFORMANCE.find(function(aa){return aa.id==='+a.id+';});if(x){x.lateMinutes=parseFloat(this.value)||0;}renderModule(\'performance\');"></td>';
-    html += '<td style="padding:6px 7px;text-align:right;">'+Math.round((sub.meal||0)+(sub.attendance||0)).toLocaleString()+'</td>';
-    html += '<td style="padding:6px 7px;text-align:right;color:'+(bonus>penalty?'#0B9B96':'#dc2626')+';">'+(bonus>0?'+'+Math.round(bonus).toLocaleString():penalty>0?'-'+Math.round(penalty+lateDeduct).toLocaleString():'0')+'</td>';
-    html += '<td style="padding:6px 7px;text-align:right;font-weight:500;">'+Math.round(income).toLocaleString()+'</td>';
-    html += '<td style="padding:6px 7px;text-align:right;">'+Math.round(ins.social).toLocaleString()+'</td>';
-    html += '<td style="padding:6px 7px;text-align:right;font-weight:500;color:#3B82F6;">'+Math.round(netPay).toLocaleString()+'</td>';
+    html += '<tr style="border-bottom:1px solid #e2e8f0;">';
+    html += '<td style="padding:8px 10px;font-weight:600;border-right:1px solid #e2e8f0;">'+(a.agentName||'未知')+'</td>';
+    html += '<td style="padding:8px 10px;font-size:10px;color:#64748b;border-right:1px solid #e2e8f0;">'+(a.agentType||'')+'</td>';
+    html += '<td style="padding:8px 10px;text-align:right;border-right:1px solid #e2e8f0;">'+Math.round(base).toLocaleString()+'</td>';
+    html += '<td style="padding:8px 10px;text-align:right;font-weight:600;color:'+(perf>=base?'#0B9B96':'#dc2626')+';border-right:1px solid #e2e8f0;">'+Math.round(perf).toLocaleString()+'</td>';
+    html += '<td style="padding:8px 10px;text-align:right;border-right:1px solid #e2e8f0;"><input type="text" value="'+attDays+'" style="width:36px;padding:3px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;background:#fff;font-size:11px;font-family:monospace;" onchange="var x=AGENT_PERFORMANCE.find(function(aa){return aa.id==='+a.id+';});if(x){x.attendanceDays=parseFloat(this.value)||21;}renderModule(\'performance\');"></td>';
+    html += '<td style="padding:8px 10px;text-align:right;border-right:1px solid #e2e8f0;"><input type="text" value="'+lateMin+'" style="width:32px;padding:3px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;background:#fff;font-size:11px;font-family:monospace;" onchange="var x=AGENT_PERFORMANCE.find(function(aa){return aa.id==='+a.id+';});if(x){x.lateMinutes=parseFloat(this.value)||0;}renderModule(\'performance\');"></td>';
+    html += '<td style="padding:8px 10px;text-align:right;border-right:1px solid #e2e8f0;">'+Math.round((sub.meal||0)+(sub.attendance||0)).toLocaleString()+'</td>';
+    html += '<td style="padding:8px 10px;text-align:right;border-right:1px solid #e2e8f0;color:'+(bonus>penalty?'#0B9B96':'#dc2626')+';">'+(bonus>0?'+'+Math.round(bonus).toLocaleString():penalty>0?'-'+Math.round(penalty+lateDeduct).toLocaleString():'0')+'</td>';
+    html += '<td style="padding:8px 10px;text-align:right;font-weight:600;border-right:1px solid #e2e8f0;">'+Math.round(income).toLocaleString()+'</td>';
+    html += '<td style="padding:8px 10px;text-align:right;border-right:1px solid #e2e8f0;">'+Math.round(ins.social).toLocaleString()+'</td>';
+    html += '<td style="padding:8px 10px;text-align:right;font-weight:600;color:#3B82F6;">'+Math.round(netPay).toLocaleString()+'</td>';
     html += '</tr>';
   });
 
@@ -11094,68 +11114,68 @@ function _renderSalaryTab() {
 
 // ===== 基础配置 Tab =====
 function _renderConfigTab() {
-  var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
+  var html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">';
 
   // 1. 员工基本工资
-  html += '<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:14px;border-top:3px solid #8B5CF6;">';
-  html += '<div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">员工基本工资</div>';
-  html += '<div style="font-size:10px;color:var(--color-text-tertiary);margin-bottom:8px;">修改后自动保存，各Tab立即生效</div>';
+  html += '<div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:14px;border-top:4px solid #8B5CF6;">';
+  html += '<div style="font-size:13px;font-weight:600;color:#0f172a;margin-bottom:4px;">员工基本工资</div>';
+  html += '<div style="font-size:10px;color:#64748b;margin-bottom:10px;">修改后自动保存，各Tab立即生效</div>';
   var agentNames = {};
   AGENT_PERFORMANCE.forEach(function(a){if(!agentNames[a.id])agentNames[a.id]={name:a.agentName||'未知',base:SALARY_BASE[a.id]||1700};});
   for(var id in agentNames){
     var an = agentNames[id];
-    html += '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--color-background-secondary);border-radius:4px;margin-bottom:3px;font-size:12px;"><span>'+an.name+'</span><input type="text" value="'+an.base+'" style="width:58px;padding:2px 6px;text-align:right;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="SALARY_BASE[\''+id+'\']=parseFloat(this.value)||1700;saveSalaryConfig();"></div>';
+    html += '<div style="display:flex;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;margin-bottom:4px;font-size:12px;border:1px solid #e2e8f0;"><span style="font-weight:500;">'+an.name+'</span><input type="text" value="'+an.base+'" style="width:64px;padding:4px 8px;text-align:right;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="SALARY_BASE[\''+id+'\']=parseFloat(this.value)||1700;saveSalaryConfig();"></div>';
   }
   html += '</div>';
 
   // 2. 绩效基数档位
-  html += '<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:14px;border-top:3px solid #8B5CF6;">';
-  html += '<div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">绩效基数档位</div>';
-  html += '<div style="font-size:10px;color:var(--color-text-tertiary);margin-bottom:8px;">影响组绩效总池计算基数</div>';
-  html += '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--color-background-secondary);border-radius:4px;margin-bottom:3px;font-size:12px;"><span>试用期</span><input type="text" value="'+(PERF_BASE_LEVELS.trial||1400)+'" style="width:58px;padding:2px 6px;text-align:right;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="PERF_BASE_LEVELS.trial=parseFloat(this.value)||1400;saveSalaryConfig();"></div>';
-  html += '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--color-background-secondary);border-radius:4px;font-size:12px;"><span>转正</span><input type="text" value="'+(PERF_BASE_LEVELS.regular||1700)+'" style="width:58px;padding:2px 6px;text-align:right;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="PERF_BASE_LEVELS.regular=parseFloat(this.value)||1700;saveSalaryConfig();"></div>';
+  html += '<div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:14px;border-top:4px solid #8B5CF6;">';
+  html += '<div style="font-size:13px;font-weight:600;color:#0f172a;margin-bottom:4px;">绩效基数档位</div>';
+  html += '<div style="font-size:10px;color:#64748b;margin-bottom:10px;">影响组绩效总池计算基数</div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;margin-bottom:4px;font-size:12px;border:1px solid #e2e8f0;"><span style="font-weight:500;">试用期</span><input type="text" value="'+(PERF_BASE_LEVELS.trial||1400)+'" style="width:64px;padding:4px 8px;text-align:right;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="PERF_BASE_LEVELS.trial=parseFloat(this.value)||1400;saveSalaryConfig();"></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;font-size:12px;border:1px solid #e2e8f0;"><span style="font-weight:500;">转正</span><input type="text" value="'+(PERF_BASE_LEVELS.regular||1700)+'" style="width:64px;padding:4px 8px;text-align:right;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="PERF_BASE_LEVELS.regular=parseFloat(this.value)||1700;saveSalaryConfig();"></div>';
   html += '</div>';
 
   // 3. 社保基数
-  html += '<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:14px;border-top:3px solid #8B5CF6;">';
-  html += '<div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">社保基数（按公司）</div>';
-  html += '<div style="font-size:10px;color:var(--color-text-tertiary);margin-bottom:8px;">个人缴纳比例10.1%，自动计入薪资测算</div>';
+  html += '<div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:14px;border-top:4px solid #8B5CF6;">';
+  html += '<div style="font-size:13px;font-weight:600;color:#0f172a;margin-bottom:4px;">社保基数（按公司）</div>';
+  html += '<div style="font-size:10px;color:#64748b;margin-bottom:10px;">个人缴纳比例10.1%，自动计入薪资测算</div>';
   var companies = {'淄博兴长信':4630, '济南长信':4630, '浙江长信':5220};
   for(var cn in companies){
-    html += '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--color-background-secondary);border-radius:4px;margin-bottom:3px;font-size:12px;"><span>'+cn+'</span><input type="text" value="'+(SOCIAL_INSURANCE[cn]?SOCIAL_INSURANCE[cn].socialBase:companies[cn])+'" style="width:58px;padding:2px 6px;text-align:right;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="SOCIAL_INSURANCE[\''+cn+'\']={socialBase:parseFloat(this.value)||'+companies[cn]+',socialRate:0.101};saveSalaryConfig();"></div>';
+    html += '<div style="display:flex;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;margin-bottom:4px;font-size:12px;border:1px solid #e2e8f0;"><span style="font-weight:500;">'+cn+'</span><input type="text" value="'+(SOCIAL_INSURANCE[cn]?SOCIAL_INSURANCE[cn].socialBase:companies[cn])+'" style="width:64px;padding:4px 8px;text-align:right;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="SOCIAL_INSURANCE[\''+cn+'\']={socialBase:parseFloat(this.value)||'+companies[cn]+',socialRate:0.101};saveSalaryConfig();"></div>';
   }
   html += '</div>';
 
   // 4. 补贴标准
-  html += '<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:14px;border-top:3px solid #8B5CF6;">';
-  html += '<div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">补贴标准（按城市）</div>';
-  html += '<div style="font-size:10px;color:var(--color-text-tertiary);margin-bottom:8px;">按月固定发放</div>';
-  html += '<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:4px;font-size:10px;color:var(--color-text-tertiary);padding:2px 0;"><span>城市</span><span>餐补</span><span>全勤</span></div>';
+  html += '<div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:14px;border-top:4px solid #8B5CF6;">';
+  html += '<div style="font-size:13px;font-weight:600;color:#0f172a;margin-bottom:4px;">补贴标准（按城市）</div>';
+  html += '<div style="font-size:10px;color:#64748b;margin-bottom:10px;">按月固定发放</div>';
+  html += '<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;font-size:10px;color:#64748b;padding:4px 6px;background:#f1f5f9;border-radius:4px;font-weight:600;"><span>城市</span><span style="text-align:center;">餐补</span><span style="text-align:center;">全勤</span></div>';
   var cities = {淄博:{meal:158,att:100}, 济南:{meal:390,att:0}, 杭州:{meal:380,att:100}};
   for(var city in cities){
     var sc = SUBSIDY_RATES[city] || {};
-    html += '<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:4px;padding:3px 0;margin-bottom:2px;"><span style="font-size:11px;">'+city+'</span>';
-    html += '<input type="text" value="'+(sc.meal||cities[city].meal)+'" style="width:44px;padding:2px 4px;border:0.5px solid var(--color-border-tertiary);border-radius:3px;text-align:right;font-size:11px;" onchange="SUBSIDY_RATES[\''+city+'\']=SUBSIDY_RATES[\''+city+'\']||{};SUBSIDY_RATES[\''+city+'\'].meal=parseFloat(this.value)||0;saveSalaryConfig();">';
-    html += '<input type="text" value="'+(sc.attendance||cities[city].att)+'" style="width:44px;padding:2px 4px;border:0.5px solid var(--color-border-tertiary);border-radius:3px;text-align:right;font-size:11px;" onchange="SUBSIDY_RATES[\''+city+'\']=SUBSIDY_RATES[\''+city+'\']||{};SUBSIDY_RATES[\''+city+'\'].attendance=parseFloat(this.value)||0;saveSalaryConfig();">';
+    html += '<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;padding:6px 4px;margin-bottom:3px;background:#f8fafc;border-radius:4px;border:1px solid #e2e8f0;align-items:center;"><span style="font-size:11px;font-weight:500;">'+city+'</span>';
+    html += '<input type="text" value="'+(sc.meal||cities[city].meal)+'" style="width:54px;padding:4px 6px;border:1px solid #cbd5e1;border-radius:4px;text-align:right;font-size:11px;font-family:monospace;background:#fff;" onchange="SUBSIDY_RATES[\''+city+'\']=SUBSIDY_RATES[\''+city+'\']||{};SUBSIDY_RATES[\''+city+'\'].meal=parseFloat(this.value)||0;saveSalaryConfig();">';
+    html += '<input type="text" value="'+(sc.attendance||cities[city].att)+'" style="width:54px;padding:4px 6px;border:1px solid #cbd5e1;border-radius:4px;text-align:right;font-size:11px;font-family:monospace;background:#fff;" onchange="SUBSIDY_RATES[\''+city+'\']=SUBSIDY_RATES[\''+city+'\']||{};SUBSIDY_RATES[\''+city+'\'].attendance=parseFloat(this.value)||0;saveSalaryConfig();">';
     html += '</div>';
   }
   html += '</div>';
 
   // 5. 瓜分比例
-  html += '<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:14px;border-top:3px solid #8B5CF6;">';
-  html += '<div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">瓜分比例配置</div>';
-  html += '<div style="font-size:10px;color:var(--color-text-tertiary);margin-bottom:8px;">绩效总池在各类型间的分配比例</div>';
-  html += '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--color-background-secondary);border-radius:4px;margin-bottom:3px;font-size:12px;"><span>售前池占比</span><span><input type="text" value="'+(POOL_DIST_RATIO.presale||60)+'" style="width:40px;padding:2px;text-align:center;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="POOL_DIST_RATIO.presale=parseFloat(this.value)||0;saveSalaryConfig();"> %</span></div>';
-  html += '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--color-background-secondary);border-radius:4px;margin-bottom:3px;font-size:12px;"><span>售后池占比</span><span><input type="text" value="'+(POOL_DIST_RATIO.afterSale||60)+'" style="width:40px;padding:2px;text-align:center;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="POOL_DIST_RATIO.afterSale=parseFloat(this.value)||0;saveSalaryConfig();"> %</span></div>';
-  html += '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--color-background-secondary);border-radius:4px;font-size:12px;"><span>综合占比</span><span><input type="text" value="'+(POOL_DIST_RATIO.mixed||30)+'" style="width:40px;padding:2px;text-align:center;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="POOL_DIST_RATIO.mixed=parseFloat(this.value)||0;saveSalaryConfig();"> %</span></div>';
+  html += '<div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:14px;border-top:4px solid #8B5CF6;">';
+  html += '<div style="font-size:13px;font-weight:600;color:#0f172a;margin-bottom:4px;">瓜分比例配置</div>';
+  html += '<div style="font-size:10px;color:#64748b;margin-bottom:10px;">绩效总池在各类型间的分配比例</div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;margin-bottom:4px;font-size:12px;border:1px solid #e2e8f0;"><span style="font-weight:500;">售前池占比</span><span><input type="text" value="'+(POOL_DIST_RATIO.presale||60)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="POOL_DIST_RATIO.presale=parseFloat(this.value)||0;saveSalaryConfig();"> %</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;margin-bottom:4px;font-size:12px;border:1px solid #e2e8f0;"><span style="font-weight:500;">售后池占比</span><span><input type="text" value="'+(POOL_DIST_RATIO.afterSale||60)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="POOL_DIST_RATIO.afterSale=parseFloat(this.value)||0;saveSalaryConfig();"> %</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;font-size:12px;border:1px solid #e2e8f0;"><span style="font-weight:500;">综合占比</span><span><input type="text" value="'+(POOL_DIST_RATIO.mixed||30)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="POOL_DIST_RATIO.mixed=parseFloat(this.value)||0;saveSalaryConfig();"> %</span></div>';
   html += '</div>';
 
   // 6. 扣款规则
-  html += '<div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:14px;border-top:3px solid #8B5CF6;">';
-  html += '<div style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;">扣款规则</div>';
-  html += '<div style="font-size:10px;color:var(--color-text-tertiary);margin-bottom:8px;">自动计入薪资测算</div>';
-  html += '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--color-background-secondary);border-radius:4px;margin-bottom:3px;font-size:12px;"><span>迟到扣款</span><span><input type="text" value="'+(DEDUCTION_RATES.latePerMin||2)+'" style="width:40px;padding:2px;text-align:center;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="DEDUCTION_RATES.latePerMin=parseFloat(this.value)||0;saveSalaryConfig();"> 元/分钟</span></div>';
-  html += '<div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--color-background-secondary);border-radius:4px;font-size:12px;"><span>忘打卡扣款</span><span><input type="text" value="'+(DEDUCTION_RATES.missPunch||0)+'" style="width:40px;padding:2px;text-align:center;border:0.5px solid var(--color-border-tertiary);border-radius:3px;font-size:11px;" onchange="DEDUCTION_RATES.missPunch=parseFloat(this.value)||0;saveSalaryConfig();"> 元/次</span></div>';
+  html += '<div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:14px;border-top:4px solid #8B5CF6;">';
+  html += '<div style="font-size:13px;font-weight:600;color:#0f172a;margin-bottom:4px;">扣款规则</div>';
+  html += '<div style="font-size:10px;color:#64748b;margin-bottom:10px;">自动计入薪资测算</div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;margin-bottom:4px;font-size:12px;border:1px solid #e2e8f0;"><span style="font-weight:500;">迟到扣款</span><span><input type="text" value="'+(DEDUCTION_RATES.latePerMin||2)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="DEDUCTION_RATES.latePerMin=parseFloat(this.value)||0;saveSalaryConfig();"> 元/分钟</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;font-size:12px;border:1px solid #e2e8f0;"><span style="font-weight:500;">忘打卡扣款</span><span><input type="text" value="'+(DEDUCTION_RATES.missPunch||0)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="DEDUCTION_RATES.missPunch=parseFloat(this.value)||0;saveSalaryConfig();"> 元/次</span></div>';
   html += '</div>';
 
   html += '</div>';
