@@ -342,6 +342,76 @@ function showCustomModal(title, bodyHtml, onConfirm) {
   };
 }
 
+// ===== 通用弹窗封装（仅展示+取消，无确认回调）=====
+function showModal(title, bodyHtml) {
+  showCustomModal(title, bodyHtml, null);
+  // 隐藏"确定"按钮，只保留"取消"
+  setTimeout(function(){
+    var btns = document.querySelectorAll('.sd-prompt-overlay .sd-confirm-ok');
+    btns.forEach(function(b){ b.style.display = 'none'; });
+  }, 50);
+}
+
+function closeModal() {
+  var overlays = document.querySelectorAll('.sd-prompt-overlay');
+  overlays.forEach(function(o){
+    o.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(o.parentNode) o.remove(); }, 300);
+  });
+}
+
+// ===== 自定义KPI新增弹窗（替代浏览器prompt）=====
+function showAddKpiDialog(type, onConfirm) {
+  var kpis = KPI_DEFINITIONS[type] || [];
+  var existingKeys = kpis.map(function(k){return k.key;}).join(',');
+  var typeName = {presale:'售前', afterSale:'售后', mixed:'综合'}[type];
+
+  var bodyHtml = '<div style="padding:8px 0;">'
+    + '<div style="margin-bottom:12px;">'
+      + '<label style="display:block;font-size:13px;font-weight:500;color:#475569;margin-bottom:6px;">KPI指标名称</label>'
+      + '<input type="text" id="new-kpi-name" placeholder="例如：销售额、转化率" style="width:100%;padding:8px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;box-sizing:border-box;">'
+    + '</div>'
+    + '<div style="margin-bottom:12px;">'
+      + '<label style="display:block;font-size:13px;font-weight:500;color:#475569;margin-bottom:6px;">数据字段名（用于关联坐席数据）</label>'
+      + '<input type="text" id="new-kpi-key" placeholder="例如：salesAmount、conversionRate" style="width:100%;padding:8px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;box-sizing:border-box;font-family:monospace;">'
+    + '</div>'
+    + '<div style="margin-bottom:8px;">'
+      + '<label style="display:block;font-size:13px;font-weight:500;color:#475569;margin-bottom:6px;">默认权重(%)</label>'
+      + '<input type="number" id="new-kpi-weight" value="10" min="0" max="100" style="width:100%;padding:8px 12px;border:1px solid #cbd5e1;border-radius:6px;font-size:13px;box-sizing:border-box;">'
+    + '</div>'
+    + '<div style="font-size:11px;color:#64748b;margin-top:8px;">将添加至：<b style="color:#0B9B96;">'+typeName+'类型</b> · 可在Tab1直接输入对应字段值</div>'
+  + '</div>';
+
+  var overlay = document.createElement('div');
+  overlay.className = 'sd-prompt-overlay';
+  overlay.innerHTML = '<div class="sd-prompt-box" style="width:460px;">'
+    + '<div class="sd-prompt-header">新增KPI · '+typeName+' <button class="sd-prompt-close">&times;</button></div>'
+    + '<div class="sd-prompt-body">'+bodyHtml+'</div>'
+    + '<div class="sd-prompt-footer">'
+      + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
+      + '<button class="sd-confirm-btn sd-confirm-ok" style="background:#0B9B96;border-color:#0B9B96;">添加</button>'
+    + '</div></div>';
+  document.body.appendChild(overlay);
+  setTimeout(function(){ overlay.classList.add('sd-confirm-show'); document.getElementById('new-kpi-name')?.focus(); }, 50);
+
+  function close(){
+    overlay.classList.remove('sd-confirm-show');
+    setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 300);
+  }
+  overlay.querySelector('.sd-prompt-close').onclick = close;
+  overlay.querySelector('.sd-confirm-cancel').onclick = close;
+  overlay.onclick = function(e){ if(e.target === this) close(); };
+  overlay.querySelector('.sd-confirm-ok').onclick = function(){
+    var name = document.getElementById('new-kpi-name').value.trim();
+    var key = document.getElementById('new-kpi-key').value.trim();
+    var weight = parseFloat(document.getElementById('new-kpi-weight').value) || 10;
+    if(!name){ alert('请输入指标名称'); return; }
+    if(!key){ alert('请输入数据字段名'); return; }
+    if(onConfirm) onConfirm(name, key, weight);
+    close();
+  };
+}
+
 // ===== 数据持久化（彻底修复版 + 自动备份）= 2026-07-21 =====
 // 安全写入 localStorage（带 quota 处理、自动备份和用户提示）
 function safeSetItem(key, value) {
@@ -10777,7 +10847,7 @@ function _renderPerfTab() {
   html += '<div style="flex:1;"></div>';
   html += '<button class="btn btn-sm" onclick="importPerformance()" style="border:1px solid #cbd5e1;">导入</button>';
   html += '<button class="btn btn-sm" onclick="exportPerformance()" style="border:1px solid #cbd5e1;">导出</button>';
-  html += '<button class="btn btn-sm btn-primary" onclick="addAgentPerformance()" style="background:#0B9B96;border-color:#0B9B96;">+ 新增</button>';
+  html += '<button class="btn btn-sm btn-primary" onclick="addAgentPerformance()" style="background:#0B9B96;border-color:#0B9B96;">+ 新增坐席</button>';
   html += '</div>';
 
   // L2: 度量卡片（4列）
@@ -10800,21 +10870,25 @@ function _renderPerfTab() {
 
   // 左列：负荷比 + 瓜分比例
   html += '<div style="background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:12px;">';
-  html += '<div style="font-size:12px;font-weight:600;color:#0f172a;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e2e8f0;">组别负荷比</div>';
+  // 分组1：组别负荷比（带标题栏）
+  html += '<div style="font-size:12px;font-weight:600;color:#0B9B96;margin-bottom:6px;padding:6px 10px;background:#E1F5EE;border-radius:4px;border-left:3px solid #0B9B96;">📊 组别负荷比（倍率系数）</div>';
   var grpKeys = Object.keys(groups);
   html += '<div style="display:flex;flex-direction:column;gap:4px;">';
   grpKeys.forEach(function(g){
     html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;font-size:11px;border:1px solid #e2e8f0;">';
-    html += '<span style="font-weight:500;">'+g+'</span>';
-    html += '<span style="display:flex;align-items:center;gap:4px;"><input type="number" step="0.01" value="'+groups[g].loadRatio+'" style="width:54px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="updateGroupLoadRatio(\''+g+'\',\''+monthFilter+'\',this.value)"><span style="color:#64748b;">倍</span></span>';
+    html += '<span style="font-weight:500;color:#475569;">'+g+'</span>';
+    html += '<span style="display:flex;align-items:center;gap:4px;"><input type="number" step="0.01" value="'+groups[g].loadRatio+'" style="width:54px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="updateGroupLoadRatio(\''+g+'\',\''+monthFilter+'\',this.value)"><span style="color:#64748b;font-size:11px;">倍</span></span>';
     html += '</div>';
   });
   html += '</div>';
-  html += '<div style="margin-top:12px;font-size:12px;font-weight:600;color:#0f172a;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e2e8f0;">瓜分比例</div>';
+  // 分隔间距
+  html += '<div style="height:14px;"></div>';
+  // 分组2：瓜分比例（带标题栏）
+  html += '<div style="font-size:12px;font-weight:600;color:#3B82F6;margin-bottom:6px;padding:6px 10px;background:#E6F1FB;border-radius:4px;border-left:3px solid #3B82F6;">📊 瓜分比例（绩效池分配）</div>';
   html += '<div style="display:flex;flex-direction:column;gap:4px;font-size:11px;">';
-  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;border:1px solid #e2e8f0;"><span style="font-weight:500;">售前</span><input type="text" value="'+(POOL_DIST_RATIO.presale||60)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="POOL_DIST_RATIO.presale=parseFloat(this.value)||0;saveSalaryConfig();"><span style="color:#64748b;">%</span></div>';
-  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;border:1px solid #e2e8f0;"><span style="font-weight:500;">售后</span><input type="text" value="'+(POOL_DIST_RATIO.afterSale||60)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="POOL_DIST_RATIO.afterSale=parseFloat(this.value)||0;saveSalaryConfig();"><span style="color:#64748b;">%</span></div>';
-  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;border:1px solid #e2e8f0;"><span style="font-weight:500;">综合</span><input type="text" value="'+(POOL_DIST_RATIO.mixed||30)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="POOL_DIST_RATIO.mixed=parseFloat(this.value)||0;saveSalaryConfig();"><span style="color:#64748b;">%</span></div>';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;border:1px solid #e2e8f0;"><span style="font-weight:500;color:#475569;">售前池占比</span><span style="display:flex;align-items:center;gap:4px;"><input type="text" value="'+(POOL_DIST_RATIO.presale||60)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="POOL_DIST_RATIO.presale=parseFloat(this.value)||0;saveSalaryConfig();"><span style="color:#64748b;">%</span></span></div>';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;border:1px solid #e2e8f0;"><span style="font-weight:500;color:#475569;">售后池占比</span><span style="display:flex;align-items:center;gap:4px;"><input type="text" value="'+(POOL_DIST_RATIO.afterSale||60)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="POOL_DIST_RATIO.afterSale=parseFloat(this.value)||0;saveSalaryConfig();"><span style="color:#64748b;">%</span></span></div>';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:#f8fafc;border-radius:4px;border:1px solid #e2e8f0;"><span style="font-weight:500;color:#475569;">综合占比</span><span style="display:flex;align-items:center;gap:4px;"><input type="text" value="'+(POOL_DIST_RATIO.mixed||30)+'" style="width:44px;padding:4px 6px;text-align:center;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;font-family:monospace;background:#fff;" onchange="POOL_DIST_RATIO.mixed=parseFloat(this.value)||0;saveSalaryConfig();"><span style="color:#64748b;">%</span></span></div>';
   html += '</div></div>';
 
   // 右列：KPI自定义配置
@@ -10889,13 +10963,17 @@ function _renderPerfTab() {
     html += '<td style="padding:8px 10px;font-weight:600;border-right:1px solid #e2e8f0;">'+(a.agentName||'-')+'</td>';
     html += '<td style="padding:8px 10px;border-right:1px solid #e2e8f0;"><span style="'+typeTag+'padding:2px 8px;border-radius:4px;font-size:10px;display:inline-block;">'+(a.agentType||'售前')+'</span></td>';
     html += '<td style="padding:8px 10px;text-align:right;color:var(--color-text-tertiary);border-right:1px solid #e2e8f0;">'+base+'</td>';
-    html += '<td style="padding:8px 10px;border-right:1px solid #e2e8f0;"><div style="display:flex;gap:4px;align-items:center;">';
+    html += '<td style="padding:8px 10px;border-right:1px solid #e2e8f0;"><div style="display:flex;gap:6px;align-items:flex-end;">';
     var kpis = KPI_DEFINITIONS[a.agentType==='售前'?'presale':a.agentType==='售后'?'afterSale':'mixed'] || [];
     var shownKeys = {};
     kpis.forEach(function(k){
       if(shownKeys[k.key]) return; shownKeys[k.key] = true;
       var val = a[k.key]||0;
-      html += '<input type="text" value="'+val+'" style="width:'+(k.key==='salesAmount'?54:38)+'px;padding:3px 6px;text-align:right;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;background:#fff;font-family:monospace;" onchange="updateAgentKPI('+a.id+',\''+k.key+'\',parseFloat(this.value)||0);">';
+      var widthClass = k.key==='salesAmount' ? '54px' : k.key==='workVolume' ? '46px' : '38px';
+      html += '<div style="display:flex;flex-direction:column;gap:2px;align-items:center;">';
+      html += '<span style="font-size:9px;color:#64748b;font-weight:500;line-height:1;">'+k.name+'</span>';
+      html += '<input type="text" value="'+val+'" style="width:'+widthClass+';padding:3px 6px;text-align:right;border:1px solid #cbd5e1;border-radius:4px;font-size:11px;background:#fff;font-family:monospace;font-weight:600;color:#0f172a;" onchange="updateAgentKPI('+a.id+',\''+k.key+'\',parseFloat(this.value)||0);">';
+      html += '</div>';
     });
     html += '</div></td>';
     html += '<td style="padding:8px 10px;text-align:center;color:'+scoreColor+';font-weight:600;border-right:1px solid #e2e8f0;">'+Math.round(score*100)+'%</td>';
@@ -11003,19 +11081,20 @@ function saveKpiDefinitions() {
   try{ localStorage.setItem('chansee_kpi_definitions', JSON.stringify(KPI_DEFINITIONS)); }catch(e){}
 }
 function addKpiToType(type) {
-  var name = prompt('输入KPI指标名称：', '');
-  if(!name) return;
-  var key = prompt('输入数据字段名（如salesAmount）：', '');
-  if(!key) return;
-  if(!KPI_DEFINITIONS[type]) KPI_DEFINITIONS[type] = [];
-  KPI_DEFINITIONS[type].push({name:name, key:key, weight:10});
-  saveKpiDefinitions();
-  renderModule('performance');
+  showAddKpiDialog(type, function(name, key, weight){
+    if(!KPI_DEFINITIONS[type]) KPI_DEFINITIONS[type] = [];
+    KPI_DEFINITIONS[type].push({name:name, key:key, weight:weight});
+    saveKpiDefinitions();
+    renderModule('performance');
+  });
 }
 function addKpiDefinition() {
-  var type = prompt('选择类型（presale/afterSale/mixed）：', 'presale');
-  if(!type || ['presale','afterSale','mixed'].indexOf(type)<0) return;
-  addKpiToType(type);
+  showAddKpiDialog('presale', function(name, key, weight){
+    if(!KPI_DEFINITIONS.presale) KPI_DEFINITIONS.presale = [];
+    KPI_DEFINITIONS.presale.push({name:name, key:key, weight:weight});
+    saveKpiDefinitions();
+    renderModule('performance');
+  });
 }
 
 // ===== 薪资测算 Tab =====
@@ -11286,13 +11365,14 @@ function saveAgentEdit(id) {
 
 // 删除坐席绩效数据
 function deleteAgentPerformance(id) {
-  if (!confirm('确定删除该坐席的绩效数据？')) return;
-  var idx = AGENT_PERFORMANCE.findIndex(a => a.id === id);
-  if (idx >= 0) {
-    AGENT_PERFORMANCE.splice(idx, 1);
-    saveAgentPerformance();
-    renderModule('performance');
-  }
+  showConfirmModal('确认删除', '确定删除该坐席的绩效数据？<br><b style="color:var(--c-red);">⚠️ 此操作不可恢复！</b>', '删除', '取消', function(){
+    var idx = AGENT_PERFORMANCE.findIndex(a => a.id === id);
+    if (idx >= 0) {
+      AGENT_PERFORMANCE.splice(idx, 1);
+      saveAgentPerformance();
+      renderModule('performance');
+    }
+  });
 }
 
 // 导入绩效数据
