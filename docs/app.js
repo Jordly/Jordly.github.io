@@ -5,16 +5,25 @@ function escHtml(s) {
   return (s || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-// ===== 密码加密：SHA-256 哈希（Web Crypto API，无需外部库）=====
+// ===== 密码加密：PBKDF2 哈希（加盐+10万次迭代，Web Crypto API，无需外部库）=====
 function hashPassword(password) {
   if (!password) return Promise.resolve('');
   var encoder = new TextEncoder();
   var data = encoder.encode(password);
-  return crypto.subtle.digest('SHA-256', data).then(function(hashBuffer) {
-    var hashArray = Array.from(new Uint8Array(hashBuffer));
-    var hashHex = hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
-    return '$SHA$' + hashHex;
-  });
+  var salt = crypto.getRandomValues(new Uint8Array(16));
+  return crypto.subtle.importKey('raw', data, 'PBKDF2', false, ['deriveBits'])
+    .then(function(key) {
+      return crypto.subtle.deriveBits(
+        { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
+        key, 256
+      );
+    })
+    .then(function(bits) {
+      var hashArray = Array.from(new Uint8Array(bits));
+      var hashHex = hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+      var saltHex = Array.from(salt).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+      return '$PBK2$' + saltHex + '$' + hashHex;
+    });
 }
 
 // ===== 全局错误捕获 + 环形运行日志 =====
@@ -3744,7 +3753,7 @@ function openCostReport(){
     ${badProjects.length ? `<div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 16px;margin-bottom:16px;">
       <div style="font-size:13px;font-weight:600;color:#dc2626;margin-bottom:8px;">⚠️ 超预算预警项目（利润率 &lt;5%）</div>
       ${badProjects.map(p=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;border-bottom:1px dashed #fecaca;">
-        <span style="font-weight:500;color:#991b1b;">${p.name}</span>
+        <span style="font-weight:500;color:#991b1b;">${escHtml(p.name)}</span>
         <span style="color:#dc2626;font-weight:600;">利润率 ${parseFloat(p.profitRate).toFixed(1)}%</span>
       </div>`).join('')}
     </div>` : ''}
@@ -4686,7 +4695,7 @@ function renderTarget(){
 
           <tr>
 
-            <td>${p.name}</td>
+            <td>${escHtml(p.name)}</td>
 
             <td>${p.fteTarget}人</td>
 
@@ -5057,9 +5066,9 @@ function renderHealthScoreTable(projects) {
             return `<tr class="${rankClass}">
               <td class="rank-col">${rankIcon}</td>
               <td><input type="checkbox" onchange="toggleCompareCheckbox('${p.id}')" ${(window._selectedCompareIds||[]).indexOf(p.id)>=0?'checked':''} style="width:16px;height:16px;accent-color:#0ABAB5;cursor:pointer;"></td>
-              <td>${p.name}</td>
-              <td>${p.workplace}</td>
-              <td>${p.serviceMode}</td>
+              <td>${escHtml(p.name)}</td>
+              <td>${escHtml(p.workplace)}</td>
+              <td>${escHtml(p.serviceMode)}</td>
               <td class="score-col" style="background:${scoreBg(x.score)};color:${scoreColor(x.score)};font-weight:600;">${x.score > 0 ? x.score : "--"}</td>
               ${h ? h.dimensions.map(d => {
                 const c = scoreColor(d.score);
@@ -5159,11 +5168,11 @@ function toggleHealthCard(className) {
           return `
           <div class="health-detail-card">
             <div class="hdc-header" style="background:${levelBg};">
-              <div class="hdc-title">${p.name}</div>
+              <div class="hdc-title">${escHtml(p.name)}</div>
               <div class="hdc-score" style="color:${levelColor}">${x.score > 0 ? x.score + "分" : "未评估"}</div>
             </div>
             <div class="hdc-body">
-              <div class="hdc-info">${p.workplace} · ${p.serviceMode}</div>
+              <div class="hdc-info">${escHtml(p.workplace)} · ${escHtml(p.serviceMode)}</div>
               ${h ? renderHealthWarningSummary(h) : ""}
             </div>
             <div class="hdc-footer">
@@ -6005,8 +6014,8 @@ function renderHandover(){
           }
 
           return `<tr>
-            <td>${p.name}</td>
-            <td>${p.pm}</td>
+            <td>${escHtml(p.name)}</td>
+            <td>${escHtml(p.pm)}</td>
             <td>${statusHtml}</td>
             <td>${(p.pmHistory||[]).length + projectHandovers.length}</td>
             <td>${lastH?lastH.date:'—'}</td>
@@ -6046,15 +6055,15 @@ function showProjectDetail(projectId){
 
       <div>
 
-        <div class="project-detail-title">${p.name}</div>
+        <div class="project-detail-title">${escHtml(p.name)}</div>
 
         <div class="project-detail-meta">
 
-          <span class="wp-tag wp-${p.workplace}">${p.workplace}</span>
+          <span class="wp-tag wp-${escHtml(p.workplace)}">${escHtml(p.workplace)}</span>
 
-          <span class="badge ${p.serviceMode==='TP项目'?'badge-blue':p.serviceMode==='DP项目'?'badge-green':'badge-orange'}">${p.serviceMode}</span>
+          <span class="badge ${p.serviceMode==='TP项目'?'badge-blue':p.serviceMode==='DP项目'?'badge-green':'badge-orange'}">${escHtml(p.serviceMode)}</span>
 
-          <span>${p.category} · ${p.brand}</span>
+          <span>${escHtml(p.category)} · ${escHtml(p.brand)}</span>
 
           <span>状态：${p.status}</span>
 
@@ -6069,7 +6078,7 @@ function showProjectDetail(projectId){
         <button class="btn btn-sm" onclick="editProject('${p.id}')" style="font-size:12px;margin-bottom:8px;">✏️ 编辑</button>
         <div style="font-size:12px;color:var(--c-text-3);">现任负责人</div>
 
-        <div style="font-size:16px;font-weight:600;color:var(--c-primary);">${p.pm}</div>
+        <div style="font-size:16px;font-weight:600;color:var(--c-primary);">${escHtml(p.pm)}</div>
 
         <div style="font-size:12px;color:var(--c-text-3);">项目总监：${p.director}</div>
 
@@ -6611,7 +6620,7 @@ function showAddIssue(){
 
   document.getElementById("modal-title").textContent = "＋ 上报问题";
 
-  const projectOptions = PROJECTS.map(p=>`<option value="${p.id}">${p.name}</option>`).join("");
+  const projectOptions = PROJECTS.map(p=>`<option value="${escHtml(p.id)}">${escHtml(p.name)}</option>`).join("");
 
   body.innerHTML = `
 
@@ -6771,7 +6780,7 @@ function showNewHandover(){
 
   document.getElementById("modal-title").textContent = "🔄 发起交接";
 
-  const projectOptions = PROJECTS.map(p=>`<option value="${p.id}">${p.name}（现任：${p.pm}）</option>`).join("");
+  const projectOptions = PROJECTS.map(p=>`<option value="${escHtml(p.id)}">${escHtml(p.name)}（现任：${escHtml(p.pm)}）</option>`).join("");
 
   body.innerHTML = `
 
@@ -7485,7 +7494,7 @@ function renderSatisfaction(){
 
   const projectOptions = PROJECTS.map(p =>
 
-    `<option value="${p.id}" ${SAT_FILTER.projectId===p.id?'selected':''}>${p.name}（${p.workplace}）</option>`
+    `<option value="${escHtml(p.id)}" ${SAT_FILTER.projectId===p.id?'selected':''}>${escHtml(p.name)}（${escHtml(p.workplace)}）</option>`
 
   ).join('');
 
@@ -8007,7 +8016,7 @@ function showAddSatisfaction(){
 
   document.getElementById("modal-title").textContent = "＋ 新增满意度评估";
 
-  const projectOptions = PROJECTS.map(p => `<option value="${p.id}">${p.name}（${p.workplace}）</option>`).join("");
+  const projectOptions = PROJECTS.map(p => `<option value="${escHtml(p.id)}">${escHtml(p.name)}（${escHtml(p.workplace)}）</option>`).join("");
 
   body.innerHTML = `
 
@@ -12487,7 +12496,7 @@ function renderComparison(){
   html += `<div class="card"><div class="card-title">选择对比项目（可多选）</div>
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">`;
   PROJECTS.forEach(p=>{
-    html += `<label style="cursor:pointer"><input type="checkbox" class="compare-cb" value="${p.id}" style="margin-right:4px;">${p.name}</label>`;
+    html += `<label style="cursor:pointer"><input type="checkbox" class="compare-cb" value="${escHtml(p.id)}" style="margin-right:4px;">${escHtml(p.name)}</label>`;
   });
   html += `</div>
     <button class="btn btn-primary" onclick="runComparison()">开始对比</button>
@@ -12549,7 +12558,7 @@ function runComparison(){
   projects.forEach(p=>{
     const op = OPERATIONS.find(o=>o.projectId===p.id);
     html += `<div style="border:1px solid var(--c-border);border-radius:8px;padding:12px;min-width:180px;">
-      <div style="font-weight:600;margin-bottom:8px;">${p.name}</div>
+      <div style="font-weight:600;margin-bottom:8px;">${escHtml(p.name)}</div>
       <div>响应时长：${op?op.responseTime+'s':'-'}</div>
       <div>CSAT：${op?op.csat:'-'}</div>
       <div>解决率：${op?op.resolutionRate+'%':'-'}</div>
