@@ -9360,7 +9360,6 @@ var _renderSystemData = function(){
       +'<div style="display:flex;gap:8px;align-items:center;">'
         +'<button class="btn btn-xs" onclick="window._sdAllExpanded=true;renderModule(\'systemData\')">展开全部</button>'
         +'<button class="btn btn-xs" onclick="window._sdAllExpanded=false;renderModule(\'systemData\')">折叠全部</button>'
-        +'<button class="btn btn-xs btn-primary" onclick="backupAllData()" style="background:#10b981;border-color:#10b981;">📦 一键备份全部数据</button>'
       +'</div>'
     +'</div>'
     +'<div style="margin-bottom:10px;padding:8px 12px;background:var(--c-surface);border-radius:8px;border:1px solid var(--c-border);">'
