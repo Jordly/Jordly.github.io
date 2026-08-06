@@ -17,6 +17,77 @@ function hashPassword(password) {
   });
 }
 
+// ===== 全局错误捕获 + 环形运行日志 =====
+var RUNTIME_LOG = [];
+var RUNTIME_LOG_MAX = 500;
+try { var saved = localStorage.getItem('chansee_runtime_logs'); if (saved) RUNTIME_LOG = JSON.parse(saved); } catch(e) { RUNTIME_LOG = []; }
+
+function addRuntimeLog(type, msg, detail) {
+  var entry = { time: new Date().toISOString(), type: type, msg: msg, detail: detail || '' };
+  RUNTIME_LOG.push(entry);
+  if (RUNTIME_LOG.length > RUNTIME_LOG_MAX) RUNTIME_LOG = RUNTIME_LOG.slice(-RUNTIME_LOG_MAX);
+  try { localStorage.setItem('chansee_runtime_logs', JSON.stringify(RUNTIME_LOG)); } catch(e) {}
+}
+
+window.onerror = function(msg, url, line, col, error) {
+  var detail = '位置: ' + (url || '') + ':' + line + ':' + (col || 0);
+  if (error && error.stack) detail += '\n堆栈: ' + String(error.stack).substring(0, 500);
+  addRuntimeLog('error', String(msg || '').substring(0, 200), detail);
+  return false; // 让浏览器也记录一份
+};
+
+window.addEventListener('unhandledrejection', function(e) {
+  var detail = '';
+  if (e && e.reason) {
+    detail = String(e.reason);
+    if (e.reason.stack) detail += '\n堆栈: ' + String(e.reason.stack).substring(0, 500);
+  }
+  addRuntimeLog('error', '未处理的 Promise 异常', detail);
+});
+
+addRuntimeLog('info', '系统启动', '版本 20260723');
+
+// ===== 一键备份全部数据 =====
+function backupAllData() {
+  try {
+    var backup = {};
+    var keyCount = 0;
+    for (var i = 0; i < localStorage.length; i++) {
+      var key = localStorage.key(i);
+      if (key && key.indexOf('chansee_') === 0) {
+        try { backup[key] = JSON.parse(localStorage.getItem(key)); } catch(e) { backup[key] = localStorage.getItem(key); }
+        keyCount++;
+      }
+    }
+    var blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    var now = new Date();
+    a.download = 'CS-CloudHub-备份-' + now.getFullYear() + ('0'+(now.getMonth()+1)).slice(-2) + ('0'+now.getDate()).slice(-2) + '-' + ('0'+now.getHours()).slice(-2) + ('0'+now.getMinutes()).slice(-2) + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    localStorage.setItem('chansee_last_backup', now.toISOString());
+    addRuntimeLog('info', '数据已备份', '共导出 ' + keyCount + ' 个数据集合');
+    if (typeof showToast === 'function') showToast('✅ 备份成功！已导出 ' + keyCount + ' 个数据集合，请妥善保管下载的文件。', 'success');
+  } catch(e) {
+    addRuntimeLog('error', '备份失败', String(e));
+    if (typeof showToast === 'function') showToast('❌ 备份失败：' + e.message, 'error');
+  }
+}
+
+function getBackupWarning() {
+  try {
+    var lastBackup = localStorage.getItem('chansee_last_backup');
+    if (!lastBackup) return '⚠️ 尚未创建过备份，建议立即备份以防数据丢失！';
+    var days = (Date.now() - new Date(lastBackup).getTime()) / 86400000;
+    if (days > 7) return '⚠️ 上次备份距今已 ' + Math.floor(days) + ' 天，建议立即备份！';
+  } catch(e) {}
+  return '';
+}
+
 // ===== Mock 数据 =====
 
 // 管理难度评估数据（自动生成）
@@ -2839,6 +2910,14 @@ function renderModule(module){
     bindEvents();
     // 确保右上角用户头像始终显示（防止被其他代码清空）
     updateUserDisplay();
+    // 系统数据管理页面：显示备份提醒
+    if (module === 'systemData') {
+      setTimeout(function() {
+        var warning = getBackupWarning();
+        var el = document.getElementById('backup-warning');
+        if (el && warning) { el.textContent = warning; el.style.display = 'block'; }
+      }, 100);
+    }
   } catch(e) {
     console.error('renderModule 错误:', e);
     var area = document.getElementById("module-content");
@@ -9281,6 +9360,7 @@ var _renderSystemData = function(){
       +'<div style="display:flex;gap:8px;align-items:center;">'
         +'<button class="btn btn-xs" onclick="window._sdAllExpanded=true;renderModule(\'systemData\')">展开全部</button>'
         +'<button class="btn btn-xs" onclick="window._sdAllExpanded=false;renderModule(\'systemData\')">折叠全部</button>'
+        +'<button class="btn btn-xs btn-primary" onclick="backupAllData()" style="background:#10b981;border-color:#10b981;">📦 一键备份全部数据</button>'
       +'</div>'
     +'</div>'
     +'<div style="margin-bottom:10px;padding:8px 12px;background:var(--c-surface);border-radius:8px;border:1px solid var(--c-border);">'
@@ -9292,6 +9372,7 @@ var _renderSystemData = function(){
         +'<div style="height:100%;width:'+pctUsed+'%;background:'+barColor+';border-radius:3px;transition:width 0.3s;"></div>'
       +'</div>'
     +'</div>'
+    +'<div id="backup-warning" style="margin-bottom:10px;padding:8px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:12px;color:#dc2626;display:none;"></div>'
     +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">'
       +'<input type="text" id="sysdata-catalog-search" value="" readonly autocomplete="off" name="chanseen_sdsearch_unique" data-lpignore="true" data-1p-ignore="true" data-form-type="other" placeholder="🔍 搜索数据表（表名/描述）..." style="flex:1;max-width:400px;padding:6px 10px;border:1px solid var(--c-border,#e2e8f0);border-radius:8px;font-size:13px;background-color:#fff;" onfocus="this.removeAttribute(\'readonly\');this.value=\'\';" oninput="catalogSearchSystemData(this.value)">'
       +(kw?'<button class="btn btn-xs" onclick="clearCatalogSearch()">清除</button>':'')
