@@ -1,5 +1,31 @@
 // VERSION: 20260723 - 密码加密+XSS防护+代码优化
-
+//
+// ══════════════════════════════════════════════════════════════
+// 📍 代码地图（查找指南 · 2026-08-06）
+// ══════════════════════════════════════════════════════════════
+//   安全基础设施（XSS/密码/错误捕获/备份）…… 第 1-80 行
+//   Mock 演示数据（DEFAULT_*/硬编码假数据）…… 第 80-400 行
+//   数据存储层（localStorage 读写/权限检查）…… 第 400-2800 行
+//   导航与布局（renderModule/bindEvents/框架）…… 第 2800-4084 行
+//  ── 业务模块 ──
+//   项目总览看板 dashboard …………………… 第 4084 行
+//   项目基础档案 archive …………………… 第 4557 行
+//   目标与权责管理 target …………………… 第 4657 行
+//   成本与利润管理 cost …………………… 第 4726 行
+//   运营数据 operation …………………… 第 5291 行
+//   问题管理 issue …………………… 第 5316 行
+//   知识能量池 knowledge …………………… 第 5417 行
+//   交接管理 handover …………………… 第 5896 行
+//   满意度 satisfaction …………………… 第 7445 行
+//   通知与公告 notifications ……………… 第 8567 行
+//   系统数据管理 systemData ……………… 第 9276 行
+//   系统权限管理 permissions ……………… 第 9751 行
+//   项目难度评估 assessment ……………… 第 9917 行
+//   绩效管理 performance ……………… 第 10882 行
+//   风险管理 risk …………………… 第 11581 行
+//   个人基础设置 profile ………………… 第 11663 行
+// ══════════════════════════════════════════════════════════════
+//
 // ===== XSS 防护：HTML 转义函数 =====
 function escHtml(s) {
   return (s || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -4081,6 +4107,7 @@ function openStaffConfigDetail(){
 
 // ===== 驾驶舱 =====
 
+/* ═══════════════════ 项目总览看板 ═══════════════════ */
 function renderDashboard(){
 
   const all = getFilteredProjects();
@@ -4554,6 +4581,7 @@ function renderDashboard(){
 
 // ===== 项目基础档案 =====
 
+/* ═══════════════════ 项目基础档案 ═══════════════════ */
 function renderArchive(){
 
   const all = getFilteredProjects();
@@ -4654,6 +4682,7 @@ function deleteProjectDirectly(id){PROJECTS=PROJECTS.filter(function(p){return p
 
 // ===== 目标与权责管理 =====
 
+/* ═══════════════════ 目标与权责管理 ═══════════════════ */
 function renderTarget(){
 
   const all = getFilteredProjects();
@@ -4723,6 +4752,7 @@ function renderTarget(){
 
 // ===== 成本与利润管理 =====
 
+/* ═══════════════════ 成本与利润管理 ═══════════════════ */
 function renderCost(){
 
   const all = getFilteredProjects();
@@ -5288,6 +5318,7 @@ function sortHealthTable(key) {
 }
 
 // 主渲染函数
+/* ═══════════════════ 运营数据 ═══════════════════ */
 function renderOperation() {
   const projects = getFilteredProjects();
   const projectHealth = projects.map(p => {
@@ -5313,6 +5344,7 @@ function renderOperation() {
 
 // ===== 问题与课题协作 =====
 
+/* ═══════════════════ 问题管理 ═══════════════════ */
 function renderIssue(){
   if(typeof issueActiveTab === 'undefined'){ window.issueActiveTab = 'issue'; }
   var tab = window.issueActiveTab || 'issue';
@@ -5414,6 +5446,7 @@ function renderIssue(){
 
 // ===== 核心知识能量池 =====
 
+/* ═══════════════════ 知识能量池 ═══════════════════ */
 function renderKnowledge(){
 
   const can = canEdit();
@@ -5893,6 +5926,7 @@ function submitKnowledgeForm(id) {
   if (typeof showToast === 'function') showToast(id == null ? '已新增知识条目' : '已保存修改');
 }// ===== 项目承接规范 =====
 
+/* ═══════════════════ 交接管理 ═══════════════════ */
 function renderHandover(){
 
   return `
@@ -7442,6 +7476,7 @@ var SAT_FILTER = { projectId:'', scoreRange:'', evaluator:'' };
 
 
 
+/* ═══════════════════ 满意度管理 ═══════════════════ */
 function renderSatisfaction(){
 
   const can = canEdit();
@@ -8564,6 +8599,7 @@ function showSatisfactionPermission(){
 
 let notificationFilter = "all";
 
+/* ═══════════════════ 通知与公告 ═══════════════════ */
 function renderNotifications(){
   // 权限检查：超级管理员、管理员、客服总监可访问
   if (!currentUser) {
@@ -9273,6 +9309,7 @@ function goToSystemDataTable(key) {
   if (navItem) { navItem.click(); }
 }
 
+/* ═══════════════════ 系统数据管理 ═══════════════════ */
 function renderSystemData(){return _renderSystemData();}
 
 // Placeholder - full implementation below
@@ -9748,6 +9785,7 @@ function resetExportFileNameMap() {
   renderModule('systemData');
 }
 
+/* ═══════════════════ 系统权限管理 ═══════════════════ */
 function renderPermissions(){
   if (typeof ROLES === "undefined") {
     document.getElementById("module-content").innerHTML = '<div style="padding:40px;text-align:center;color:red;">错误：ROLES 未定义</div>';
@@ -9914,6 +9952,7 @@ function getDifficultyLevel(score) {
 // 筛选状态缓存（防止重新渲染时丢失选中值）
 var _asmtFilterCache = { dept: '', mgr: '' };
 
+/* ═══════════════════ 项目难度评估 ═══════════════════ */
 function renderAssessment(){
   // 数据准备 —— 先从DOM读取（若DOM尚未销毁），否则用缓存
   var _deptEl = document.getElementById('asmt-dept-filter');
@@ -10879,6 +10918,7 @@ function getDeductionRule() {
 
 // ===== 客服绩效看板（三Tab重构）=====
 window._perfTab = window._perfTab || 'performance';
+/* ═══════════════════ 绩效管理 ═══════════════════ */
 function renderPerformance() {
   var tab = window._perfTab;
   var tabBar = ''
@@ -11578,6 +11618,7 @@ function exportPerformance() {
 
 
 // ===== 项目风险预警池 =====// ===== 项目风险预警池 =====
+/* ═══════════════════ 风险管理 ═══════════════════ */
 function renderRisk(){
   // 进入页面先从项目数据重新聚合一次，确保实时
   recomputeRiskAlerts();
@@ -11660,6 +11701,7 @@ function toggleRiskCard(el){
 }
 
 // ===== 个人基础设置 =====
+/* ═══════════════════ 个人基础设置 ═══════════════════ */
 function renderProfile(){
   const rowStyle = 'display:flex;align-items:center;padding:14px 0;border-bottom:1px solid #f1f5f9;';
   const labelStyle = 'width:90px;font-size:14px;color:#334155;flex-shrink:0;';
