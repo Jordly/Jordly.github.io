@@ -1,6 +1,6 @@
 // modules/systemData.js — 系统数据管理模块
 /* ═══════════════════ 系统数据管理 ═══════════════════ */
-function renderSystemData(){return _renderSystemData();}
+function renderSystemData(){try{return _renderSystemData();}catch(e){console.error('systemData 渲染异常:',e);if(typeof addRuntimeLog==='function'){addRuntimeLog('error','systemData 渲染失败',String(e&&e.message||e));}return '<div style="padding:40px;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;margin:20px;"><h3 style="color:#dc2626;margin-bottom:8px;">⚠️ 系统数据管理加载失败</h3><p style="color:#7f1d1d;font-size:13px;margin-bottom:8px;">'+escHtml(String(e&&e.message||e))+'</p><p style="color:#7f1d1d;font-size:12px;">请使用右上角"备份"功能导出数据后，刷新页面重试。</p></div>';} }
 // ===== 系统数据管理 - 全局变量 =====
 var _systemDataView = 'catalog';
 var _systemDataTab = 'projects';
@@ -409,7 +409,7 @@ var _renderSystemData = function(){
         var tk = grp.tables[_ti];
         var t = SYSTEM_DATA_TABLES[tk];
         if(!t) continue;
-        if(kw && (t.label+' '+t.desc).toLowerCase().indexOf(kw)<0) continue;
+        if(kw && (String(t.label)+' '+String(t.desc)).toLowerCase().indexOf(kw)<0) continue;
         groupCards.push({key:tk, def:t});
       }
       if(groupCards.length===0) continue;
@@ -451,7 +451,7 @@ var _renderSystemData = function(){
           +'<div class="sd-card" style="cursor:pointer;position:relative;padding:10px 12px;border-left:3px solid '+accentColor+';background:var(--c-surface);border-radius:6px;display:flex;align-items:center;gap:10px;min-height:44px;" onclick="goSystemDataDetail(\''+ctk+'\')">'
             +(isReadOnly?'<span style="position:absolute;top:4px;right:6px;font-size:9px;color:#94a3b8;">🔒</span>':'')
             +'<div style="flex:1;min-width:0;">'
-              +'<div style="font-size:13px;font-weight:600;color:var(--c-text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+ct.label.substring(2)+'</div>'
+              +'<div style="font-size:13px;font-weight:600;color:var(--c-text);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+String(ct.label).substring(2)+'</div>'
               +'<div style="font-size:11px;color:var(--c-text-3);margin-top:2px;">'
                 +(shortcutLabel ? '<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:'+accentColor+'18;color:'+accentColor+';border:1px solid '+accentColor+'44;margin-right:4px;">'+shortcutLabel+'</span>' : '')
                 +'<span>'+count+' 条记录</span>'
