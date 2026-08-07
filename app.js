@@ -2980,6 +2980,7 @@ function setFilter(key, value) {
   filterState[key] = value;
   // 筛选状态持久化：切模块不丢筛选条件
   try { sessionStorage.setItem('cs_filterState', JSON.stringify(filterState)); } catch(e) {}
+  _moduleCache[currentModule] = null; // 缓存失效：确保视图按最新筛选条件刷新
   renderModule(currentModule);
 }
 
@@ -3159,11 +3160,13 @@ function onFilterTimeChange(val) {
     filterState.timeEnd = '';
   }
   try { sessionStorage.setItem('cs_filterState', JSON.stringify(filterState)); } catch(e) {}
+  _moduleCache[currentModule] = null; // 缓存失效：时间筛选变化后强制重渲染
   renderModule(currentModule);
 }
 
 function applyTimeFilter() {
   if (filterState.timeStart && filterState.timeEnd) {
+    _moduleCache[currentModule] = null; // 缓存失效：自定义时间变化后强制重渲染
     renderModule(currentModule);
   }
 }
@@ -3174,6 +3177,7 @@ function toggleMultiFilter(key, val) {
   if (idx >= 0) arr.splice(idx, 1);
   else arr.push(val);
   try { sessionStorage.setItem('cs_filterState', JSON.stringify(filterState)); } catch(e) {}
+  _moduleCache[currentModule] = null; // 缓存失效：多选筛选变化后强制重渲染
   renderModule(currentModule);
 }
 
@@ -3443,6 +3447,7 @@ function resetFilters() {
   filterState.platforms = [];
   filterState.status = "";
   try { sessionStorage.removeItem('cs_filterState'); } catch(e) {}
+  _moduleCache = {}; // 清空所有模块缓存：重置筛选后所有页面按默认状态重渲染
   renderModule(currentModule);
 }
 

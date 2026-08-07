@@ -22,14 +22,14 @@
   --c-purple-light: #EEEDFE;
   --c-orange: #BA7517;
   --c-orange-light: #FBEEAF0;
-  --c-blue: var(--c-blue);               /* 强调蓝 · 全局按钮/链接/焦点 */
-  --c-blue-light: var(--c-blue-light);          /* 浅蓝背景 */
-  --c-gray-50: var(--c-gray-50);             /* 最浅灰 · 表格隔行/卡片次级背景 */
-  --c-gray-100: var(--c-gray-100);            /* 浅灰 · hover 背景/禁用态 */
-  --c-gray-200: var(--c-gray-200);            /* 中灰 · 边框/分割线 */
+  --c-blue: #2563EB;               /* 强调蓝 · 全局按钮/链接/焦点 */
+  --c-blue-light: #EFF6FF;          /* 浅蓝背景 */
+  --c-gray-50: #F9FAFB;             /* 最浅灰 · 表格隔行/卡片次级背景 */
+  --c-gray-100: #F3F4F6;            /* 浅灰 · hover 背景/禁用态 */
+  --c-gray-200: #E5E7EB;            /* 中灰 · 边框/分割线 */
   --c-gray-300: #cbd5e1;            /* 深灰 · 重度边框 */
-  --c-gray-500: var(--c-gray-500);            /* 灰字 · 次级文字/图标 */
-  --c-gray-700: var(--c-gray-700);            /* 深灰 · 标题/强调文字 */
+  --c-gray-500: #6B7280;            /* 灰字 · 次级文字/图标 */
+  --c-gray-700: #374151;            /* 深灰 · 标题/强调文字 */
   --radius: 8px;
   --radius-lg: 8px;
   /* 排版层级 · 2026-08-07 */

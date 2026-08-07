@@ -1210,6 +1210,7 @@ function toggleCompareCheckbox(projectId) {
     }
     window._selectedCompareIds.push(projectId);
   }
+  _moduleCache['operation'] = null; // 缓存失效：对比勾选变化后强制重渲染
   renderModule('operation');
 }
 
@@ -1428,6 +1429,7 @@ function toggleCompareCheckbox(projectId) {
     }
     window._selectedCompareIds.push(projectId);
   }
+  _moduleCache['operation'] = null; // 缓存失效：对比勾选变化后强制重渲染
   renderModule('operation');
 }
 

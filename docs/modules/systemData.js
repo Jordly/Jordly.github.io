@@ -593,11 +593,11 @@ var _renderSystemData = function(){
   if(totalPages > 1){
     paginationHtml = ''
     +'<div style="display:flex;gap:6px;align-items:center;justify-content:center;margin-top:12px;">'
-      +'<button class="btn btn-xs" onclick="_systemDataPage=1;renderModule(\'systemData\')"'+(_systemDataPage<=1?' disabled':'')+'>首页</button>'
-      +'<button class="btn btn-xs" onclick="_systemDataPage=Math.max(1,_systemDataPage-1);renderModule(\'systemData\')"'+(_systemDataPage<=1?' disabled':'')+'>上一页</button>'
+      +'<button class="btn btn-xs" onclick="_systemDataPage=1;_moduleCache[\'systemData\']=null;renderModule(\'systemData\')"'+(_systemDataPage<=1?' disabled':'')+'>首页</button>'
+      +'<button class="btn btn-xs" onclick="_systemDataPage=Math.max(1,_systemDataPage-1);_moduleCache[\'systemData\']=null;renderModule(\'systemData\')"'+(_systemDataPage<=1?' disabled':'')+'>上一页</button>'
       +'<span style="font-size:12px;color:var(--c-text-2);padding:0 8px;">第 '+_systemDataPage+' / '+totalPages+' 页</span>'
-      +'<button class="btn btn-xs" onclick="_systemDataPage=Math.min('+totalPages+',_systemDataPage+1);renderModule(\'systemData\')"'+(_systemDataPage>=totalPages?' disabled':'')+'>下一页</button>'
-      +'<button class="btn btn-xs" onclick="_systemDataPage='+totalPages+';renderModule(\'systemData\')"'+(_systemDataPage>=totalPages?' disabled':'')+'>末页</button>'
+      +'<button class="btn btn-xs" onclick="_systemDataPage=Math.min('+totalPages+',_systemDataPage+1);_moduleCache[\'systemData\']=null;renderModule(\'systemData\')"'+(_systemDataPage>=totalPages?' disabled':'')+'>下一页</button>'
+      +'<button class="btn btn-xs" onclick="_systemDataPage='+totalPages+';_moduleCache[\'systemData\']=null;renderModule(\'systemData\')"'+(_systemDataPage>=totalPages?' disabled':'')+'>末页</button>'
     +'</div>';
   }
 
@@ -624,15 +624,15 @@ var _renderSystemData = function(){
   +paginationHtml;
 };
 
-function goSystemDataDetail(key) { _systemDataView='detail'; _systemDataTab=key; _systemDataPage=1; _systemDataSearchKeyword=''; renderModule('systemData'); }
-function backSystemDataCatalog() { _systemDataView='catalog'; renderModule('systemData'); }
-function switchSystemDataTab(key) { _systemDataView='detail'; _systemDataTab=key; _systemDataPage=1; _systemDataSearchKeyword=''; renderModule('systemData'); }
-function searchSystemData(e) { if(e.key==='Enter'||e.type==='click'){ _systemDataSearchKeyword=document.getElementById('sysdata-search')?document.getElementById('sysdata-search').value:''; _systemDataPage=1; renderModule('systemData'); } }
-function clearSystemDataSearch() { _systemDataSearchKeyword=''; _systemDataPage=1; renderModule('systemData'); }
+function goSystemDataDetail(key) { _systemDataView='detail'; _systemDataTab=key; _systemDataPage=1; _systemDataSearchKeyword=''; _moduleCache['systemData'] = null; renderModule('systemData'); }
+function backSystemDataCatalog() { _systemDataView='catalog'; _moduleCache['systemData'] = null; renderModule('systemData'); }
+function switchSystemDataTab(key) { _systemDataView='detail'; _systemDataTab=key; _systemDataPage=1; _systemDataSearchKeyword=''; _moduleCache['systemData'] = null; renderModule('systemData'); }
+function searchSystemData(e) { if(e.key==='Enter'||e.type==='click'){ _systemDataSearchKeyword=document.getElementById('sysdata-search')?document.getElementById('sysdata-search').value:''; _systemDataPage=1; _moduleCache['systemData'] = null; renderModule('systemData'); } }
+function clearSystemDataSearch() { _systemDataSearchKeyword=''; _systemDataPage=1; _moduleCache['systemData'] = null; renderModule('systemData'); }
 // 目录页搜索（实时筛选卡片，按表名+描述匹配）
 window._systemDataCatalogSearch = '';
-function catalogSearchSystemData(val) { _systemDataCatalogSearch = val; renderModule('systemData'); }
-function clearCatalogSearch() { _systemDataCatalogSearch = ''; renderModule('systemData'); }
+function catalogSearchSystemData(val) { _systemDataCatalogSearch = val; _moduleCache['systemData'] = null; renderModule('systemData'); }
+function clearCatalogSearch() { _systemDataCatalogSearch = ''; _moduleCache['systemData'] = null; renderModule('systemData'); }
 function toggleSelectAll(cb) { var cbs=document.querySelectorAll('.sd-row-cb'); for(var i=0;i<cbs.length;i++) cbs[i].checked=cb.checked; }
 function _saveSystemData(tableKey) { var lsKey = _SD_LS_MAP[tableKey]; var td = SYSTEM_DATA_TABLES[tableKey]; if(lsKey && td && td.data) try { localStorage.setItem(lsKey, JSON.stringify(td.data)); } catch(e){} if(window.CloudBaseSync) try{window.CloudBaseSync.saveAll();}catch(e){} }
 
