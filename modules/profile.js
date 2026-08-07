@@ -36,7 +36,7 @@ function renderProfile(){
       <div style="${labelStyle}" class="profile-field-label">个人头像</div>
       <div style="display:flex;align-items:center;flex:1;gap:16px;">
         <div id="profile-avatar-preview" class="profile-avatar-preview"
-          style="${avatar ? 'background-image:url('+avatar+');color:transparent;' : ''}">
+          style="${avatar ? 'background-image:url('+escHtml(avatar)+');color:transparent;' : ''}">
           ${avatar ? '' : '👤'}
         </div>
         <div>
@@ -50,42 +50,42 @@ function renderProfile(){
     <!-- 昵称 -->
     <div style="${rowStyle}" id="profile-nickname-row">
       <div style="${labelStyle}" class="profile-field-label">昵称</div>
-      <div style="${valueStyle}" id="profile-nickname-value">${nickname}</div>
+      <div style="${valueStyle}" id="profile-nickname-value">${escHtml(nickname)}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileNickname()">修改</span>
     </div>
 
     <!-- 生日 -->
     <div style="${rowStyle}" id="profile-birthday-row">
       <div style="${labelStyle}" class="profile-field-label">生日</div>
-      <div style="${valueStyle}" id="profile-birthday-value">${birthday || "--"}</div>
+      <div style="${valueStyle}" id="profile-birthday-value">${escHtml(birthday || '--')}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileBirthday()">修改</span>
     </div>
 
     <!-- 职位 -->
     <div style="${rowStyle}" id="profile-position-row">
       <div style="${labelStyle}" class="profile-field-label">职位</div>
-      <div style="${valueStyle}" id="profile-position-value">${position}</div>
+      <div style="${valueStyle}" id="profile-position-value">${escHtml(position)}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfilePosition()">修改</span>
     </div>
 
     <!-- 职场 -->
     <div style="${rowStyle}" id="profile-brand-row">
       <div style="${labelStyle}" class="profile-field-label">职场</div>
-      <div style="${valueStyle}" id="profile-brand-value">${(u.workplace || userInDb.workplace || "Chanseen CloudHub").replace(/,/g,'/')}</div>
+      <div style="${valueStyle}" id="profile-brand-value">${escHtml((u.workplace || userInDb.workplace || 'Chanseen CloudHub').replace(/,/g,'/'))}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileBrand()">修改</span>
     </div>
 
     <!-- 手机号 -->
     <div style="${rowStyle}" id="profile-phone-row">
       <div style="${labelStyle}" class="profile-field-label">手机号</div>
-      <div style="${valueStyle}" id="profile-phone-value">${phone}</div>
+      <div style="${valueStyle}" id="profile-phone-value">${escHtml(phone)}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfilePhone()">修改</span>
     </div>
 
     <!-- 邮箱 -->
     <div style="${rowStyle}" id="profile-email-row">
       <div style="${labelStyle}" class="profile-field-label">邮箱</div>
-      <div style="${valueStyle}" id="profile-email-value">${email}</div>
+      <div style="${valueStyle}" id="profile-email-value">${escHtml(email)}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileEmail()">修改</span>
     </div>
 
@@ -242,8 +242,8 @@ function renderProfile(){
       html += '<tr>' +
         '<td class="rec-time">' + timeStr + '</td>' +
         '<td class="rec-device">' + deviceIcon + ' ' + deviceLabel + '</td>' +
-        '<td class="rec-os">' + log.os + '</td>' +
-        '<td class="rec-status"><span class="' + statusClass + '">' + statusLabel + '</span></td>' +
+        '<td class="rec-os">' + escHtml(log.os) + '</td>' +
+        '<td class="rec-status"><span class="' + statusClass + '">' + escHtml(statusLabel) + '</span></td>' +
       '</tr>';
     }
     
@@ -486,7 +486,7 @@ function enterEditMode(rowId, label, inputId, inputType, currentValue, saveFn) {
   if (!rowEl) return;
   rowEl.innerHTML = `
     <div style="width:90px;font-size:14px;color:#334155;flex-shrink:0;">${label}</div>
-    <input type="${inputType}" id="${inputId}" value="${currentValue}" style="flex:1;padding:6px 10px;font-size:14px;border:1.5px solid #bfdbfe;border-radius:6px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#bfdbfe'" onkeydown="if(event.key==='Enter')${saveFn}()">
+    <input type="${inputType}" id="${inputId}" value="${escHtml(currentValue)}" style="flex:1;padding:6px 10px;font-size:14px;border:1.5px solid #bfdbfe;border-radius:6px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='#3b82f6'" onblur="this.style.borderColor='#bfdbfe'" onkeydown="if(event.key==='Enter')${saveFn}()">
     <button type="button" style="color:#3b82f6;font-size:13px;cursor:pointer;margin-left:12px;flex-shrink:0;font-weight:500;background:none;border:1.5px solid #3b82f6;border-radius:6px;padding:4px 14px;" onclick="${saveFn}()">保存</button>
     <span style="color:#94a3b8;font-size:13px;cursor:pointer;margin-left:8px;flex-shrink:0;" onclick="renderModule('profile')">取消</span>
   `;
@@ -854,7 +854,7 @@ function runComparison(){
 
   let html = `<div class="card"><div class="card-title">📊 对比结果（共${projects.length}个项目）</div>
     <table class="data-table">
-    <thead><tr><th>指标</th>${projects.map(p=>'<th>'+p.name+'</th>').join('')}<th>差值（最大-最小）</th></tr></thead><tbody>`;
+    <thead><tr><th>指标</th>${projects.map(p=>'<th>'+escHtml(p.name)+'</th>').join('')}<th>差值（最大-最小）</th></tr></thead><tbody>`;
 
   const indicators = [
     ['所属职场','workplace'],
@@ -900,10 +900,10 @@ function runComparison(){
     html += `<div style="border:1px solid var(--c-border);border-radius:8px;padding:12px;min-width:180px;">
       <div style="font-weight:600;margin-bottom:8px;">${escHtml(p.name)}</div>
       <div>响应时长：${op?op.responseTime+'s':'-'}</div>
-      <div>CSAT：${op?op.csat:'-'}</div>
+      <div>CSAT：${op?escHtml(op.csat):'-'}</div>
       <div>解决率：${op?op.resolutionRate+'%':'-'}</div>
       <div>利润率：${p.profitRate}%</div>
-      <div>健康状态：${p.health}</div>
+      <div>健康状态：${escHtml(p.health)}</div>
     </div>`;
   });
   html += `</div></div>`;
@@ -955,7 +955,7 @@ function switchDataTab(tabIdx) {
     html += '<table style="width:100%;border-collapse:collapse;"><tr style="background:var(--c-bg-2);"><th style="padding:6px;border:1px solid var(--c-border);">角色</th><th style="padding:6px;border:1px solid var(--c-border);">人数</th><th style="padding:6px;border:1px solid var(--c-border);">占比(%)</th><th style="padding:6px;border:1px solid var(--c-border);">操作</th></tr>';
     STAFF_CONFIG.forEach(function(item, idx) {
       html += '<tr>';
-      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="role" value="' + item.role + '" onchange="updateStaffField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:80px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="role" value="' + escHtml(item.role) + '" onchange="updateStaffField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:80px;"></td>';
       html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="count" value="' + item.count + '" onchange="updateStaffField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:60px;"></td>';
       html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="pct" value="' + item.pct + '" onchange="updateStaffField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:60px;"></td>';
       html += '<td style="padding:6px;border:1px solid var(--c-border);"><button class="btn btn-sm" onclick="deleteStaffItem(' + idx + ')" style="color:#FF6B6B;">删除</button></td>';
@@ -967,7 +967,7 @@ function switchDataTab(tabIdx) {
     html += '<table style="width:100%;border-collapse:collapse;"><tr style="background:var(--c-bg-2);"><th style="padding:6px;border:1px solid var(--c-border);">工作类型</th><th style="padding:6px;border:1px solid var(--c-border);">数量</th><th style="padding:6px;border:1px solid var(--c-border);">占比(%)</th><th style="padding:6px;border:1px solid var(--c-border);">操作</th></tr>';
     WORKLOAD_DATA.forEach(function(item, idx) {
       html += '<tr>';
-      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="name" value="' + item.name + '" onchange="updateWorkloadField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:80px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="name" value="' + escHtml(item.name) + '" onchange="updateWorkloadField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:80px;"></td>';
       html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="count" value="' + item.count + '" onchange="updateWorkloadField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:60px;"></td>';
       html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="ratio" value="' + item.ratio + '" onchange="updateWorkloadField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:60px;"></td>';
       html += '<td style="padding:6px;border:1px solid var(--c-border);"><button class="btn btn-sm" onclick="deleteWorkloadItem(' + idx + ')" style="color:#FF6B6B;">删除</button></td>';
@@ -979,7 +979,7 @@ function switchDataTab(tabIdx) {
     html += '<table style="width:100%;border-collapse:collapse;"><tr style="background:var(--c-bg-2);"><th style="padding:6px;border:1px solid var(--c-border);">月份</th><th style="padding:6px;border:1px solid var(--c-border);">销售额</th><th style="padding:6px;border:1px solid var(--c-border);">成本</th><th style="padding:6px;border:1px solid var(--c-border);">费效比</th><th style="padding:6px;border:1px solid var(--c-border);">目标达成率</th><th style="padding:6px;border:1px solid var(--c-border);">操作</th></tr>';
     KPI_HISTORY.forEach(function(item, idx) {
       html += '<tr>';
-      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="date" value="' + item.date + '" onchange="updateKpiField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:70px;"></td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="date" value="' + escHtml(item.date) + '" onchange="updateKpiField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:70px;"></td>';
       html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="revenue" value="' + item.revenue + '" onchange="updateKpiField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:70px;"></td>';
       html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="cost" value="' + item.cost + '" onchange="updateKpiField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:70px;"></td>';
       html += '<td style="padding:6px;border:1px solid var(--c-border);"><input data-idx="' + idx + '" data-field="profitRate" value="' + item.profitRate + '" onchange="updateKpiField(this)" style="border:1px solid var(--c-border);padding:2px 4px;border-radius:4px;width:60px;"></td>';
@@ -1131,12 +1131,12 @@ function showChangeLog() {
 
     DATA_CHANGE_LOG.slice().reverse().slice(0, 100).forEach(function(l) {
       html += '<tr>';
-      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd);white-space:nowrap">' + l.changedAt + '</td>';
-      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd)">' + l.changedBy + '</td>';
-      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd)">' + l.tableName + '</td>';
-      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd)">' + (l.fieldName || '—') + '</td>';
-      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd);max-width:150px;overflow:hidden;text-overflow:ellipsis">' + (l.oldValue || '—') + '</td>';
-      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd);max-width:150px;overflow:hidden;text-overflow:ellipsis">' + (l.newValue || '—') + '</td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd);white-space:nowrap">' + escHtml(l.changedAt) + '</td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd)">' + escHtml(l.changedBy) + '</td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd)">' + escHtml(l.tableName) + '</td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd)">' + escHtml(l.fieldName || '—') + '</td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd);max-width:150px;overflow:hidden;text-overflow:ellipsis">' + escHtml(l.oldValue || '—') + '</td>';
+      html += '<td style="padding:6px;border:1px solid var(--c-border,#ddd);max-width:150px;overflow:hidden;text-overflow:ellipsis">' + escHtml(l.newValue || '—') + '</td>';
       html += '</tr>';
     });
 
@@ -1333,15 +1333,15 @@ function openComparePanel() {
         // Project headers
         +'<div style="display:flex;gap:16px;margin-bottom:16px;">'
           +'<div style="flex:1;text-align:center;padding:12px;background:#f0fdf4;border-radius:10px;">'
-            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+p1.name+'</div>'
-            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+p1.workplace+' 路 '+p1.serviceMode+' 路 PM: '+(p1.pm||'')+'</div>'
+            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+escHtml(p1.name)+'</div>'
+            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+escHtml(p1.workplace)+' 路 '+escHtml(p1.serviceMode)+' 路 PM: '+escHtml(p1.pm||'')+'</div>'
             +'<div style="font-size:32px;font-weight:800;color:#0B9B96;margin-top:4px;">'+s1+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 分</span></div>'
             +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar1W+'px;background:linear-gradient(90deg,#0B9B96,#00C9A7);border-radius:3px;"></div></div>'
           +'</div>'
           +'<div style="display:flex;align-items:center;font-size:20px;font-weight:800;color:#94a3b8;flex-shrink:0;">VS</div>'
           +'<div style="flex:1;text-align:center;padding:12px;background:#eff6ff;border-radius:10px;">'
-            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+p2.name+'</div>'
-            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+p2.workplace+' 路 '+p2.serviceMode+' 路 PM: '+(p2.pm||'')+'</div>'
+            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+escHtml(p2.name)+'</div>'
+            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+escHtml(p2.workplace)+' 路 '+escHtml(p2.serviceMode)+' 路 PM: '+escHtml(p2.pm||'')+'</div>'
             +'<div style="font-size:32px;font-weight:800;color:#3b82f6;margin-top:4px;">'+s2+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 分</span></div>'
             +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar2W+'px;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:3px;"></div></div>'
           +'</div>'
@@ -1350,14 +1350,14 @@ function openComparePanel() {
         +'<table style="width:100%;border-collapse:collapse;">'
           +'<thead><tr style="background:#f8fafc;">'
             +'<th style="padding:8px 14px;text-align:left;font-size:12px;color:#64748b;font-weight:500;">维度</th>'
-            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+p1.name.substring(0,4)+'</th>'
-            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+p2.name.substring(0,4)+'</th>'
+            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+escHtml(p1.name).substring(0,4)+'</th>'
+            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+escHtml(p2.name).substring(0,4)+'</th>'
             +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">差距</th>'
           +'</tr></thead>'
           +'<tbody>'+rowsHtml+'</tbody>'
         +'</table>'
         +'<div style="margin-top:12px;text-align:center;font-size:11px;color:#94a3b8;">'
-          +(s1>s2 ? p1.name+' 综合领先 '+ (s1-s2)+' 分' : (s2>s1 ? p2.name+' 综合领先 '+ (s2-s1)+' 分' : '双方综合得分持平'))
+          +(s1>s2 ? escHtml(p1.name)+' 综合领先 '+ (s1-s2)+' 分' : (s2>s1 ? escHtml(p2.name)+' 综合领先 '+ (s2-s1)+' 分' : '双方综合得分持平'))
         +'</div>'
       +'</div>'
     +'</div>';
@@ -1522,15 +1522,15 @@ function openComparePanel() {
         // Project headers
         +'<div style="display:flex;gap:16px;margin-bottom:16px;">'
           +'<div style="flex:1;text-align:center;padding:12px;background:#f0fdf4;border-radius:10px;">'
-            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+p1.name+'</div>'
-            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+p1.workplace+' 路 '+p1.serviceMode+' 路 PM: '+(p1.pm||'')+'</div>'
+            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+escHtml(p1.name)+'</div>'
+            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+escHtml(p1.workplace)+' 路 '+escHtml(p1.serviceMode)+' 路 PM: '+escHtml(p1.pm||'')+'</div>'
             +'<div style="font-size:32px;font-weight:800;color:#0B9B96;margin-top:4px;">'+s1+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 分</span></div>'
             +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar1W+'px;background:linear-gradient(90deg,#0B9B96,#00C9A7);border-radius:3px;"></div></div>'
           +'</div>'
           +'<div style="display:flex;align-items:center;font-size:20px;font-weight:800;color:#94a3b8;flex-shrink:0;">VS</div>'
           +'<div style="flex:1;text-align:center;padding:12px;background:#eff6ff;border-radius:10px;">'
-            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+p2.name+'</div>'
-            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+p2.workplace+' 路 '+p2.serviceMode+' 路 PM: '+(p2.pm||'')+'</div>'
+            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+escHtml(p2.name)+'</div>'
+            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+escHtml(p2.workplace)+' 路 '+escHtml(p2.serviceMode)+' 路 PM: '+escHtml(p2.pm||'')+'</div>'
             +'<div style="font-size:32px;font-weight:800;color:#3b82f6;margin-top:4px;">'+s2+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 分</span></div>'
             +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar2W+'px;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:3px;"></div></div>'
           +'</div>'
@@ -1539,14 +1539,14 @@ function openComparePanel() {
         +'<table style="width:100%;border-collapse:collapse;">'
           +'<thead><tr style="background:#f8fafc;">'
             +'<th style="padding:8px 14px;text-align:left;font-size:12px;color:#64748b;font-weight:500;">维度</th>'
-            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+p1.name.substring(0,4)+'</th>'
-            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+p2.name.substring(0,4)+'</th>'
+            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+escHtml(p1.name).substring(0,4)+'</th>'
+            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+escHtml(p2.name).substring(0,4)+'</th>'
             +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">差距</th>'
           +'</tr></thead>'
           +'<tbody>'+rowsHtml+'</tbody>'
         +'</table>'
         +'<div style="margin-top:12px;text-align:center;font-size:11px;color:#94a3b8;">'
-          +(s1>s2 ? p1.name+' 综合领先 '+ (s1-s2)+' 分' : (s2>s1 ? p2.name+' 综合领先 '+ (s2-s1)+' 分' : '双方综合得分持平'))
+          +(s1>s2 ? escHtml(p1.name)+' 综合领先 '+ (s1-s2)+' 分' : (s2>s1 ? escHtml(p2.name)+' 综合领先 '+ (s2-s1)+' 分' : '双方综合得分持平'))
         +'</div>'
       +'</div>'
     +'</div>';

@@ -567,7 +567,7 @@ var _renderSystemData = function(){
           var n = Number(cellVal);
           cellVal = isNaN(n)?cellVal:String(Math.round(n));
         }
-        tableHtml += '<td>'+(cellVal!=null?cellVal:'')+'</td>';
+        tableHtml += '<td>'+(cellVal!=null?escHtml(cellVal):'')+'</td>';
       }
       if(colDefs.showCb) tableHtml += '<td style="white-space:nowrap;"><span style="display:inline-flex;gap:4px;align-items:center;"><button class="sd-action-btn sd-action-btn-edit" onclick="editSystemDataRow('+idx+')">✏️ 编辑</button><button class="sd-action-btn sd-action-btn-delete" onclick="deleteSystemDataRow('+idx+')">🗑 删除</button></span></td>';
       else if(colDefs.readOnly) tableHtml += '<td><span style="font-size:12px;color:var(--c-text-3);">只读</span></td>';
@@ -616,7 +616,7 @@ var _renderSystemData = function(){
     +'</div>'
   +'</div>'
   +'<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">'
-    +'<input type="text" id="sysdata-search" placeholder="搜索..." value="'+(keyword||'')+'" readonly autocomplete="off" name="chanseen_sysdsearch_unique" data-lpignore="true" data-1p-ignore="true" data-form-type="other" style="width:200px;padding:6px 10px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;background-color:#fff;" onfocus="this.removeAttribute(\'readonly\');if(!this._touched){this.value=\'\';this._touched=true;}" onkeyup="searchSystemData(event)">'
+    +'<input type="text" id="sysdata-search" placeholder="搜索..." value="'+escHtml(keyword||'')+'" readonly autocomplete="off" name="chanseen_sysdsearch_unique" data-lpignore="true" data-1p-ignore="true" data-form-type="other" style="width:200px;padding:6px 10px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;background-color:#fff;" onfocus="this.removeAttribute(\'readonly\');if(!this._touched){this.value=\'\';this._touched=true;}" onkeyup="searchSystemData(event)">'
     +'<button class="btn btn-xs" onclick="clearSystemDataSearch()">清除</button>'
     +'<span style="font-size:12px;color:var(--c-text-3);">共 '+totalRecords+' 条记录</span>'
   +'</div>'
@@ -642,9 +642,9 @@ function showSystemDataForm(tableKey, record, fields, editIdx){
   var fh = '';
   for(var i=0; i<fields.length; i++){
     var f = fields[i], v = record ? (record[f.key]!=null?record[f.key]:'') : '';
-    if(f.type==='textarea') fh += '<div style="margin-bottom:10px;"><label style="font-size:12px;display:block;margin-bottom:3px;">'+f.label+'</label><textarea id="sdf-'+f.key+'" style="width:100%;min-height:60px;padding:6px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;">'+v+'</textarea></div>';
+    if(f.type==='textarea') fh += '<div style="margin-bottom:10px;"><label style="font-size:12px;display:block;margin-bottom:3px;">'+f.label+'</label><textarea id="sdf-'+f.key+'" style="width:100%;min-height:60px;padding:6px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;">'+escHtml(v)+'</textarea></div>';
     else if(f.type==='select' && f.options){ fh += '<div style="margin-bottom:10px;"><label style="font-size:12px;display:block;margin-bottom:3px;">'+f.label+'</label><select id="sdf-'+f.key+'" style="width:100%;padding:6px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;">'; for(var j=0;j<f.options.length;j++) fh += '<option value="'+f.options[j]+'"'+(v===f.options[j]?' selected':'')+'>'+f.options[j]+'</option>'; fh += '</select></div>'; }
-    else fh += '<div style="margin-bottom:10px;"><label style="font-size:12px;display:block;margin-bottom:3px;">'+f.label+'</label><input type="'+f.type+'" id="sdf-'+f.key+'" value="'+String(v).replace(/"/g,'&quot;')+'" style="width:100%;padding:6px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;"></div>';
+    else fh += '<div style="margin-bottom:10px;"><label style="font-size:12px;display:block;margin-bottom:3px;">'+f.label+'</label><input type="'+f.type+'" id="sdf-'+f.key+'" value="'+escHtml(String(v))+'" style="width:100%;padding:6px;border:1px solid var(--c-border);border-radius:4px;font-size:12px;"></div>';
   }
   var modal = document.createElement('div'); modal.id='sd-form-modal'; modal.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:10000;display:flex;align-items:center;justify-content:center;';
   modal.innerHTML = '<div style="background:#fff;border-radius:8px;padding:20px;width:90%;max-width:500px;max-height:80vh;overflow-y:auto;"><div style="font-size:16px;font-weight:600;margin-bottom:15px;">'+(isEdit?'编辑记录':'新增记录')+'</div>'+fh+'<div style="text-align:right;margin-top:15px;"><button class="btn btn-sm" onclick="document.getElementById(\'sd-form-modal\').remove()" style="margin-right:8px;">取消</button><button class="btn btn-primary btn-sm" onclick="submitSystemDataForm(\''+tableKey+'\','+(isEdit?editIdx:'-1')+')">保存</button></div></div>';

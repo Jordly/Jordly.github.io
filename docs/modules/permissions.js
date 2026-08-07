@@ -1,6 +1,7 @@
 // modules/permissions.js — 系统权限管理模块
 /* ═══════════════════ 系统权限管理 ═══════════════════ */
 function renderPermissions(){
+  try {
   if (typeof ROLES === "undefined") {
     document.getElementById("module-content").innerHTML = '<div style="padding:40px;text-align:center;color:red;">错误：ROLES 未定义</div>';
     return;
@@ -124,6 +125,8 @@ return'        <div class="perm-mod-row">\n'+
 '</div>';
 
   return html;
+
+  } catch(e) { if(typeof addRuntimeLog==='function') addRuntimeLog('error','Permissions 渲染异常',String(e)); return errorState('权限管理加载失败','请刷新页面重试'); }
 }
 
 // ===== 项目难度评估（优化版）=====

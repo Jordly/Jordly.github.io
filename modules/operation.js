@@ -1,6 +1,7 @@
 // modules/operation.js — 运营数据模块
 /* ═══════════════════ 运营数据 ═══════════════════ */
 function renderOperation() {
+  try {
   const projects = getFilteredProjects();
   if (!projects || projects.length === 0) return renderFilterBar() + emptyState('暂无项目数据', '请先在「项目基础档案」中添加项目', 'folder');
   const projectHealth = projects.map(p => {
@@ -21,6 +22,7 @@ function renderOperation() {
   ${renderHealthScoreTable(projectHealth)}
   ${renderHealthLevelDefinition()}
   <div id="health-detail-panels"></div>`;
+  } catch(e) { if(typeof addRuntimeLog==='function') addRuntimeLog('error','operation 渲染异常',String(e)); return errorState('服务追踪加载失败','请刷新页面重试'); }
 }
 
 

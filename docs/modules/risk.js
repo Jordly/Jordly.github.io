@@ -1,6 +1,7 @@
 // modules/risk.js — 风险管理模块
 /* ═══════════════════ 风险管理 ═══════════════════ */
 function renderRisk(){
+  try {
   // 进入页面先从项目数据重新聚合一次，确保实时
   recomputeRiskAlerts();
 
@@ -65,6 +66,7 @@ function renderRisk(){
   });
   html += `</div>`;
   return html;
+  } catch(e) { if(typeof addRuntimeLog==='function') addRuntimeLog('error','risk 渲染异常',String(e)); return errorState('风险预警加载失败','请刷新页面重试'); }
 }
 
 function toggleRiskCard(el){

@@ -1,6 +1,7 @@
 // modules/issue.js — 问题管理模块
 /* ═══════════════════ 问题管理 ═══════════════════ */
 function renderIssue(){
+  try {
   if(typeof issueActiveTab === 'undefined'){ window.issueActiveTab = 'issue'; }
   var tab = window.issueActiveTab || 'issue';
   var isIssue = tab === 'issue';
@@ -97,6 +98,8 @@ function renderIssue(){
                : '<th style="width:9%;">状态</th><th style="width:9%;">编号</th><th style="width:12%;">课题类型</th><th style="width:26%;">描述</th><th style="width:7%;">负责人</th><th style="width:7%;text-align:center;">优先级</th><th style="width:12%;">参与人</th><th style="width:15%;text-align:center;">操作</th>')
     +'</tr></thead><tbody>'+(rows||'<tr><td colspan="9" style="text-align:center;padding:40px;color:#94a3b8;">暂无数据</td></tr>')+'</tbody></table></div>'
     +'<div class="issue-legend"><div class="issue-legend-item"><span class="issue-legend-color issue-legend-red"></span> 紧急/待处理行高亮</div><div class="issue-legend-item"><span class="issue-legend-color issue-legend-blue"></span> 处理中</div><div class="issue-legend-item"><span class="issue-legend-color issue-legend-green"></span> 已关闭</div></div>';
+
+  } catch(e) { if(typeof addRuntimeLog==='function') addRuntimeLog('error','Issue 渲染异常',String(e)); return errorState('问题协作加载失败','请刷新页面重试'); }
 }
 
 // ===== 核心知识能量池 =====

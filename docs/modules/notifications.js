@@ -1,6 +1,7 @@
 // modules/notifications.js — 通知与公告模块
 /* ═══════════════════ 通知与公告 ═══════════════════ */
 function renderNotifications(){
+  try {
   // 权限检查：超级管理员、管理员、客服总监可访问
   if (!currentUser) {
     return `<div class="empty-state"><div class="empty-icon">&#x1F512;</div><p>请先登录</p></div>`;
@@ -123,6 +124,8 @@ function renderNotifications(){
     ${filtered.length === 0 ? `<div style="text-align:center;padding:40px;color:var(--c-text-3);">暂无符合条件的用户</div>` : ""}
   </div>
   `;
+
+  } catch(e) { if(typeof addRuntimeLog==='function') addRuntimeLog('error','Notifications 渲染异常',String(e)); return errorState('通知公告加载失败','请刷新页面重试'); }
 }
 
 function setNotificationFilter(filter){

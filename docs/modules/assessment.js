@@ -52,7 +52,7 @@ function renderAssessment(){
   html += `    <select id="asmt-dept-filter" class="fb-select">`;
   html += `      <option value=""${deptFilter===''?' selected':''}>全部</option>`;
   [...new Set(ASSESSMENTS.map(a => a.dept))].filter(Boolean).forEach(d => {
-    html += `      <option value="${d}"${deptFilter===d?' selected':''}>${d}</option>`;
+    html += `      <option value="${escHtml(d)}"${deptFilter===d?' selected':''}>${escHtml(d)}</option>`;
   });
   html += `    </select>`;
   html += `  </div>`;
@@ -61,7 +61,7 @@ function renderAssessment(){
   html += `    <select id="asmt-mgr-filter" class="fb-select">`;
   html += `      <option value=""${mgrFilter===''?' selected':''}>全部</option>`;
   ASSESSMENTS.map(a => a.manager).filter((v,i, a2) => v && a2.indexOf(v) === i).forEach(m => {
-    html += `      <option value="${m}"${mgrFilter===m?' selected':''}>${m}</option>`;
+    html += `      <option value="${escHtml(m)}"${mgrFilter===m?' selected':''}>${escHtml(m)}</option>`;
   });
   html += `    </select>`;
   html += `  </div>`;
@@ -193,8 +193,8 @@ function renderMatchDetail(assessments) {
     const band = getCompatibilityBand(compat);
     html += `<tr>`;
     html += `  <td>${idx}</td>`;
-    html += `  <td><a href="#" onclick="showGroupDetail('${a.group}');return false;">${a.group}</a></td>`;
-    html += `  <td>${a.manager||''}</td>`;
+    html += `  <td><a href="#" onclick="showGroupDetail('${a.group}');return false;">${escHtml(a.group)}</a></td>`;
+    html += `  <td>${escHtml(a.manager||'')}</td>`;
     html += `  <td style="font-weight:600;">${score.toFixed(1)}</td>`;
     html += `  <td>${bench}</td>`;
     html += `  <td style="font-weight:700;color:${band.color};">${compat}%</td>`;
@@ -218,8 +218,8 @@ function renderProjectDetail(assessments) {
     const score = a.totalScore || 0;
     const dl = getDifficultyLevel(score);
     html += `<tr>`;
-    html += `  <td><a href="#" onclick="showGroupDetail('${a.group}');return false;">${a.group}</a></td>`;
-    html += `  <td>${a.manager||''}</td>`;
+    html += `  <td><a href="#" onclick="showGroupDetail('${a.group}');return false;">${escHtml(a.group)}</a></td>`;
+    html += `  <td>${escHtml(a.manager||'')}</td>`;
     html += `  <td>${a.quantScore?a.quantScore.toFixed(1):'0.0'}</td>`;
     html += `  <td>${a.qualScore?a.qualScore.toFixed(1):'0.0'}</td>`;
     html += `  <td style="font-weight:700;color:${dl.color};">${score.toFixed(1)}</td>`;
@@ -251,8 +251,8 @@ function renderManagementDetail(assessments) {
     const compat = calcCompatibility(avgScore, info.bench);
     const band = getCompatibilityBand(compat);
     html += `<tr>`;
-    html += `  <td>${mgr}</td>`;
-    html += `  <td>${info.level||''}</td>`;
+    html += `  <td>${escHtml(mgr)}</td>`;
+    html += `  <td>${escHtml(info.level||'')}</td>`;
     html += `  <td>${info.bench}</td>`;
     html += `  <td style="font-weight:700;color:${band.color};">${compat}%</td>`;
     html += `  <td style="background:${band.bg};color:${band.color};padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500;">${band.label}</td>`;
@@ -273,18 +273,18 @@ function showManagerDetail(mgrName){
   const compat = calcCompatibility(avgScore, bench);
   const band = getCompatibilityBand(compat);
   let body = `<div style="font-size:13px;line-height:2;">`;
-  body += `<p><b>管理人：</b>${mgrName}｜<b>管理等级：</b>${list[0].level||''}｜<b>负责单元数：</b>${list.length}个</p>`;
+  body += `<p><b>管理人：</b>${escHtml(mgrName)}｜<b>管理等级：</b>${escHtml(list[0].level||'')}｜<b>负责单元数：</b>${list.length}个</p>`;
   body += `<p><b>平均难度得分：</b>${avgScore.toFixed(1)}｜<b>管理基准分：</b>${bench}｜<b>平均适配度：</b><span style="color:${band.color};font-weight:700;">${compat}%</span> <span style="background:${band.bg};color:${band.color};padding:2px 8px;border-radius:4px;font-size:12px;">${band.label}</span></p>`;
   body += `<hr><p style="font-weight:600;margin-bottom:6px;">负责单元明细：</p>`;
   body += `<table class="data-table" style="font-size:12px;"><thead><tr><th>评估单元</th><th>难度分</th><th>适配度</th><th>档位</th></tr></thead><tbody>`;
   list.forEach(a=>{
     const sc=a.totalScore||0; const c=calcCompatibility(sc,bench); const b=getCompatibilityBand(c);
-    body += `<tr><td>${a.group||''}</td><td>${sc.toFixed(1)}</td><td style="color:${b.color};font-weight:600;">${c}%</td><td style="background:${b.bg};color:${b.color};padding:2px 8px;border-radius:4px;font-size:12px;">${b.label}</td></tr>`;
+    body += `<tr><td>${escHtml(a.group||'')}</td><td>${sc.toFixed(1)}</td><td style="color:${b.color};font-weight:600;">${c}%</td><td style="background:${b.bg};color:${b.color};padding:2px 8px;border-radius:4px;font-size:12px;">${b.label}</td></tr>`;
   });
   body += `</tbody></table>`;
   body += `<hr><div style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn btn-sm btn-primary" onclick="var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove();goToSystemDataTable('assessments');">✏️ 去系统数据管理编辑</button></div>`;
   body += `</div>`;
-  showDetailModal(mgrName + ' - 管理能力详情', body);
+  showDetailModal(escHtml(mgrName) + ' - 管理能力详情', body);
 }
 
 // 导入评估报告
@@ -353,7 +353,7 @@ function showCompareModal() {
   body += `</div>`;
   body += `<div id="compare-checkboxes" style="max-height:220px;overflow-y:auto;border:1px solid #eee;border-radius:6px;padding:8px;">`;
   groups.forEach(a => {
-    body += `<label class="compare-label" data-name="${a.group.toLowerCase()}" style="display:flex;align-items:center;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:13px;"><input type="checkbox" class="compare-cb" value="${a.group}" style="margin-right:8px;">${a.group}</label>`;
+    body += `<label class="compare-label" data-name="${escHtml(a.group.toLowerCase())}" style="display:flex;align-items:center;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:13px;"><input type="checkbox" class="compare-cb" value="${escHtml(a.group)}" style="margin-right:8px;">${escHtml(a.group)}</label>`;
   });
   body += `</div>`;
   body += `<div style="margin-top:8px;font-size:12px;color:#888;">已选：<span id="compare-count">0</span> / ${groups.length} 个组别</div>`;
@@ -387,7 +387,7 @@ function runAssessmentCompare() {
   html += `<div style="font-size:14px;font-weight:600;margin-bottom:12px;">对比结果（共${groups.length}个组别）</div>`;
   html += `<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">`;
   html += `<table class="data-table" style="font-size:12px;min-width:max-content;">`;
-  html += `<thead><tr><th>指标</th>${groups.map(g=>`<th>${g}</th>`).join('')}</tr></thead>`;
+  html += `<thead><tr><th>指标</th>${groups.map(g=>`<th>${escHtml(g)}</th>`).join('')}</tr></thead>`;
   html += `<tbody>`;
   const headers = ['总分','定量得分','定性得分','适配度'];
   const keys = ['totalScore','quantScore','qualScore','compat'];
@@ -422,7 +422,7 @@ function showGroupDetail(groupName){
   const compat = calcCompatibility(a.totalScore||0, bench);
   const band = getCompatibilityBand(compat);
   let body = `<div style="font-size:13px;line-height:2;">`;
-  body += `<p><b>评估单元：</b>${a.group}｜<b>管理人：</b>${a.manager||''}｜<b>管理等级：</b>${a.level||''}｜<b>周期：</b>${a.month||''}</p>`;
+  body += `<p><b>评估单元：</b>${escHtml(a.group)}｜<b>管理人：</b>${escHtml(a.manager||'')}｜<b>管理等级：</b>${escHtml(a.level||'')}｜<b>周期：</b>${escHtml(a.month||'')}</p>`;
   body += `<p><b>总分：</b>${a.totalScore?a.totalScore.toFixed(1):0}｜<b>定量：</b>${a.quantScore?a.quantScore.toFixed(1):0}｜<b>定性：</b>${a.qualScore?a.qualScore.toFixed(1):0}</p>`;
   body += `<p><b>管理基准分：</b>${bench}｜<b>适配度：</b><span style="color:${band.color};font-weight:700;">${compat}%</span> <span style="background:${band.bg};color:${band.color};padding:2px 8px;border-radius:4px;font-size:12px;">${band.label}</span></p>`;
   body += `<p><b>定性分项（每项0-3分）：</b>业务复杂度${a.qual1||0}｜跨平台${a.qual2||0}｜品牌授权${a.qual3||0}｜流动性${a.qual4||0}｜培训需求${a.qual5||0}｜系统复杂度${a.qual6||0}｜客诉难度${a.qual7||0}｜突发事件${a.qual8||0}</p>`;
@@ -430,7 +430,7 @@ function showGroupDetail(groupName){
   body += `  <button class="btn btn-sm btn-primary" onclick="var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove();goToSystemDataTable('assessments');">✏️ 去系统数据管理编辑</button>`;
   body += `  <button class="btn btn-sm" style="color:#f5222d;border-color:#f5222d;" onclick="if(confirm('确定删除「${a.group.replace(/'/g,"\\'")}」的评估记录？')){ var i=ASSESSMENTS.findIndex(x=>x.group==='${a.group.replace(/'/g,"\\'")}'); if(i>=0){ASSESSMENTS.splice(i,1);} _saveSystemData('assessments'); var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove(); renderModule('assessment'); }">🗑️ 删除</button>`;
   body += `</div></div>`;
-  showDetailModal(groupName + ' - 难度评估详情', body);
+  showDetailModal(escHtml(groupName) + ' - 难度评估详情', body);
 }
 
 

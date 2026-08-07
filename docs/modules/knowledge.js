@@ -1,6 +1,7 @@
 // modules/knowledge.js — 知识能量池模块
 /* ═══════════════════ 知识能量池 ═══════════════════ */
 function renderKnowledge(){
+  try {
 
   const can = canEdit();
 
@@ -139,6 +140,8 @@ function renderKnowledge(){
   </div>
 
   `;
+
+  } catch(e) { if(typeof addRuntimeLog==='function') addRuntimeLog('error','Knowledge 渲染异常',String(e)); return errorState('知识能量池加载失败','请刷新页面重试'); }
 }
 
 // ===== 知识能量池 · 全局筛选函数 =====

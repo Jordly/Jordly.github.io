@@ -1,6 +1,7 @@
 // modules/dashboard.js — 项目总览看板模块 · 提取自 app.js
 /* ═══════════════════ 项目总览看板 ═══════════════════ */
 function renderDashboard(){
+  try {
 
   const all = getFilteredProjects();
 
@@ -463,6 +464,7 @@ function renderDashboard(){
     </div>
   </div>`;
 
+  } catch(e) { if(typeof addRuntimeLog==='function') addRuntimeLog('error','Dashboard 渲染异常',String(e)); return errorState('总览看板加载失败','请刷新页面重试'); }
 }
 
 

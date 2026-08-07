@@ -2,6 +2,7 @@
 // modules/archive.js — 项目基础档案模块 · 提取自 app.js
 /* ═══════════════════ 项目基础档案 ═══════════════════ */
 function renderArchive(){
+  try {
 
   const all = getFilteredProjects();
 
@@ -77,7 +78,7 @@ function renderArchive(){
     </div>
 
   </div>`;
-
+  } catch(e) { if(typeof addRuntimeLog==='function') addRuntimeLog('error','archive 渲染异常',String(e)); return errorState('项目档案加载失败','请刷新页面重试'); }
 }
 
 
