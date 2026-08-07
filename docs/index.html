@@ -84,10 +84,11 @@
 <div id="main-container">
   <!-- 左侧模块菜单 -->
   <nav id="sidebar" aria-label="主导航">
+    <!-- 分组一：项目运营 -->
     <div class="nav-section" data-section="project">
       <div class="nav-section-title" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true">
         <span class="section-icon">🗂️</span>
-        <span class="section-text">项目管理中控台</span>
+        <span class="section-text">项目运营</span>
         <span class="section-arrow">▼</span>
       </div>
       <a href="#" class="nav-item active" data-module="dashboard">
@@ -111,52 +112,55 @@
         <span class="nav-text">成本与利润管理</span>
       </a>
     </div>
-    <div class="nav-section" data-section="collab">
+    <!-- 分组二：质量与风控 -->
+    <div class="nav-section" data-section="quality">
       <div class="nav-section-title" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false">
-        <span class="section-icon">🤝</span>
-        <span class="section-text">协同与知识管理</span>
+        <span class="section-icon">🛡️</span>
+        <span class="section-text">质量与风控</span>
         <span class="section-arrow">▶</span>
       </div>
       <a href="#" class="nav-item" data-module="issue">
         <span class="nav-icon">🐛</span>
         <span class="nav-text">问题与课题协作</span>
       </a>
-      <a href="#" class="nav-item" data-module="knowledge">
-        <span class="nav-icon">📚</span>
-        <span class="nav-text">核心知识能量池</span>
-      </a>
       <a href="#" class="nav-item" data-module="risk">
         <span class="nav-icon">⚠️</span>
         <span class="nav-text">项目风险预警池</span>
       </a>
-    </div>
-    <div class="nav-section" data-section="tools">
-      <div class="nav-section-title" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false">
-        <span class="section-icon">🛠️</span>
-        <span class="section-text">项目管理工具库</span>
-        <span class="section-arrow">▶</span>
-      </div>
-      <a href="#" class="nav-item" data-module="handover">
-        <span class="nav-icon">🔄</span>
-        <span class="nav-text">项目承接规范</span>
-      </a>
       <a href="#" class="nav-item" data-module="assessment">
-        <span class="nav-icon">📊</span>
+        <span class="nav-icon">📐</span>
         <span class="nav-text">项目难度评估</span>
       </a>
       <a href="#" class="nav-item" data-module="satisfaction">
         <span class="nav-icon">💯</span>
         <span class="nav-text">项目运维调研</span>
       </a>
-<a href="#" class="nav-item" data-module="performance">
+    </div>
+    <!-- 分组三：团队与绩效 -->
+    <div class="nav-section" data-section="team">
+      <div class="nav-section-title" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false">
+        <span class="section-icon">👥</span>
+        <span class="section-text">团队与绩效</span>
+        <span class="section-arrow">▶</span>
+      </div>
+      <a href="#" class="nav-item" data-module="performance">
         <span class="nav-icon">📈</span>
         <span class="nav-text">客服绩效看板</span>
       </a>
+      <a href="#" class="nav-item" data-module="handover">
+        <span class="nav-icon">🔄</span>
+        <span class="nav-text">项目承接规范</span>
+      </a>
+      <a href="#" class="nav-item" data-module="knowledge">
+        <span class="nav-icon">📚</span>
+        <span class="nav-text">核心知识能量池</span>
+      </a>
     </div>
+    <!-- 分组四：系统设置 -->
     <div class="nav-section" data-section="system">
       <div class="nav-section-title" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false">
-        <span class="section-icon">🔐</span>
-        <span class="section-text">系统管理与配置</span>
+        <span class="section-icon">⚙️</span>
+        <span class="section-text">系统设置</span>
         <span class="section-arrow">▶</span>
       </div>
       <a href="#" class="nav-item" data-module="systemData">
@@ -164,7 +168,7 @@
         <span class="nav-text">系统数据管理</span>
       </a>
       <a href="#" class="nav-item" data-module="permissions">
-        <span class="nav-icon">⚙️</span>
+        <span class="nav-icon">🔐</span>
         <span class="nav-text">系统权限管理</span>
       </a>
       <a href="#" class="nav-item" data-module="notifications">
@@ -271,6 +275,8 @@
     '\uD83D\uDCEC': 'mail',              // 📬
     '\uD83D\uDD12': 'lock',               // 🔒
     '\uD83D\uDEE1\uFE0F': 'shield-check', // 🛡️
+    '\uD83D\uDCD0': 'ruler',               // 📐
+    '\uD83D\uDC65': 'users',               // 👥
     '\uD83D\uDC41\uFE0F': 'eye',          // 👁️
     '\uD83D\uDE48': 'eye-off',            // 🙈
     '\uD83D\uDEA7': 'wrench',             // 🚧

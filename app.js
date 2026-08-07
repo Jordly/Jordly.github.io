@@ -2586,6 +2586,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (_syncDebounced && _syncDebounced.flush) _syncDebounced.flush();
     });
 
+    // hash 路由：监听浏览器前进后退按钮
+    window.addEventListener('hashchange', function() {
+      var mod = location.hash ? location.hash.slice(1) : 'dashboard';
+      if (currentModule !== mod) renderModule(mod);
+    });
+
     // === 🚀 从 login.html 跳转过来时，直接信任登录凭证，不走 checkLogin 复杂逻辑 ===
     var _isFromLogin = window.location.search.indexOf('from=login') !== -1;
     if (_isFromLogin) {
@@ -2614,8 +2620,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               if(idx===0){ sec.classList.remove("collapsed"); if(arrow) arrow.textContent = '▼'; }
               else { sec.classList.add("collapsed"); if(arrow) arrow.textContent = '▶'; }
             });
-            renderModule(sessionStorage.getItem('cs_lastModule') || "dashboard");
-            return;
+            renderModule(location.hash ? location.hash.slice(1) : (sessionStorage.getItem('cs_lastModule') || "dashboard"));
           }
         }
       } catch(_fe) { /* fast fail → 走下方正常 checkLogin */ }
@@ -2635,7 +2640,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(arrow) arrow.textContent = '▶';
       }
     });
-    renderModule(sessionStorage.getItem('cs_lastModule') || "dashboard");
+    renderModule(location.hash ? location.hash.slice(1) : (sessionStorage.getItem('cs_lastModule') || "dashboard"));
   } catch(e) {
     document.getElementById("module-content").innerHTML =
       '<div style="padding:40px;text-align:center;color:red;">' +
@@ -2891,6 +2896,10 @@ function renderModule(module){
     
     // 保存当前模块到sessionStorage，刷新后自动回到该模块
     try { sessionStorage.setItem('cs_lastModule', module); } catch(e){};
+    // URL hash 同步：支持浏览器前进/后退 + 链接分享
+    if (location.hash !== '#' + module) {
+      try { history.replaceState(null, '', '#' + module); } catch(e) {}
+    }
     // 同步更新导航栏高亮状态
     document.querySelectorAll('.nav-item').forEach(function(i){i.classList.remove('active');});
     var nav = document.querySelector('.nav-item[data-module="'+module+'"]');
@@ -2914,6 +2923,9 @@ function renderModule(module){
     }
     var perfRender = (performance.now() - perfStart).toFixed(1);
     area.innerHTML = html;
+    // 模块切换自动滚回顶部
+    var contentArea = document.getElementById('content-area');
+    if (contentArea) contentArea.scrollTop = 0;
     var perfDom = (performance.now() - perfStart).toFixed(1);
     // 超过 200ms 的模块记录到运行日志
     if (parseFloat(perfDom) > 200 && typeof addRuntimeLog === 'function') {
@@ -2966,8 +2978,24 @@ const filterState = {
 
 function setFilter(key, value) {
   filterState[key] = value;
+  // 筛选状态持久化：切模块不丢筛选条件
+  try { sessionStorage.setItem('cs_filterState', JSON.stringify(filterState)); } catch(e) {}
   renderModule(currentModule);
 }
+
+// 初始化筛选状态：从 sessionStorage 恢复上次的筛选条件
+(function initFilterState() {
+  try {
+    var saved = sessionStorage.getItem('cs_filterState');
+    if (saved) {
+      var parsed = JSON.parse(saved);
+      // 只恢复存在的 key，防止旧数据污染新结构
+      for (var k in parsed) {
+        if (filterState.hasOwnProperty(k)) filterState[k] = parsed[k];
+      }
+    }
+  } catch(e) {}
+})();
 
 function renderFilterBar() {
   var timeLabel = {'':'全部时间', all:'全部时间', month:'本月', lastMonth:'上月', quarter:'本季', year:'本年', custom:'自定义'};
@@ -3412,6 +3440,7 @@ function resetFilters() {
   filterState.category = [];
   filterState.platforms = [];
   filterState.status = "";
+  try { sessionStorage.removeItem('cs_filterState'); } catch(e) {}
   renderModule(currentModule);
 }
 
