@@ -3,7 +3,7 @@
 
 // ===== XSS 防护：HTML 转义函数 =====
 function escHtml(s) {
-  return (s || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  return (s == null ? '' : String(s)).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 // ===== 密码加密：PBKDF2 哈希（加盐+10万次迭代，Web Crypto API，无需外部库）=====
