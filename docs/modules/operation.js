@@ -2,6 +2,7 @@
 /* ═══════════════════ 运营数据 ═══════════════════ */
 function renderOperation() {
   const projects = getFilteredProjects();
+  if (!projects || projects.length === 0) return renderFilterBar() + emptyState('暂无项目数据', '请先在「项目基础档案」中添加项目', 'folder');
   const projectHealth = projects.map(p => {
     const h = HEALTH_DATA.find(hh => hh.projectId === p.id && hh.period === "2026-05");
     const score = h ? h.overallScore : 0;

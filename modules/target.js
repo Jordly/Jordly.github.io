@@ -4,6 +4,8 @@ function renderTarget(){
 
   const all = getFilteredProjects();
 
+  if (!all || all.length === 0) return renderFilterBar() + emptyState('暂无项目数据', '请先在「项目基础档案」中添加项目，再设置目标', 'target');
+
   const can = canEdit();
 
   return `

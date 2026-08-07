@@ -23,9 +23,9 @@
   --c-orange: #BA7517;
   --c-orange-light: #FBEEAF0;
   --radius: 8px;
-  --radius-lg: 12px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.06);
-  --shadow-lg: 0 4px 12px rgba(0,0,0,0.08);
+  --radius-lg: 8px;
+  --shadow: 0 1px 3px rgba(11,155,150,0.04), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 14px rgba(11,155,150,0.06), 0 2px 6px rgba(0,0,0,0.05);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -62,9 +62,7 @@ body {
   cursor: pointer;
   font-size: 12px;
   color: var(--c-text-2);
-  transition: all 0.2s;
-}
-.role-btn.active {
+  transition: background 0.2s, color 0.2s;
   background: var(--c-primary);
   color: #fff;
   border-color: var(--c-primary);
@@ -135,6 +133,8 @@ body {
   flex-direction: column;
   position: relative;
   transition: width 0.3s ease, min-width 0.3s ease;
+  will-change: width;
+  contain: layout style;
 }
 .nav-section { margin-bottom: 8px; }
 .nav-section-title {
@@ -154,13 +154,13 @@ body {
   background: #eef2f7;
 }
 .section-icon {
-  font-size: 16px;
   width: 36px;
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #0B9B96;
+  color: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(11,155,150,0.3);
   flex-shrink: 0;
@@ -185,7 +185,7 @@ body {
   text-decoration: none;
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s;
   border-left: 3px solid transparent;
 }
 .nav-item:hover {
@@ -199,13 +199,13 @@ body {
   font-weight: 500;
 }
 .nav-icon {
-  font-size: 16px;
   width: 36px;
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #e8f0fe;
+  color: #3b82f6;
   border-radius: 6px;
   box-shadow: 0 1px 4px rgba(24,95,165,0.12);
   flex-shrink: 0;
@@ -223,10 +223,11 @@ body {
 
 /* 按钮悬停：阴影强调，不移位 */
 .btn {
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 .btn:hover {
   box-shadow: 0 2px 8px rgba(24,95,165,0.2);
+  transform: translateY(-1px);
 }
 
 /* 导航项悬停：背景色变化，不移位 */
@@ -255,7 +256,7 @@ body {
   color: #5A7A6A;
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s, opacity 0.2s;
   width: 100%;
   flex-shrink: 0;
 }
@@ -296,7 +297,6 @@ body {
   display: flex !important;
 }
 #sidebar.collapsed .nav-item .nav-icon {
-  font-size: 18px;
   width: 36px;
   height: 36px;
   display: flex;
@@ -353,7 +353,7 @@ body {
   border: 1px solid var(--c-border);
   background: #fff;
   color: var(--c-text);
-  transition: all 0.15s;
+  transition: background 0.15s, color 0.15s;
 }
 .btn:hover { background: var(--c-bg); }
 .btn-primary {
@@ -490,7 +490,7 @@ body {
   align-items: center;
   gap: 14px;
   min-height: 80px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .metric-card.row-service { border-left-color: #3B82F6; background: linear-gradient(135deg, #fff 0%, #EFF6FF 100%); }
 .metric-card.row-finance { border-left-color: #10B981; background: linear-gradient(135deg, #fff 0%, #ECFDF5 100%); }
@@ -695,7 +695,7 @@ body {
   padding: 10px 14px;
   border: 1px solid var(--c-border-light);
   border-left: 3px solid #3b82f6;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s, opacity 0.2s;
 }
 .detail-item:hover {
   box-shadow: 0 2px 8px rgba(59,130,246,0.1);
@@ -876,7 +876,7 @@ body {
   border-radius: var(--radius-lg);
   padding: 14px 16px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s, opacity 0.2s;
   box-shadow: var(--shadow);
 }
 .health-project-card:hover {
@@ -1120,7 +1120,7 @@ body {
   padding: 14px 16px;
   text-align: center;
   box-shadow: var(--shadow);
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s, opacity 0.2s;
 }
 
 .stat-card:hover {
@@ -1390,7 +1390,7 @@ div[style*="font-size:32px"] {
     padding: 12px 16px !important;
     margin: 4px 8px !important;
     border-radius: 8px !important;
-    transition: all 0.3s ease !important;
+    transition: background 0.3s ease, color 0.3s ease !important;
   }
   .nav-section-title:active {
     background: var(--c-primary-light) !important;
@@ -1665,7 +1665,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s, opacity 0.2s;
   border: 1.5px solid rgba(255,255,255,0.5);
   background: transparent;
   color: #fff;
@@ -1679,7 +1679,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s, opacity 0.2s;
   border: 1.5px solid rgba(255,255,255,0.35);
   border-radius: var(--radius);
   background: transparent;
@@ -1730,7 +1730,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s, opacity 0.2s;
 }
 .login-form-box .auth-tab.active {
   color: var(--c-primary);
@@ -1838,7 +1838,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s, opacity 0.2s;
 }
 .auth-tab.active {
   color: var(--c-primary);
@@ -1967,7 +1967,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   border: 1px solid #ef4444 !important;
   color: #ef4444 !important;
   background: #fff !important;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s, opacity 0.2s;
 }
 .profile-btn-danger:hover {
   background: #fef2f2 !important;
@@ -1977,7 +1977,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   border: 1px solid #e2e8f0 !important;
   color: #64748b !important;
   background: #fff !important;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s, opacity 0.2s;
 }
 .profile-btn-plain:hover {
   border-color: #cbd5e1 !important;
@@ -2042,7 +2042,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   background: #f8fafc;
   border-radius: 8px;
   border: 1px solid transparent;
-  transition: all 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s, opacity 0.2s;
 }
 .profile-login-item:hover {
   background: #f1f5f9;
@@ -2188,7 +2188,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   opacity: 0;
   visibility: hidden;
   transform: translateY(-4px);
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   overflow: hidden;
 }
 .user-dropdown.show {
@@ -2290,7 +2290,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   opacity: 0;
   visibility: hidden;
   transform: translateY(-4px);
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   overflow: hidden;
 }
 .project-filter-dropdown.show {
@@ -2459,7 +2459,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
   background: rgba(6,95,70,0.08);
   border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  line-height: 1; transition: all 0.2s;
+  line-height: 1; transition: background 0.2s, color 0.2s;
 }
 .sd-prompt-close:hover {
   background: rgba(6,95,70,0.16);
@@ -2487,7 +2487,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
 .sd-prompt-input {
   width: 100%; padding: 11px 14px; font-size: 14px; color: #1e293b;
   border: 2px solid #e2e8f0; border-radius: 8px; outline: none;
-  box-sizing: border-box; transition: all 0.25s ease;
+  box-sizing: border-box; transition: background 0.25s ease, color 0.25s ease;
   background: #fff;
 }
 .sd-prompt-input:focus {
@@ -2510,7 +2510,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
 }
 .sd-confirm-btn {
   font-size: 13.5px; font-weight: 500; border-radius: 9px;
-  border: none; cursor: pointer; transition: all 0.2s ease;
+  border: none; cursor: pointer; transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
   letter-spacing: 0.3px;
 }
 .sd-confirm-cancel {
@@ -2539,8 +2539,7 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
 }
 .sd-prompt-footer .sd-confirm-btn {
   font-size: 13px; font-weight: 500; border-radius: 8px;
-  border: none; cursor: pointer; transition: all 0.2s ease;
-}
+  border: none; cursor: pointer; transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 .sd-prompt-footer .sd-confirm-cancel {
   background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0;
   padding: 7px 18px;
@@ -2557,4 +2556,93 @@ table tbody tr, .badge, .form-input, .form-select, .form-textarea {
 .sd-prompt-footer .sd-confirm-ok:hover {
   box-shadow: 0 4px 12px rgba(11,155,150,0.3);
   transform: translateY(-1px);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   无障碍：键盘焦点可见（:focus-visible）
+   2026-08-07 — 为 Tab 键导航提供清晰的焦点指示
+   ══════════════════════════════════════════════════════════════ */
+:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* 输入框/按钮/链接等交互元素使用更明显的焦点环 */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+}
+/* 侧边栏菜单项焦点 */
+.nav-section-title:focus-visible,
+.nav-item:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+  background: rgba(59,130,246,0.06);
+}
+/* 去掉默认 outline 的粗暴样式，交给 :focus-visible 接管 */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   三态统一组件（Empty / Loading / Error · 2026-08-07）
+   ══════════════════════════════════════════════════════════════ */
+.state-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  min-height: 240px;
+}
+.state-icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.state-icon svg {
+  width: 48px;
+  height: 48px;
+}
+.state-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+.state-hint {
+  font-size: 13px;
+  color: #9CA3AF;
+  max-width: 280px;
+}
+
+/* 骨架屏 */
+.state-skeleton {
+  width: 260px;
+  margin-bottom: 20px;
+}
+.skeleton-bar {
+  height: 14px;
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 7px;
+  margin-bottom: 10px;
+}
+.skeleton-title { width: 60%; height: 18px; }
+.skeleton-line { width: 100%; }
+.skeleton-line-short { width: 40%; }
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }

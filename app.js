@@ -207,6 +207,43 @@ var handoverFilter = { keyword:'', status:'all' };
 
 
 
+// ===== 三态统一组件（Empty / Loading / Error · 2026-08-07）=====
+// 用法：
+//   renderModule返回 html 时，在数据为空/加载中/出错三种情况下调用以下函数
+//   emptyState('暂无数据', '点击右上角新增', 'plus') → 返回空状态HTML
+//   loadingState('加载中...') → 返回加载骨架HTML
+//   errorState('加载失败', '请刷新重试') → 返回错误状态HTML
+
+function emptyState(title, hint, icon) {
+  title = title || '暂无数据';
+  hint = hint || '';
+  icon = lucideIcon(icon || 'folder', 48).replace('width="48" height="48"', '').replace(/stroke="currentColor"/, 'stroke="#9CA3AF"');
+  return '<div class="state-empty state-wrapper">'
+    + '<div class="state-icon">' + icon + '</div>'
+    + '<div class="state-title">' + title + '</div>'
+    + (hint ? '<div class="state-hint">' + hint + '</div>' : '')
+    + '</div>';
+}
+
+function loadingState(title) {
+  title = title || '加载中...';
+  return '<div class="state-loading state-wrapper">'
+    + '<div class="state-skeleton"><div class="skeleton-bar skeleton-title"></div><div class="skeleton-bar skeleton-line"></div><div class="skeleton-bar skeleton-line"></div><div class="skeleton-bar skeleton-line-short"></div></div>'
+    + '<div class="state-title">' + title + '</div>'
+    + '</div>';
+}
+
+function errorState(title, hint) {
+  title = title || '加载失败';
+  hint = hint || '请刷新页面重试';
+  return '<div class="state-error state-wrapper">'
+    + '<div class="state-icon">' + lucideIcon('alert-triangle', 48).replace('width="48" height="48"', '').replace(/stroke="currentColor"/, 'stroke="#ef4444"') + '</div>'
+    + '<div class="state-title">' + title + '</div>'
+    + '<div class="state-hint">' + hint + '</div>'
+    + '<button class="btn btn-sm btn-primary" onclick="location.reload()" style="margin-top:16px;">刷新页面</button>'
+    + '</div>';
+}
+
 // ===== Toast 提示函数（主界面版，补上 login.html 里有的函数）=====
 function showToast(msg, type) {
   try {
@@ -2737,13 +2774,12 @@ function toggleSection(titleEl){
   if(!section) return;
   var isCollapsed = section.getAttribute('data-sub-collapsed') === 'true';
   if(isCollapsed){
-    // 展开
     section.setAttribute('data-sub-collapsed', 'false');
+    titleEl.setAttribute('aria-expanded', 'true');
   }else{
-    // 收起
     section.setAttribute('data-sub-collapsed', 'true');
+    titleEl.setAttribute('aria-expanded', 'false');
   }
-  // 同步箭头
   var arrow = section.querySelector('.section-arrow');
   if(arrow) arrow.textContent = isCollapsed ? '▼' : '▶';
 }
@@ -2787,9 +2823,10 @@ function initNav(){
         }
       }
 
-      document.querySelectorAll(".nav-item").forEach(i=>i.classList.remove("active"));
+      document.querySelectorAll(".nav-item").forEach(i=>{i.classList.remove("active");i.removeAttribute('aria-current');});
 
       item.classList.add("active");
+      item.setAttribute('aria-current', 'page');
 
       renderModule(item.dataset.module);
 

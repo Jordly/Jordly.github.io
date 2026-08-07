@@ -83,12 +83,12 @@
 <!-- 主容器 -->
 <div id="main-container">
   <!-- 左侧模块菜单 -->
-  <nav id="sidebar">
+  <nav id="sidebar" aria-label="主导航">
     <div class="nav-section" data-section="project">
-      <div class="nav-section-title" onclick="toggleSection(this)">
+      <div class="nav-section-title" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="true">
         <span class="section-icon">🗂️</span>
         <span class="section-text">项目管理中控台</span>
-        <span class="section-arrow">▶</span>
+        <span class="section-arrow">▼</span>
       </div>
       <a href="#" class="nav-item active" data-module="dashboard">
         <span class="nav-icon">📊</span>
@@ -112,7 +112,7 @@
       </a>
     </div>
     <div class="nav-section" data-section="collab">
-      <div class="nav-section-title" onclick="toggleSection(this)">
+      <div class="nav-section-title" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false">
         <span class="section-icon">🤝</span>
         <span class="section-text">协同与知识管理</span>
         <span class="section-arrow">▶</span>
@@ -131,7 +131,7 @@
       </a>
     </div>
     <div class="nav-section" data-section="tools">
-      <div class="nav-section-title" onclick="toggleSection(this)">
+      <div class="nav-section-title" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false">
         <span class="section-icon">🛠️</span>
         <span class="section-text">项目管理工具库</span>
         <span class="section-arrow">▶</span>
@@ -154,7 +154,7 @@
       </a>
     </div>
     <div class="nav-section" data-section="system">
-      <div class="nav-section-title" onclick="toggleSection(this)">
+      <div class="nav-section-title" onclick="toggleSection(this)" role="button" tabindex="0" aria-expanded="false">
         <span class="section-icon">🔐</span>
         <span class="section-text">系统管理与配置</span>
         <span class="section-arrow">▶</span>
@@ -210,6 +210,7 @@
 <div id="sidebar-overlay" class="sidebar-overlay hidden" onclick="closeMobileSidebar()"></div>
 
   <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <script src="lucide-icons.js?v=20260807"></script>
   <script src="cloudbase-sync.js?v=20260723"></script>
   <script src="core-security.js?v=20260723"></script>
   <script src="modules/archive.js?v=20260723"></script>
@@ -233,6 +234,63 @@
   <script src="premium-enhancements.js?v=20260723"></script>
   <script src="goal-management.js?v=20260723"></script>
   <script src="backup-restore.js?v=20260723"></script>
+
+<!-- Lucide 图标替换：将 emoji 替换为 SVG 图标 -->
+<script>
+(function(){
+  // emoji → Lucide 图标名映射
+  var MAP = {
+    '\uD83D\uDDC2\uFE0F': 'folder',     // 🗂️
+    '\uD83D\uDCCA': 'bar-chart-3',        // 📊
+    '\uD83D\uDCCB': 'clipboard-list',     // 📋
+    '\uD83C\uDFAF': 'target',             // 🎯
+    '\uD83D\uDCC8': 'trending-up',        // 📈
+    '\uD83D\uDCB0': 'dollar-sign',        // 💰
+    '\uD83E\uDD1D': 'users',              // 🤝
+    '\uD83D\uDC1B': 'bug',                // 🐛
+    '\uD83D\uDCDA': 'library',            // 📚
+    '\u26A0\uFE0F': 'alert-triangle',     // ⚠️
+    '\uD83D\uDEE0\uFE0F': 'wrench',       // 🛠️
+    '\uD83D\uDD04': 'refresh-cw',         // 🔄
+    '\uD83D\uDCAF': 'star',               // 💯
+    '\uD83D\uDD10': 'lock',               // 🔐
+    '\uD83D\uDDC4\uFE0F': 'database',     // 🗄️
+    '\u2699\uFE0F': 'settings',           // ⚙️
+    '\uD83D\uDD14': 'bell',               // 🔔
+    '\uD83D\uDC64': 'user',               // 👤
+    '\u2728': 'sparkles',                 // ✨
+    '\u270F\uFE0F': 'pencil',             // ✏️
+    '\uD83D\uDD0D': 'search',             // 🔍
+    '\u2795': 'plus',                     // ➕
+    '\uD83D\uDDD1\uFE0F': 'trash-2',      // 🗑️
+    '\uD83D\uDCE6': 'download',           // 📦
+    '\uD83D\uDCE4': 'upload',             // 📤
+    '\u2139\uFE0F': 'info',               // ℹ️
+    '\u2705': 'check-circle',             // ✅
+    '\u274C': 'x-circle',                 // ❌
+    '\uD83D\uDCEC': 'mail',              // 📬
+    '\uD83D\uDD12': 'lock',               // 🔒
+    '\uD83D\uDEE1\uFE0F': 'shield-check', // 🛡️
+    '\uD83D\uDC41\uFE0F': 'eye',          // 👁️
+    '\uD83D\uDE48': 'eye-off',            // 🙈
+    '\uD83D\uDEA7': 'wrench',             // 🚧
+    '\uD83D\uDCBB': 'monitor',            // 💻
+  };
+  
+  // 替换侧边栏图标
+  ['section-icon','nav-icon'].forEach(function(cls){
+    var els = document.getElementsByClassName(cls);
+    for(var i=0;i<els.length;i++){
+      var el = els[i];
+      var txt = el.textContent.trim();
+      var iconName = MAP[txt];
+      if(iconName && LUCIDE_PATHS[iconName]){
+        el.innerHTML = lucideIcon(iconName, cls==='section-icon'?20:16);
+      }
+    }
+  });
+})();
+</script>
 
 <!-- 登录/注册弹窗 - Premium 设计 -->
 <div id="login-modal" class="modal-overlay hidden login-modal-premium">
