@@ -71,7 +71,7 @@ function renderProfile(){
     <!-- 职场 -->
     <div style="${rowStyle}" id="profile-brand-row">
       <div style="${labelStyle}" class="profile-field-label">职场</div>
-      <div style="${valueStyle}" id="profile-brand-value">${escHtml((u.workplace || userInDb.workplace || 'Chanseen CloudHub').replace(/,/g,'/'))}</div>
+      <div style="${valueStyle}" id="profile-brand-value">${escHtml(String(u.workplace || userInDb.workplace || 'Chanseen CloudHub').replace(/,/g,'/'))}</div>
       <span style="${linkStyle}" ${linkHover} onclick="editProfileBrand()">修改</span>
     </div>
 
@@ -1223,6 +1223,7 @@ function switchIssueTab(tab){
   issueActiveTab = tab;
   if(tab==='issue'){ issueFilterState = { status:'all', priority:'all', type:'all', assignee:'all', keyword:'' }; }
   else { topicFilterState = { status:'all', type:'all', assignee:'all', keyword:'' }; }
+  _moduleCache['issue'] = null;
   renderModule('issue');
 }
 
@@ -1241,12 +1242,14 @@ function filterIssues(){
     topicFilterState.assignee = sel3 ? sel3.value : 'all';
     topicFilterState.keyword = kw ? kw.value : '';
   }
+  _moduleCache['issue'] = null;
   renderModule('issue');
 }
 
 function filterIssueByStatus(status, el){
   if(issueActiveTab==='issue') issueFilterState.status = status;
   else topicFilterState.status = status;
+  _moduleCache['issue'] = null;
   renderModule('issue');
 }
 
@@ -1442,6 +1445,7 @@ function switchIssueTab(tab){
   issueActiveTab = tab;
   if(tab==='issue'){ issueFilterState = { status:'all', priority:'all', type:'all', assignee:'all', keyword:'' }; }
   else { topicFilterState = { status:'all', type:'all', assignee:'all', keyword:'' }; }
+  _moduleCache['issue'] = null;
   renderModule('issue');
 }
 
@@ -1460,12 +1464,14 @@ function filterIssues(){
     topicFilterState.assignee = sel3 ? sel3.value : 'all';
     topicFilterState.keyword = kw ? kw.value : '';
   }
+  _moduleCache['issue'] = null;
   renderModule('issue');
 }
 
 function filterIssueByStatus(status, el){
   if(issueActiveTab==='issue') issueFilterState.status = status;
   else topicFilterState.status = status;
+  _moduleCache['issue'] = null;
   renderModule('issue');
 }
 

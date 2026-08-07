@@ -217,7 +217,7 @@ var handoverFilter = { keyword:'', status:'all' };
 function emptyState(title, hint, icon) {
   title = title || '暂无数据';
   hint = hint || '';
-  icon = lucideIcon(icon || 'folder', 48).replace('width="48" height="48"', '').replace(/stroke="currentColor"/, 'stroke="#9CA3AF"');
+  icon = String(lucideIcon(icon || 'folder', 48)).replace('width="48" height="48"', '').replace(/stroke="currentColor"/, 'stroke="#9CA3AF"');
   return '<div class="state-empty state-wrapper">'
     + '<div class="state-icon">' + icon + '</div>'
     + '<div class="state-title">' + title + '</div>'
@@ -237,7 +237,7 @@ function errorState(title, hint) {
   title = title || '加载失败';
   hint = hint || '请刷新页面重试';
   return '<div class="state-error state-wrapper">'
-    + '<div class="state-icon">' + lucideIcon('alert-triangle', 48).replace('width="48" height="48"', '').replace(/stroke="currentColor"/, 'stroke="#ef4444"') + '</div>'
+    + '<div class="state-icon">' + String(lucideIcon('alert-triangle', 48)).replace('width="48" height="48"', '').replace(/stroke="currentColor"/, 'stroke="#ef4444"') + '</div>'
     + '<div class="state-title">' + title + '</div>'
     + '<div class="state-hint">' + hint + '</div>'
     + '<button class="btn btn-sm btn-primary" onclick="location.reload()" style="margin-top:16px;">刷新页面</button>'
@@ -296,7 +296,7 @@ function showPromptModal(title, label, defaultValue, onConfirm) {
   overlay.innerHTML = ''
     + '<div class="sd-prompt-box">'
     + '<div class="sd-prompt-header">'+escHtml(title)+' <button class="sd-prompt-close">&times;</button></div>'
-    + '<div class="sd-prompt-body"><label>'+escHtml(label)+'</label><div class="sd-prompt-input-wrap"><input type="text" class="sd-prompt-input" value="'+(defaultValue||'').replace(/"/g,'&quot;')+'"></div></div>'
+    + '<div class="sd-prompt-body"><label>'+escHtml(label)+'</label><div class="sd-prompt-input-wrap"><input type="text" class="sd-prompt-input" value="'+escHtml(defaultValue)+'"></div></div>'
     + '<div class="sd-prompt-footer">'
     + '<button class="sd-confirm-btn sd-confirm-cancel">取消</button>'
     + '<button class="sd-confirm-btn sd-confirm-ok">确定</button>'
@@ -3011,9 +3011,9 @@ function renderFilterBar() {
   if (filterState.health !== 'all' && filterState.health !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.health + '<i onclick="setFilter(\'health\',\'\')">×</i></span>'; }
   if (filterState.pm !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.pm + '<i onclick="setFilter(\'pm\',\'all\')">×</i></span>'; }
   if (filterState.director !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.director + '<i onclick="setFilter(\'director\',\'all\')">×</i></span>'; }
-  filterState.platforms.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'platforms\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
-  filterState.category.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'category\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
-  filterState.brand.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'brand\',\'' + v.replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  filterState.platforms.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'platforms\',\'' + String(v).replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  filterState.category.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'category\',\'' + String(v).replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  filterState.brand.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'brand\',\'' + String(v).replace(/'/g,"\\'") + '\')">×</i></span>'; });
   if (hasFilter) tagsHtml = '<div class="filter-tags-row">' + tagsHtml + '<button class="filter-clear-btn" onclick="resetFilters()">清空筛选</button></div>';
 
   // 第一行：普通下拉
@@ -3258,7 +3258,7 @@ function renderFbOptions(key) {
   var html = '';
   html += filtered.map(function(v) {
     var isSelected = isMulti ? (selected.indexOf(v) !== -1) : (selected === v);
-    return '<div class="fb-sp-option' + (isSelected ? ' selected' : '') + '" data-value="' + v.replace(/"/g, '&quot;') + '" onclick="onFbOptionClick(this,\'' + key + '\')">' +
+    return '<div class="fb-sp-option' + (isSelected ? ' selected' : '') + '" data-value="' + String(v).replace(/"/g, '&quot;') + '" onclick="onFbOptionClick(this,\'' + key + '\')">' +
       '<span class="fb-sp-check">' + (isSelected ? '✓' : '') + '</span>' +
       '<span>' + v + '</span>' +
     '</div>';

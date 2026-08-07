@@ -257,7 +257,7 @@ function renderManagementDetail(assessments) {
     html += `  <td style="font-weight:700;color:${band.color};">${compat}%</td>`;
     html += `  <td style="background:${band.bg};color:${band.color};padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500;">${band.label}</td>`;
     html += `  <td>${info.groups.length}个组别</td>`;
-    html += `  <td><button class="btn btn-sm" onclick="showManagerDetail('${mgr.replace(/'/g,"\\'")}')">查看详情</button></td>`;
+    html += `  <td><button class="btn btn-sm" onclick="showManagerDetail('${String(mgr).replace(/'/g,"\\'")}')">查看详情</button></td>`;
     html += `</tr>`;
   });
   html += `  </tbody></table></div></div>`;
@@ -428,7 +428,7 @@ function showGroupDetail(groupName){
   body += `<p><b>定性分项（每项0-3分）：</b>业务复杂度${a.qual1||0}｜跨平台${a.qual2||0}｜品牌授权${a.qual3||0}｜流动性${a.qual4||0}｜培训需求${a.qual5||0}｜系统复杂度${a.qual6||0}｜客诉难度${a.qual7||0}｜突发事件${a.qual8||0}</p>`;
   body += `<hr><div style="display:flex;gap:8px;justify-content:flex-end;">`;
   body += `  <button class="btn btn-sm btn-primary" onclick="var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove();goToSystemDataTable('assessments');">✏️ 去系统数据管理编辑</button>`;
-  body += `  <button class="btn btn-sm" style="color:#f5222d;border-color:#f5222d;" onclick="if(confirm('确定删除「${a.group.replace(/'/g,"\\'")}」的评估记录？')){ var i=ASSESSMENTS.findIndex(x=>x.group==='${a.group.replace(/'/g,"\\'")}'); if(i>=0){ASSESSMENTS.splice(i,1);} _saveSystemData('assessments'); var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove(); renderModule('assessment'); }">🗑️ 删除</button>`;
+  body += `  <button class="btn btn-sm" style="color:#f5222d;border-color:#f5222d;" onclick="if(confirm('确定删除「${String(a.group).replace(/'/g,"\\'")}」的评估记录？')){ var i=ASSESSMENTS.findIndex(x=>x.group==='${String(a.group).replace(/'/g,"\\'")}'); if(i>=0){ASSESSMENTS.splice(i,1);} _saveSystemData('assessments'); var o=document.querySelector('.sd-prompt-overlay');if(o)o.remove(); renderModule('assessment'); }">🗑️ 删除</button>`;
   body += `</div></div>`;
   showDetailModal(escHtml(groupName) + ' - 难度评估详情', body);
 }

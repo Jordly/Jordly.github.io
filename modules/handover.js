@@ -1313,7 +1313,7 @@ function exportToCSV(filename, headers, rows) {
   try {
     var BOM = '\uFEFF';
     var csvRows = [headers, ...rows].map(function(r) {
-      return r.map(function(c) { return '"' + (c||'').toString().replace(/"/g, '""') + '"'; }).join(',');
+      return r.map(function(c) { return '"' + (c==null?'':String(c)).replace(/"/g, '""') + '"'; }).join(',');
     });
     var csvContent = BOM + csvRows.join('\n');
     var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
