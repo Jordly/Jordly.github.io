@@ -490,6 +490,8 @@ function safeSetItem(key, value) {
     localStorage.setItem(key, value);
     // 自动备份：同步写入备份 key（静默失败不影响主写入）
     try { localStorage.setItem(key + '_bak', value); } catch(e) {}
+    // 数据版本号递增，触发 renderModule 缓存失效
+    _dataVersion++;
     return true;
   } catch(e) {
     if (e.name === 'QuotaExceededError' || e.code === 22) {
@@ -543,12 +545,21 @@ function safeGetItem(key) {
 // 防抖工具：高频触发时延迟执行，只在停止触发后执行一次
 function debounce(fn, delay) {
   var timer = null;
-  return function() {
+  var fnRef = fn;
+  function debounced() {
     var ctx = this, args = arguments;
     if (timer) clearTimeout(timer);
-    timer = setTimeout(function() { fn.apply(ctx, args); }, delay || 200);
+    timer = setTimeout(function() { fnRef.apply(ctx, args); }, delay || 200);
+  }
+  debounced.flush = function() {
+    if (timer) { clearTimeout(timer); timer = null; fnRef(); }
   };
+  return debounced;
 }
+
+// 数据版本号：safeSetItem 写入业务数据时递增，renderModule 用其判断缓存是否过期
+var _dataVersion = 0;
+var _moduleCache = {};  // { moduleName: { version: N, html: '...' } }
 
 // 延迟初始化工具：非关键数据在页面首次渲染后再加载，让首页更快出现
 function deferInit(fn) {
@@ -925,49 +936,34 @@ var DATA_PERMISSIONS = [];
 function saveUsers() {
   var ok = safeSetItem('chansee_users', JSON.stringify(USERS));
   if (!ok) { alert('⚠️ 用户数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); return; }
-  // 同步到 CloudBase
-  if (window.CloudBaseSync) {
-    // 添加日志：显示正在保存的数据
-    
-    var p = window.CloudBaseSync.saveAll();
-    if (p && typeof p.then === 'function') {
-      p.then(function(success) {
-        if (success) {
-          // 云端保存成功时，记录成功标记
-          try { localStorage.setItem('chansee_users_cloud_saved', 'true'); } catch(e) {}
-        } else {
-          // 云端保存失败，给用户提示
-          if (typeof showToast === 'function') {
-            showToast('⚠️ 云端保存失败，数据仅保存在本地浏览器');
-          } else {
-          }
-          // 标记云端保存失败
-          try { localStorage.setItem('chansee_users_cloud_saved', 'false'); } catch(e) {}
-        }
-      }).catch(function(err) {
-        if (typeof showToast === 'function') {
-          showToast('⚠️ 云端保存异常，数据仅保存在本地浏览器');
-        }
-        try { localStorage.setItem('chansee_users_cloud_saved', 'false'); } catch(e) {}
-      });
-    }
-  }
+  // 云端同步用防抖：300ms内多次调用只执行最后一次
+  _syncDebounced();
 }
 function saveProjects() {
   var ok = safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
   if (!ok) { alert('⚠️ 项目数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); return; }
-  // 同步到 CloudBase
+  _syncDebounced();
+}
+
+// 云端同步防抖器：避免连续编辑时重复触发网络请求
+var _syncDebounced = debounce(function() {
   if (window.CloudBaseSync) {
     var p = window.CloudBaseSync.saveAll();
     if (p && typeof p.then === 'function') {
       p.then(function(success) {
         if (success) {
+          try { localStorage.setItem('chansee_users_cloud_saved', 'true'); } catch(e) {}
         } else {
+          if (typeof showToast === 'function') showToast('⚠️ 云端保存失败，数据仅保存在本地浏览器');
+          try { localStorage.setItem('chansee_users_cloud_saved', 'false'); } catch(e) {}
         }
+      }).catch(function(err) {
+        if (typeof showToast === 'function') showToast('⚠️ 云端保存异常，数据仅保存在本地浏览器');
+        try { localStorage.setItem('chansee_users_cloud_saved', 'false'); } catch(e) {}
       });
     }
   }
-}
+}, 500);
 
 function saveOperations() {
   safeSetItem('chansee_operations', JSON.stringify(OPERATIONS));
@@ -2585,6 +2581,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     initNav();
     initModal();
 
+    // 页面关闭前强制刷新待处理的云端同步
+    window.addEventListener('beforeunload', function() {
+      if (_syncDebounced && _syncDebounced.flush) _syncDebounced.flush();
+    });
+
     // === 🚀 从 login.html 跳转过来时，直接信任登录凭证，不走 checkLogin 复杂逻辑 ===
     var _isFromLogin = window.location.search.indexOf('from=login') !== -1;
     if (_isFromLogin) {
@@ -2897,11 +2898,27 @@ function renderModule(module){
     const area = document.getElementById("module-content");
     if (!area) { console.error('renderModule: module-content 元素不存在'); return; }
     const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, systemData:renderSystemData, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
-    var html = fns[module] ? fns[module]() : `<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>`;
-    if (!html || html === 'undefined' || html === 'null') {
-      html = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>模块内容为空</p></div>`;
+    // 性能埋点：记录模块渲染耗时
+    var perfStart = performance.now();
+    // 模块渲染缓存：数据未变时跳过 HTML 生成
+    var cached = _moduleCache[module];
+    var html;
+    if (cached && cached.version === _dataVersion) {
+      html = cached.html;
+    } else {
+      html = fns[module] ? fns[module]() : '<div class="empty-state"><div class="empty-icon">🚧</div><p>模块开发中...</p></div>';
+      if (!html || html === 'undefined' || html === 'null') {
+        html = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>模块内容为空</p></div>';
+      }
+      _moduleCache[module] = { version: _dataVersion, html: html };
     }
+    var perfRender = (performance.now() - perfStart).toFixed(1);
     area.innerHTML = html;
+    var perfDom = (performance.now() - perfStart).toFixed(1);
+    // 超过 200ms 的模块记录到运行日志
+    if (parseFloat(perfDom) > 200 && typeof addRuntimeLog === 'function') {
+      addRuntimeLog('perf', '模块渲染较慢: ' + module, '渲染 ' + perfRender + 'ms, 总耗时 ' + perfDom + 'ms');
+    }
     bindEvents();
     // 确保右上角用户头像始终显示（防止被其他代码清空）
     updateUserDisplay();
