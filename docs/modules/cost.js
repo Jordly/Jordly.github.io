@@ -561,7 +561,8 @@ function toggleHealthDetail(projectId) {
 function sortHealthTable(key) {
   const dir = (window._healthSort && window._healthSort.key === key && window._healthSort.dir === "desc") ? "asc" : "desc";
   window._healthSort = { key, dir };
-  renderModule("服务与进度追踪");
+  _moduleCache['operation'] = null; // 缓存失效：排序变化后强制重渲染
+  renderModule('operation');
 }
 
 // 主渲染函数
