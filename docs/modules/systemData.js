@@ -398,7 +398,7 @@ var _renderSystemData = function(){
   // 卡片目录视图
   if(_systemDataView === 'catalog'){
     var kw = (_systemDataCatalogSearch||'').toLowerCase().trim();
-    var _sdAllExpanded = window._sdAllExpanded !== false; // 默认全部展开
+    var _sdAllExpanded = (window._sdAllExpanded == null) ? true : (window._sdAllExpanded !== false);
 
     // 生成全部组的内容
     var groupSections = '';

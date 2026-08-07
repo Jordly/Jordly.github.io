@@ -3023,7 +3023,7 @@ function renderFilterBar() {
 
   var row1 = '<div class="filter-row-v4">';
   row1 += '<select class="fb-select" id="filter-time" onchange="onFilterTimeChange(this.value)" title="时间">';
-  row1 += '<option value="" disabled selected hidden>时间 ▼</option>';
+  row1 += '<option value="" disabled hidden>时间 ▼</option>';
   row1 += '<option value="month"'+(filterState.timeMode==='month'?' selected':'')+'>本月</option>';
   row1 += '<option value="lastMonth"'+(filterState.timeMode==='lastMonth'?' selected':'')+'>上月</option>';
   row1 += '<option value="quarter"'+(filterState.timeMode==='quarter'?' selected':'')+'>本季</option>';
@@ -3032,19 +3032,19 @@ function renderFilterBar() {
   row1 += '</select>';
 
   row1 += '<select class="fb-select" id="filter-workplace" onchange="setFilter(\'workplace\',this.value)" title="职场">';
-  row1 += '<option value="" disabled selected hidden>职场 ▼</option>';
+  row1 += '<option value="" disabled hidden>职场 ▼</option>';
   row1 += '<option value="all"'+(filterState.workplace==='all'?' selected':'')+'>全部</option>';
   workplaces.forEach(function(w){ row1 += '<option value="'+w+'"'+(filterState.workplace===w?' selected':'')+'>'+w+'</option>'; });
   row1 += '</select>';
 
   row1 += '<select class="fb-select" id="filter-projectType" onchange="setFilter(\'projectType\',this.value)" title="类型">';
-  row1 += '<option value="" disabled selected hidden>类型 ▼</option>';
+  row1 += '<option value="" disabled hidden>类型 ▼</option>';
   row1 += '<option value="all"'+(filterState.projectType==='all'?' selected':'')+'>全部</option>';
   types.forEach(function(t){ row1 += '<option value="'+t+'"'+(filterState.projectType===t?' selected':'')+'>'+t+'</option>'; });
   row1 += '</select>';
 
   row1 += '<select class="fb-select" id="filter-status" onchange="setFilter(\'status\',this.value)" title="状态">';
-  row1 += '<option value="" disabled selected hidden>状态 ▼</option>';
+  row1 += '<option value="" disabled hidden>状态 ▼</option>';
   row1 += '<option value="all"'+(filterState.status==='all'?' selected':'')+'>全部</option>';
   statuses.forEach(function(s){ row1 += '<option value="'+s+'"'+(filterState.status===s?' selected':'')+'>'+s+'</option>'; });
   row1 += '</select>';
@@ -3158,6 +3158,7 @@ function onFilterTimeChange(val) {
     filterState.timeStart = '';
     filterState.timeEnd = '';
   }
+  try { sessionStorage.setItem('cs_filterState', JSON.stringify(filterState)); } catch(e) {}
   renderModule(currentModule);
 }
 
@@ -3172,6 +3173,7 @@ function toggleMultiFilter(key, val) {
   var idx = arr.indexOf(val);
   if (idx >= 0) arr.splice(idx, 1);
   else arr.push(val);
+  try { sessionStorage.setItem('cs_filterState', JSON.stringify(filterState)); } catch(e) {}
   renderModule(currentModule);
 }
 
