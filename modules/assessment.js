@@ -456,6 +456,7 @@ function savePermissions() {
 // 选中角色，重新渲染
 function selectPermRole(role) {
   window._permSelectedRole = role;
+  _moduleCache['permissions'] = null;
   renderModule("permissions");
 
   // 保险：50ms 后再次强制刷新 DOM，确保切换视觉立即生效
@@ -543,7 +544,7 @@ function importPermissions() {
         if (!valid) { showToast("配置文件格式不正确，缺少部分角色数据", "error"); return; }
         rolePermissions = data;
         savePermissions();
-        renderModule("permissions");
+        _moduleCache['permissions']=null; renderModule("permissions");
         showToast("权限配置导入成功！", "success");
       } catch(ex) { showToast("文件解析失败：" + ex.message, "error"); }
     };
@@ -557,7 +558,7 @@ function resetPermissions() {
   showConfirmModal("确定要恢复默认权限配置吗？<br><br>当前自定义配置将丢失。", "确认恢复", function() {
     rolePermissions = JSON.parse(JSON.stringify(DEFAULT_PERMISSIONS));
     savePermissions();
-    renderModule("permissions");
+    _moduleCache['permissions']=null; renderModule("permissions");
     showToast("已恢复默认权限配置", "success");
   });
 }
@@ -609,7 +610,7 @@ function addRole() {
     
     // 重新渲染
     window._permSelectedRole = roleName;
-    renderModule("permissions");
+    _moduleCache['permissions']=null; renderModule("permissions");
     showToast("角色「" + roleName + "」已添加成功！", "success");
   });
 }
@@ -649,7 +650,7 @@ function editRole(oldName) {
       
       // 重新渲染
       window._permSelectedRole = newName;
-      renderModule("permissions");
+      _moduleCache['permissions']=null; renderModule("permissions");
       showToast("角色已重命名为「" + newName + "」！", "success");
     }
   });
@@ -705,7 +706,7 @@ function deleteRole(roleName) {
       
       // 重新渲染
       window._permSelectedRole = ROLES[0] || "项目伙伴";
-      renderModule("permissions");
+      _moduleCache['permissions']=null; renderModule("permissions");
       showToast("角色「" + roleName + "」已删除！", "success");
     }
   });
@@ -740,7 +741,7 @@ function copyPermissionsFrom() {
         savePermissions();
         
         // 重新渲染
-        renderModule("permissions");
+        _moduleCache['permissions']=null; renderModule("permissions");
         showToast("已成功从「" + sourceRole + "」复制权限到「" + selRole + "」！", "success");
       } else {
         showToast("来源角色没有权限配置！", "error");
