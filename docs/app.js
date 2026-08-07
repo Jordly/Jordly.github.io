@@ -1,29 +1,49 @@
 // VERSION: 20260723 - 密码加密+XSS防护+代码优化
 //
 // ══════════════════════════════════════════════════════════════
-// 📍 代码地图（查找指南 · 2026-08-06）
+// 📍 代码地图（查找指南 · 2026-08-07 更新 · app.js 共 4012 行）
 // ══════════════════════════════════════════════════════════════
-//   安全基础设施（XSS/密码/错误捕获/备份）…… 第 1-80 行
-//   Mock 演示数据（DEFAULT_*/硬编码假数据）…… 第 80-400 行
-//   数据存储层（localStorage 读写/权限检查）…… 第 400-2800 行
-//   导航与布局（renderModule/bindEvents/框架）…… 第 2800-4084 行
-//  ── 业务模块 ──
-//   项目总览看板 dashboard …………………… 第 4084 行
-//   项目基础档案 archive …………………… 第 4557 行
-//   目标与权责管理 target …………………… 第 4657 行
-//   成本与利润管理 cost …………………… 第 4726 行
-//   运营数据 operation …………………… 第 5291 行
-//   问题管理 issue …………………… 第 5316 行
-//   知识能量池 knowledge …………………… 第 5417 行
-//   交接管理 handover …………………… 第 5896 行
-//   满意度 satisfaction …………………… 第 7445 行
-//   通知与公告 notifications ……………… 第 8567 行
-//   系统数据管理 systemData ……………… 第 9276 行
-//   系统权限管理 permissions ……………… 第 9751 行
-//   项目难度评估 assessment ……………… 第 9917 行
-//   绩效管理 performance ……………… 第 10882 行
-//   风险管理 risk …………………… 第 11581 行
-//   个人基础设置 profile ………………… 第 11663 行
+//   Mock 演示数据（DEFAULT_*/硬编码假数据）……………… 第 29-104 行
+//   薪资配置（初始化 + 默认KPI/提成池/扣款）…………… 第 105-189 行
+//   通用 UI 组件（Toast/确认/输入/选择/KPI弹窗）……… 第 190-424 行
+//   数据持久化层（safeSetItem/safeGetItem/各集合加载保存） 第 425-691 行
+//   看板数据模型（STATS_CARD_MODEL + 数据聚合）……… 第 692-1564 行
+//   密码显示切换 + 用户登录/注册逻辑 ………………… 第 1565-1606 行
+//   运维调研数据（WORKLOAD/KPI_HISTORY 加载保存）…… 第 1607-2309 行
+//   角色与权限系统（初始化/权限检查/导航过滤）……… 第 2310-2523 行
+//   系统初始化（loadInitData / loadAllData）………… 第 2524-2593 行
+//   UI 框架（侧边栏/导航/折叠/汉堡菜单/用户显示）… 第 2594-2802 行
+//   模块分发（renderModule / bindEvents）…………… 第 2803-2870 行
+//   筛选栏 v4（状态管理 + 渲染 + 辅助函数）………… 第 2871-3257 行
+//   项目名称多选搜索组件 ……………………………… 第 3258-3443 行
+//   驾驶舱卡片详情弹窗（6大卡片）…………………… 第 3444-4012 行
+// ── 安全基础设施（独立文件）──
+//   core-security.js：XSS转义(escHtml) + PBKDF2密码哈希 + 全局错误捕获
+//                     + 环形运行日志 + 一键备份全部数据(backupAllData)
+// ── 业务模块（已拆分至 modules/ 目录）──
+//   modules/dashboard.js    → 项目总览看板
+//   modules/archive.js      → 项目基础档案
+//   modules/target.js       → 目标与权责管理
+//   modules/cost.js         → 成本与利润管理
+//   modules/operation.js    → 运营数据
+//   modules/issue.js        → 问题管理
+//   modules/knowledge.js    → 知识能量池
+//   modules/handover.js     → 交接管理
+//   modules/satisfaction.js → 满意度
+//   modules/notifications.js→ 通知与公告
+//   modules/systemData.js   → 系统数据管理
+//   modules/permissions.js  → 系统权限管理
+//   modules/assessment.js   → 项目难度评估
+//   modules/performance.js  → 绩效管理
+//   modules/risk.js         → 风险管理
+//   modules/profile.js      → 个人基础设置
+// ── 其他独立文件 ──
+//   backup-restore.js       → 数据恢复（导入备份JSON + 确认弹窗 + 执行恢复）
+//   cloudbase-sync.js       → CloudBase 云端数据同步
+//   project-import-export.js→ 项目数据导入导出
+//   premium-enhancements.js → UI 增强（动画/交互动效）
+//   goal-management.js      → 目标管理
+//   filterBarNew.js         → 新筛选栏组件
 // ══════════════════════════════════════════════════════════════
 //
 // ===== Mock 数据 =====
