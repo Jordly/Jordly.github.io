@@ -273,10 +273,7 @@ function confirmImport(){
 }
 
 // ===== 编辑项目 =====
-function escHtml(s) {
-  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-
+// 注意：escHtml 已在 core-security.js 中定义（更早加载），这里不再重复定义，避免覆盖
 function editProject(projectId){
   var p = PROJECTS.find(function(pp){return pp.id===projectId;});
   if(!p) return;
