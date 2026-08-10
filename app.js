@@ -3342,6 +3342,8 @@ function applyFbMulti(key) {
     activeFbPanel.style.display = 'none';
     activeFbPanel = null;
   }
+  try { sessionStorage.setItem('cs_filterState', JSON.stringify(filterState)); } catch(e) {}
+  _moduleCache[currentModule] = null; // 修复:确保多选确认后顶部筛选标签刷新(原先未清缓存导致复用旧HTML)
   renderModule(currentModule);
 }
 
@@ -3351,6 +3353,8 @@ function clearFbMulti(key) {
     activeFbPanel.classList.remove('show');
     activeFbPanel = null;
   }
+  try { sessionStorage.setItem('cs_filterState', JSON.stringify(filterState)); } catch(e) {}
+  _moduleCache[currentModule] = null; // 修复:清空后也清缓存,确保tags-row刷新
   renderModule(currentModule);
 }
 

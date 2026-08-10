@@ -164,3 +164,34 @@
 > 
 > 本文档会成为系统的"避坑手册"，每次遇到新问题都会追加到这里。
 > 大模型每次工作前都会读取本文档，避免重蹈覆辙。
+
+### 7.5 🔴 JS 函数命名空间冲突（2026-08-07 血泪教训）
+**陷阱**：CS CloudHub 是纯 JS 项目，所有函数都在全局作用域。同名函数在多个文件里定义时，**后加载的 script 会覆盖先加载的版本**。
+
+**真实案例**（2026-08-07 修复）：
+- `core-security.js` 第 5 行定义了 `function escHtml(s) { return (s == null ? '' : String(s)).replace(...) }` 加固版
+- `project-import-export.js` 第 276 行又定义了 `function escHtml(s) { return (s||'').replace(...) }` 老版本
+- index.html 中 `project-import-export.js` 在 `core-security.js` 之后加载
+- 结果：整个系统用的都是老版本 escHtml，遇到 `Object.create(null)` 数据就崩
+- 排查 3 轮都没找到原因，因为单独看每个文件都是"对的"
+
+**教训**：
+1. **项目里同名全局函数只能用一次定义**——重复定义是 JS 全局污染
+2. 任何加固/重构通用函数（如 `escHtml`）后，**必须全项目搜重复定义**
+3. 排查"修过的代码不生效"时，先看是否有**同名函数覆盖**
+4. 长期方案：把通用工具函数放进 `window.utils = { escHtml: ... }` 命名空间，避免冲突
+
+**检测脚本**（Python）：列出所有 `function name(` 定义和重复：
+```python
+import re, os
+from collections import defaultdict
+funcs = defaultdict(list)
+for path in [...]:  # 按 index.html 加载顺序
+    ...
+    for m in re.finditer(r'function\s+(\w+)\s*\(', content):
+        funcs[m.group(1)].append(path)
+for name, paths in funcs.items():
+    if len(paths) > 1:
+        print(f'{name}: {paths}')
+```
+
