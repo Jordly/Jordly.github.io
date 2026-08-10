@@ -2962,8 +2962,8 @@ function renderModule(module){
 const filterState = {
   project: [],
   workplace: "",
-  director: "all",
-  pm: "all",
+  director: [],
+  pm: [],
   projectType: "",
   health: "",
   timeMode: "",
@@ -2994,6 +2994,9 @@ function setFilter(key, value) {
       for (var k in parsed) {
         if (filterState.hasOwnProperty(k)) filterState[k] = parsed[k];
       }
+      // 兼容旧版数据:pm/director 之前是 'all',新结构要求数组
+      if (typeof filterState.pm === 'string') filterState.pm = [];
+      if (typeof filterState.director === 'string') filterState.director = [];
     }
   } catch(e) {}
 })();
@@ -3009,8 +3012,8 @@ function renderFilterBar() {
   if (filterState.projectType !== 'all' && filterState.projectType !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.projectType + '<i onclick="setFilter(\'projectType\',\'\')">×</i></span>'; }
   if (filterState.status !== 'all' && filterState.status !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.status + '<i onclick="setFilter(\'status\',\'\')">×</i></span>'; }
   if (filterState.health !== 'all' && filterState.health !== '') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.health + '<i onclick="setFilter(\'health\',\'\')">×</i></span>'; }
-  if (filterState.pm !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.pm + '<i onclick="setFilter(\'pm\',\'all\')">×</i></span>'; }
-  if (filterState.director !== 'all') { hasFilter = true; tagsHtml += '<span class="filter-tag">' + filterState.director + '<i onclick="setFilter(\'director\',\'all\')">×</i></span>'; }
+  filterState.pm.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'pm\',\'' + String(v).replace(/'/g,"\\'") + '\')">×</i></span>'; });
+  filterState.director.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'director\',\'' + String(v).replace(/'/g,"\\'") + '\')">×</i></span>'; });
   filterState.platforms.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'platforms\',\'' + String(v).replace(/'/g,"\\'") + '\')">×</i></span>'; });
   filterState.category.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'category\',\'' + String(v).replace(/'/g,"\\'") + '\')">×</i></span>'; });
   filterState.brand.forEach(function(v) { hasFilter = true; tagsHtml += '<span class="filter-tag">' + v + '<i onclick="toggleMultiFilter(\'brand\',\'' + String(v).replace(/'/g,"\\'") + '\')">×</i></span>'; });
@@ -3106,23 +3109,29 @@ function renderFilterBar() {
     '</div>';
   row2 += '</div>';
 
-  // PM（单选）
-  var pmLabel = filterState.pm === 'all' ? '项目PM' : filterState.pm;
+  // PM（多选，与平台/品类/品牌保持一致体验）
+  var pmLabel = '项目PM';
+  if (Array.isArray(filterState.pm) && filterState.pm.length === 1) pmLabel = filterState.pm[0];
+  else if (Array.isArray(filterState.pm) && filterState.pm.length > 1) pmLabel = '已选'+filterState.pm.length+'项';
   row2 += '<div class="fb-search-wrap" data-filter="pm">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+pmLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-pm" style="display:none;">'+
     '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-pm" placeholder="搜索PM..." oninput="renderFbOptions(\'pm\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-pm"></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'pm\',this)">全选</button><button class="fb-sp-clear" onclick="clearFbMulti(\'pm\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'pm\')">确定</button></div>'+
     '</div>';
   row2 += '</div>';
 
-  // 客服管理（单选）
-  var drLabel = filterState.director === 'all' ? '客服管理' : filterState.director;
+  // 客服管理（多选）
+  var drLabel = '客服管理';
+  if (Array.isArray(filterState.director) && filterState.director.length === 1) drLabel = filterState.director[0];
+  else if (Array.isArray(filterState.director) && filterState.director.length > 1) drLabel = '已选'+filterState.director.length+'项';
   row2 += '<div class="fb-search-wrap" data-filter="director">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+drLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-director" style="display:none;">'+
     '<div class="fb-sp-search"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><input class="fb-search-input" type="text" id="search-director" placeholder="搜索客服管理..." oninput="renderFbOptions(\'director\')"></div>'+
     '<div class="fb-sp-options" id="fb-options-director"></div>'+
+    '<div class="fb-sp-footer"><button class="fb-sp-toggle-all" onclick="toggleFbSelectAll(\'director\',this)">全选</button><button class="fb-sp-clear" onclick="clearFbMulti(\'director\')">清空</button><button class="fb-sp-confirm" onclick="applyFbMulti(\'director\')">确定</button></div>'+
     '</div>';
   row2 += '</div>';
 
@@ -3253,8 +3262,11 @@ function renderFbOptions(key) {
     values = [...new Set(PROJECTS.map(function(p){return p.director}))].sort();
   }
   var filtered = keyword ? values.filter(function(v){ return v.toLowerCase().indexOf(keyword) !== -1; }) : values;
-  var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
+  // pm/director 也是多选
+  var isMulti = (key === 'platforms' || key === 'category' || key === 'brand' || key === 'pm' || key === 'director');
   var selected = filterState[key];
+  if (isMulti && !Array.isArray(selected)) selected = [];
+  if (!isMulti && Array.isArray(selected)) selected = selected[0] || '';
   var html = '';
   html += filtered.map(function(v) {
     var isSelected = isMulti ? (selected.indexOf(v) !== -1) : (selected === v);
@@ -3268,15 +3280,18 @@ function renderFbOptions(key) {
 
 function onFbOptionClick(el, key) {
   var val = el.getAttribute('data-value');
-  var isMulti = (key === 'platforms' || key === 'category' || key === 'brand');
+  // pm/director 现在也是多选（修复：与平台/品类/品牌保持一致体验）
+  var isMulti = (key === 'platforms' || key === 'category' || key === 'brand' || key === 'pm' || key === 'director');
   if (isMulti) {
-    var idx = filterState[key].indexOf(val);
+    var arr = filterState[key];
+    if (!Array.isArray(arr)) arr = filterState[key] = [];
+    var idx = arr.indexOf(val);
     if (idx >= 0) {
-      filterState[key].splice(idx, 1);
+      arr.splice(idx, 1);
       el.classList.remove('selected');
       el.querySelector('.fb-sp-check').textContent = '';
     } else {
-      filterState[key].push(val);
+      arr.push(val);
       el.classList.add('selected');
       el.querySelector('.fb-sp-check').textContent = '✓';
     }
@@ -3284,6 +3299,8 @@ function onFbOptionClick(el, key) {
     filterState[key] = val;
     if (activeFbPanel) activeFbPanel.style.display = 'none';
     activeFbPanel = null;
+    try { sessionStorage.setItem('cs_filterState', JSON.stringify(filterState)); } catch(e) {}
+    _moduleCache[currentModule] = null; // 修复:单选后也清缓存,确保tags-row刷新
     renderModule(currentModule);
   }
 }
@@ -3438,8 +3455,8 @@ function updateProjectFilterLabel() {
 function resetFilters() {
   filterState.project = [];
   filterState.workplace = "";
-  filterState.director = "all";
-  filterState.pm = "all";
+  filterState.director = [];
+  filterState.pm = [];
   filterState.projectType = "";
   filterState.health = "";
   filterState.timeMode = "";
@@ -3468,11 +3485,11 @@ function getFilteredProjects(){
   if (filterState.project.length > 0) {
     list = list.filter(p => filterState.project.includes(p.id));
   }
-  if (filterState.director !== "all") {
-    list = list.filter(p => p.director === filterState.director);
+  if (filterState.director.length > 0) {
+    list = list.filter(p => filterState.director.includes(p.director));
   }
-  if (filterState.pm !== "all") {
-    list = list.filter(p => p.pm === filterState.pm);
+  if (filterState.pm.length > 0) {
+    list = list.filter(p => filterState.pm.includes(p.pm));
   }
   if (filterState.projectType !== "all" && filterState.projectType !== "") {
     list = list.filter(p => p.serviceMode === filterState.projectType);
