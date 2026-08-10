@@ -3107,7 +3107,7 @@ function renderFilterBar() {
   row2 += '</div>';
 
   // PM（单选）
-  var pmLabel = filterState.pm === 'all' ? '项目PM ▼' : filterState.pm;
+  var pmLabel = filterState.pm === 'all' ? '项目PM' : filterState.pm;
   row2 += '<div class="fb-search-wrap" data-filter="pm">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+pmLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-pm" style="display:none;">'+
@@ -3117,7 +3117,7 @@ function renderFilterBar() {
   row2 += '</div>';
 
   // 客服管理（单选）
-  var drLabel = filterState.director === 'all' ? '客服管理 ▼' : filterState.director;
+  var drLabel = filterState.director === 'all' ? '客服管理' : filterState.director;
   row2 += '<div class="fb-search-wrap" data-filter="director">';
   row2 += '<div class="fb-search-trigger" onclick="toggleFbSearch(this)"><span>'+drLabel+'</span><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>';
   row2 += '<div class="fb-search-panel" id="fb-panel-director" style="display:none;">'+
