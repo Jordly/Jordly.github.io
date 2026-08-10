@@ -7,9 +7,9 @@ function renderPerformance() {
       +'<div><div class="module-title">📈 客服绩效看板</div><div style="font-size:12px;color:var(--c-text-3);margin-top:4px;">绩效测算 → 薪资测算 → 全员工资条</div></div>'
     +'</div>'
     +'<div style="display:flex;gap:0;border-bottom:1px solid var(--c-border,#e2e8f0);margin-bottom:16px;">'
-      +'<div style="padding:10px 20px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(tab==='performance'?'#0B9B96':'transparent')+';color:'+(tab==='performance'?'#0B9B96':'var(--c-text-2)')+';font-weight:'+(tab==='performance'?'600':'400')+';" onclick="window._perfTab=\'performance\';renderModule(\'performance\')">📊 绩效测算</div>'
-      +'<div style="padding:10px 20px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(tab==='salary'?'#3B82F6':'transparent')+';color:'+(tab==='salary'?'#3B82F6':'var(--c-text-2)')+';font-weight:'+(tab==='salary'?'600':'400')+';" onclick="window._perfTab=\'salary\';renderModule(\'performance\')">💰 薪资测算</div>'
-      +'<div style="padding:10px 20px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(tab==='config'?'#8B5CF6':'transparent')+';color:'+(tab==='config'?'#8B5CF6':'var(--c-text-2)')+';font-weight:'+(tab==='config'?'600':'400')+';" onclick="window._perfTab=\'config\';renderModule(\'performance\')">⚙️ 基础配置</div>'
+      +'<div style="padding:10px 20px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(tab==='performance'?'#0B9B96':'transparent')+';color:'+(tab==='performance'?'#0B9B96':'var(--c-text-2)')+';font-weight:'+(tab==='performance'?'600':'400')+';" onclick="window._perfTab=\'performance\';if(typeof _moduleCache!==\'undefined\')_moduleCache[\'performance\']=null;renderModule(\'performance\')">📊 绩效测算</div>'
+      +'<div style="padding:10px 20px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(tab==='salary'?'#3B82F6':'transparent')+';color:'+(tab==='salary'?'#3B82F6':'var(--c-text-2)')+';font-weight:'+(tab==='salary'?'600':'400')+';" onclick="window._perfTab=\'salary\';if(typeof _moduleCache!==\'undefined\')_moduleCache[\'performance\']=null;renderModule(\'performance\')">💰 薪资测算</div>'
+      +'<div style="padding:10px 20px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(tab==='config'?'#8B5CF6':'transparent')+';color:'+(tab==='config'?'#8B5CF6':'var(--c-text-2)')+';font-weight:'+(tab==='config'?'600':'400')+';" onclick="window._perfTab=\'config\';if(typeof _moduleCache!==\'undefined\')_moduleCache[\'performance\']=null;renderModule(\'performance\')">⚙️ 基础配置</div>'
     +'</div>';
 
   if(tab === 'salary') return tabBar + _renderSalaryTab();
