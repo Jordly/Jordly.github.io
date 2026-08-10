@@ -677,6 +677,8 @@ body {
   margin-top: 6px;
   font-size: var(--text-base);
   color: var(--c-text-2);
+  align-items: center; /* 修复:统一垂直居中对齐,避免不同padding高度的badge/tag错位 */
+  flex-wrap: wrap;
 }
 .detail-tabs {
   display: flex;
