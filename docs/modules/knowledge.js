@@ -364,7 +364,7 @@ function showKnowledgeDetail(id) {
     +   '<div class="kyp-detail-close" onclick="closeKnowledgeDetail()">&times;</div>'
     + '</div>'
     + '<div class="kyp-detail-body">'
-    +   (k.description ? '<div class="kyp-detail-desc">' + k.description + '</div>' : '')
+    +   (k.description ? '<div class="kyp-detail-desc">' + k.description.replace(/\n/g,'<br>') + '</div>' : '')
     // 附件下载
     +   (k.fileUrl ? '<div style="margin-top:12px;padding:10px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;"><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">📎</span><div><div style="font-size:12px;font-weight:600;color:#0c4a6e;">附件资料</div><div style="font-size:10px;color:#0284c7;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escHtml(k.fileUrl)+'</div></div></div><a href="'+escHtml(k.fileUrl)+'" target="_blank" class="btn btn-sm btn-primary" style="background:#0ea5e9;border-color:#0ea5e9;flex-shrink:0;text-decoration:none;">📥 查看/下载</a></div>' : '')
     +   (tagHtml ? '<div class="kyp-detail-tags"><div class="kyp-detail-tags-label">标签（点击筛选）：</div>' + tagHtml + '</div>' : '')
