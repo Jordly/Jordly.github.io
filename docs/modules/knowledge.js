@@ -1,128 +1,139 @@
-// modules/knowledge.js — 知识能量池模块 · 卡片网格v4
+// modules/knowledge.js — 知识能量池模块
 /* ═══════════════════ 知识能量池 ═══════════════════ */
 function renderKnowledge(){
   try {
 
-  var can = canEdit();
-  var totalKnowledge = KNOWLEDGE.length;
-  var weekNew = KNOWLEDGE.filter(function(k){ if(!k.createdAt)return false; var d=new Date(k.createdAt),n=new Date(),wk=new Date(n.getTime()-7*86400000); return d>=wk; }).length;
-  var totalViews = KNOWLEDGE.reduce(function(s,k){return s+(k.views||0);},0);
+  const can = canEdit();
 
-  var domainOrder = ['方法论与框架','流程与SOP','成本与核算','风控与应急','人员管理','客诉与话术','效率与AI','培训与入门'];
-  var domainCounts = {};
-  KNOWLEDGE.forEach(function(k){ domainCounts[k.domain] = (domainCounts[k.domain]||0)+1; });
+  // 计算统计数据
+  const totalKnowledge = KNOWLEDGE.length;
+  const weekNew = KNOWLEDGE.filter(k => {
+    if (!k.createdAt) return false;
+    const d = new Date(k.createdAt);
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    return d >= weekAgo;
+  }).length;
+  const totalViews = KNOWLEDGE.reduce((s, k) => s + (k.views || 0), 0);
+  const totalDownloads = KNOWLEDGE.reduce((s, k) => s + (k.downloads || 0), 0);
 
-  var top5 = [...KNOWLEDGE].sort(function(a,b){return (b.views||0)-(a.views||0);}).slice(0,5);
+  // 分类统计
+  const domainCounts = {};
+  KNOWLEDGE.forEach(k => {
+    domainCounts[k.domain] = (domainCounts[k.domain] || 0) + 1;
+  });
+  const domainOrder = ['方法论与框架','流程与SOP','成本与核算','风控与应急','人员管理','客诉与话术','效率与AI','培训与入门'];
 
-  // 收藏数
-  var favIds = [];
-  try { favIds = JSON.parse(localStorage.getItem('kyp_favorites')||'[]'); }catch(e){}
-  var favCount = KNOWLEDGE.filter(function(k){return favIds.indexOf(k.id)>=0;}).length;
+  const top5 = [...KNOWLEDGE].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
 
-  return ''
-  +'<div class="kyp-header">'
-    +'<div class="kyp-header-left">'
-      +'<div class="kyp-title-row">'
-        +'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>'
-        +'<h1 class="kyp-title">核心知识能量池</h1>'
-      +'</div>'
-      +'<p class="kyp-desc">客服团队经验沉淀与知识共享中心 · '+totalKnowledge+'篇知识 · '+totalViews+'次浏览</p>'
-    +'</div>'
-    +'<div class="kyp-header-right">'
-      +(can?'<button class="btn btn-sm btn-primary" onclick="addKnowledge()">＋ 添加知识</button>':'')
-    +'</div>'
-  +'</div>'
+  const permIcon = {'公开':'🌐','内部':'🔵','受限':'🔴'};
+  const permLabel = {'公开':'公开','内部':'内部','受限':'受限'};
 
-  // 顶部统计条（保留用户原 UI 模式）
-  +'<div class="kyp-stats">'
-    +'<div class="kyp-stat-card kis-blue">'
-      +'<div class="kyp-stat-val">'+totalKnowledge+'</div>'
-      +'<div class="kyp-stat-lbl">知识总量</div>'
-    +'</div>'
-    +'<div class="kyp-stat-card kis-red">'
-      +'<div class="kyp-stat-val">'+KNOWLEDGE.filter(function(k){return k.priority==='high';}).length+'</div>'
-      +'<div class="kyp-stat-lbl">高优先级</div>'
-    +'</div>'
-    +'<div class="kyp-stat-card kis-orange">'
-      +'<div class="kyp-stat-val">'+weekNew+'</div>'
-      +'<div class="kyp-stat-lbl">本周新增</div>'
-    +'</div>'
-    +'<div class="kyp-stat-card kis-green">'
-      +'<div class="kyp-stat-val">'+favCount+'</div>'
-      +'<div class="kyp-stat-lbl">已收藏</div>'
-    +'</div>'
-  +'</div>'
+  return `
+  <div class="kyp-header">
+    <div class="kyp-header-left">
+      <div class="kyp-title-row">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <h1 class="kyp-title">核心知识能量池</h1>
+      </div>
+      <p class="kyp-desc">管理者通用技能知识库 · 团队管理 · 成本控制 · 效率提升</p>
+    </div>
+    ${can ? '<div class="kyp-add-btn" onclick="addKnowledge()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>添加知识</div>' : ''}
+  </div>
 
-  // 筛选 + 搜索
-  +'<div class="kyp-filters">'
-    +'<div class="kyp-filter-tags" id="kyp-filter-tags">'
-      +'<span class="kyp-tag kyp-tag-active" data-type="all" onclick="kypFilter(\'all\')">全部 '+totalKnowledge+'</span>'
-      + domainOrder.filter(function(t){return domainCounts[t];}).map(function(t){
-          return '<span class="kyp-tag" data-type="'+t+'" onclick="kypFilter(\''+t+'\')">'+t+' '+domainCounts[t]+'</span>';
-        }).join('')
-    +'</div>'
-    +'<div class="kyp-search-box">'
-      +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>'
-      +'<input type="text" class="kyp-search-input" id="kyp-search-field" placeholder="搜索知识标题、标签、内容..." autocomplete="off" oninput="kypSearch(this.value)">'
-    +'</div>'
-  +'</div>'
+  <!-- 最近更新 -->
+  ${(()=>{
+    var recent = [...KNOWLEDGE].sort(function(a,b){ return (b.updateTime||'').localeCompare(a.updateTime||''); }).slice(0,4);
+    return recent.length ? '<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">'
+      +'<span style="font-size:11px;color:#64748b;flex-shrink:0;">🕐 最近更新：</span>'
+      + recent.map(function(k){ return '<span style="font-size:11px;padding:3px 10px;background:#f0f9ff;border-radius:12px;cursor:pointer;color:#0284c7;border:1px solid #bae6fd;white-space:nowrap;transition:all 0.15s;" onclick="showKnowledgeDetail('+k.id+')" onmouseover="this.style.background=\'#e0f2fe\'" onmouseout="this.style.background=\'#f0f9ff\'">'+k.title+'</span>'; }).join('')
+      +'</div>' : '';
+  })()}
 
-  // 收藏栏（如果有收藏）
-  +(favCount>0?'<div style="display:flex;gap:6px;margin-bottom:12px;align-items:center;flex-wrap:wrap;">'
-    +'<span style="font-size:11px;color:#dc2626;font-weight:500;">♥ 收藏</span>'
-    +KNOWLEDGE.filter(function(k){return favIds.indexOf(k.id)>=0;}).slice(0,8).map(function(k){
-        return '<span style="font-size:11px;padding:3px 10px;background:#fef2f2;border-radius:12px;cursor:pointer;color:#dc2626;border:1px solid #fecaca;" onclick="showKnowledgeDetail('+k.id+')">'+k.title+'</span>';
-      }).join('')
-    +'</div>':'')
+  <div class="kyp-stats">
+    <div class="kyp-stat-card">
+      <div class="kyp-stat-icon kis-blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+      <div class="kyp-stat-body">
+        <span class="kyp-stat-val">${totalKnowledge}</span>
+        <span class="kyp-stat-lbl">知识总量</span>
+      </div>
+    </div>
+    <div class="kyp-stat-card">
+      <div class="kyp-stat-icon kis-green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+      <div class="kyp-stat-body">
+        <span class="kyp-stat-val">${weekNew}<span class="kyp-badge-new">NEW</span></span>
+        <span class="kyp-stat-lbl">本周新增</span>
+      </div>
+    </div>
+    <div class="kyp-stat-card">
+      <div class="kyp-stat-icon kis-orange"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <div class="kyp-stat-body">
+        <span class="kyp-stat-val">${totalViews.toLocaleString()}</span>
+        <span class="kyp-stat-lbl">总浏览量</span>
+      </div>
+    </div>
+    <div class="kyp-stat-card">
+      <div class="kyp-stat-icon kis-red"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+      <div class="kyp-stat-body">
+        <span class="kyp-stat-val">${totalDownloads.toLocaleString()}</span>
+        <span class="kyp-stat-lbl">总下载量</span>
+      </div>
+    </div>
+  </div>
 
-  // 卡片网格（恢复用户认可的旧版布局）
-  +'<div class="kyp-layout">'
-    +'<div class="kyp-main">'
-      +'<div class="kyp-grid" id="kyp-grid">'
-        +(function(){
+  <div class="kyp-filters">
+    <div class="kyp-filter-tags" id="kyp-filter-tags">
+      <span class="kyp-tag kyp-tag-active" data-type="all" onclick="kypFilter('all')">全部 ${totalKnowledge}</span>
+      ${domainOrder.filter(t => domainCounts[t]).map(t => `<span class="kyp-tag" data-type="${t}" onclick="kypFilter('${t}')">${t} ${domainCounts[t]}</span>`).join('')}
+    </div>
+    <div class="kyp-search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" class="kyp-search-input" id="kyp-search-field" name="kyp_search_query" placeholder="搜索知识标题、标签、内容..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly')" oninput="kypSearch(this.value)">
+    </div>
+  </div>
+
+  <div class="kyp-layout">
+    <div class="kyp-main">
+      <div class="kyp-grid" id="kyp-grid">
+        ${(function(){
           var order = {high:0, normal:1, low:2};
           return [...KNOWLEDGE].sort(function(a,b){
             return (order[a.priority||'normal']||1) - (order[b.priority||'normal']||1);
           }).map(function(k){
-            var isFav = favIds.indexOf(k.id)>=0;
-            var prioBadge = k.priority === 'high' ? '<span class="kyp-prio-high">优先</span>' : (k.priority === 'low' ? '<span class="kyp-prio-low">参考</span>' : '');
-            var fileBadge = k.fileUrl ? '<span style="color:#0ea5e9;font-size:12px;">📎</span>' : '';
-            return ''
-              +'<div class="kyp-card'+(k.priority==='high'?' kyp-card-prio':'')+'" data-type="'+(k.domain||'')+'" data-search="'+(k.title+' '+(k.description||'')+' '+k.tags)+'" data-id="'+k.id+'">'
-              +'  <div class="kyp-card-top">'
-              +'    <div class="kyp-card-title">'+k.title+fileBadge+prioBadge+'</div>'
-              +'    <div class="kyp-card-actions">'
-              +      '<span class="kyp-act" title="收藏" onclick="kpToggleFav('+k.id+',event)">'+(isFav?'♥':'♡')+'</span>'
-              +      (can?'<span class="kyp-act" title="编辑" onclick="event.stopPropagation();editKnowledge('+k.id+')">✎</span>':'')
-              +      (can?'<span class="kyp-act kyp-act-del" title="删除" onclick="event.stopPropagation();deleteKnowledge('+k.id+')">✕</span>':'')
-              +    '</div>'
-              +'  </div>'
-              +'  <div class="kyp-card-meta">'
-              +'    <span class="kyp-domain-tag">'+(k.domain||'未分类')+'</span>'
-              +    (k.projectId?'<span class="kyp-scope-tag">项目:'+k.projectId+'</span>':'<span class="kyp-scope-tag">通用</span>')
-              +'  </div>'
-              +'  <div class="kyp-card-short">'+escHtml(k.short || (k.description||'').slice(0,80))+'</div>'
-              +'  <div class="kyp-card-foot">'
-              +'    <span class="kyp-card-time">📅 '+(k.updateTime||k.createdAt||'-')+'</span>'
-              +'    <span class="kyp-card-stats">'
-              +'      <span title="浏览">👁 '+(k.views||0)+'</span>'
-              +'      <span title="下载">⬇ '+(k.downloads||0)+'</span>'
-              +'    </span>'
-              +'  </div>'
-              +'</div>';
-          }).join('');
-        })()
-      +'</div>'
-      +'<div id="kyp-empty" style="display:none;text-align:center;padding:60px 0;color:var(--c-text-3);font-size:14px;">没有找到匹配的知识</div>'
-    +'</div>'
+          var perm = k.permission || '公开';
+          var prioBadge = k.priority === 'high' ? '<span style="font-size:10px;padding:1px 6px;background:#fef2f2;color:#dc2626;border-radius:3px;margin-left:4px;font-weight:500;">优先</span>' : (k.priority === 'low' ? '<span style="font-size:10px;padding:1px 6px;background:#f8fafc;color:#94a3b8;border-radius:3px;margin-left:4px;">参考</span>' : '');
+          return `
+          <div class="kyp-card" data-type="${k.domain||''}" data-search="${k.title}${k.description}${k.tags}" data-id="${k.id}" onmousedown="kypCardMouseDown(event, ${k.id})" onclick="kypCardClick(event, ${k.id})">
+            <div class="kyp-card-top">
+              <span class="kyp-card-title">${k.title}${k.fileUrl?' <span style="font-size:10px;color:#0ea5e9;">📎</span>':''}${prioBadge}</span>
+              ${can ? '<div class="kyp-card-actions"><span class="kyp-act" onclick="event.stopPropagation();editKnowledge('+k.id+')">✎</span><span class="kyp-act kyp-act-del" onclick="event.stopPropagation();deleteKnowledge('+k.id+')">✕</span></div>' : ''}
+            </div>
+            <div class="kyp-card-meta">
+              <span class="kyp-type-badge ktp-${(k.domain||'').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g,'-')}">${k.domain||'未分类'}</span>
+              ${k.projectId ? '<span class="kyp-scope-badge">'+k.projectId+'</span>' : '<span class="kyp-scope-badge">通用</span>'}
+            </div>
+            <div class="kyp-card-short">${k.short || (k.description || '').slice(0, 24)}</div>
+            <div class="kyp-card-footer">
+              <span class="kyp-card-time">📅 ${k.updateTime || k.createdAt || '-'}</span>
+              <span class="kyp-card-stats">
+                <span class="kyp-stat-item">👁 ${k.views || 0}</span>
+                <span class="kyp-stat-item">⬇ ${k.downloads || 0}</span>
+              </span>
+            </div>
+          </div>`;
+        }).join('');
+      })()}
+      </div>
+      <div id="kyp-empty" style="display:none;text-align:center;padding:60px 0;color:var(--c-text-3,#999);font-size:14px;">没有找到匹配的知识内容</div>
+    </div>
 
-    // 右栏：最近浏览 + 热榜
-    +'<div class="kyp-sidebar">'
-      +(function(){
+    <div class="kyp-sidebar">
+      <!-- 最近浏览 -->
+      ${(()=>{
         try {
           var viewed = JSON.parse(sessionStorage.getItem('kyp_recently_viewed')||'[]');
           if (viewed.length > 0) {
-            var recentItems = viewed.map(function(id){ return KNOWLEDGE.find(function(k){return k.id===id;}); }).filter(Boolean).slice(0,5);
+            var recentItems = viewed.map(function(id){ return KNOWLEDGE.find(function(k){ return k.id === id; }); }).filter(Boolean).slice(0,5);
             if (recentItems.length > 0) {
               return '<div class="kyp-sb-section"><div class="kyp-sb-title">🕐 最近浏览</div>'
                 + recentItems.map(function(rk){ return '<div class="kyp-recent-item" onclick="showKnowledgeDetail('+rk.id+')"><span class="kyp-recent-title">'+rk.title+'</span></div>'; }).join('')
@@ -131,118 +142,221 @@ function renderKnowledge(){
           }
         } catch(e) {}
         return '';
-      })()
-      +'<div class="kyp-sb-section"><div class="kyp-sb-title">🔥 热门排行 TOP5</div>'
-        +top5.map(function(k,i){
-          return '<div class="kyp-rank-item" onclick="showKnowledgeDetail('+k.id+')">'
-            +'<span class="kyp-rank-num '+(i<3?'kyp-rank-top':'')+'">'+(i+1)+'</span>'
-            +'<div class="kyp-rank-body"><span class="kyp-rank-title">'+k.title+'</span><span class="kyp-rank-stats">👁 '+(k.views||0)+' · ⬇ '+(k.downloads||0)+'</span></div>'
-            +'</div>';
-        }).join('')
-      +'</div>'
-    +'</div>'
-  +'</div>';
+      })()}
+      <div class="kyp-sb-section">
+        <div class="kyp-sb-title">🔥 热门排行榜 TOP5</div>
+        ${top5.map((k, i) => `
+          <div class="kyp-rank-item" onclick="showKnowledgeDetail(${k.id})">
+            <span class="kyp-rank-num ${i < 3 ? 'kyp-rank-top' : ''}">${i + 1}</span>
+            <div class="kyp-rank-body">
+              <span class="kyp-rank-title">${k.title}</span>
+              <span class="kyp-rank-stats">👁 ${k.views || 0}  ·  ⬇ ${k.downloads || 0}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="kyp-sb-section">
+        <div class="kyp-sb-title">🕐 最近查阅</div>
+        ${KNOWLEDGE.slice(0, 5).map(k => `
+          <div class="kyp-recent-item" onclick="showKnowledgeDetail(${k.id})">
+            <span class="kyp-recent-title">${k.title}</span>
+            <span class="kyp-recent-time">${k.updateTime || k.createdAt || '-'}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </div>
+
+  `;
 
   } catch(e) { if(typeof addRuntimeLog==='function') addRuntimeLog('error','Knowledge 渲染异常',String(e)); return errorState('知识能量池加载失败','请刷新页面重试'); }
 }
 
-/* ═══ 微博化 — 领域切换 ═══ */
-function kpSwitchDomain(domain, el) {
-  var items = document.querySelectorAll('.kp-domain-item');
-  for(var i=0;i<items.length;i++) items[i].classList.remove('kp-domain-active');
-  if(el) el.classList.add('kp-domain-active');
-  var posts = document.querySelectorAll('.kp-post');
+// ===== 知识能量池 · 全局筛选函数 =====
+var kypCurrentType = 'all';
+function kypFilter(type) {
+  kypCurrentType = type;
+  document.querySelectorAll('#kyp-filter-tags .kyp-tag').forEach(function(el) {
+    el.classList.toggle('kyp-tag-active', el.dataset.type === type);
+  });
+  var cards = document.querySelectorAll('#kyp-grid .kyp-card');
   var visible = 0;
-  for(var j=0;j<posts.length;j++) {
-    var match = domain==='all' || posts[j].dataset.domain === domain;
-    posts[j].style.display = match ? '' : 'none';
-    if(match) visible++;
-  }
-  var empty = document.getElementById('kp-empty'); if(empty) empty.style.display = visible ? 'none' : '';
+  cards.forEach(function(c) {
+    var match = type === 'all' || c.dataset.type === type;
+    c.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+  document.getElementById('kyp-empty').style.display = visible === 0 ? '' : 'none';
 }
-
-/* ═══ 微博化 — 搜索 + 优先级 ═══ */
-function kpStreamSearch(val) {
-  var q = (val||'').toLowerCase().trim();
-  var prio = (document.getElementById('kp-prio')||{}).value || 'all';
-  var active = document.querySelector('.kp-domain-active');
-  var domain = active ? active.dataset.domain : 'all';
-  var posts = document.querySelectorAll('.kp-post');
+function kypSearch(val) {
+  var q = val.toLowerCase().trim();
+  var cards = document.querySelectorAll('#kyp-grid .kyp-card');
   var visible = 0;
-  for(var i=0;i<posts.length;i++) {
-    var p = posts[i];
-    var dm = domain==='all' || p.dataset.domain === domain;
-    var pr = prio==='all' || (prio==='high' && p.classList.contains('kp-high')) || (prio==='normal' && !p.classList.contains('kp-high'));
-    var sq = !q || (p.dataset.search||'').indexOf(q) >= 0;
-    var show = dm && pr && sq;
-    p.style.display = show ? '' : 'none';
-    if(show) visible++;
+  cards.forEach(function(c) {
+    var typeMatch = kypCurrentType === 'all' || c.dataset.type === kypCurrentType;
+    var searchMatch = !q || c.dataset.search.toLowerCase().indexOf(q) !== -1;
+    var show = typeMatch && searchMatch;
+    c.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  document.getElementById('kyp-empty').style.display = visible === 0 ? '' : 'none';
+}
+function kypFilterByTag(tag) {
+  var input = document.querySelector('#kyp-search-field');
+  if (input) { input.value = tag; kypSearch(tag); }
+}
+
+// ===== 知识卡片拖拽排序（iOS 长按重排：长按进入拖拽，拖动时其他卡片实时让位，松手落位）=====
+var kypDrag = {
+  timer: null, card: null, sx: 0, sy: 0, started: false,
+  floatEl: null, placeholder: null, grid: null, offX: 0, offY: 0, suppressClick: false
+};
+function kypCardMouseDown(e, id) {
+  if (e.button !== 0) return;
+  kypDrag.card = e.currentTarget;
+  kypDrag.sx = e.clientX;
+  kypDrag.sy = e.clientY;
+  kypDrag.started = false;
+  kypDrag.timer = setTimeout(function(){ kypStartDrag(); }, 450);
+  document.addEventListener('mousemove', kypDocMove);
+  document.addEventListener('mouseup', kypDocUp);
+}
+function kypDocMove(e) {
+  if (!kypDrag.card) return;
+  if (!kypDrag.started) {
+    if (Math.abs(e.clientX - kypDrag.sx) > 8 || Math.abs(e.clientY - kypDrag.sy) > 8) {
+      // 长按前已移动 => 取消长按，视为普通点击
+      clearTimeout(kypDrag.timer);
+      kypEndListeners();
+      kypDrag.card = null;
+    }
+    return;
   }
-  var empty = document.getElementById('kp-empty'); if(empty) empty.style.display = visible ? 'none' : '';
+  e.preventDefault();
+  kypMoveDrag(e);
 }
-
-/* ═══ 收藏 ═══ */
-function kpToggleFav(id, e) {
-  if(e) { e.stopPropagation(); e.preventDefault(); }
-  var favIds = [];
-  try { favIds = JSON.parse(localStorage.getItem('kyp_favorites')||'[]'); }catch(e){}
-  var idx = favIds.indexOf(id);
-  if(idx >= 0) favIds.splice(idx,1); else favIds.push(id);
-  try { localStorage.setItem('kyp_favorites', JSON.stringify(favIds)); }catch(e){}
-  if(typeof currentModule!=='undefined' && currentModule==='knowledge') { if(typeof _moduleCache!=='undefined') _moduleCache['knowledge']=null; renderModule('knowledge'); }
+function kypDocUp(e) {
+  clearTimeout(kypDrag.timer);
+  kypEndListeners();
+  if (kypDrag.started) kypFinishDrag();
+  kypDrag.card = null;
 }
-
-/* ═══ 只看收藏 ═══ */
-function kpShowFavorites() {
-  var favIds = [];
-  try { favIds = JSON.parse(localStorage.getItem('kyp_favorites')||'[]'); }catch(e){}
-  var items = document.querySelectorAll('.kp-domain-item');
-  for(var i=0;i<items.length;i++) items[i].classList.remove('kp-domain-active');
-  var posts = document.querySelectorAll('.kp-post'); var visible=0;
-  for(var j=0;j<posts.length;j++) {
-    var id = parseInt(posts[j].dataset.id);
-    var show = favIds.indexOf(id) >= 0;
-    posts[j].style.display = show ? '' : 'none';
-    if(show) visible++;
+function kypEndListeners() {
+  document.removeEventListener('mousemove', kypDocMove);
+  document.removeEventListener('mouseup', kypDocUp);
+}
+function kypStartDrag() {
+  var card = kypDrag.card;
+  if (!card) return;
+  kypDrag.started = true;
+  var rect = card.getBoundingClientRect();
+  kypDrag.offX = kypDrag.sx - rect.left;
+  kypDrag.offY = kypDrag.sy - rect.top;
+  kypDrag.grid = document.getElementById('kyp-grid');
+  var ph = document.createElement('div');
+  ph.className = 'kyp-drag-placeholder';
+  ph.style.width = rect.width + 'px';
+  ph.style.height = rect.height + 'px';
+  card.parentNode.insertBefore(ph, card);
+  kypDrag.placeholder = ph;
+  card.classList.add('kyp-drag-lift');
+  card.style.position = 'fixed';
+  card.style.width = rect.width + 'px';
+  card.style.height = rect.height + 'px';
+  card.style.left = rect.left + 'px';
+  card.style.top = rect.top + 'px';
+  card.style.margin = '0';
+  card.style.zIndex = '9999';
+  card.style.transition = 'none';
+  kypDrag.floatEl = card;
+  document.body.style.cursor = 'grabbing';
+  kypPositionFloat(kypDrag.sx, kypDrag.sy);
+}
+function kypPositionFloat(x, y) {
+  if (!kypDrag.floatEl) return;
+  kypDrag.floatEl.style.left = (x - kypDrag.offX) + 'px';
+  kypDrag.floatEl.style.top = (y - kypDrag.offY) + 'px';
+}
+function kypMoveDrag(e) {
+  kypPositionFloat(e.clientX, e.clientY);
+  var grid = kypDrag.grid;
+  var ph = kypDrag.placeholder;
+  if (!grid || !ph) return;
+  var cards = Array.prototype.slice.call(grid.querySelectorAll('.kyp-card:not(.kyp-drag-lift)'));
+  var ref = null;
+  for (var i = 0; i < cards.length; i++) {
+    var r = cards[i].getBoundingClientRect();
+    var cy = r.top + r.height / 2;
+    var cx = r.left + r.width / 2;
+    if (e.clientY < cy || (Math.abs(e.clientY - cy) < r.height / 2 && e.clientX < cx)) {
+      ref = cards[i];
+      break;
+    }
   }
-  document.getElementById('kp-empty').style.display = visible ? 'none' : '';
-}
-
-/* ═══ 一键复制引用 ═══ */
-function kpCopyCitation(id, e) {
-  if(e) { e.stopPropagation(); e.preventDefault(); }
-  var k = KNOWLEDGE.find(function(item){return item.id===id;}); if(!k) return;
-  var text = '📖 '+k.title+'\n领域：'+(k.domain||'未知')+' | 更新：'+(k.updateTime||'')+'\n摘要：'+(k.short||'')+'\n\n'+(k.description||'');
-  if(navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(function(){if(typeof showToast==='function') showToast('已复制引用');}).catch(function(){});
+  if (ref) {
+    if (ph !== ref && ph.nextSibling !== ref) kypFlip(grid, function(){ grid.insertBefore(ph, ref); });
   } else {
-    var ta = document.createElement('textarea'); ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
-    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
-    if(typeof showToast==='function') showToast('已复制引用');
+    if (ph !== grid.lastChild) kypFlip(grid, function(){ grid.appendChild(ph); });
   }
 }
-
-/* ═══ 阅读进度 ═══ */
-var _kpReadProgress = {};
-(function(){try{_kpReadProgress=JSON.parse(sessionStorage.getItem('kyp_read_progress')||'{}');}catch(e){}})();
-function kpSaveReadProgress(id, pct) {
-  _kpReadProgress[id] = pct;
-  try { sessionStorage.setItem('kyp_read_progress', JSON.stringify(_kpReadProgress)); }catch(e){}
+function kypFlip(container, mutate) {
+  var children = Array.prototype.slice.call(container.children);
+  var first = {};
+  children.forEach(function(c){ if (c.classList.contains('kyp-card')) first[c.dataset.id] = c.getBoundingClientRect(); });
+  mutate();
+  var after = Array.prototype.slice.call(container.children);
+  after.forEach(function(c){
+    if (!c.classList.contains('kyp-card')) return;
+    var f = first[c.dataset.id];
+    if (!f) return;
+    var l = c.getBoundingClientRect();
+    var dx = f.left - l.left, dy = f.top - l.top;
+    if (dx || dy) {
+      c.style.transition = 'none';
+      c.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+      c.offsetWidth; // 强制回流
+      c.style.transition = 'transform 0.2s ease';
+      c.style.transform = '';
+    }
+  });
 }
-function kpGetReadProgress(id) {
-  return _kpReadProgress[id] || 0;
+function kypFinishDrag() {
+  var card = kypDrag.floatEl;
+  var ph = kypDrag.placeholder;
+  if (card && ph) {
+    card.classList.remove('kyp-drag-lift');
+    card.style.position = '';
+    card.style.left = '';
+    card.style.top = '';
+    card.style.width = '';
+    card.style.height = '';
+    card.style.margin = '';
+    card.style.zIndex = '';
+    card.style.transition = '';
+    card.style.transform = '';
+    ph.parentNode.insertBefore(card, ph);
+    ph.remove();
+  }
+  document.body.style.cursor = '';
+  if (kypDrag.grid) {
+    var ids = Array.prototype.map.call(kypDrag.grid.querySelectorAll('.kyp-card'), function(c){ return parseInt(c.dataset.id); });
+    KNOWLEDGE.sort(function(a, b){ return ids.indexOf(a.id) - ids.indexOf(b.id); });
+    saveKnowledge();
+  }
+  kypDrag.suppressClick = true;
+  kypDrag.started = false;
+  kypDrag.floatEl = null;
+  kypDrag.placeholder = null;
 }
-
-/* ═══ 查看详情（含阅读进度） ═══ */
-function kpViewDetail(id) {
+function kypCardClick(e, id) {
+  if (kypDrag.suppressClick) {
+    kypDrag.suppressClick = false;
+    e.preventDefault();
+    e.stopPropagation();
+    return;
+  }
   showKnowledgeDetail(id);
 }
-
-/* ═══ 旧版兼容 — kypFilter/kypSearch 转向新函数 ═══ */
-function kypFilter(type) { kpSwitchDomain(type, document.querySelector('.kp-domain-item[data-domain="'+type+'"]')); }
-function kypSearch(val) { kpStreamSearch(val); }
-function kypFilterByTag(tag) { var inp=document.getElementById('kp-search'); if(inp){inp.value=tag;kpStreamSearch(tag);} }
-var kypCurrentType = 'all';
 
 // ===== 知识详情弹窗（替代原生 alert）=====
 function showKnowledgeDetail(id) {
