@@ -160,25 +160,25 @@ var RISK_ALERTS = [];
 
 
 // 知识种子数据版本：版本号变化时会用新默认数据重置（仅当本地仍是旧默认）
-var KNOWLEDGE_SEED_VERSION = '2026-07-manager';
+var KNOWLEDGE_SEED_VERSION = '2026-08-domain';
 
 var DEFAULT_KNOWLEDGE = [
 
-  {id:1, title:"团队人力成本优化模型", type:"成本目标控制", category:"成本控制", tags:"人力成本,排班,降本,模型", scope:"通用", permission:"公开", createdAt:"2026-05-12", updateTime:"2026-07-01", views:286, downloads:52, description:"面向管理者的人力成本优化方法论：通过排班模型、技能矩阵、多项目人力共享池三大抓手，在不影响服务质量的前提下系统性降低人力成本率。", short:"人力成本率系统性优化方法论"},
+  {id:1, title:"团队人力成本优化模型", domain:"成本与核算", tags:"人力成本,排班,降本,模型", projectId:"", scope:"通用", permission:"公开", createdAt:"2026-05-12", updateTime:"2026-07-01", views:286, downloads:52, description:"面向管理者的人力成本优化方法论：通过排班模型、技能矩阵、多项目人力共享池三大抓手，在不影响服务质量的前提下系统性降低人力成本率。", short:"人力成本率系统性优化方法论", relatedIds:[], sourceType:"manual", sourceId:"", version:1, versionHistory:[], status:"published"},
 
-  {id:2, title:"AI客服工具选型与落地指南", type:"AI提效赋能", category:"效率提升", tags:"AI,工具选型,落地,提效", scope:"通用", permission:"公开", createdAt:"2026-03-10", updateTime:"2026-07-02", views:341, downloads:88, description:"管理者视角的AI客服工具评估框架：从选型维度、试点路径、人机协同边界到ROI测算，提供一套可复制的AI提效落地打法，避免盲目上工具。", short:"AI工具选型与落地ROI测算框架"},
+  {id:2, title:"AI客服工具选型与落地指南", domain:"效率与AI", tags:"AI,工具选型,落地,提效", projectId:"", scope:"通用", permission:"公开", createdAt:"2026-03-10", updateTime:"2026-07-02", views:341, downloads:88, description:"管理者视角的AI客服工具评估框架：从选型维度、试点路径、人机协同边界到ROI测算，提供一套可复制的AI提效落地打法，避免盲目上工具。", short:"AI工具选型与落地ROI测算框架", relatedIds:[], sourceType:"manual", sourceId:"", version:1, versionHistory:[], status:"published"},
 
-  {id:3, title:"跨项目经验快速复制SOP", type:"SOP流程优化", category:"体系搭建", tags:"经验复制,标准化,知识沉淀", scope:"通用", permission:"公开", createdAt:"2026-02-18", updateTime:"2026-06-28", views:209, downloads:41, description:"把一个项目的优秀做法快速复制到多个项目的管理SOP：包含经验萃取、模板化改造、试点验证、规模推广四步，让好经验不再沉淀在某一个团队。", short:"好经验跨项目复制四步法"},
+  {id:3, title:"跨项目经验快速复制SOP", domain:"流程与SOP", tags:"经验复制,标准化,知识沉淀", projectId:"", scope:"通用", permission:"公开", createdAt:"2026-02-18", updateTime:"2026-06-28", views:209, downloads:41, description:"把一个项目的优秀做法快速复制到多个项目的管理SOP：包含经验萃取、模板化改造、试点验证、规模推广四步，让好经验不再沉淀在某一个团队。", short:"好经验跨项目复制四步法", relatedIds:[], sourceType:"manual", sourceId:"", version:1, versionHistory:[], status:"published"},
 
-  {id:4, title:"核心人员突发离职应急方案", type:"风控应急预案", category:"风险防控", tags:"人才风险,离职,应急,继任", scope:"通用", permission:"内部", createdAt:"2026-04-22", updateTime:"2026-07-03", views:174, downloads:33, description:"针对主管/核心骨干突然离职的应急响应机制：关键岗位识别、继任者预案、业务交接清单、团队情绪维稳，将人员突变对业务的影响降到最低。", short:"核心骨干突发离职应急响应"},
+  {id:4, title:"核心人员突发离职应急方案", domain:"风控与应急", tags:"人才风险,离职,应急,继任", projectId:"", scope:"通用", permission:"内部", createdAt:"2026-04-22", updateTime:"2026-07-03", views:174, downloads:33, description:"针对主管/核心骨干突然离职的应急响应机制：关键岗位识别、继任者预案、业务交接清单、团队情绪维稳，将人员突变对业务的影响降到最低。", short:"核心骨干突发离职应急响应", relatedIds:[], sourceType:"manual", sourceId:"", version:1, versionHistory:[], status:"published"},
 
-  {id:5, title:"难缠客户升级投诉应对话术", type:"优秀话术萃取", category:"沟通协作", tags:"投诉升级,沟通,话术,危机", scope:"通用", permission:"公开", createdAt:"2026-01-15", updateTime:"2026-06-25", views:378, downloads:71, description:"管理者视角的升级投诉处理框架：从情绪安抚、责任界定、补偿边界到对外口径统一，萃取高层级沟通话术，帮你既保住客户又不突破公司底线。", short:"升级投诉的高层级沟通框架"},
+  {id:5, title:"难缠客户升级投诉应对话术", domain:"客诉与话术", tags:"投诉升级,沟通,话术,危机", projectId:"", scope:"通用", permission:"公开", createdAt:"2026-01-15", updateTime:"2026-06-25", views:378, downloads:71, description:"管理者视角的升级投诉处理框架：从情绪安抚、责任界定、补偿边界到对外口径统一，萃取高层级沟通话术，帮你既保住客户又不突破公司底线。", short:"升级投诉的高层级沟通框架", relatedIds:[], sourceType:"manual", sourceId:"", version:1, versionHistory:[], status:"published"},
 
-  {id:6, title:"新任主管30天上手指南", type:"培训材料", category:"团队管理", tags:"新任主管,带团队,角色转换", scope:"通用", permission:"公开", createdAt:"2025-12-01", updateTime:"2026-06-20", views:452, downloads:96, description:"从一线客服到管理者的角色转换手册：前7天熟悉业务、第2周建立信任、第3周搭体系、第4周拿结果，附带1对1面谈模板与周会框架，让新主管少走弯路。", short:"一线到管理的30天转换地图"},
+  {id:6, title:"新任主管30天上手指南", domain:"培训与入门", tags:"新任主管,带团队,角色转换", projectId:"", scope:"通用", permission:"公开", createdAt:"2025-12-01", updateTime:"2026-06-20", views:452, downloads:96, description:"从一线客服到管理者的角色转换手册：前7天熟悉业务、第2周建立信任、第3周搭体系、第4周拿结果，附带1对1面谈模板与周会框架，让新主管少走弯路。", short:"一线到管理的30天转换地图", relatedIds:[], sourceType:"manual", sourceId:"", version:1, versionHistory:[], status:"published"},
 
-  {id:7, title:"BPO项目费效比分析方法", type:"成本目标控制", category:"成本控制", tags:"BPO,费效比,核算,外包", scope:"特定品类", permission:"受限", createdAt:"2026-05-28", updateTime:"2026-07-04", views:131, downloads:24, description:"外包客服项目的费效比核算与分析方法：含单价拆解、隐性成本识别、服务质量与成本的平衡点测算，帮你判断外包究竟比自建便宜还是更贵。", short:"外包客服费效比核算测算"},
+  {id:7, title:"BPO项目费效比分析方法", domain:"成本与核算", tags:"BPO,费效比,核算,外包", projectId:"", scope:"特定品类", permission:"受限", createdAt:"2026-05-28", updateTime:"2026-07-04", views:131, downloads:24, description:"外包客服项目的费效比核算与分析方法：含单价拆解、隐性成本识别、服务质量与成本的平衡点测算，帮你判断外包究竟比自建便宜还是更贵。", short:"外包客服费效比核算测算", relatedIds:[], sourceType:"manual", sourceId:"", version:1, versionHistory:[], status:"published"},
 
-  {id:8, title:"智能质检提效实践", type:"AI提效赋能", category:"效率提升", tags:"质检,AI,自动化,管理", scope:"通用", permission:"内部", createdAt:"2026-04-08", updateTime:"2026-07-05", views:223, downloads:47, description:"用AI质检替代人工抽检的实践路径：从抽检比例提升到全量质检、问题自动归类、整改闭环追踪，让管理者用更少人力掌握更真实的服务质量全貌。", short:"AI全量质检与整改闭环"}
+  {id:8, title:"智能质检提效实践", domain:"效率与AI", tags:"质检,AI,自动化,管理", projectId:"", scope:"通用", permission:"内部", createdAt:"2026-04-08", updateTime:"2026-07-05", views:223, downloads:47, description:"用AI质检替代人工抽检的实践路径：从抽检比例提升到全量质检、问题自动归类、整改闭环追踪，让管理者用更少人力掌握更真实的服务质量全貌。", short:"AI全量质检与整改闭环", relatedIds:[], sourceType:"manual", sourceId:"", version:1, versionHistory:[], status:"published"}
 
 ];
 var DEFAULT_HANDOVERS = [
@@ -903,18 +903,44 @@ var DATA_PERMISSIONS = [];
   recomputeRiskAlerts(savedStatus);
 })();
 
-// 初始化 KNOWLEDGE
+// 初始化 KNOWLEDGE（含旧版数据迁移）
 (function initKnowledge() {
   var raw = localStorage.getItem('chansee_knowledge');
   var seedVer = localStorage.getItem('chansee_knowledge_seed');
-  // 已有数据且种子版本一致 → 直接用本地数据（保留用户增删改）
+  // 已有数据且种子版本一致 → 直接用本地数据
   if (raw && raw !== 'null' && raw !== '[]' && seedVer === KNOWLEDGE_SEED_VERSION) {
     try {
       KNOWLEDGE = JSON.parse(raw);
       return;
     } catch(e) {}
   }
-  // 否则用最新默认种子重新播种
+  // 旧版数据迁移：type/category → domain
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try {
+      var OLD_TYPE_MAP = {
+        'SOP流程优化':'流程与SOP', '风控应急预案':'风控与应急', '成本目标控制':'成本与核算',
+        '优秀话术萃取':'客诉与话术', 'AI提效赋能':'效率与AI', '培训材料':'培训与入门'
+      };
+      var old = JSON.parse(raw);
+      if (Array.isArray(old) && old.length > 0 && old[0].type && !old[0].domain) {
+        KNOWLEDGE = old.map(function(k) {
+          k.domain = OLD_TYPE_MAP[k.type] || '方法论与框架';
+          k.projectId = k.projectId || '';
+          k.relatedIds = k.relatedIds || [];
+          k.sourceType = k.sourceType || 'manual';
+          k.sourceId = k.sourceId || '';
+          k.version = k.version || 1;
+          k.versionHistory = k.versionHistory || [];
+          k.status = k.status || 'published';
+          return k;
+        });
+        safeSetItem('chansee_knowledge', JSON.stringify(KNOWLEDGE));
+        safeSetItem('chansee_knowledge_seed', KNOWLEDGE_SEED_VERSION);
+        return;
+      }
+    } catch(e) {}
+  }
+  // 用最新默认种子
   KNOWLEDGE = JSON.parse(JSON.stringify(DEFAULT_KNOWLEDGE));
   safeSetItem('chansee_knowledge', JSON.stringify(KNOWLEDGE));
   safeSetItem('chansee_knowledge_seed', KNOWLEDGE_SEED_VERSION);

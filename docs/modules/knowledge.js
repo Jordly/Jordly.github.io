@@ -18,12 +18,11 @@ function renderKnowledge(){
   const totalDownloads = KNOWLEDGE.reduce((s, k) => s + (k.downloads || 0), 0);
 
   // 分类统计
-  const typeCounts = {};
+  const domainCounts = {};
   KNOWLEDGE.forEach(k => {
-    typeCounts[k.type] = (typeCounts[k.type] || 0) + 1;
+    domainCounts[k.domain] = (domainCounts[k.domain] || 0) + 1;
   });
-
-  const typeOrder = ['SOP流程优化','风控应急预案','成本目标控制','优秀话术萃取','AI提效赋能','培训材料'];
+  const domainOrder = ['方法论与框架','流程与SOP','成本与核算','风控与应急','人员管理','客诉与话术','效率与AI','培训与入门'];
 
   const top5 = [...KNOWLEDGE].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
 
@@ -51,6 +50,15 @@ function renderKnowledge(){
     <div style="padding:8px 18px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(knowledgeTab==='knowledge'?'#185FA5':'transparent')+';color:'+(knowledgeTab==='knowledge'?'#185FA5':'#64748b')+';font-weight:'+(knowledgeTab==='knowledge'?'600':'400')+';margin-bottom:-2px;" onclick="window._knowledgeTab=\'knowledge\';if(typeof _moduleCache!==\'undefined\')_moduleCache[\'knowledge\']=null;renderModule(\'knowledge\')">📚 知识库</div>
   </div>
   ` + (knowledgeTab === 'eventPlan' ? _renderEventPlanInline() : `
+
+  <!-- 最近更新 -->
+  ${(()=>{
+    var recent = [...KNOWLEDGE].sort(function(a,b){ return (b.updateTime||'').localeCompare(a.updateTime||''); }).slice(0,4);
+    return recent.length ? '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">'
+      +'<span style="font-size:11px;color:#64748b;flex-shrink:0;line-height:28px;">🕐 最近更新：</span>'
+      + recent.map(function(k){ return '<span style="font-size:11px;padding:3px 10px;background:#f0f9ff;border-radius:12px;cursor:pointer;color:#0284c7;border:1px solid #bae6fd;white-space:nowrap;" onclick="showKnowledgeDetail('+k.id+')">'+k.title+'</span>'; }).join('')
+      +'</div>' : '';
+  })()}
 
   <div class="kyp-stats">
     <div class="kyp-stat-card">
@@ -86,7 +94,7 @@ function renderKnowledge(){
   <div class="kyp-filters">
     <div class="kyp-filter-tags" id="kyp-filter-tags">
       <span class="kyp-tag kyp-tag-active" data-type="all" onclick="kypFilter('all')">全部 ${totalKnowledge}</span>
-      ${typeOrder.filter(t => typeCounts[t]).map(t => `<span class="kyp-tag" data-type="${t}" onclick="kypFilter('${t}')">${t} ${typeCounts[t]}</span>`).join('')}
+      ${domainOrder.filter(t => domainCounts[t]).map(t => `<span class="kyp-tag" data-type="${t}" onclick="kypFilter('${t}')">${t} ${domainCounts[t]}</span>`).join('')}
     </div>
     <div class="kyp-search-box">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -100,14 +108,14 @@ function renderKnowledge(){
         ${KNOWLEDGE.map(k => {
           const perm = k.permission || '公开';
           return `
-          <div class="kyp-card" data-type="${k.type}" data-search="${k.title}${k.description}${k.tags}" data-id="${k.id}" onmousedown="kypCardMouseDown(event, ${k.id})" onclick="kypCardClick(event, ${k.id})">
+          <div class="kyp-card" data-type="${k.domain||''}" data-search="${k.title}${k.description}${k.tags}" data-id="${k.id}" onmousedown="kypCardMouseDown(event, ${k.id})" onclick="kypCardClick(event, ${k.id})">
             <div class="kyp-card-top">
               <span class="kyp-card-title">${k.title}</span>
               ${can ? '<div class="kyp-card-actions"><span class="kyp-act" onclick="event.stopPropagation();editKnowledge('+k.id+')">✎</span><span class="kyp-act kyp-act-del" onclick="event.stopPropagation();deleteKnowledge('+k.id+')">✕</span></div>' : ''}
             </div>
             <div class="kyp-card-meta">
-              <span class="kyp-type-badge ktp-${k.type}">${k.type}</span>
-              ${k.category ? '<span class="kyp-scope-badge">'+k.category+'</span>' : ''}
+              <span class="kyp-type-badge ktp-${(k.domain||'').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g,'-')}">${k.domain||'未分类'}</span>
+              ${k.projectId ? '<span class="kyp-scope-badge">'+k.projectId+'</span>' : '<span class="kyp-scope-badge">通用</span>'}
             </div>
             <div class="kyp-card-short">${k.short || (k.description || '').slice(0, 24)}</div>
             <div class="kyp-card-footer">
@@ -358,8 +366,8 @@ function showKnowledgeDetail(id) {
     + '<div class="sd-confirm-box kyp-detail-box">'
     + '<div class="kyp-detail-header">'
     +   '<div class="kyp-detail-head-top">'
-    +     '<span class="kyp-type-badge ktp-' + (k.type||'') + '">' + (k.type||'未分类') + '</span>'
-    +     (k.category ? '<span class="kyp-scope-badge">' + k.category + '</span>' : '')
+    +     '<span class="kyp-type-badge ktp-' + ((k.domain||'').replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g,'-')) + '">' + (k.domain||'未分类') + '</span>'
+    +     (k.projectId ? '<span class="kyp-scope-badge">项目:' + k.projectId + '</span>' : '<span class="kyp-scope-badge">通用</span>')
     +     '<span class="kyp-perm-badge">' + (permIcon[perm]||'🌐') + ' ' + perm + '</span>'
     +   '</div>'
     +   '<div class="kyp-detail-title">' + (k.title||'') + '</div>'
@@ -413,9 +421,8 @@ function deleteKnowledge(id) {
 // ===== 知识表单弹窗 =====
 function showKnowledgeForm(record) {
   var isEdit = !!record;
-  var typeOptions = ['SOP流程优化','风控应急预案','成本目标控制','优秀话术萃取','AI提效赋能','培训材料'];
+  var domainOptions = ['方法论与框架','流程与SOP','成本与核算','风控与应急','人员管理','客诉与话术','效率与AI','培训与入门'];
   var permOptions = ['公开','内部','受限'];
-  var catOptions = ['团队管理','成本控制','效率提升','风险防控','体系搭建','沟通协作'];
   var k = record || {};
   var m = document.getElementById('kyp-form-overlay'); if(m) m.remove();
   var overlay = document.createElement('div');
@@ -430,8 +437,8 @@ function showKnowledgeForm(record) {
     + '<div class="sd-prompt-body">'
     +   '<label>标题</label><div class="sd-prompt-input-wrap"><input type="text" id="kf-title" class="sd-prompt-input" value="'+escHtml(k.title)+'"></div>'
     +   '<div class="kyp-form-row">'
-    +     '<div><label>分类</label><select id="kf-type" class="sd-prompt-input">'+optHtml(typeOptions, k.type||typeOptions[0])+'</select></div>'
-    +     '<div><label>管理方向</label><select id="kf-category" class="sd-prompt-input">'+optHtml(catOptions, k.category||catOptions[0])+'</select></div>'
+    +     '<div><label>知识领域</label><select id="kf-domain" class="sd-prompt-input">'+optHtml(domainOptions, k.domain||domainOptions[0])+'</select></div>'
+    +     '<div><label>关联项目</label><select id="kf-project" class="sd-prompt-input"><option value="">通用（不限项目）</option>'+PROJECTS.map(function(p){return '<option value="'+p.id+'"'+(k.projectId===p.id?' selected':'')+'>'+p.name+'</option>';}).join('')+'</select></div>'
     +   '</div>'
     +   '<div class="kyp-form-row">'
     +     '<div><label>权限</label><select id="kf-permission" class="sd-prompt-input">'+optHtml(permOptions, k.permission||'公开')+'</select></div>'
@@ -459,8 +466,8 @@ function submitKnowledgeForm(id) {
     KNOWLEDGE.push({
       id: newId,
       title: title,
-      type: document.getElementById('kf-type').value,
-      category: document.getElementById('kf-category').value,
+      domain: document.getElementById('kf-domain').value,
+      projectId: document.getElementById('kf-project').value,
       permission: document.getElementById('kf-permission').value,
       scope: document.getElementById('kf-scope').value || '通用',
       short: document.getElementById('kf-short').value.trim(),
@@ -468,21 +475,25 @@ function submitKnowledgeForm(id) {
       tags: document.getElementById('kf-tags').value.trim(),
       createdAt: now,
       updateTime: now,
-      views: 0,
-      downloads: 0
+      views: 0, downloads: 0,
+      relatedIds: [], sourceType: 'manual', sourceId: '',
+      version: 1, versionHistory: [], status: 'published'
     });
   } else {
     var k = KNOWLEDGE.find(function(item){ return item.id === id; });
     if (k) {
       k.title = title;
-      k.type = document.getElementById('kf-type').value;
-      k.category = document.getElementById('kf-category').value;
+      k.domain = document.getElementById('kf-domain').value;
+      k.projectId = document.getElementById('kf-project').value;
       k.permission = document.getElementById('kf-permission').value;
       k.scope = document.getElementById('kf-scope').value || '通用';
       k.short = document.getElementById('kf-short').value.trim();
       k.description = document.getElementById('kf-description').value.trim();
       k.tags = document.getElementById('kf-tags').value.trim();
       k.updateTime = now;
+      k.version = (k.version||0) + 1;
+      k.versionHistory = k.versionHistory || [];
+      k.versionHistory.push({version:k.version, time:now, summary:'已更新'});
     }
   }
   saveKnowledge();
