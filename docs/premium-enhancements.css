@@ -2813,10 +2813,17 @@
   outline: none !important;
 }
 
-/* 绩效看板「组别」下拉：单独修复右侧外框缺失 */
+/* 绩效看板「组别」下拉：恢复浏览器原生绘制，解决展开面板右侧边框缺失（Chrome/Edge 已知渲染bug） */
 .pf-group-select {
+  -webkit-appearance: auto !important;
+  -moz-appearance: auto !important;
+  appearance: auto !important;
+  background-image: none !important;
+  background: #fff !important;
+  border: 1px solid #475569 !important;
+  border-radius: 5px !important;
+  overflow: visible !important;
   min-width: 108px !important;
-  border-right: 1.5px solid #475569 !important;
 }
 
 /* 操作按钮行 */
