@@ -1,120 +1,146 @@
-// modules/knowledge.js — 知识能量池模块 · 微博化设计 v3
+// modules/knowledge.js — 知识能量池模块 · 卡片网格v4
 /* ═══════════════════ 知识能量池 ═══════════════════ */
 function renderKnowledge(){
   try {
 
   var can = canEdit();
   var totalKnowledge = KNOWLEDGE.length;
-  var weekNew = KNOWLEDGE.filter(function(k){ if(!k.createdAt)return false; var d=new Date(k.createdAt),n=new Date(),w=new Date(n.getTime()-7*86400000); return d>=w; }).length;
+  var weekNew = KNOWLEDGE.filter(function(k){ if(!k.createdAt)return false; var d=new Date(k.createdAt),n=new Date(),wk=new Date(n.getTime()-7*86400000); return d>=wk; }).length;
   var totalViews = KNOWLEDGE.reduce(function(s,k){return s+(k.views||0);},0);
-  var highCount = KNOWLEDGE.filter(function(k){return k.priority==='high';}).length;
 
   var domainOrder = ['方法论与框架','流程与SOP','成本与核算','风控与应急','人员管理','客诉与话术','效率与AI','培训与入门'];
-  var domainCounts = {}; KNOWLEDGE.forEach(function(k){domainCounts[k.domain]=(domainCounts[k.domain]||0)+1;});
-  var domainIcons = { '风控与应急':'⚡','成本与核算':'¥','效率与AI':'⚙','流程与SOP':'▤','人员管理':'⌘','培训与入门':'📖','客诉与话术':'⌬','方法论与框架':'◇' };
-  var domainColors = { '风控与应急':'#A32D2D','成本与核算':'#3B6D11','效率与AI':'#185FA5','流程与SOP':'#0F6E56','人员管理':'#993556','培训与入门':'#854F0B','客诉与话术':'#72243E','方法论与框架':'#534AB7' };
+  var domainCounts = {};
+  KNOWLEDGE.forEach(function(k){ domainCounts[k.domain] = (domainCounts[k.domain]||0)+1; });
 
-  var top6 = [...KNOWLEDGE].sort(function(a,b){return (b.views||0)-(a.views||0);}).slice(0,6);
+  var top5 = [...KNOWLEDGE].sort(function(a,b){return (b.views||0)-(a.views||0);}).slice(0,5);
 
-  // 收藏数据
+  // 收藏数
   var favIds = [];
   try { favIds = JSON.parse(localStorage.getItem('kyp_favorites')||'[]'); }catch(e){}
   var favCount = KNOWLEDGE.filter(function(k){return favIds.indexOf(k.id)>=0;}).length;
 
-  // 构建知识流
-  function buildStream(){
-    var order = {high:0,normal:1,low:2};
-    return [...KNOWLEDGE].sort(function(a,b){return order[a.priority||'normal']-(order[b.priority||'normal']);}).map(function(k){
-      var dc = domainColors[k.domain]||'#534AB7';
-      var isFav = favIds.indexOf(k.id)>=0;
-      var high = k.priority==='high';
-      return '<div class="kp-post'+(high?' kp-high':'')+'" data-domain="'+(k.domain||'')+'" data-search="'+(k.title+' '+(k.description||'')+' '+k.tags).toLowerCase()+'" data-id="'+k.id+'">'
-        +'<div class="kp-post-head">'
-          +'<div class="kp-post-avatar" style="background:'+dc+'">'+(domainIcons[k.domain]||'★')+'</div>'
-          +'<div class="kp-post-meta">'
-            +'<div class="kp-post-author">'+k.title+'</div>'
-            +'<div class="kp-post-source">'+(k.domain||'未分类')+' · '+(k.updateTime||k.createdAt||'')+ (k.projectId?' · 项目:'+k.projectId:'') + (k.fileUrl?' · 📎附件':'')+'</div>'
-          +'</div>'
-          +'<div class="kp-post-badges">'
-            +(k.priority==='high'?'<span class="kp-badge-high">优先</span>':'')
-            +(k.priority==='low'?'<span class="kp-badge-low">参考</span>':'')
-            +(isFav?'<span class="kp-badge-fav">♥</span>':'')
-          +'</div>'
-        +'</div>'
-        +'<div class="kp-post-body">'
-          +'<div class="kp-post-desc">'+(k.short || (k.description||'').slice(0,80))+'</div>'
-          +'<div class="kp-post-tags">'+((k.tags||'').split(',').slice(0,4).map(function(t){return '<span>'+t.trim()+'</span>';}).join(''))+'</div>'
-        +'</div>'
-        +'<div class="kp-post-foot">'
-          +'<span class="kp-action" onclick="kpToggleFav('+k.id+',event)"><span>'+(isFav?'♥':'♡')+'</span><span>'+(isFav?'已收藏':'收藏')+'</span></span>'
-          +'<span class="kp-action" onclick="kpCopyCitation('+k.id+',event)"><span>📋</span><span>复制</span></span>'
-          +'<span class="kp-action"><span>👁</span><span>'+(k.views||0)+'</span></span>'
-          +'<span class="kp-action"><span>💬</span><span>'+(k.relatedIds||[]).length+'</span></span>'
-          +'<span class="kp-action"><span>⬇</span><span>'+(k.downloads||0)+'</span></span>'
-        +'</div>'
-      +'</div>';
-    }).join('');
-  }
-
   return ''
-  +'<div class="kp-topbar">'
-    +'<div class="kp-topbar-left"><div class="kp-title">核心知识能量池</div><div class="kp-desc">客服团队经验沉淀与知识共享中心</div></div>'
-    +'<div class="kp-topbar-right">'
+  +'<div class="kyp-header">'
+    +'<div class="kyp-header-left">'
+      +'<div class="kyp-title-row">'
+        +'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>'
+        +'<h1 class="kyp-title">核心知识能量池</h1>'
+      +'</div>'
+      +'<p class="kyp-desc">客服团队经验沉淀与知识共享中心 · '+totalKnowledge+'篇知识 · '+totalViews+'次浏览</p>'
+    +'</div>'
+    +'<div class="kyp-header-right">'
       +(can?'<button class="btn btn-sm btn-primary" onclick="addKnowledge()">＋ 添加知识</button>':'')
     +'</div>'
   +'</div>'
 
-  +'<div class="kp-layout">'
+  // 顶部统计条（保留用户原 UI 模式）
+  +'<div class="kyp-stats">'
+    +'<div class="kyp-stat-card kis-blue">'
+      +'<div class="kyp-stat-val">'+totalKnowledge+'</div>'
+      +'<div class="kyp-stat-lbl">知识总量</div>'
+    +'</div>'
+    +'<div class="kyp-stat-card kis-red">'
+      +'<div class="kyp-stat-val">'+KNOWLEDGE.filter(function(k){return k.priority==='high';}).length+'</div>'
+      +'<div class="kyp-stat-lbl">高优先级</div>'
+    +'</div>'
+    +'<div class="kyp-stat-card kis-orange">'
+      +'<div class="kyp-stat-val">'+weekNew+'</div>'
+      +'<div class="kyp-stat-lbl">本周新增</div>'
+    +'</div>'
+    +'<div class="kyp-stat-card kis-green">'
+      +'<div class="kyp-stat-val">'+favCount+'</div>'
+      +'<div class="kyp-stat-lbl">已收藏</div>'
+    +'</div>'
+  +'</div>'
 
-  // 左栏：领域导航 + 统计
-  +'<div class="kp-left">'
-    +'<div class="kp-left-block">'
-      +'<div class="kp-left-title">知识领域</div>'
-      +'<div class="kp-domain-item kp-domain-active" data-domain="all" onclick="kpSwitchDomain(\'all\',this)"><span class="kp-domain-name">全部</span><span>'+totalKnowledge+'</span></div>'
-      + domainOrder.filter(function(d){return domainCounts[d];}).map(function(d){
-          return '<div class="kp-domain-item" data-domain="'+d+'" onclick="kpSwitchDomain(\''+d+'\',this)"><span class="kp-domain-icon" style="color:'+(domainColors[d]||'#534AB7')+'">'+(domainIcons[d]||'★')+'</span><span class="kp-domain-name">'+d+'</span><span>'+domainCounts[d]+'</span></div>';
+  // 筛选 + 搜索
+  +'<div class="kyp-filters">'
+    +'<div class="kyp-filter-tags" id="kyp-filter-tags">'
+      +'<span class="kyp-tag kyp-tag-active" data-type="all" onclick="kypFilter(\'all\')">全部 '+totalKnowledge+'</span>'
+      + domainOrder.filter(function(t){return domainCounts[t];}).map(function(t){
+          return '<span class="kyp-tag" data-type="'+t+'" onclick="kypFilter(\''+t+'\')">'+t+' '+domainCounts[t]+'</span>';
         }).join('')
     +'</div>'
-    +'<div class="kp-left-block">'
-      +'<div class="kp-left-title">我的收藏</div>'
-      +'<div class="kp-domain-item" onclick="kpShowFavorites()">♥ 已收藏<span>'+favCount+'</span></div>'
-    +'</div>'
-    +'<div class="kp-stat-row">'
-      +'<div class="kp-stat-card" id="kp-stat-total"><div class="kp-stat-val">'+totalKnowledge+'</div><div class="kp-stat-lbl">知识总量</div></div>'
-      +'<div class="kp-stat-card" id="kp-stat-high"><div class="kp-stat-val">'+highCount+'</div><div class="kp-stat-lbl">高优先级</div></div>'
-      +'<div class="kp-stat-card" id="kp-stat-new"><div class="kp-stat-val">'+weekNew+'</div><div class="kp-stat-lbl">本周新增</div></div>'
+    +'<div class="kyp-search-box">'
+      +'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>'
+      +'<input type="text" class="kyp-search-input" id="kyp-search-field" placeholder="搜索知识标题、标签、内容..." autocomplete="off" oninput="kypSearch(this.value)">'
     +'</div>'
   +'</div>'
 
-  // 中栏：搜索 + 信息流
-  +'<div class="kp-center">'
-    +'<div class="kp-search-row">'
-      +'<input type="text" id="kp-search" placeholder="搜索知识标题、标签、内容..." oninput="kpStreamSearch(this.value)">'
-      +'<select id="kp-prio" onchange="kpStreamSearch(document.getElementById(\'kp-search\').value)"><option value="all">全部优先级</option><option value="high">仅高优</option><option value="normal">常规</option></select>'
-    +'</div>'
-    +'<div class="kp-stream" id="kp-stream">'+buildStream()+'</div>'
-    +'<div class="kp-empty" id="kp-empty" style="display:none">没有找到匹配的知识</div>'
-  +'</div>'
+  // 收藏栏（如果有收藏）
+  +(favCount>0?'<div style="display:flex;gap:6px;margin-bottom:12px;align-items:center;flex-wrap:wrap;">'
+    +'<span style="font-size:11px;color:#dc2626;font-weight:500;">♥ 收藏</span>'
+    +KNOWLEDGE.filter(function(k){return favIds.indexOf(k.id)>=0;}).slice(0,8).map(function(k){
+        return '<span style="font-size:11px;padding:3px 10px;background:#fef2f2;border-radius:12px;cursor:pointer;color:#dc2626;border:1px solid #fecaca;" onclick="showKnowledgeDetail('+k.id+')">'+k.title+'</span>';
+      }).join('')
+    +'</div>':'')
 
-  // 右栏：贡献者 + 热榜
-  +'<div class="kp-right">'
-    +'<div class="kp-right-block">'
-      +'<div class="kp-right-title">知识贡献者</div>'
-      + (function(){
-        var contrib = {}; KNOWLEDGE.forEach(function(k){var a=k.author||'团队成员';contrib[a]=(contrib[a]||0)+1;});
-        return Object.keys(contrib).sort(function(a,b){return contrib[b]-contrib[a];}).slice(0,4).map(function(a){
-          return '<div class="kp-contrib"><span class="kp-contrib-ava">'+a.substring(0,1)+'</span><div><div class="kp-contrib-name">'+a+'</div><div class="kp-contrib-meta">'+contrib[a]+'篇知识</div></div></div>';
-        }).join('') || '<div style="font-size:11px;color:var(--c-text-3)">暂无贡献数据</div>';
+  // 卡片网格（恢复用户认可的旧版布局）
+  +'<div class="kyp-layout">'
+    +'<div class="kyp-main">'
+      +'<div class="kyp-grid" id="kyp-grid">'
+        +(function(){
+          var order = {high:0, normal:1, low:2};
+          return [...KNOWLEDGE].sort(function(a,b){
+            return (order[a.priority||'normal']||1) - (order[b.priority||'normal']||1);
+          }).map(function(k){
+            var isFav = favIds.indexOf(k.id)>=0;
+            var prioBadge = k.priority === 'high' ? '<span class="kyp-prio-high">优先</span>' : (k.priority === 'low' ? '<span class="kyp-prio-low">参考</span>' : '');
+            var fileBadge = k.fileUrl ? '<span style="color:#0ea5e9;font-size:12px;">📎</span>' : '';
+            return ''
+              +'<div class="kyp-card'+(k.priority==='high'?' kyp-card-prio':'')+'" data-type="'+(k.domain||'')+'" data-search="'+(k.title+' '+(k.description||'')+' '+k.tags)+'" data-id="'+k.id+'">'
+              +'  <div class="kyp-card-top">'
+              +'    <div class="kyp-card-title">'+k.title+fileBadge+prioBadge+'</div>'
+              +'    <div class="kyp-card-actions">'
+              +      '<span class="kyp-act" title="收藏" onclick="kpToggleFav('+k.id+',event)">'+(isFav?'♥':'♡')+'</span>'
+              +      (can?'<span class="kyp-act" title="编辑" onclick="event.stopPropagation();editKnowledge('+k.id+')">✎</span>':'')
+              +      (can?'<span class="kyp-act kyp-act-del" title="删除" onclick="event.stopPropagation();deleteKnowledge('+k.id+')">✕</span>':'')
+              +    '</div>'
+              +'  </div>'
+              +'  <div class="kyp-card-meta">'
+              +'    <span class="kyp-domain-tag">'+(k.domain||'未分类')+'</span>'
+              +    (k.projectId?'<span class="kyp-scope-tag">项目:'+k.projectId+'</span>':'<span class="kyp-scope-tag">通用</span>')
+              +'  </div>'
+              +'  <div class="kyp-card-short">'+escHtml(k.short || (k.description||'').slice(0,80))+'</div>'
+              +'  <div class="kyp-card-foot">'
+              +'    <span class="kyp-card-time">📅 '+(k.updateTime||k.createdAt||'-')+'</span>'
+              +'    <span class="kyp-card-stats">'
+              +'      <span title="浏览">👁 '+(k.views||0)+'</span>'
+              +'      <span title="下载">⬇ '+(k.downloads||0)+'</span>'
+              +'    </span>'
+              +'  </div>'
+              +'</div>';
+          }).join('');
+        })()
+      +'</div>'
+      +'<div id="kyp-empty" style="display:none;text-align:center;padding:60px 0;color:var(--c-text-3);font-size:14px;">没有找到匹配的知识</div>'
+    +'</div>'
+
+    // 右栏：最近浏览 + 热榜
+    +'<div class="kyp-sidebar">'
+      +(function(){
+        try {
+          var viewed = JSON.parse(sessionStorage.getItem('kyp_recently_viewed')||'[]');
+          if (viewed.length > 0) {
+            var recentItems = viewed.map(function(id){ return KNOWLEDGE.find(function(k){return k.id===id;}); }).filter(Boolean).slice(0,5);
+            if (recentItems.length > 0) {
+              return '<div class="kyp-sb-section"><div class="kyp-sb-title">🕐 最近浏览</div>'
+                + recentItems.map(function(rk){ return '<div class="kyp-recent-item" onclick="showKnowledgeDetail('+rk.id+')"><span class="kyp-recent-title">'+rk.title+'</span></div>'; }).join('')
+                + '</div>';
+            }
+          }
+        } catch(e) {}
+        return '';
       })()
-    +'</div>'
-    +'<div class="kp-right-block">'
-      +'<div class="kp-right-title">知识热榜</div>'
-      + top6.map(function(k,i){
-          return '<div class="kp-rank-item" onclick="kpViewDetail('+k.id+')"><span class="kp-rank-num'+(i<3?' kp-rank-top':'')+'">'+(i+1)+'</span><span class="kp-rank-text">'+k.title+'</span><span class="kp-rank-stat">👁 '+(k.views||0)+'</span></div>';
+      +'<div class="kyp-sb-section"><div class="kyp-sb-title">🔥 热门排行 TOP5</div>'
+        +top5.map(function(k,i){
+          return '<div class="kyp-rank-item" onclick="showKnowledgeDetail('+k.id+')">'
+            +'<span class="kyp-rank-num '+(i<3?'kyp-rank-top':'')+'">'+(i+1)+'</span>'
+            +'<div class="kyp-rank-body"><span class="kyp-rank-title">'+k.title+'</span><span class="kyp-rank-stats">👁 '+(k.views||0)+' · ⬇ '+(k.downloads||0)+'</span></div>'
+            +'</div>';
         }).join('')
+      +'</div>'
     +'</div>'
-  +'</div>'
-
   +'</div>';
 
   } catch(e) { if(typeof addRuntimeLog==='function') addRuntimeLog('error','Knowledge 渲染异常',String(e)); return errorState('知识能量池加载失败','请刷新页面重试'); }
