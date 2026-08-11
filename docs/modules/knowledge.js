@@ -95,12 +95,17 @@ function renderKnowledge(){
   <div class="kyp-layout">
     <div class="kyp-main">
       <div class="kyp-grid" id="kyp-grid">
-        ${KNOWLEDGE.map(k => {
-          const perm = k.permission || '公开';
+        ${(function(){
+          var order = {high:0, normal:1, low:2};
+          return [...KNOWLEDGE].sort(function(a,b){
+            return (order[a.priority||'normal']||1) - (order[b.priority||'normal']||1);
+          }).map(function(k){
+          var perm = k.permission || '公开';
+          var prioBadge = k.priority === 'high' ? '<span style="font-size:10px;padding:1px 6px;background:#fef2f2;color:#dc2626;border-radius:3px;margin-left:4px;font-weight:500;">优先</span>' : (k.priority === 'low' ? '<span style="font-size:10px;padding:1px 6px;background:#f8fafc;color:#94a3b8;border-radius:3px;margin-left:4px;">参考</span>' : '');
           return `
           <div class="kyp-card" data-type="${k.domain||''}" data-search="${k.title}${k.description}${k.tags}" data-id="${k.id}" onmousedown="kypCardMouseDown(event, ${k.id})" onclick="kypCardClick(event, ${k.id})">
             <div class="kyp-card-top">
-              <span class="kyp-card-title">${k.title}${k.fileUrl?' <span style="font-size:10px;color:#0ea5e9;">📎</span>':''}</span>
+              <span class="kyp-card-title">${k.title}${k.fileUrl?' <span style="font-size:10px;color:#0ea5e9;">📎</span>':''}${prioBadge}</span>
               ${can ? '<div class="kyp-card-actions"><span class="kyp-act" onclick="event.stopPropagation();editKnowledge('+k.id+')">✎</span><span class="kyp-act kyp-act-del" onclick="event.stopPropagation();deleteKnowledge('+k.id+')">✕</span></div>' : ''}
             </div>
             <div class="kyp-card-meta">
@@ -116,12 +121,28 @@ function renderKnowledge(){
               </span>
             </div>
           </div>`;
-        }).join('')}
+        }).join('');
+      })()}
       </div>
       <div id="kyp-empty" style="display:none;text-align:center;padding:60px 0;color:var(--c-text-3,#999);font-size:14px;">没有找到匹配的知识内容</div>
     </div>
 
     <div class="kyp-sidebar">
+      <!-- 最近浏览 -->
+      ${(()=>{
+        try {
+          var viewed = JSON.parse(sessionStorage.getItem('kyp_recently_viewed')||'[]');
+          if (viewed.length > 0) {
+            var recentItems = viewed.map(function(id){ return KNOWLEDGE.find(function(k){ return k.id === id; }); }).filter(Boolean).slice(0,5);
+            if (recentItems.length > 0) {
+              return '<div class="kyp-sb-section"><div class="kyp-sb-title">🕐 最近浏览</div>'
+                + recentItems.map(function(rk){ return '<div class="kyp-recent-item" onclick="showKnowledgeDetail('+rk.id+')"><span class="kyp-recent-title">'+rk.title+'</span></div>'; }).join('')
+                + '</div>';
+            }
+          }
+        } catch(e) {}
+        return '';
+      })()}
       <div class="kyp-sb-section">
         <div class="kyp-sb-title">🔥 热门排行榜 TOP5</div>
         ${top5.map((k, i) => `
@@ -341,6 +362,14 @@ function kypCardClick(e, id) {
 function showKnowledgeDetail(id) {
   var k = KNOWLEDGE.find(function(item) { return item.id === id; });
   if (!k) return;
+  // 记录浏览历史
+  try {
+    var viewed = JSON.parse(sessionStorage.getItem('kyp_recently_viewed') || '[]');
+    viewed = viewed.filter(function(vid){ return vid !== id; });
+    viewed.unshift(id);
+    if (viewed.length > 10) viewed = viewed.slice(0,10);
+    sessionStorage.setItem('kyp_recently_viewed', JSON.stringify(viewed));
+  } catch(e) {}
   var permIcon = {'公开':'🌐','内部':'🔵','受限':'🔴'};
   var perm = k.permission || '公开';
   // 浏览量 +1
