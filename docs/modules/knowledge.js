@@ -382,6 +382,22 @@ function showKnowledgeDetail(id) {
     +     '<span>⬇ ' + (k.downloads||0) + ' 次下载</span>'
     +   '</div>'
     +   (k.scope ? '<div class="kyp-detail-meta"><span>适用范围：' + k.scope + '</span></div>' : '')
+    // 来源标识
+    +   (k.sourceType === 'issue' ? '<div class="kyp-detail-meta"><span>💡 来源：问题管理 → 已沉淀为知识</span></div>' : '')
+    +   (k.sourceType === 'project' ? '<div class="kyp-detail-meta"><span>📋 来源：课题实践 → 已沉淀为知识</span></div>' : '')
+    // 版本历史（折叠）
+    +   ((k.versionHistory||[]).length > 0 ? '<div style="margin-top:10px;padding-top:8px;border-top:1px solid #e2e8f0;">'
+    +     '<div style="font-size:11px;font-weight:500;color:#64748b;cursor:pointer;margin-bottom:4px;" onclick="var el=this.nextElementSibling;el.style.display=el.style.display===\'none\'?\'block\':\'none\';this.textContent=el.style.display===\'none\'?\'📝 版本记录 ('+(k.versionHistory||[]).length+'次) ▸\':\'📝 版本记录 ('+(k.versionHistory||[]).length+'次) ▾\'">📝 版本记录 ('+(k.versionHistory||[]).length+'次) ▸</div>'
+    +     '<div style="display:none;font-size:10px;color:#94a3b8;line-height:1.8;">'
+    +       (k.versionHistory||[]).slice().reverse().map(function(v){ return '<div>v'+v.version+' · '+v.time+' · '+v.summary+'</div>'; }).join('')
+    +     '</div></div>' : '')
+    // 关联知识
+    +   ((k.relatedIds||[]).length > 0 ? (()=>{
+        var related = KNOWLEDGE.filter(function(rk){ return k.relatedIds.indexOf(rk.id) >= 0 && rk.id !== k.id; });
+        return related.length ? '<div style="margin-top:10px;padding-top:8px;border-top:1px solid #e2e8f0;"><div style="font-size:11px;font-weight:500;color:#64748b;margin-bottom:4px;">📎 相关阅读</div>'
+          + related.map(function(rk){ return '<div style="font-size:11px;color:#3b82f6;cursor:pointer;padding:3px 0;" onclick="closeKnowledgeDetail();showKnowledgeDetail('+rk.id+')">'+rk.title+'</div>'; }).join('')
+          + '</div>' : '';
+      })() : '')
     + '</div>'
     + '<div class="sd-confirm-footer">'
     +   (canEdit() ? '<button class="sd-confirm-btn sd-confirm-cancel" onclick="closeKnowledgeDetail();editKnowledge(' + k.id + ')">✎ 编辑</button>' : '')
@@ -500,5 +516,48 @@ function submitKnowledgeForm(id) {
   var m = document.getElementById('kyp-form-overlay'); if(m) m.remove();
   renderModule('knowledge');
   if (typeof showToast === 'function') showToast(id == null ? '已新增知识条目' : '已保存修改');
-}// ===== 项目承接规范 =====
+}
 
+/* ═══ 问题/课题 → 一键转知识 ═══ */
+function turnIssueToKnowledge(issueObj) {
+  if (!issueObj) return;
+  // 预填知识表单：从问题/课题中提取标题、描述、标签
+  var domainGuess = '风控与应急';
+  if (/成本|费效比|利润|预算/.test(issueObj.desc)) domainGuess = '成本与核算';
+  if (/SOP|流程|标准/.test(issueObj.desc)) domainGuess = '流程与SOP';
+  if (/话术|投诉|沟通/.test(issueObj.desc)) domainGuess = '客诉与话术';
+  if (/AI|智能|效率|工具/.test(issueObj.desc)) domainGuess = '效率与AI';
+  if (/新人|培训|上手/.test(issueObj.desc)) domainGuess = '培训与入门';
+
+  var record = {
+    title: issueObj.desc ? issueObj.desc.substring(0, 50) : '未命名知识',
+    domain: domainGuess,
+    projectId: issueObj.projectId || '',
+    sourceType: 'issue',
+    sourceId: String(issueObj.id || ''),
+    permission: '内部',
+    scope: '通用',
+    short: '',
+    description: (issueObj.background||'') + '\n\n根因：' + (issueObj.rootCause||'') + '\n\n解决方案：' + (issueObj.solution||''),
+    tags: issueObj.assignee || ''
+  };
+  showKnowledgeForm(record);
+}
+
+/* ═══ 课题 → 一键转知识 ═══ */
+function turnProjectToKnowledge(obj) {
+  if (!obj) return;
+  var record = {
+    title: obj.desc ? obj.desc.substring(0, 50) : '未命名知识',
+    domain: '方法论与框架',
+    projectId: obj.projectId || '',
+    sourceType: 'project',
+    sourceId: String(obj.id || ''),
+    permission: '内部',
+    scope: '通用',
+    short: '',
+    description: (obj.background||'') + '\n\n方案：' + (obj.solution||''),
+    tags: obj.assignee || ''
+  };
+  showKnowledgeForm(record);
+}
