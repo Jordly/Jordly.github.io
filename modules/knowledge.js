@@ -29,9 +29,6 @@ function renderKnowledge(){
   const permIcon = {'公开':'🌐','内部':'🔵','受限':'🔴'};
   const permLabel = {'公开':'公开','内部':'内部','受限':'受限'};
 
-  // Tab 切换：知识库 / 重要活动预案
-  var knowledgeTab = window._knowledgeTab || 'knowledge';
-
   return `
   <div class="kyp-header">
     <div class="kyp-header-left">
@@ -44,19 +41,12 @@ function renderKnowledge(){
     ${can ? '<div class="kyp-add-btn" onclick="addKnowledge()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>添加知识</div>' : ''}
   </div>
 
-  <!-- Tab 切换栏 -->
-  <div style="display:flex;gap:0;border-bottom:2px solid #e2e8f0;margin-bottom:14px;">
-    <div style="padding:8px 18px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(knowledgeTab==='eventPlan'?'#185FA5':'transparent')+';color:'+(knowledgeTab==='eventPlan'?'#185FA5':'#64748b')+';font-weight:'+(knowledgeTab==='eventPlan'?'600':'400')+';margin-bottom:-2px;" onclick="window._knowledgeTab=\'eventPlan\';if(typeof _moduleCache!==\'undefined\')_moduleCache[\'knowledge\']=null;renderModule(\'knowledge\')">📋 重要活动预案</div>
-    <div style="padding:8px 18px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(knowledgeTab==='knowledge'?'#185FA5':'transparent')+';color:'+(knowledgeTab==='knowledge'?'#185FA5':'#64748b')+';font-weight:'+(knowledgeTab==='knowledge'?'600':'400')+';margin-bottom:-2px;" onclick="window._knowledgeTab=\'knowledge\';if(typeof _moduleCache!==\'undefined\')_moduleCache[\'knowledge\']=null;renderModule(\'knowledge\')">📚 知识库</div>
-  </div>
-  ` + (knowledgeTab === 'eventPlan' ? _renderEventPlanInline() : `
-
   <!-- 最近更新 -->
   ${(()=>{
     var recent = [...KNOWLEDGE].sort(function(a,b){ return (b.updateTime||'').localeCompare(a.updateTime||''); }).slice(0,4);
-    return recent.length ? '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">'
-      +'<span style="font-size:11px;color:#64748b;flex-shrink:0;line-height:28px;">🕐 最近更新：</span>'
-      + recent.map(function(k){ return '<span style="font-size:11px;padding:3px 10px;background:#f0f9ff;border-radius:12px;cursor:pointer;color:#0284c7;border:1px solid #bae6fd;white-space:nowrap;" onclick="showKnowledgeDetail('+k.id+')">'+k.title+'</span>'; }).join('')
+    return recent.length ? '<div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">'
+      +'<span style="font-size:11px;color:#64748b;flex-shrink:0;">🕐 最近更新：</span>'
+      + recent.map(function(k){ return '<span style="font-size:11px;padding:3px 10px;background:#f0f9ff;border-radius:12px;cursor:pointer;color:#0284c7;border:1px solid #bae6fd;white-space:nowrap;transition:all 0.15s;" onclick="showKnowledgeDetail('+k.id+')" onmouseover="this.style.background=\'#e0f2fe\'" onmouseout="this.style.background=\'#f0f9ff\'">'+k.title+'</span>'; }).join('')
       +'</div>' : '';
   })()}
 
@@ -110,7 +100,7 @@ function renderKnowledge(){
           return `
           <div class="kyp-card" data-type="${k.domain||''}" data-search="${k.title}${k.description}${k.tags}" data-id="${k.id}" onmousedown="kypCardMouseDown(event, ${k.id})" onclick="kypCardClick(event, ${k.id})">
             <div class="kyp-card-top">
-              <span class="kyp-card-title">${k.title}</span>
+              <span class="kyp-card-title">${k.title}${k.fileUrl?' <span style="font-size:10px;color:#0ea5e9;">📎</span>':''}</span>
               ${can ? '<div class="kyp-card-actions"><span class="kyp-act" onclick="event.stopPropagation();editKnowledge('+k.id+')">✎</span><span class="kyp-act kyp-act-del" onclick="event.stopPropagation();deleteKnowledge('+k.id+')">✕</span></div>' : ''}
             </div>
             <div class="kyp-card-meta">
@@ -156,7 +146,7 @@ function renderKnowledge(){
     </div>
   </div>
 
-  `);
+  `;
 
   } catch(e) { if(typeof addRuntimeLog==='function') addRuntimeLog('error','Knowledge 渲染异常',String(e)); return errorState('知识能量池加载失败','请刷新页面重试'); }
 }
@@ -375,6 +365,8 @@ function showKnowledgeDetail(id) {
     + '</div>'
     + '<div class="kyp-detail-body">'
     +   (k.description ? '<div class="kyp-detail-desc">' + k.description + '</div>' : '')
+    // 附件下载
+    +   (k.fileUrl ? '<div style="margin-top:12px;padding:10px 14px;background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:10px;"><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:20px;">📎</span><div><div style="font-size:12px;font-weight:600;color:#0c4a6e;">附件资料</div><div style="font-size:10px;color:#0284c7;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+escHtml(k.fileUrl)+'</div></div></div><a href="'+escHtml(k.fileUrl)+'" target="_blank" class="btn btn-sm btn-primary" style="background:#0ea5e9;border-color:#0ea5e9;flex-shrink:0;text-decoration:none;">📥 查看/下载</a></div>' : '')
     +   (tagHtml ? '<div class="kyp-detail-tags"><div class="kyp-detail-tags-label">标签（点击筛选）：</div>' + tagHtml + '</div>' : '')
     +   '<div class="kyp-detail-meta">'
     +     '<span>📅 更新于 ' + (k.updateTime || k.createdAt || '-') + '</span>'
@@ -462,6 +454,7 @@ function showKnowledgeForm(record) {
     +   '</div>'
     +   '<label>简短摘要（卡片显示，建议25字内）</label><div class="sd-prompt-input-wrap"><input type="text" id="kf-short" class="sd-prompt-input" value="'+escHtml(k.short)+'"></div>'
     +   '<label>完整描述</label><div class="sd-prompt-input-wrap"><textarea id="kf-description" class="sd-prompt-input" style="min-height:80px;">'+(k.description||'')+'</textarea></div>'
+    +   '<label>附件链接（可填在线文档/网盘地址，方便直接查看课件资料）</label><div class="sd-prompt-input-wrap"><input type="text" id="kf-fileurl" class="sd-prompt-input" value="'+escHtml(k.fileUrl||'')+'" placeholder="如：https://docs.qq.com/xxx 或 网盘链接"></div>'
     +   '<label>标签（逗号分隔）</label><div class="sd-prompt-input-wrap"><input type="text" id="kf-tags" class="sd-prompt-input" value="'+escHtml(k.tags)+'"></div>'
     + '</div>'
     + '<div class="sd-prompt-footer">'
@@ -486,6 +479,7 @@ function submitKnowledgeForm(id) {
       projectId: document.getElementById('kf-project').value,
       permission: document.getElementById('kf-permission').value,
       scope: document.getElementById('kf-scope').value || '通用',
+      fileUrl: document.getElementById('kf-fileurl').value.trim(),
       short: document.getElementById('kf-short').value.trim(),
       description: document.getElementById('kf-description').value.trim(),
       tags: document.getElementById('kf-tags').value.trim(),
@@ -501,6 +495,7 @@ function submitKnowledgeForm(id) {
       k.title = title;
       k.domain = document.getElementById('kf-domain').value;
       k.projectId = document.getElementById('kf-project').value;
+      k.fileUrl = document.getElementById('kf-fileurl').value.trim();
       k.permission = document.getElementById('kf-permission').value;
       k.scope = document.getElementById('kf-scope').value || '通用';
       k.short = document.getElementById('kf-short').value.trim();
