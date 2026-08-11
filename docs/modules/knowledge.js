@@ -46,11 +46,11 @@ function renderKnowledge(){
           +'<div class="kp-post-tags">'+((k.tags||'').split(',').slice(0,4).map(function(t){return '<span>'+t.trim()+'</span>';}).join(''))+'</div>'
         +'</div>'
         +'<div class="kp-post-foot">'
-          +'<span class="kp-action" onclick="kpToggleFav('+k.id+',event)"><span>'+(isFav?'♥':'♡')+'</span></span>'
-          +'<span class="kp-action" onclick="kpCopyCitation('+k.id+',event)"><span>📋</span>复制引用</span>'
-          +'<span class="kp-action"><span>👁</span>'+(k.views||0)+'</span>'
-          +'<span class="kp-action"><span>💬</span>'+(k.relatedIds||[]).length+'</span>'
-          +'<span class="kp-action"><span>⬇</span>'+(k.downloads||0)+'</span>'
+          +'<span class="kp-action" onclick="kpToggleFav('+k.id+',event)"><span>'+(isFav?'♥':'♡')+'</span><span>'+(isFav?'已收藏':'收藏')+'</span></span>'
+          +'<span class="kp-action" onclick="kpCopyCitation('+k.id+',event)"><span>📋</span><span>复制</span></span>'
+          +'<span class="kp-action"><span>👁</span><span>'+(k.views||0)+'</span></span>'
+          +'<span class="kp-action"><span>💬</span><span>'+(k.relatedIds||[]).length+'</span></span>'
+          +'<span class="kp-action"><span>⬇</span><span>'+(k.downloads||0)+'</span></span>'
         +'</div>'
       +'</div>';
     }).join('');
@@ -70,9 +70,9 @@ function renderKnowledge(){
   +'<div class="kp-left">'
     +'<div class="kp-left-block">'
       +'<div class="kp-left-title">知识领域</div>'
-      +'<div class="kp-domain-item kp-domain-active" data-domain="all" onclick="kpSwitchDomain(\'all\',this)">全部<span>'+totalKnowledge+'</span></div>'
+      +'<div class="kp-domain-item kp-domain-active" data-domain="all" onclick="kpSwitchDomain(\'all\',this)"><span class="kp-domain-name">全部</span><span>'+totalKnowledge+'</span></div>'
       + domainOrder.filter(function(d){return domainCounts[d];}).map(function(d){
-          return '<div class="kp-domain-item" data-domain="'+d+'" onclick="kpSwitchDomain(\''+d+'\',this)"><span style="color:'+(domainColors[d]||'#534AB7')+'">'+(domainIcons[d]||'★')+'</span>'+d+'<span>'+domainCounts[d]+'</span></div>';
+          return '<div class="kp-domain-item" data-domain="'+d+'" onclick="kpSwitchDomain(\''+d+'\',this)"><span class="kp-domain-icon" style="color:'+(domainColors[d]||'#534AB7')+'">'+(domainIcons[d]||'★')+'</span><span class="kp-domain-name">'+d+'</span><span>'+domainCounts[d]+'</span></div>';
         }).join('')
     +'</div>'
     +'<div class="kp-left-block">'
