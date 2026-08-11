@@ -2813,6 +2813,12 @@
   outline: none !important;
 }
 
+/* 绩效看板「组别」下拉：单独修复右侧外框缺失 */
+.pf-group-select {
+  min-width: 108px !important;
+  border-right: 1.5px solid #475569 !important;
+}
+
 /* 操作按钮行 */
 .filter-actions-v4 {
   margin-bottom: 8px !important;
