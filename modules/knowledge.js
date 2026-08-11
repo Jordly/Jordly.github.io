@@ -30,8 +30,10 @@ function renderKnowledge(){
   const permIcon = {'公开':'🌐','内部':'🔵','受限':'🔴'};
   const permLabel = {'公开':'公开','内部':'内部','受限':'受限'};
 
-  return `
+  // Tab 切换：知识库 / 重要活动预案
+  var knowledgeTab = window._knowledgeTab || 'knowledge';
 
+  return `
   <div class="kyp-header">
     <div class="kyp-header-left">
       <div class="kyp-title-row">
@@ -42,6 +44,13 @@ function renderKnowledge(){
     </div>
     ${can ? '<div class="kyp-add-btn" onclick="addKnowledge()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>添加知识</div>' : ''}
   </div>
+
+  <!-- Tab 切换栏 -->
+  <div style="display:flex;gap:0;border-bottom:2px solid #e2e8f0;margin-bottom:14px;">
+    <div style="padding:8px 18px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(knowledgeTab==='eventPlan'?'#185FA5':'transparent')+';color:'+(knowledgeTab==='eventPlan'?'#185FA5':'#64748b')+';font-weight:'+(knowledgeTab==='eventPlan'?'600':'400')+';margin-bottom:-2px;" onclick="window._knowledgeTab=\'eventPlan\';if(typeof _moduleCache!==\'undefined\')_moduleCache[\'knowledge\']=null;renderModule(\'knowledge\')">📋 重要活动预案</div>
+    <div style="padding:8px 18px;font-size:13px;cursor:pointer;border-bottom:2px solid '+(knowledgeTab==='knowledge'?'#185FA5':'transparent')+';color:'+(knowledgeTab==='knowledge'?'#185FA5':'#64748b')+';font-weight:'+(knowledgeTab==='knowledge'?'600':'400')+';margin-bottom:-2px;" onclick="window._knowledgeTab=\'knowledge\';if(typeof _moduleCache!==\'undefined\')_moduleCache[\'knowledge\']=null;renderModule(\'knowledge\')">📚 知识库</div>
+  </div>
+  ` + (knowledgeTab === 'eventPlan' ? _renderEventPlanInline() : `
 
   <div class="kyp-stats">
     <div class="kyp-stat-card">
@@ -139,7 +148,7 @@ function renderKnowledge(){
     </div>
   </div>
 
-  `;
+  `);
 
   } catch(e) { if(typeof addRuntimeLog==='function') addRuntimeLog('error','Knowledge 渲染异常',String(e)); return errorState('知识能量池加载失败','请刷新页面重试'); }
 }

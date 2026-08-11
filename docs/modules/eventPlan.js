@@ -280,3 +280,62 @@ function viewCampaignImage() {
   overlay.onclick = function(e) { if (e.target === this) this.remove(); };
   document.body.appendChild(overlay);
 }
+
+/* ═══ 知识能量池内嵌视图（精简版，去掉独立标题和导航） ═══ */
+function _renderEventPlanInline() {
+  try {
+    var html = '';
+    // 作战大图横幅
+    html += '<div style="margin-bottom:14px;padding:12px 14px;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);border-radius:8px;border:1px solid #bae6fd;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">';
+    html += '<div style="display:flex;align-items:center;gap:8px;">';
+    html += '<span style="font-size:18px;">🗺️</span>';
+    html += '<div><div style="font-size:12px;font-weight:600;color:#0c4a6e;">双11大促作战大图</div><div style="font-size:10px;color:#0284c7;">全流程规划可视化参考</div></div>';
+    html += '</div>';
+    html += '<button class="btn btn-xs btn-primary" onclick="viewCampaignImage()" style="background:#0ea5e9;border-color:#0ea5e9;">📷 查看大图</button>';
+    html += '</div>';
+
+    // 时间线
+    html += '<div style="display:flex;gap:3px;margin-bottom:14px;overflow-x:auto;padding-bottom:2px;">';
+    var phases = ['T-90天','T-60天','T-30天','T-14天','T-7天','T-1天','D-Day'];
+    var phNames = ['启动准备','招聘培训','方案落地','精准备战','预演冲刺','就绪确认','爆发日'];
+    phases.forEach(function(ph, idx) {
+      var isLast = idx === phases.length - 1;
+      html += '<div style="flex:1;min-width:70px;text-align:center;padding:6px 4px;background:'+(isLast?'#fef2f2':'#f8fafc')+';border-radius:5px;border:1px solid '+(isLast?'#fecaca':'#e2e8f0')+';font-size:10px;">';
+      html += '<div style="color:#64748b;">'+ph+'</div>';
+      html += '<div style="font-weight:'+(isLast?'700':'400')+';color:'+(isLast?'#dc2626':'#475569')+';margin-top:1px;">'+phNames[idx]+'</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+
+    // 维度卡片
+    EVENT_PREP_GROUPS.forEach(function(grp) {
+      var dims = EVENT_PREP_DIMENSIONS.filter(function(d) { return d.group === grp.key; });
+      if (dims.length === 0) return;
+      html += '<div style="margin-bottom:10px;">';
+      html += '<div style="font-size:12px;font-weight:600;color:#334155;margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid #e2e8f0;">'+grp.label+' · '+dims.length+'项</div>';
+      html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:6px;">';
+      dims.forEach(function(dim) {
+        var isExpanded = _eventPrepExpanded[dim.key] === true;
+        html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:6px;overflow:hidden;">';
+        html += '<div style="display:flex;align-items:center;gap:6px;padding:8px 10px;cursor:pointer;background:'+(isExpanded?'#f0f9ff':'#fff')+';" onclick="toggleEventDimension(\''+dim.key+'\')">';
+        html += '<span style="font-size:14px;">'+dim.icon+'</span>';
+        html += '<span style="flex:1;font-size:11px;font-weight:500;color:#1e293b;">'+dim.title+'</span>';
+        html += '<span style="font-size:10px;color:#94a3b8;transition:0.2s;transform:'+(isExpanded?'rotate(180deg)':'')+';">▾</span>';
+        html += '</div>';
+        if (isExpanded) {
+          html += '<div style="padding:8px 10px;background:#f8fafc;border-top:1px solid #e2e8f0;">';
+          html += '<div style="font-size:10px;color:#64748b;line-height:1.6;margin-bottom:6px;">'+dim.desc+'</div>';
+          html += '<ul style="margin:0;padding:0 0 0 12px;font-size:10px;color:#475569;line-height:1.7;">';
+          dim.items.forEach(function(item) { html += '<li>'+item+'</li>'; });
+          html += '</ul></div>';
+        }
+        html += '</div>';
+      });
+      html += '</div></div>';
+    });
+
+    html += '<div style="padding:10px;background:#f8fafc;border-radius:6px;font-size:10px;color:#94a3b8;text-align:center;margin-top:12px;">';
+    html += '💡 以上内容基于「XCXD客服中心大促准备指导手册(2021版)」整理 · 具体方案请根据品牌/项目实际情况调整</div>';
+    return html;
+  } catch(e) { return '<div style="padding:20px;color:#dc2626;">⚠️ 活动预案加载失败</div>'; }
+}

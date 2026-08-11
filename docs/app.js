@@ -2405,18 +2405,18 @@ function isBuiltInRole(roleName) {
   return BUILT_IN_ROLES.indexOf(roleName) >= 0;
 }
 
-const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","eventPlan","handover","satisfaction","performance","risk","systemData","permissions","notifications","profile"];
+const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","performance","risk","systemData","permissions","notifications","profile"];
 
 const MODULE_GROUPS = {
   project: { label:"项目运营中心", keys:["dashboard","archive","target","cost","operation"] },
-  collab: { label:"团队赋能中心", keys:["issue","knowledge","risk","eventPlan"] },
+  collab: { label:"团队赋能中心", keys:["issue","knowledge","risk"] },
   tools: { label:"支撑工具箱", keys:["handover","satisfaction","performance"] },
   system: { label:"系统管理与配置", keys:["systemData","permissions","notifications","profile"] }
 };
 
 const MODULE_NAMES = {
   dashboard:"项目总览看板", archive:"项目基础档案", target:"目标与权责管理", cost:"成本与利润管理",
-  operation:"服务与进度追踪", issue:"问题与课题协作", knowledge:"核心知识能量池", eventPlan:"重要活动预案", risk:"风险监控与预警",
+  operation:"服务与进度追踪", issue:"问题与课题协作", knowledge:"核心知识能量池", risk:"风险监控与预警",
   handover:"项目承接规范", satisfaction:"项目运维调研", performance:"客服绩效看板",
   systemData:"系统数据管理", permissions:"系统权限管理", notifications:"系统用户管理", profile:"个人设置与帮助"
 };
@@ -2430,7 +2430,6 @@ const MODULE_ACTIONS = {
   issue:        { visible:1, view:1, edit:1, import:0, export:0, manage:0, scope:1 },
   knowledge:    { visible:1, view:1, edit:1, import:1, export:1, manage:0, scope:0 },
   risk:         { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
-  eventPlan:    { visible:1, view:1, edit:0, import:0, export:1, manage:0, scope:0 },
   handover:     { visible:1, view:1, edit:1, import:0, export:0, manage:0, scope:0 },
   satisfaction: { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
   performance:  { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
@@ -2457,33 +2456,33 @@ var MGR  = permObj(true,true,false,false,true,'all');
 const DEFAULT_PERMISSIONS = {
   "超级管理员": {
     dashboard:ALL, archive:ALL, target:ALL, cost:ALL, operation:ALL,
-    issue:ALL, knowledge:ALL, eventPlan:ALL, risk:ALL, handover:ALL, satisfaction:ALL,
+    issue:ALL, knowledge:ALL, risk:ALL, handover:ALL, satisfaction:ALL,
     performance:ALL, systemData:ALL, permissions:MGR, notifications:EDIT, profile:EDIT
   },
   "管理员": {
     dashboard:EDIT, archive:EDIT, target:EDIT, cost:EDIT, operation:EDIT,
-    issue:EDIT, knowledge:EDIT, eventPlan:EDIT, risk:EDIT, handover:EDIT, satisfaction:EDIT,
+    issue:EDIT, knowledge:EDIT, risk:EDIT, handover:EDIT, satisfaction:EDIT,
     performance:EDIT, systemData:EDIT, permissions:HIDE, notifications:EDIT, profile:EDIT
   },
   "客服总监": {
     dashboard:VIEW, archive:VIEW, target:VIEW, cost:VIEW, operation:VIEW,
-    issue:VIEW, knowledge:VIEW, eventPlan:VIEW, risk:VIEW, handover:VIEW, satisfaction:VIEW,
+    issue:VIEW, knowledge:VIEW, risk:VIEW, handover:VIEW, satisfaction:VIEW,
     performance:VIEW, systemData:VIEW, permissions:HIDE, notifications:VIEW, profile:EDIT
   },
   "客服经理": {
     dashboard:EDIT, archive:EDIT, target:EDIT, cost:EDIT, operation:EDIT,
-    issue:EDIT, knowledge:EDIT, eventPlan:EDIT, risk:EDIT, handover:EDIT, satisfaction:EDIT,
+    issue:EDIT, knowledge:EDIT, risk:EDIT, handover:EDIT, satisfaction:EDIT,
     performance:EDIT, systemData:VIEW, permissions:HIDE, notifications:VIEW, profile:EDIT
   },
   "客服主管": {
     dashboard:VOWN, archive:VOWN, target:VOWN, cost:VOWN, operation:permObj(true,true,false,true,false,'own'),
-    issue:permObj(true,true,false,false,false,'own'), knowledge:EDIT, eventPlan:VOWN, risk:VOWN,
+    issue:permObj(true,true,false,false,false,'own'), knowledge:EDIT, risk:VOWN,
     handover:VOWN, satisfaction:VOWN, performance:VOWN,
     systemData:HIDE, permissions:HIDE, notifications:VIEW, profile:EDIT
   },
   "项目伙伴": {
     dashboard:RO, archive:RO, target:HIDE, cost:HIDE, operation:RO,
-    issue:permObj(true,true,false,false,false,'own'), knowledge:VIEW, eventPlan:RO, risk:HIDE,
+    issue:permObj(true,true,false,false,false,'own'), knowledge:VIEW, risk:HIDE,
     handover:HIDE, satisfaction:HIDE, performance:HIDE,
     systemData:HIDE, permissions:HIDE, notifications:HIDE, profile:EDIT
   }
@@ -2907,7 +2906,7 @@ function renderModule(module){
     if(nav){ nav.classList.add('active'); }
     const area = document.getElementById("module-content");
     if (!area) { console.error('renderModule: module-content 元素不存在'); return; }
-    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, eventPlan:renderEventPlan, handover:renderHandover, satisfaction:renderSatisfaction, systemData:renderSystemData, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
+    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, systemData:renderSystemData, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
     // 性能埋点：记录模块渲染耗时
     var perfStart = performance.now();
     // 模块渲染缓存：数据未变时跳过 HTML 生成
