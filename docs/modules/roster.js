@@ -235,7 +235,7 @@
     return ''
       + '<div class="rstr-header">'
       +   '<div><div class="rstr-title">人才盘点花名册</div>'
-      +   '<div class="rstr-desc">济南团队一线客服 · 人才梯队建设</div></div>'
+      +   '<div class="rstr-desc">长信客服团队 · 人才梯队建设</div></div>'
       +   '<div class="rstr-tabs">'
       +     '<span class="rstr-tab '+( _view==='overview'?'on':'')+'" onclick="rosterSwitch(\'overview\')">人员总览</span>'
       +     '<span class="rstr-tab '+( _view==='review'?'on':'')+'" onclick="rosterSwitch(\'review\')">人才盘点</span>'
