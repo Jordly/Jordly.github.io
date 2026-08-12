@@ -37,6 +37,7 @@
 //   modules/performance.js  → 绩效管理
 //   modules/risk.js         → 风险管理
 //   modules/profile.js      → 个人基础设置
+//   modules/roster.js       → 人才盘点花名册（人员主表权威源在 systemData 的 personnelMaster）
 // ── 其他独立文件 ──
 //   backup-restore.js       → 数据恢复（导入备份JSON + 确认弹窗 + 执行恢复）
 //   cloudbase-sync.js       → CloudBase 云端数据同步
@@ -2945,7 +2946,7 @@ function renderModule(module){
     if(nav){ nav.classList.add('active'); }
     const area = document.getElementById("module-content");
     if (!area) { console.error('renderModule: module-content 元素不存在'); return; }
-    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, systemData:renderSystemData, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile};
+    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, systemData:renderSystemData, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile, roster:renderRoster};
     // 性能埋点：记录模块渲染耗时
     var perfStart = performance.now();
     // 模块渲染缓存：数据未变时跳过 HTML 生成

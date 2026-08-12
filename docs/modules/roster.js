@@ -1,0 +1,449 @@
+// modules/roster.js — 人才盘点花名册模块
+/* ═══════════════════ 人才盘点花名册 ═════════════════ */
+// 定位：济南一线客服人才梯队建设工具。记录入职→离职全部发展事件，双维度九宫格盘点。
+// 数据：基础人员(chansee_roster_personnel) + 盘点/事件(chansee_roster_review)，均仅存 localStorage（遵循数据安全铁律）。
+// 独立性：与绩效/知识/承接等业务版块零字段关联；仅单向读取系统数据管理的人员主表。
+
+(function(){
+  if (typeof window === 'undefined') return;
+
+  // ——— 存储键与评分模型 ———
+  var PERSONNEL_KEY = 'chansee_roster_personnel';
+  var REVIEW_KEY = 'chansee_roster_review';
+
+  // 部门维度 6 项（满分 35，每项 0-6）
+  var DEPT_DIMS = ['绩效','成长','思维','学习','人际','团队协作'];
+  // 人力维度 6 项（满分 100，每项 0-17）
+  var HR_DIMS = ['专业','业绩','敬业','潜力','合作','企业文化'];
+
+  // 九宫格落位矩阵（deptBand → hrBand）
+  var NINE = {
+    high: { low:{id:5,label:'在岗发展',sym:'※',cls:'rstr-n9-mid'},  mid:{id:7,label:'重点培养',sym:'▲',cls:'rstr-n9-good'}, high:{id:9,label:'高潜人才',sym:'★',cls:'rstr-n9-best'} },
+    mid:  { low:{id:2,label:'需关注可保留',sym:'※',cls:'rstr-n9-mid'}, mid:{id:4,label:'重点保留',sym:'▲',cls:'rstr-n9-good'}, high:{id:8,label:'重点培养',sym:'▲',cls:'rstr-n9-good'} },
+    low:  { low:{id:1,label:'问题员工调岗或解聘',sym:'▼',cls:'rstr-n9-bad'}, mid:{id:3,label:'需关注可保留',sym:'△',cls:'rstr-n9-mid'}, high:{id:6,label:'在岗发展',sym:'△',cls:'rstr-n9-mid'} }
+  };
+
+  // ——— 演示用虚构基础数据（首次打开填充，真实数据由钉钉导入进入 localStorage）———
+  var SEED_PERSONNEL = [
+    {empId:'E1001', name:'张明轩', group:'A组', site:'济南', position:'一线客服', status:'在职', hireDate:'2023-03-12', manager:'李组长'},
+    {empId:'E1002', name:'李思琪', group:'A组', site:'济南', position:'组长', status:'在职', hireDate:'2022-07-01', manager:'王主管'},
+    {empId:'E1003', name:'王浩然', group:'B组', site:'淄博', position:'一线客服', status:'离职', hireDate:'2021-09-20', manager:'赵组长'},
+    {empId:'E1004', name:'赵雅婷', group:'B组', site:'淄博', position:'一线客服', status:'二次入职', hireDate:'2023-01-05', manager:'赵组长'},
+    {empId:'E1005', name:'陈宇航', group:'C组', site:'杭州', position:'主管', status:'在职', hireDate:'2020-11-15', manager:'孙经理'},
+    {empId:'E1006', name:'刘梦洁', group:'A组', site:'济南', position:'一线客服', status:'试用', hireDate:'2026-06-01', manager:'李组长'},
+    {empId:'E1007', name:'孙立伟', group:'C组', site:'杭州', position:'一线客服', status:'离职', hireDate:'2022-02-10', manager:'陈主管'},
+    {empId:'E1008', name:'周晓彤', group:'B组', site:'淄博', position:'一线客服', status:'在职', hireDate:'2024-04-22', manager:'赵组长'}
+  ];
+  var SEED_REVIEW = {
+    E1001: { tags:['高潜'], echelon:'骨干', comment:'响应快、学习力强，建议重点培养。',
+      deptScores:{绩效:5,成长:5,思维:4,学习:6,人际:5,团队协作:5}, hrScores:{专业:14,业绩:15,敬业:16,潜力:16,合作:15,企业文化:15},
+      events:[
+        {id:'EV1',type:'入职',date:'2023-03-12',title:'入职 一线客服',detail:'济南 A组',by:'HR'},
+        {id:'EV2',type:'晋升',date:'2024-08-01',title:'晋升 组长',detail:'因带教表现突出晋升',by:'王主管'},
+        {id:'EV3',type:'获荣誉头衔',date:'2025-05-20',title:'获「服务之星」头衔',detail:'季度服务标兵',by:'王主管'}
+      ]},
+    E1002: { tags:['骨干'], echelon:'骨干', comment:'稳定的组长，梯队中坚。',
+      deptScores:{绩效:6,成长:4,思维:5,学习:4,人际:6,团队协作:6}, hrScores:{专业:16,业绩:14,敬业:17,潜力:13,合作:16,企业文化:16},
+      events:[
+        {id:'EV1',type:'入职',date:'2022-07-01',title:'入职 一线客服',detail:'',by:'HR'},
+        {id:'EV2',type:'晋升',date:'2023-11-01',title:'晋升 组长',detail:'',by:'王主管'}
+      ]},
+    E1003: { tags:['待提升'], echelon:'一线', comment:'已离职，保留记录备查。',
+      deptScores:{绩效:3,成长:3,思维:3,学习:3,人际:3,团队协作:3}, hrScores:{专业:10,业绩:9,敬业:10,潜力:9,合作:10,企业文化:9},
+      events:[
+        {id:'EV1',type:'入职',date:'2021-09-20',title:'入职 一线客服',detail:'',by:'HR'},
+        {id:'EV2',type:'离职',date:'2025-12-15',title:'离职',detail:'个人原因',by:'赵组长'}
+      ]},
+    E1004: { tags:['后备干部'], echelon:'后备', comment:'二次入职，需观察稳定性。',
+      deptScores:{绩效:4,成长:4,思维:4,学习:4,人际:4,团队协作:4}, hrScores:{专业:12,业绩:12,敬业:13,潜力:14,合作:12,企业文化:12},
+      events:[
+        {id:'EV1',type:'入职',date:'2023-01-05',title:'入职 一线客服',detail:'',by:'HR'},
+        {id:'EV2',type:'离职',date:'2025-03-10',title:'离职',detail:'回老家',by:'赵组长'},
+        {id:'EV3',type:'二次入职',date:'2026-02-18',title:'二次入职 一线客服',detail:'重新返岗',by:'HR'},
+        {id:'EV4',type:'调岗',date:'2026-05-01',title:'调岗 B组',detail:'',by:'赵组长'}
+      ]},
+    E1005: { tags:['骨干'], echelon:'管理', comment:'主管，管理梯队核心。',
+      deptScores:{绩效:6,成长:6,思维:6,学习:5,人际:6,团队协作:6}, hrScores:{专业:17,业绩:16,敬业:17,潜力:16,合作:17,企业文化:16},
+      events:[
+        {id:'EV1',type:'入职',date:'2020-11-15',title:'入职 一线客服',detail:'',by:'HR'},
+        {id:'EV2',type:'晋升',date:'2022-06-01',title:'晋升 组长',detail:'',by:'孙经理'},
+        {id:'EV3',type:'晋升',date:'2024-01-01',title:'晋升 主管',detail:'',by:'孙经理'}
+      ]},
+    E1006: { tags:[], echelon:'一线', comment:'试用期新人，待评估。',
+      deptScores:{绩效:0,成长:0,思维:0,学习:0,人际:0,团队协作:0}, hrScores:{专业:0,业绩:0,敬业:0,潜力:0,合作:0,企业文化:0},
+      events:[
+        {id:'EV1',type:'入职',date:'2026-06-01',title:'入职 一线客服（试用）',detail:'',by:'HR'}
+      ]},
+    E1007: { tags:['待提升'], echelon:'一线', comment:'已离职。',
+      deptScores:{绩效:2,成长:3,思维:3,学习:3,人际:3,团队协作:3}, hrScores:{专业:9,业绩:8,敬业:9,潜力:8,合作:9,企业文化:8},
+      events:[
+        {id:'EV1',type:'入职',date:'2022-02-10',title:'入职 一线客服',detail:'',by:'HR'},
+        {id:'EV2',type:'离职',date:'2024-09-30',title:'离职',detail:'',by:'陈主管'}
+      ]},
+    E1008: { tags:['高潜'], echelon:'骨干', comment:'年轻高潜，重点观察。',
+      deptScores:{绩效:5,成长:5,思维:5,学习:5,人际:5,团队协作:5}, hrScores:{专业:14,业绩:14,敬业:15,潜力:16,合作:14,企业文化:14},
+      events:[
+        {id:'EV1',type:'入职',date:'2024-04-22',title:'入职 一线客服',detail:'',by:'HR'},
+        {id:'EV2',type:'获荣誉头衔',date:'2025-10-01',title:'获「新人标兵」头衔',detail:'',by:'赵组长'}
+      ]}
+  };
+
+  // ——— 存储辅助 ———
+  function loadPersonnel(){
+    try { var d = JSON.parse(safeGetItem(PERSONNEL_KEY) || 'null'); if(Array.isArray(d) && d.length) return d; } catch(e){}
+    safeSetItem(PERSONNEL_KEY, JSON.stringify(SEED_PERSONNEL));
+    return SEED_PERSONNEL.map(function(x){ return Object.assign({}, x); });
+  }
+  function savePersonnel(arr){ safeSetItem(PERSONNEL_KEY, JSON.stringify(arr)); }
+  function loadReview(){
+    try { var d = JSON.parse(safeGetItem(REVIEW_KEY) || 'null'); if(d && typeof d === 'object') return d; } catch(e){}
+    safeSetItem(REVIEW_KEY, JSON.stringify(SEED_REVIEW));
+    return JSON.parse(JSON.stringify(SEED_REVIEW));
+  }
+  function saveReview(obj){ safeSetItem(REVIEW_KEY, JSON.stringify(obj)); }
+  // 系统数据管理·人员主表 读取接口（全局，单向读取基础名单）
+  window.getPersonnelMasterData = function(){ return loadPersonnel(); };
+
+  // ——— 计算与落位 ———
+  function sumObj(o){ var s=0; for(var k in o){ if(o.hasOwnProperty(k)) s += Number(o[k]||0); } return s; }
+  function band(score, type){
+    if(type === 'dept'){ if(score >= 30) return 'high'; if(score >= 20) return 'mid'; return 'low'; }
+    if(score >= 85) return 'high'; if(score >= 65) return 'mid'; return 'low';
+  }
+  function cellOf(deptTotal, hrTotal){
+    var db = band(deptTotal,'dept'), hb = band(hrTotal,'hr');
+    return NINE[db][hb];
+  }
+  function esc(s){ return (typeof escHtml === 'function') ? escHtml(s) : String(s==null?'':s); }
+  function statusClass(st){
+    return st === '在职' ? 'rstr-st-on' : st === '试用' ? 'rstr-st-try' :
+           st === '二次入职' ? 'rstr-st-re' : 'rstr-st-off';
+  }
+
+  // ——— 运行时视图状态 ———
+  var _view = 'overview';
+  var _filter = { kw:'', group:'all', site:'all', status:'all', tag:'all' };
+  var _openId = null;
+
+  // ——— 主渲染 ———
+  window.renderRoster = function(){
+    try {
+      return _view === 'review' ? rosterReviewHTML() : rosterOverviewHTML();
+    } catch(e){
+      console.error('roster 渲染异常:', e);
+      return '<div style="padding:40px;color:#dc2626;">人才盘点花名册加载出错：' + esc(e.message) + '</div>';
+    }
+  };
+
+  function filteredPersonnel(){
+    var p = loadPersonnel();
+    var r = loadReview();
+    var kw = _filter.kw.trim().toLowerCase();
+    return p.filter(function(it){
+      if(_filter.group !== 'all' && it.group !== _filter.group) return false;
+      if(_filter.site !== 'all' && it.site !== _filter.site) return false;
+      if(_filter.status !== 'all' && it.status !== _filter.status) return false;
+      if(_filter.tag !== 'all'){ var rv = r[it.empId]; if(!rv || (rv.tags||[]).indexOf(_filter.tag) < 0) return false; }
+      if(kw && (it.name + it.empId + it.group + it.site).toLowerCase().indexOf(kw) < 0) return false;
+      return true;
+    });
+  }
+
+  function rosterOverviewHTML(){
+    var list = filteredPersonnel();
+    var r = loadReview();
+    var groups = uniqueVal('group'), sites = uniqueVal('site'), statuses = ['在职','试用','离职','二次入职'], tags = ['高潜','骨干','后备干部','待提升'];
+    var cards = list.map(function(it){
+      var rv = r[it.empId] || {tags:[], deptScores:{}, hrScores:{}};
+      var dt = sumObj(rv.deptScores), ht = sumObj(rv.hrScores);
+      var cell = (dt||ht) ? cellOf(dt,ht) : null;
+      var tagHtml = (rv.tags||[]).map(function(t){ return '<span class="rstr-tag">'+esc(t)+'</span>'; }).join('');
+      return ''
+        + '<div class="rstr-card" onclick="rosterOpenDetail(\''+it.empId+'\')">'
+        +   '<div class="rstr-card-top"><div class="rstr-avatar">'+esc(it.name.charAt(0))+'</div>'
+        +     '<div class="rstr-card-name">'+esc(it.name)+'<span class="rstr-emp">'+esc(it.empId)+'</span></div></div>'
+        +   '<div class="rstr-card-sub">'+esc(it.group)+' · '+esc(it.site)+' · '+esc(it.position)+'</div>'
+        +   '<div class="rstr-card-foot"><span class="rstr-status '+statusClass(it.status)+'">'+esc(it.status)+'</span>'+ (tagHtml?tagHtml:'') +'</div>'
+        +   (cell ? '<div class="rstr-card-cell">九宫格：'+esc(cell.label)+' '+esc(cell.sym)+'</div>' : '<div class="rstr-card-cell rstr-card-cell-empty">未盘点</div>')
+        + '</div>';
+    }).join('');
+    if(!list.length) cards = '<div class="rstr-empty">无匹配人员，请调整筛选条件。</div>';
+
+    return ''
+      + headerHTML()
+      + '<div class="rstr-bar">'
+      +   '<input class="rstr-search" placeholder="搜索姓名 / 工号 / 组别" value="'+esc(_filter.kw)+'" oninput="rosterSearch(this.value)">'
+      +   sel('rstr-group-sel','组别', groups, _filter.group, 'rosterFilter(\'group\',this.value)')
+      +   sel('rstr-site-sel','职场', sites, _filter.site, 'rosterFilter(\'site\',this.value)')
+      +   sel('rstr-status-sel','状态', statuses, _filter.status, 'rosterFilter(\'status\',this.value)')
+      +   sel('rstr-tag-sel','人才标签', tags, _filter.tag, 'rosterFilter(\'tag\',this.value)')
+      +   '<button class="rstr-btn" onclick="rosterImportClick()">⬆ 导入钉钉名单</button>'
+      +   '<button class="rstr-btn rstr-btn-ghost" onclick="rosterExport()">⬇ 导出</button>'
+      +   '<input type="file" id="rstr-file" accept=".csv" style="display:none" onchange="rosterImportFile(this)">'
+      + '</div>'
+      + '<div class="rstr-grid">'+cards+'</div>';
+  }
+
+  function rosterReviewHTML(){
+    var p = loadPersonnel();
+    var r = loadReview();
+    var echelonCount = {一线:0,骨干:0,后备:0,管理:0};
+    var tagCount = {};
+    var placed = {};
+    p.forEach(function(it){
+      var rv = r[it.empId]; if(!rv) return;
+      (rv.tags||[]).forEach(function(t){ tagCount[t] = (tagCount[t]||0)+1; });
+      if(rv.echelon) echelonCount[rv.echelon] = (echelonCount[rv.echelon]||0)+1;
+      var dt = sumObj(rv.deptScores), ht = sumObj(rv.hrScores);
+      if(dt || ht){ var c = cellOf(dt,ht); (placed[c.id] = placed[c.id]||[]).push(it); }
+    });
+    // 梯队统计卡
+    var stats = ''
+      + statCard('一线', echelonCount['一线']||0, 'rstr-s1')
+      + statCard('骨干', echelonCount['骨干']||0, 'rstr-s2')
+      + statCard('后备', echelonCount['后备']||0, 'rstr-s3')
+      + statCard('管理', echelonCount['管理']||0, 'rstr-s4');
+    var tagDist = Object.keys(tagCount).map(function(t){ return '<span class="rstr-dist">'+esc(t)+' '+tagCount[t]+'</span>'; }).join('') || '<span class="rstr-dist">暂无</span>';
+
+    // 九宫格：行 dept(high→low)，列 hr(low→high)
+    var rows = ['high','mid','low'];
+    var cols = ['low','mid','high'];
+    var grid = '<div class="rstr-nine">';
+    rows.forEach(function(rb){
+      cols.forEach(function(hb){
+        var c = NINE[rb][hb];
+        var people = (placed[c.id]||[]).map(function(it){
+          return '<span class="rstr-nine-chip" onclick="rosterOpenDetail(\''+it.empId+'\')">'+esc(it.name)+'</span>';
+        }).join('');
+        grid += '<div class="rstr-nine-cell '+c.cls+'">'
+          + '<div class="rstr-nine-head"><b>'+c.id+'</b> '+esc(c.label)+' '+esc(c.sym)+'</div>'
+          + '<div class="rstr-nine-people">'+people+'</div></div>';
+      });
+    });
+    grid += '</div>'
+      + '<div class="rstr-nine-axis">纵轴：部门维度（高 ≥30 ／ 中 20-29 ／ 低 ＜20）　横轴：人力维度（高 ≥85 ／ 中 65-84 ／ 低 ＜65）</div>';
+
+    return ''
+      + headerHTML()
+      + '<div class="rstr-stats">'+stats+'</div>'
+      + '<div class="rstr-dist-row"><span class="rstr-dist-label">人才标签分布：</span>'+tagDist+'</div>'
+      + '<div class="rstr-nine-title">人才九宫格（部门维度满分35 / 人力维度满分100，均在本版块手动录入）</div>'
+      + grid;
+  }
+
+  function headerHTML(){
+    return ''
+      + '<div class="rstr-header">'
+      +   '<div><div class="rstr-title">人才盘点花名册</div>'
+      +   '<div class="rstr-desc">济南团队一线客服 · 人才梯队建设</div></div>'
+      +   '<div class="rstr-tabs">'
+      +     '<span class="rstr-tab '+( _view==='overview'?'on':'')+'" onclick="rosterSwitch(\'overview\')">人员总览</span>'
+      +     '<span class="rstr-tab '+( _view==='review'?'on':'')+'" onclick="rosterSwitch(\'review\')">人才盘点</span>'
+      +   '</div>'
+      + '</div>';
+  }
+  function statCard(lbl, val, cls){ return '<div class="rstr-stat '+cls+'"><div class="rstr-stat-val">'+val+'</div><div class="rstr-stat-lbl">'+lbl+'</div></div>'; }
+  function uniqueVal(field){ var p = loadPersonnel(), s = {}; p.forEach(function(it){ s[it[field]] = 1; }); return Object.keys(s); }
+  function sel(id, label, opts, val, onch){
+    var o = '<option value="all">全部'+label+'</option>' + opts.map(function(v){ return '<option value="'+esc(v)+'"'+(v===val?' selected':'')+'>'+esc(v)+'</option>'; }).join('');
+    return '<select class="rstr-sel" onchange="'+onch+'">'+o+'</select>';
+  }
+
+  // ——— 筛选 / 视图切换 ———
+  window.rosterSwitch = function(v){ _view = v; _moduleCache['roster']=null; renderModule('roster'); };
+  window.rosterSearch = function(v){ _filter.kw = v; _moduleCache['roster']=null; renderModule('roster'); };
+  window.rosterFilter = function(field, v){ _filter[field] = v; _moduleCache['roster']=null; renderModule('roster'); };
+
+  // ——— 个人档案抽屉 ———
+  window.rosterOpenDetail = function(empId){
+    _openId = empId;
+    var p = loadPersonnel().filter(function(x){ return x.empId === empId; })[0];
+    if(!p) return;
+    var r = loadReview()[empId] || {tags:[],deptScores:{},hrScores:{},events:[],comment:'',echelon:''};
+    var dt = sumObj(r.deptScores), ht = sumObj(r.hrScores);
+    var cell = (dt||ht) ? cellOf(dt,ht) : null;
+    var tagHtml = (r.tags||[]).map(function(t){ return '<span class="rstr-tag">'+esc(t)+'</span>'; }).join(' ') || '—';
+    var events = (r.events||[]).slice().sort(function(a,b){ return (a.date||'').localeCompare(b.date||''); }).map(function(ev){
+      return '<div class="rstr-tl-item"><span class="rstr-tl-dot"></span>'
+        + '<div class="rstr-tl-date">'+esc(ev.date||'')+'</div>'
+        + '<div class="rstr-tl-title">'+esc(ev.title||'')+'</div>'
+        + (ev.detail ? '<div class="rstr-tl-detail">'+esc(ev.detail)+'</div>' : '')
+        + '</div>';
+    }).join('') || '<div class="rstr-tl-empty">暂无发展事件记录</div>';
+
+    var html = ''
+      + '<div class="rstr-drawer-mask" onclick="rosterCloseDetail()"></div>'
+      + '<div class="rstr-drawer">'
+      +   '<div class="rstr-drawer-head"><div class="rstr-avatar rstr-avatar-lg">'+esc(p.name.charAt(0))+'</div>'
+      +     '<div><div class="rstr-drawer-name">'+esc(p.name)+' <span class="rstr-emp">'+esc(p.empId)+'</span></div>'
+      +     '<div class="rstr-status '+statusClass(p.status)+'">'+esc(p.status)+'</div></div>'
+      +     '<span class="rstr-close" onclick="rosterCloseDetail()">✕</span></div>'
+      +   '<div class="rstr-drawer-sec"><div class="rstr-drawer-sec-t">基础信息</div>'
+      +     '<div class="rstr-info-grid">'
+      +       infoItem('组别', p.group) + infoItem('职场', p.site) + infoItem('岗位', p.position)
+      +       infoItem('入职日期', p.hireDate) + infoItem('司龄', tenure(p.hireDate)) + infoItem('直属上级', p.manager)
+      +     '</div></div>'
+      +   '<div class="rstr-drawer-sec"><div class="rstr-drawer-sec-t">人才盘点</div>'
+      +     '<div class="rstr-info-grid">'
+      +       infoItem('人才标签', tagHtml) + infoItem('梯队层级', r.echelon||'—')
+      +       infoItem('部门维度分', dt+' / 35') + infoItem('人力维度分', ht+' / 100')
+      +     '</div>'
+      +     (cell ? '<div class="rstr-cell-badge '+cell.cls+'">九宫格落位：'+esc(cell.label)+' '+esc(cell.sym)+'</div>' : '<div class="rstr-cell-badge rstr-n9-mid">尚未盘点</div>')
+      +     (r.comment ? '<div class="rstr-comment">盘点评语：'+esc(r.comment)+'</div>' : '')
+      +   '</div>'
+      +   '<div class="rstr-drawer-sec"><div class="rstr-drawer-sec-t">职业发展时间线</div>'
+      +     '<div class="rstr-tl">'+events+'</div></div>'
+      +   '<div class="rstr-drawer-actions">'
+      +     '<button class="rstr-btn" onclick="rosterAddEvent(\''+empId+'\')">+ 新增事件</button>'
+      +     '<button class="rstr-btn rstr-btn-ghost" onclick="rosterEditReview(\''+empId+'\')">编辑盘点 / 评分</button>'
+      +   '</div>'
+      + '</div>';
+    rosterMount(html, 'rstr-drawer-root');
+  };
+  window.rosterCloseDetail = function(){ var m = document.getElementById('rstr-drawer-root'); if(m) m.remove(); _openId = null; };
+  function infoItem(k, v){ return '<div class="rstr-info"><span class="rstr-info-k">'+esc(k)+'</span><span class="rstr-info-v">'+v+'</span></div>'; }
+  function tenure(hire){
+    if(!hire) return '—';
+    var d = new Date(hire), now = new Date();
+    var y = now.getFullYear() - d.getFullYear();
+    return y + ' 年+';
+  }
+
+  // ——— 事件新增 ———
+  window.rosterAddEvent = function(empId){
+    var types = ['入职','晋升','调岗','获荣誉头衔','二次入职','离职','复职','其他'];
+    var html = ''
+      + '<div class="rstr-modal-mask" onclick="rosterCloseModal()"></div>'
+      + '<div class="rstr-modal"><div class="rstr-modal-t">新增发展事件</div>'
+      +   '<label class="rstr-fld">事件类型<select id="rstr-ev-type" class="rstr-input">'+types.map(function(t){return '<option>'+t+'</option>';}).join('')+'</select></label>'
+      +   '<label class="rstr-fld">发生日期<input id="rstr-ev-date" class="rstr-input" type="date"></label>'
+      +   '<label class="rstr-fld">事件标题<input id="rstr-ev-title" class="rstr-input" placeholder="如：晋升 组长"></label>'
+      +   '<label class="rstr-fld">详情说明<textarea id="rstr-ev-detail" class="rstr-input" rows="3"></textarea></label>'
+      +   '<div class="rstr-modal-actions"><button class="rstr-btn" onclick="rosterSaveEvent(\''+empId+'\')">保存</button>'
+      +   '<button class="rstr-btn rstr-btn-ghost" onclick="rosterCloseModal()">取消</button></div>'
+      + '</div>';
+    rosterMount(html, 'rstr-modal-root');
+  };
+  window.rosterSaveEvent = function(empId){
+    var type = val('rstr-ev-type'), date = val('rstr-ev-date'), title = val('rstr-ev-title').trim(), detail = val('rstr-ev-detail').trim();
+    if(!title){ alert('请填写事件标题'); return; }
+    var r = loadReview(); if(!r[empId]) r[empId] = {tags:[],deptScores:{},hrScores:{},events:[]};
+    var evs = r[empId].events || [];
+    evs.push({ id:'EV'+Date.now(), type:type, date:date, title:title, detail:detail, by: (typeof CURRENT_USER!=='undefined'&&CURRENT_USER&&CURRENT_USER.name)?CURRENT_USER.name:'管理员' });
+    r[empId].events = evs; saveReview(r);
+    rosterCloseModal(); _moduleCache['roster']=null; renderModule('roster');
+    if(_openId === empId) rosterOpenDetail(empId);
+  };
+
+  // ——— 盘点 / 评分编辑 ———
+  window.rosterEditReview = function(empId){
+    var r = loadReview()[empId] || {tags:[],deptScores:{},hrScores:{},events:[],comment:'',echelon:''};
+    var tags = ['高潜','骨干','后备干部','待提升'];
+    var tagChk = tags.map(function(t){
+      var on = (r.tags||[]).indexOf(t) >= 0;
+      return '<label class="rstr-chk"><input type="checkbox" value="'+t+'"'+(on?' checked':'')+'> '+t+'</label>';
+    }).join('');
+    var echelonOpts = ['一线','骨干','后备','管理'].map(function(e){ return '<option'+(r.echelon===e?' selected':'')+'>'+e+'</option>'; }).join('');
+    var deptInputs = DEPT_DIMS.map(function(d){ return scoreInput('rstr-d-'+d, d, r.deptScores[d]||0, 6); }).join('');
+    var hrInputs = HR_DIMS.map(function(d){ return scoreInput('rstr-h-'+d, d, r.hrScores[d]||0, 17); }).join('');
+    var html = ''
+      + '<div class="rstr-modal-mask" onclick="rosterCloseModal()"></div>'
+      + '<div class="rstr-modal rstr-modal-lg"><div class="rstr-modal-t">编辑盘点 / 评分</div>'
+      +   '<div class="rstr-fld"><span class="rstr-fld-lbl">人才标签</span><div class="rstr-chk-row">'+tagChk+'</div></div>'
+      +   '<label class="rstr-fld">梯队层级<select id="rstr-echelon" class="rstr-input"><option value="">未定</option>'+echelonOpts+'</select></label>'
+      +   '<div class="rstr-scores"><div class="rstr-scores-col"><div class="rstr-scores-h">部门维度（满分35）</div>'+deptInputs+'<div class="rstr-scores-tot">合计：<b id="rstr-d-tot">'+sumObj(r.deptScores)+'</b> / 35</div></div>'
+      +   '<div class="rstr-scores-col"><div class="rstr-scores-h">人力维度（满分100）</div>'+hrInputs+'<div class="rstr-scores-tot">合计：<b id="rstr-h-tot">'+sumObj(r.hrScores)+'</b> / 100</div></div></div>'
+      +   '<label class="rstr-fld">盘点评语<textarea id="rstr-comment" class="rstr-input" rows="2">'+esc(r.comment||'')+'</textarea></label>'
+      +   '<div class="rstr-modal-actions"><button class="rstr-btn" onclick="rosterSaveReview(\''+empId+'\')">保存</button>'
+      +   '<button class="rstr-btn rstr-btn-ghost" onclick="rosterCloseModal()">取消</button></div>'
+      + '</div>';
+    rosterMount(html, 'rstr-modal-root');
+    bindScoreLive();
+  };
+  window.rosterSaveReview = function(empId){
+    var r = loadReview(); if(!r[empId]) r[empId] = {tags:[],deptScores:{},hrScores:{},events:[]};
+    var tags = []; document.querySelectorAll('#rstr-drawer-root .rstr-chk input, .rstr-modal .rstr-chk input').forEach(function(c){ if(c.checked) tags.push(c.value); });
+    var echelon = val('rstr-echelon');
+    var deptScores = {}, hrScores = {};
+    DEPT_DIMS.forEach(function(d){ deptScores[d] = Number(val('rstr-d-'+d)||0); });
+    HR_DIMS.forEach(function(d){ hrScores[d] = Number(val('rstr-h-'+d)||0); });
+    var comment = val('rstr-comment').trim();
+    r[empId].tags = tags; r[empId].echelon = echelon; r[empId].deptScores = deptScores;
+    r[empId].hrScores = hrScores; r[empId].comment = comment;
+    saveReview(r);
+    rosterCloseModal(); _moduleCache['roster']=null; renderModule('roster');
+    if(_openId === empId) rosterOpenDetail(empId);
+  };
+  function scoreInput(id, label, v, max){
+    return '<label class="rstr-score"><span>'+esc(label)+'</span><input id="'+id+'" class="rstr-input rstr-input-num" type="number" min="0" max="'+max+'" value="'+Number(v||0)+'" oninput="rosterScoreLive()"></label>';
+  }
+  function bindScoreLive(){ rosterScoreLive(); }
+  window.rosterScoreLive = function(){
+    var d = 0, h = 0;
+    DEPT_DIMS.forEach(function(x){ d += Number(val('rstr-d-'+x)||0); });
+    HR_DIMS.forEach(function(x){ h += Number(val('rstr-h-'+x)||0); });
+    var dt = document.getElementById('rstr-d-tot'); if(dt) dt.textContent = d;
+    var ht = document.getElementById('rstr-h-tot'); if(ht) ht.textContent = h;
+  };
+
+  // ——— 导入 / 导出 ———
+  window.rosterImportClick = function(){ var f = document.getElementById('rstr-file'); if(f) f.click(); };
+  window.rosterImportFile = function(input){
+    var file = input.files && input.files[0]; if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      try {
+        var text = e.target.result; var lines = text.split(/\r?\n/).filter(function(l){ return l.trim(); });
+        if(!lines.length){ alert('文件为空'); return; }
+        var header = lines[0].split(',').map(function(s){ return s.trim(); });
+        var idx = function(name){ return header.indexOf(name); };
+        var p = loadPersonnel(); var r = loadReview();
+        var mapName = idx('姓名'), mapId = idx('工号'), mapGrp = idx('组别'), mapSite = idx('职场'),
+            mapPos = idx('岗位'), mapSt = idx('状态'), mapHire = idx('入职日期'), mapMgr = idx('直属上级');
+        var added = 0;
+        for(var i=1;i<lines.length;i++){
+          var cols = lines[i].split(',');
+          var empId = (mapId>=0?cols[mapId]:'').trim() || ('E'+Date.now()+i);
+          var name = (mapName>=0?cols[mapName]:'').trim();
+          if(!name) continue;
+          var ex = p.filter(function(x){ return x.empId === empId; })[0];
+          var rec = { empId:empId, name:name,
+            group:(mapGrp>=0?cols[mapGrp]:'').trim(), site:(mapSite>=0?cols[mapSite]:'').trim(),
+            position:(mapPos>=0?cols[mapPos]:'').trim(), status:(mapSt>=0?cols[mapSt]:'').trim()||'在职',
+            hireDate:(mapHire>=0?cols[mapHire]:'').trim(), manager:(mapMgr>=0?cols[mapMgr]:'').trim() };
+          if(ex){ Object.assign(ex, rec); } else { p.push(rec); added++; }
+          if(!r[empId]) r[empId] = {tags:[],deptScores:{},hrScores:{},events:[]};
+        }
+        savePersonnel(p); saveReview(r);
+        _moduleCache['roster']=null; renderModule('roster');
+        alert('导入完成：新增 '+added+' 人，其余按工号更新基础信息（职业事件保留）。');
+      } catch(err){ alert('导入失败：'+err.message); }
+    };
+    reader.readAsText(file, 'UTF-8');
+    input.value = '';
+  };
+  window.rosterExport = function(){
+    var p = loadPersonnel(), r = loadReview();
+    var rows = [['工号','姓名','组别','职场','岗位','状态','入职日期','直属上级','人才标签','梯队','部门维度分','人力维度分','职业事件数']];
+    p.forEach(function(it){
+      var rv = r[it.empId] || {tags:[],dechelon:'',deptScores:{},hrScores:{},events:[]};
+      rows.push([ it.empId, it.name, it.group, it.site, it.position, it.status, it.hireDate, it.manager,
+        (rv.tags||[]).join('|'), rv.echelon||'', sumObj(rv.deptScores), sumObj(rv.hrScores), (rv.events||[]).length ]);
+    });
+    var csv = rows.map(function(row){ return row.map(function(c){ return '"'+String(c==null?'':c).replace(/"/g,'""')+'"'; }).join(','); }).join('\r\n');
+    var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = '人才盘点花名册_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+  };
+
+  // ——— 通用弹层 ———
+  function rosterMount(html, rootId){
+    var root = document.getElementById(rootId);
+    if(!root){ root = document.createElement('div'); root.id = rootId; document.body.appendChild(root); }
+    root.innerHTML = html;
+  }
+  window.rosterCloseModal = function(){ var m = document.getElementById('rstr-modal-root'); if(m) m.remove(); };
+  function val(id){ var el = document.getElementById(id); return el ? el.value : ''; }
+
+})();

@@ -167,6 +167,22 @@ var SYSTEM_DATA_TABLES = {
     isComplex: true,
     subTables: ['agent', 'group', 'workload', 'staff']
   },
+  personnelMaster: {
+    label: '\u{1F464} 人员主表',
+    desc: '客服人员基础档案权威源（姓名/工号/组别/职场/岗位/状态/入职日/直属上级），由钉钉组织架构导出经「人才盘点花名册」导入维护。人才盘点花名册单向读取此表基础名单，职业事件与盘点评分独立存于花名册，不回写本表。',
+    data: [],
+    readOnly: true,
+    fields: [
+      {key:'empId', label:'工号', type:'text'},
+      {key:'name', label:'姓名', type:'text'},
+      {key:'group', label:'组别', type:'text'},
+      {key:'site', label:'职场', type:'text'},
+      {key:'position', label:'岗位', type:'text'},
+      {key:'status', label:'状态', type:'text'},
+      {key:'hireDate', label:'入职日期', type:'text'},
+      {key:'manager', label:'直属上级', type:'text'}
+    ]
+  },
   sysconfig: {
     label: '\u{1F512} 系统配置表',
     desc: '用户账号、数据权限配置、登录记录。登录认证、权限管理、用户管理均依赖此表。',
@@ -350,7 +366,7 @@ var _SD_LS_MAP = {
 var _SD_GROUPS = [
   {key:'核心业务', icon:'📊', desc:'核心业务数据', tables:['projects','operations','kpi','goals']},
   {key:'运营协作', icon:'🔄', desc:'运营与协同数据', tables:['issues','knowledge','handovers']},
-  {key:'人员绩效', icon:'👥', desc:'人员与绩效数据', tables:['agent_performance','staff_config','workload_data','performance_weights','group_load_ratio']},
+  {key:'人员绩效', icon:'👥', desc:'人员与绩效数据', tables:['agent_performance','staff_config','workload_data','performance_weights','group_load_ratio','personnelMaster']},
   {key:'评估风控', icon:'🛡️', desc:'评估与风险数据', tables:['risk','assessments','satisfaction']},
   {key:'系统管理', icon:'⚙️', desc:'系统与审计数据', tables:['personnel','sysconfig','changelog']}
 ];
@@ -514,6 +530,10 @@ var _renderSystemData = function(){
   var isReadOnly = !!tableDef.readOnly;
   var isKvTable = !!tableDef.isKvTable;
   var allData = tableDef.data || [];
+  // 人员主表：单向读取人才盘点花名册的基础名单（保持与管理源一致）
+  if(_systemDataTab === 'personnelMaster' && typeof getPersonnelMasterData === 'function'){
+    allData = getPersonnelMasterData();
+  }
   // KV表特殊处理：将对象转为数组格式 [{key,value},...]
   if(isKvTable && !Array.isArray(allData)) {
     var kvArr = [];
@@ -548,6 +568,7 @@ var _renderSystemData = function(){
   else if(_systemDataTab==='assessments') colDefs={headers:['评估周期','事业部','评估单元','管理人','管理等级','总分','定量','定性'],keys:['month','dept','group','manager','level','totalScore','quantScore','qualScore'],showCb:true,numberKeys:['totalScore','quantScore']};
   else if(_systemDataTab==='satisfaction') colDefs={headers:['项目ID','周期','综合感受','执行力','风险管控','沟通频率','领导评分','状态'],keys:['projectId','period','overall','execution','riskControl','commFreq','leaderScore','status'],showCb:true,numberKeys:['leaderScore']};
   else if(_systemDataTab==='risk') colDefs={headers:['项目编号','项目名称','风险类型','风险等级','触发指标','阈值','状态'],keys:['projectId','projectName','riskType','severity','indicator','threshold','status'],showCb:false,readOnly:true};
+  else if(_systemDataTab==='personnelMaster') colDefs={headers:['工号','姓名','组别','职场','岗位','状态','入职日期','直属上级'],keys:['empId','name','group','site','position','status','hireDate','manager'],showCb:false,readOnly:true};
 
   var tableHtml = '';
   var tblClass = (_systemDataTab==='assessments') ? 'sysdata-table assess-table' : 'sysdata-table';
