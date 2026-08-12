@@ -153,10 +153,9 @@
     });
   }
 
-  function rosterOverviewHTML(){
+  function rosterGridInner(){
     var list = filteredPersonnel();
     var r = loadReview();
-    var groups = uniqueVal('group'), sites = uniqueVal('site'), statuses = ['在职','试用','离职','二次入职'], tags = ['高潜','骨干','后备干部','待提升'];
     var cards = list.map(function(it){
       var rv = r[it.empId] || {tags:[], deptScores:{}, hrScores:{}};
       var dt = sumObj(rv.deptScores), ht = sumObj(rv.hrScores);
@@ -172,6 +171,11 @@
         + '</div>';
     }).join('');
     if(!list.length) cards = '<div class="rstr-empty">无匹配人员，请调整筛选条件。</div>';
+    return cards;
+  }
+
+  function rosterOverviewHTML(){
+    var groups = uniqueVal('group'), sites = uniqueVal('site'), statuses = ['在职','试用','离职','二次入职'], tags = ['高潜','骨干','后备干部','待提升'];
 
     return ''
       + headerHTML()
@@ -185,7 +189,7 @@
       +   '<button class="rstr-btn rstr-btn-ghost" onclick="rosterExport()">⬇ 导出</button>'
       +   '<input type="file" id="rstr-file" accept=".csv" style="display:none" onchange="rosterImportFile(this)">'
       + '</div>'
-      + '<div class="rstr-grid">'+cards+'</div>';
+      + '<div class="rstr-grid" id="rstr-grid">'+rosterGridInner()+'</div>';
   }
 
   function rosterReviewHTML(){
@@ -255,7 +259,15 @@
 
   // ——— 筛选 / 视图切换 ———
   window.rosterSwitch = function(v){ _view = v; _moduleCache['roster']=null; renderModule('roster'); };
-  window.rosterSearch = function(v){ _filter.kw = v; _moduleCache['roster']=null; renderModule('roster'); };
+  window.rosterSearch = function(v){
+    _filter.kw = v;
+    var grid = document.getElementById('rstr-grid');
+    if(grid && _view === 'overview'){
+      grid.innerHTML = rosterGridInner();   // 只刷新卡片区，搜索框不失焦
+    } else {
+      _moduleCache['roster'] = null; renderModule('roster');
+    }
+  };
   window.rosterFilter = function(field, v){ _filter[field] = v; _moduleCache['roster']=null; renderModule('roster'); };
 
   // ——— 个人档案抽屉 ———
