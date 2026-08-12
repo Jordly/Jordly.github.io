@@ -223,12 +223,9 @@
       var dt = sumObj(rv.deptScores), ht = sumObj(rv.hrScores);
       if(dt || ht){ var c = cellOf(dt,ht); (placed[c.id] = placed[c.id]||[]).push(it); }
     });
-    // 梯队统计卡
-    var stats = ''
-      + statCard('一线', echelonCount['一线']||0, 'rstr-s1')
-      + statCard('骨干', echelonCount['骨干']||0, 'rstr-s2')
-      + statCard('后备', echelonCount['后备']||0, 'rstr-s3')
-      + statCard('管理', echelonCount['管理']||0, 'rstr-s4');
+    // 紧凑快照：4个梯队数字（横向）
+    var echelons = [['一线',echelonCount['一线']||0],['骨干',echelonCount['骨干']||0],['后备',echelonCount['后备']||0],['管理',echelonCount['管理']||0]];
+    var snapNums = echelons.map(function(e){ return '<div style="min-width:44px;text-align:center;"><div style="font-size:24px;font-weight:700;color:#4f46e5;line-height:1;">'+e[1]+'</div><div style="font-size:12px;color:#64748b;margin-top:3px;">'+esc(e[0])+'</div></div>'; }).join('');
     var tagDist = Object.keys(tagCount).map(function(t){ return '<span class="rstr-dist">'+esc(t)+' '+tagCount[t]+'</span>'; }).join('') || '<span class="rstr-dist">暂无</span>';
 
     // 九宫格：行 dept(high→low)，列 hr(low→high)
@@ -247,22 +244,24 @@
       });
     });
     grid += '</div>'
-      + '<div class="rstr-nine-axis">纵轴：部门维度（高 ≥30 ／ 中 20-29 ／ 低 ＜20）　横轴：人力维度（高 ≥85 ／ 中 65-84 ／ 低 ＜65）</div>';
+      + '<div class="rstr-nine-axis">纵轴：部门维度（满分35，高 ≥30 / 中 20-29 / 低 ＜20）；横轴：人力维度（满分100，高 ≥85 / 中 65-84 / 低 ＜65），评分在本版块手动录入</div>';
 
     var jobTitleDist = Object.keys(jobTitleCount).map(function(t){ return '<span class="rstr-dist">'+esc(t)+' '+jobTitleCount[t]+'</span>'; }).join('') || '<span class="rstr-dist">暂无</span>';
     var jobGradeDist = Object.keys(jobGradeCount).sort(function(a,b){ return Number(a)-Number(b); }).map(function(t){ return '<span class="rstr-dist">'+esc(t)+' 级 '+jobGradeCount[t]+'</span>'; }).join('') || '<span class="rstr-dist">暂无</span>';
 
     return ''
       + headerHTML()
-      + '<div class="rstr-stats">'+stats+'</div>'
-      + '<div style="background:#f7f9fc;border:1px solid #e8edf3;border-radius:12px;padding:12px 16px;margin:6px 0 14px;">'
-      +   '<div style="font-size:14px;font-weight:600;color:#475569;margin-bottom:10px;display:flex;align-items:center;gap:6px;">👥 人员结构概览</div>'
-      +   '<div class="rstr-dist-row"><span class="rstr-dist-label">人才标签分布：</span>'+tagDist+'</div>'
-      +   '<div class="rstr-dist-row"><span class="rstr-dist-label">按职级分布：</span>'+jobTitleDist+'</div>'
-      +   '<div class="rstr-dist-row" style="margin-bottom:0;"><span class="rstr-dist-label">按职位等级分布：</span>'+jobGradeDist+'</div>'
+      + '<div style="background:#f7f9fc;border:1px solid #e8edf3;border-radius:12px;padding:12px 16px;margin:6px 0 4px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;">'
+      +   '<div style="display:flex;gap:18px;">'+snapNums+'</div>'
+      +   '<div style="flex:1;min-width:240px;border-left:1px dashed #d5dbe5;padding-left:20px;">'
+      +     '<div class="rstr-dist-row" style="margin:0 0 4px;"><span class="rstr-dist-label">人才标签分布：</span>'+tagDist+'</div>'
+      +     '<div class="rstr-dist-row" style="margin:0 0 4px;"><span class="rstr-dist-label">按职级分布：</span>'+jobTitleDist+'</div>'
+      +     '<div class="rstr-dist-row" style="margin:0;"><span class="rstr-dist-label">按职位等级分布：</span>'+jobGradeDist+'</div>'
+      +   '</div>'
       + '</div>'
+      + '<div style="font-size:12px;color:#94a3b8;margin:0 0 12px 4px;">以上数字根据当前人员盘点数据自动统计，点击人员卡片可编辑盘点信息。</div>'
       + '<div style="text-align:right;margin:2px 0 12px;"><button class="rstr-btn rstr-btn-ghost" onclick="rosterExportOutput()">⬇ 导出管理输出表</button></div>'
-      + '<div class="rstr-nine-title">人才九宫格（部门维度满分35 / 人力维度满分100，均在本版块手动录入）</div>'
+      + '<div class="rstr-nine-title">人才九宫格</div>'
       + grid;
   }
 
