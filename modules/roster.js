@@ -137,7 +137,7 @@
 
   // ——— 运行时视图状态 ———
   var _view = 'overview';
-  var _filter = { kw:'', group:'all', site:'all', status:'all', tag:'all' };
+  var _filter = { kw:'', group:'all', site:'all', status:'all', tag:'all', jobTitle:'all', jobGrade:'all' };
   var _openId = null;
 
   // ——— 主渲染 ———
@@ -158,6 +158,8 @@
       if(_filter.group !== 'all' && it.group !== _filter.group) return false;
       if(_filter.site !== 'all' && it.site !== _filter.site) return false;
       if(_filter.status !== 'all' && it.status !== _filter.status) return false;
+      if(_filter.jobTitle !== 'all' && it.jobTitle !== _filter.jobTitle) return false;
+      if(_filter.jobGrade !== 'all' && String(it.jobGrade) !== String(_filter.jobGrade)) return false;
       if(_filter.tag !== 'all'){ var rv = r[it.empId]; if(!rv || (rv.tags||[]).indexOf(_filter.tag) < 0) return false; }
       if(kw){
         var target = (it.name + it.empId + it.group + it.site).toLowerCase();
@@ -200,6 +202,8 @@
       +   sel('rstr-site-sel','职场', sites, _filter.site, 'rosterFilter(\'site\',this.value)')
       +   sel('rstr-status-sel','状态', statuses, _filter.status, 'rosterFilter(\'status\',this.value)')
       +   sel('rstr-tag-sel','人才标签', tags, _filter.tag, 'rosterFilter(\'tag\',this.value)')
+      +   sel('rstr-jobtitle-sel','职级', uniqueVal('jobTitle'), _filter.jobTitle, 'rosterFilter(\'jobTitle\',this.value)')
+      +   sel('rstr-jobgrade-sel','职位等级', uniqueVal('jobGrade').sort(function(a,b){ return Number(a)-Number(b); }), _filter.jobGrade, 'rosterFilter(\'jobGrade\',this.value)')
       +   '<button class="rstr-btn" onclick="rosterImportClick()">⬆ 导入钉钉名单</button>'
       +   '<button class="rstr-btn rstr-btn-ghost" onclick="rosterExport()">⬇ 导出</button>'
       +   '<input type="file" id="rstr-file" accept=".csv" style="display:none" onchange="rosterImportFile(this)">'
@@ -208,13 +212,13 @@
   }
 
   function rosterReviewHTML(){
-    var p = loadPersonnel();
+    var list = filteredPersonnel();
     var r = loadReview();
     var echelonCount = {一线:0,骨干:0,后备:0,管理:0};
     var tagCount = {};
     var jobTitleCount = {}, jobGradeCount = {};
     var placed = {};
-    p.forEach(function(it){
+    list.forEach(function(it){
       var rv = r[it.empId]; if(!rv) return;
       (rv.tags||[]).forEach(function(t){ tagCount[t] = (tagCount[t]||0)+1; });
       if(rv.echelon) echelonCount[rv.echelon] = (echelonCount[rv.echelon]||0)+1;
@@ -249,8 +253,22 @@
     var jobTitleDist = Object.keys(jobTitleCount).map(function(t){ return '<span class="rstr-dist">'+esc(t)+' '+jobTitleCount[t]+'</span>'; }).join('') || '<span class="rstr-dist">暂无</span>';
     var jobGradeDist = Object.keys(jobGradeCount).sort(function(a,b){ return Number(a)-Number(b); }).map(function(t){ return '<span class="rstr-dist">'+esc(t)+' 级 '+jobGradeCount[t]+'</span>'; }).join('') || '<span class="rstr-dist">暂无</span>';
 
+    // 筛选栏（与总览一致：组别/职场/状态/人才标签/职级/职位等级）
+    var groups = uniqueVal('group'), sites = uniqueVal('site'), statuses = ['在职','试用','离职','二次入职'], tags = ['高潜','骨干','后备干部','待提升'];
+    var jobTitles = uniqueVal('jobTitle'), jobGrades = uniqueVal('jobGrade').sort(function(a,b){ return Number(a)-Number(b); });
+    var bar = '<div class="rstr-bar">'
+      +   sel('rstr-group-sel','组别', groups, _filter.group, 'rosterFilter(\'group\',this.value)')
+      +   sel('rstr-site-sel','职场', sites, _filter.site, 'rosterFilter(\'site\',this.value)')
+      +   sel('rstr-status-sel','状态', statuses, _filter.status, 'rosterFilter(\'status\',this.value)')
+      +   sel('rstr-tag-sel','人才标签', tags, _filter.tag, 'rosterFilter(\'tag\',this.value)')
+      +   sel('rstr-jobtitle-sel','职级', jobTitles, _filter.jobTitle, 'rosterFilter(\'jobTitle\',this.value)')
+      +   sel('rstr-jobgrade-sel','职位等级', jobGrades, _filter.jobGrade, 'rosterFilter(\'jobGrade\',this.value)')
+      +   '<button class="rstr-btn rstr-btn-ghost" onclick="rosterExportOutput()">⬇ 导出管理输出表</button>'
+      + '</div>';
+
     return ''
       + headerHTML()
+      + bar
       + '<div style="background:#f7f9fc;border:1px solid #e8edf3;border-radius:12px;padding:12px 16px;margin:6px 0 4px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;">'
       +   '<div style="display:flex;gap:18px;">'+snapNums+'</div>'
       +   '<div style="flex:1;min-width:240px;border-left:1px dashed #d5dbe5;padding-left:20px;">'
@@ -259,8 +277,7 @@
       +     '<div class="rstr-dist-row" style="margin:0;"><span class="rstr-dist-label">按职位等级分布：</span>'+jobGradeDist+'</div>'
       +   '</div>'
       + '</div>'
-      + '<div style="font-size:12px;color:#94a3b8;margin:0 0 12px 4px;">以上数字根据当前人员盘点数据自动统计，点击人员卡片可编辑盘点信息。</div>'
-      + '<div style="text-align:right;margin:2px 0 12px;"><button class="rstr-btn rstr-btn-ghost" onclick="rosterExportOutput()">⬇ 导出管理输出表</button></div>'
+      + '<div style="font-size:12px;color:#94a3b8;margin:0 0 12px 4px;">以上数字根据当前筛选后的人员盘点数据自动统计，点击人员卡片可编辑盘点信息。当前显示 '+list.length+' 人。</div>'
       + '<div class="rstr-nine-title">人才九宫格</div>'
       + grid;
   }
