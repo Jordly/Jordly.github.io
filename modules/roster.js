@@ -35,26 +35,26 @@
     {empId:'E1008', name:'周晓彤', group:'B组', site:'淄博', position:'一线客服', status:'在职', hireDate:'2024-04-22', manager:'赵组长', gender:'女', birth:'2001-03', edu:'本科', school:'山东理工大学', gradTime:'2023-06', jobTitle:'一线员工', jobGrade:2}
   ];
   var SEED_REVIEW = {
-    E1001: { tags:['高潜'], echelon:'骨干', comment:'响应快、学习力强，建议重点培养。', jobFit:3, risk:'偶尔急躁', strength:'抗压能力强、学习快', kpi2022:92, kpi2023:95, awards:'服务之星（2025Q2）',
+    E1001: { tags:['高潜'], echelon:'骨干', comment:'响应快、学习力强，建议重点培养。', jobFit:3, risk:'偶尔急躁', strength:'抗压能力强、学习快', kpi2026:92, kpi2027:95, awards:'服务之星（2025Q2）',
       deptScores:{绩效:5,成长:5,思维:4,学习:6,人际:5,团队协作:5}, hrScores:{专业:14,业绩:15,敬业:16,潜力:16,合作:15,企业文化:15},
       events:[
         {id:'EV1',type:'入职',date:'2023-03-12',title:'入职 一线客服',detail:'济南 A组',by:'HR'},
         {id:'EV2',type:'晋升',date:'2024-08-01',title:'晋升 组长',detail:'因带教表现突出晋升',by:'王主管'},
         {id:'EV3',type:'获荣誉头衔',date:'2025-05-20',title:'获「服务之星」头衔',detail:'季度服务标兵',by:'王主管'}
       ]},
-    E1002: { tags:['骨干'], echelon:'骨干', comment:'稳定的组长，梯队中坚。', jobFit:4, risk:'风险偏好偏低', strength:'稳健、带教耐心', kpi2022:88, kpi2023:90, awards:'优秀组长（2023）',
+    E1002: { tags:['骨干'], echelon:'骨干', comment:'稳定的组长，梯队中坚。', jobFit:4, risk:'风险偏好偏低', strength:'稳健、带教耐心', kpi2026:88, kpi2027:90, awards:'优秀组长（2023）',
       deptScores:{绩效:6,成长:4,思维:5,学习:4,人际:6,团队协作:6}, hrScores:{专业:16,业绩:14,敬业:17,潜力:13,合作:16,企业文化:16},
       events:[
         {id:'EV1',type:'入职',date:'2022-07-01',title:'入职 一线客服',detail:'',by:'HR'},
         {id:'EV2',type:'晋升',date:'2023-11-01',title:'晋升 组长',detail:'',by:'王主管'}
       ]},
-    E1003: { tags:['待提升'], echelon:'一线', comment:'已离职，保留记录备查。', jobFit:2, risk:'主动性与目标感弱', strength:'配合度高', kpi2022:70, kpi2023:68, awards:'',
+    E1003: { tags:['待提升'], echelon:'一线', comment:'已离职，保留记录备查。', jobFit:2, risk:'主动性与目标感弱', strength:'配合度高', kpi2026:70, kpi2027:68, awards:'',
       deptScores:{绩效:3,成长:3,思维:3,学习:3,人际:3,团队协作:3}, hrScores:{专业:10,业绩:9,敬业:10,潜力:9,合作:10,企业文化:9},
       events:[
         {id:'EV1',type:'入职',date:'2021-09-20',title:'入职 一线客服',detail:'',by:'HR'},
         {id:'EV2',type:'离职',date:'2025-12-15',title:'离职',detail:'个人原因',by:'赵组长'}
       ]},
-    E1004: { tags:['后备干部'], echelon:'后备', comment:'二次入职，需观察稳定性。', jobFit:3, risk:'稳定性待观察', strength:'亲和力强', kpi2022:0, kpi2023:78, awards:'',
+    E1004: { tags:['后备干部'], echelon:'后备', comment:'二次入职，需观察稳定性。', jobFit:3, risk:'稳定性待观察', strength:'亲和力强', kpi2026:0, kpi2027:78, awards:'',
       deptScores:{绩效:4,成长:4,思维:4,学习:4,人际:4,团队协作:4}, hrScores:{专业:12,业绩:12,敬业:13,潜力:14,合作:12,企业文化:12},
       events:[
         {id:'EV1',type:'入职',date:'2023-01-05',title:'入职 一线客服',detail:'',by:'HR'},
@@ -62,25 +62,25 @@
         {id:'EV3',type:'二次入职',date:'2026-02-18',title:'二次入职 一线客服',detail:'重新返岗',by:'HR'},
         {id:'EV4',type:'调岗',date:'2026-05-01',title:'调岗 B组',detail:'',by:'赵组长'}
       ]},
-    E1005: { tags:['骨干'], echelon:'管理', comment:'主管，管理梯队核心。', jobFit:4, risk:'—', strength:'全局观强、决策稳', kpi2022:96, kpi2023:98, awards:'年度管理标兵（2024）',
+    E1005: { tags:['骨干'], echelon:'管理', comment:'主管，管理梯队核心。', jobFit:4, risk:'—', strength:'全局观强、决策稳', kpi2026:96, kpi2027:98, awards:'年度管理标兵（2024）',
       deptScores:{绩效:6,成长:6,思维:6,学习:5,人际:6,团队协作:6}, hrScores:{专业:17,业绩:16,敬业:17,潜力:16,合作:17,企业文化:16},
       events:[
         {id:'EV1',type:'入职',date:'2020-11-15',title:'入职 一线客服',detail:'',by:'HR'},
         {id:'EV2',type:'晋升',date:'2022-06-01',title:'晋升 组长',detail:'',by:'孙经理'},
         {id:'EV3',type:'晋升',date:'2024-01-01',title:'晋升 主管',detail:'',by:'孙经理'}
       ]},
-    E1006: { tags:[], echelon:'一线', comment:'试用期新人，待评估。', jobFit:0, risk:'试用期待评估', strength:'—', kpi2022:0, kpi2023:0, awards:'',
+    E1006: { tags:[], echelon:'一线', comment:'试用期新人，待评估。', jobFit:0, risk:'试用期待评估', strength:'—', kpi2026:0, kpi2027:0, awards:'',
       deptScores:{绩效:0,成长:0,思维:0,学习:0,人际:0,团队协作:0}, hrScores:{专业:0,业绩:0,敬业:0,潜力:0,合作:0,企业文化:0},
       events:[
         {id:'EV1',type:'入职',date:'2026-06-01',title:'入职 一线客服（试用）',detail:'',by:'HR'}
       ]},
-    E1007: { tags:['待提升'], echelon:'一线', comment:'已离职。', jobFit:2, risk:'沟通内敛', strength:'细心', kpi2022:72, kpi2023:70, awards:'',
+    E1007: { tags:['待提升'], echelon:'一线', comment:'已离职。', jobFit:2, risk:'沟通内敛', strength:'细心', kpi2026:72, kpi2027:70, awards:'',
       deptScores:{绩效:2,成长:3,思维:3,学习:3,人际:3,团队协作:3}, hrScores:{专业:9,业绩:8,敬业:9,潜力:8,合作:9,企业文化:8},
       events:[
         {id:'EV1',type:'入职',date:'2022-02-10',title:'入职 一线客服',detail:'',by:'HR'},
         {id:'EV2',type:'离职',date:'2024-09-30',title:'离职',detail:'',by:'陈主管'}
       ]},
-    E1008: { tags:['高潜'], echelon:'骨干', comment:'年轻高潜，重点观察。', jobFit:3, risk:'—', strength:'响应快、悟性高', kpi2022:0, kpi2023:85, awards:'新人标兵（2025Q4）',
+    E1008: { tags:['高潜'], echelon:'骨干', comment:'年轻高潜，重点观察。', jobFit:3, risk:'—', strength:'响应快、悟性高', kpi2026:0, kpi2027:85, awards:'新人标兵（2025Q4）',
       deptScores:{绩效:5,成长:5,思维:5,学习:5,人际:5,团队协作:5}, hrScores:{专业:14,业绩:14,敬业:15,潜力:16,合作:14,企业文化:14},
       events:[
         {id:'EV1',type:'入职',date:'2024-04-22',title:'入职 一线客服',detail:'',by:'HR'},
@@ -96,7 +96,22 @@
   }
   function savePersonnel(arr){ safeSetItem(PERSONNEL_KEY, JSON.stringify(arr)); }
   function loadReview(){
-    try { var d = JSON.parse(safeGetItem(REVIEW_KEY) || 'null'); if(d && typeof d === 'object') return d; } catch(e){}
+    try {
+      var d = JSON.parse(safeGetItem(REVIEW_KEY) || 'null');
+      if(d && typeof d === 'object'){
+        // 兼容旧字段名 kpi2022/kpi2023 → kpi2026/kpi2027（旧 localStorage 数据自动迁移，不丢）
+        var migrated = false;
+        for(var id in d){ if(d.hasOwnProperty(id)){
+          var rv = d[id];
+          if(rv && typeof rv === 'object'){
+            if(typeof rv.kpi2022 !== 'undefined'){ rv.kpi2026 = rv.kpi2022; delete rv.kpi2022; migrated = true; }
+            if(typeof rv.kpi2023 !== 'undefined'){ rv.kpi2027 = rv.kpi2023; delete rv.kpi2023; migrated = true; }
+          }
+        }}
+        if(migrated) safeSetItem(REVIEW_KEY, JSON.stringify(d));
+        return d;
+      }
+    } catch(e){}
     safeSetItem(REVIEW_KEY, JSON.stringify(SEED_REVIEW));
     return JSON.parse(JSON.stringify(SEED_REVIEW));
   }
@@ -240,9 +255,12 @@
     return ''
       + headerHTML()
       + '<div class="rstr-stats">'+stats+'</div>'
-      + '<div class="rstr-dist-row"><span class="rstr-dist-label">人才标签分布：</span>'+tagDist+'</div>'
-      + '<div class="rstr-dist-row"><span class="rstr-dist-label">按职级分布：</span>'+jobTitleDist+'</div>'
-      + '<div class="rstr-dist-row"><span class="rstr-dist-label">按职位等级分布：</span>'+jobGradeDist+'</div>'
+      + '<div style="background:#f7f9fc;border:1px solid #e8edf3;border-radius:12px;padding:12px 16px;margin:6px 0 14px;">'
+      +   '<div style="font-size:14px;font-weight:600;color:#475569;margin-bottom:10px;display:flex;align-items:center;gap:6px;">👥 人员结构概览</div>'
+      +   '<div class="rstr-dist-row"><span class="rstr-dist-label">人才标签分布：</span>'+tagDist+'</div>'
+      +   '<div class="rstr-dist-row"><span class="rstr-dist-label">按职级分布：</span>'+jobTitleDist+'</div>'
+      +   '<div class="rstr-dist-row" style="margin-bottom:0;"><span class="rstr-dist-label">按职位等级分布：</span>'+jobGradeDist+'</div>'
+      + '</div>'
       + '<div style="text-align:right;margin:2px 0 12px;"><button class="rstr-btn rstr-btn-ghost" onclick="rosterExportOutput()">⬇ 导出管理输出表</button></div>'
       + '<div class="rstr-nine-title">人才九宫格（部门维度满分35 / 人力维度满分100，均在本版块手动录入）</div>'
       + grid;
@@ -324,7 +342,7 @@
       +   '<div class="rstr-drawer-sec"><div class="rstr-drawer-sec-t">盘点结果输出</div>'
       +     '<div class="rstr-info-grid">'
       +       infoItem('岗位适配度', (r.jobFit>0? r.jobFit+' / 4':'—')) + infoItem('九宫格编号', cell? (cell.id+' 号'):'—')
-      +       infoItem('2022 KPI', (r.kpi2022>0? r.kpi2022:'—')) + infoItem('2023 KPI', (r.kpi2023>0? r.kpi2023:'—'))
+      +       infoItem('2026 KPI', (r.kpi2026>0? r.kpi2026:'—')) + infoItem('2027 KPI', (r.kpi2027>0? r.kpi2027:'—'))
       +       infoItem('获奖情况', r.awards||'—')
       +     '</div>'
       +     (r.strength && r.strength!=='—' ? '<div class="rstr-comment">性格优势：'+esc(r.strength)+'</div>' : '')
@@ -397,8 +415,8 @@
       +     '<div class="rstr-info-grid">'
       +       '<label class="rstr-info"><span class="rstr-info-k">岗位适配度(1-4)</span><input id="rstr-jobfit" class="rstr-input rstr-input-num" type="number" min="0" max="4" value="'+Number(r.jobFit||0)+'"></label>'
       +       '<label class="rstr-info"><span class="rstr-info-k">职位等级(1-6)</span><input id="rstr-jobgrade" class="rstr-input rstr-input-num" type="number" min="1" max="6" value="'+Number(p.jobGrade||1)+'"></label>'
-      +       '<label class="rstr-info"><span class="rstr-info-k">2022 KPI(百分制)</span><input id="rstr-kpi22" class="rstr-input rstr-input-num" type="number" min="0" max="100" value="'+Number(r.kpi2022||0)+'"></label>'
-      +       '<label class="rstr-info"><span class="rstr-info-k">2023 KPI(百分制)</span><input id="rstr-kpi23" class="rstr-input rstr-input-num" type="number" min="0" max="100" value="'+Number(r.kpi2023||0)+'"></label>'
+      +       '<label class="rstr-info"><span class="rstr-info-k">2026 KPI(百分制)</span><input id="rstr-kpi26" class="rstr-input rstr-input-num" type="number" min="0" max="100" value="'+Number(r.kpi2026||0)+'"></label>'
+      +       '<label class="rstr-info"><span class="rstr-info-k">2027 KPI(百分制)</span><input id="rstr-kpi27" class="rstr-input rstr-input-num" type="number" min="0" max="100" value="'+Number(r.kpi2027||0)+'"></label>'
       +     '</div></div>'
       +   '<label class="rstr-fld">性格优势<textarea id="rstr-strength" class="rstr-input" rows="2">'+esc(r.strength||'')+'</textarea></label>'
       +   '<label class="rstr-fld">性格风险<textarea id="rstr-risk" class="rstr-input" rows="2">'+esc(r.risk||'')+'</textarea></label>'
@@ -420,14 +438,14 @@
     var comment = val('rstr-comment').trim();
     var jobFit = Number(val('rstr-jobfit')||0);
     var jobGrade = Number(val('rstr-jobgrade')||0);
-    var kpi2022 = Number(val('rstr-kpi22')||0);
-    var kpi2023 = Number(val('rstr-kpi23')||0);
+    var kpi2026 = Number(val('rstr-kpi26')||0);
+    var kpi2027 = Number(val('rstr-kpi27')||0);
     var strength = val('rstr-strength').trim();
     var risk = val('rstr-risk').trim();
     var awards = val('rstr-awards').trim();
     r[empId].tags = tags; r[empId].echelon = echelon; r[empId].deptScores = deptScores;
     r[empId].hrScores = hrScores; r[empId].comment = comment;
-    r[empId].jobFit = jobFit; r[empId].kpi2022 = kpi2022; r[empId].kpi2023 = kpi2023;
+    r[empId].jobFit = jobFit; r[empId].kpi2026 = kpi2026; r[empId].kpi2027 = kpi2027;
     r[empId].strength = strength; r[empId].risk = risk; r[empId].awards = awards;
     var pp = loadPersonnel(); var pe = pp.filter(function(x){ return x.empId === empId; })[0];
     if(pe && jobGrade) pe.jobGrade = jobGrade;
@@ -507,7 +525,7 @@
   };
   window.rosterExportOutput = function(){
     var p = loadPersonnel(), r = loadReview();
-    var head = ['工号','姓名','组别','职场','岗位','职级','职位等级','性别','出生年月','学历','毕业院校','毕业时间','状态','入职日期','直属上级','人才标签','梯队','部门维度分','人力维度分','九宫格编号','岗位适配度','2022KPI','2023KPI','性格优势','性格风险','获奖','职业事件数'];
+    var head = ['工号','姓名','组别','职场','岗位','职级','职位等级','性别','出生年月','学历','毕业院校','毕业时间','状态','入职日期','直属上级','人才标签','梯队','部门维度分','人力维度分','九宫格编号','岗位适配度','2026KPI','2027KPI','性格优势','性格风险','获奖','职业事件数'];
     var rows = [head];
     p.forEach(function(it){
       var rv = r[it.empId] || {};
@@ -518,7 +536,7 @@
         it.gender||'', it.birth||'', it.edu||'', it.school||'', it.gradTime||'',
         it.status, it.hireDate, it.manager,
         (rv.tags||[]).join('|'), rv.echelon||'', dt, ht, cell? cell.id : '',
-        (rv.jobFit>0? rv.jobFit:''), (rv.kpi2022>0?rv.kpi2022:''), (rv.kpi2023>0?rv.kpi2023:''),
+        (rv.jobFit>0? rv.jobFit:''), (rv.kpi2026>0?rv.kpi2026:''), (rv.kpi2027>0?rv.kpi2027:''),
         rv.strength||'', rv.risk||'', rv.awards||'', (rv.events||[]).length
       ]);
     });
