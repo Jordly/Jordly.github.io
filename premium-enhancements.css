@@ -5556,3 +5556,4 @@ textarea.rstr-input{height:auto;padding:8px 10px;resize:vertical;}
 .rstr-scores-tot b{color:#0b9b96;font-size:14px;}
 .rstr-modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;}
 .rstr-nine-axis{font-size:11px;color:#94a3b8;margin-top:10px;text-align:center;}
+.rstr-info .rstr-input-num{width:100%;}

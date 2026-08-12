@@ -169,7 +169,7 @@ var SYSTEM_DATA_TABLES = {
   },
   personnelMaster: {
     label: '\u{1F464} 人员主表',
-    desc: '客服人员基础档案权威源（姓名/工号/组别/职场/岗位/状态/入职日/直属上级），由钉钉组织架构导出经「人才盘点花名册」导入维护。人才盘点花名册单向读取此表基础名单，职业事件与盘点评分独立存于花名册，不回写本表。',
+    desc: '客服人员基础档案权威源（姓名/工号/组别/职场/岗位/职级/职位等级/性别/出生年月/学历/毕业院校/状态/入职日/直属上级），由钉钉组织架构导出经「人才盘点花名册」导入维护。人才盘点花名册单向读取此表基础名单，职业事件与盘点评分独立存于花名册，不回写本表。',
     data: [],
     readOnly: true,
     fields: [
@@ -178,6 +178,12 @@ var SYSTEM_DATA_TABLES = {
       {key:'group', label:'组别', type:'text'},
       {key:'site', label:'职场', type:'text'},
       {key:'position', label:'岗位', type:'text'},
+      {key:'jobTitle', label:'职级', type:'text'},
+      {key:'jobGrade', label:'职位等级', type:'text'},
+      {key:'gender', label:'性别', type:'text'},
+      {key:'birth', label:'出生年月', type:'text'},
+      {key:'edu', label:'学历', type:'text'},
+      {key:'school', label:'毕业院校', type:'text'},
       {key:'status', label:'状态', type:'text'},
       {key:'hireDate', label:'入职日期', type:'text'},
       {key:'manager', label:'直属上级', type:'text'}
@@ -568,7 +574,7 @@ var _renderSystemData = function(){
   else if(_systemDataTab==='assessments') colDefs={headers:['评估周期','事业部','评估单元','管理人','管理等级','总分','定量','定性'],keys:['month','dept','group','manager','level','totalScore','quantScore','qualScore'],showCb:true,numberKeys:['totalScore','quantScore']};
   else if(_systemDataTab==='satisfaction') colDefs={headers:['项目ID','周期','综合感受','执行力','风险管控','沟通频率','领导评分','状态'],keys:['projectId','period','overall','execution','riskControl','commFreq','leaderScore','status'],showCb:true,numberKeys:['leaderScore']};
   else if(_systemDataTab==='risk') colDefs={headers:['项目编号','项目名称','风险类型','风险等级','触发指标','阈值','状态'],keys:['projectId','projectName','riskType','severity','indicator','threshold','status'],showCb:false,readOnly:true};
-  else if(_systemDataTab==='personnelMaster') colDefs={headers:['工号','姓名','组别','职场','岗位','状态','入职日期','直属上级'],keys:['empId','name','group','site','position','status','hireDate','manager'],showCb:false,readOnly:true};
+  else if(_systemDataTab==='personnelMaster') colDefs={headers:['工号','姓名','组别','职场','岗位','职级','职位等级','性别','出生年月','学历','毕业院校','状态','入职日期','直属上级'],keys:['empId','name','group','site','position','jobTitle','jobGrade','gender','birth','edu','school','status','hireDate','manager'],showCb:false,readOnly:true};
 
   var tableHtml = '';
   var tblClass = (_systemDataTab==='assessments') ? 'sysdata-table assess-table' : 'sysdata-table';
