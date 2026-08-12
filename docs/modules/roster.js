@@ -144,7 +144,11 @@
       if(_filter.site !== 'all' && it.site !== _filter.site) return false;
       if(_filter.status !== 'all' && it.status !== _filter.status) return false;
       if(_filter.tag !== 'all'){ var rv = r[it.empId]; if(!rv || (rv.tags||[]).indexOf(_filter.tag) < 0) return false; }
-      if(kw && (it.name + it.empId + it.group + it.site).toLowerCase().indexOf(kw) < 0) return false;
+      if(kw){
+        var target = (it.name + it.empId + it.group + it.site).toLowerCase();
+        var match = Array.from(kw).every(function(ch){ return target.indexOf(ch) >= 0; });
+        if(!match) return false;
+      }
       return true;
     });
   }
@@ -172,7 +176,7 @@
     return ''
       + headerHTML()
       + '<div class="rstr-bar">'
-      +   '<input class="rstr-search" placeholder="搜索姓名 / 工号 / 组别" value="'+esc(_filter.kw)+'" oninput="rosterSearch(this.value)">'
+      +   '<input type="search" class="rstr-search" placeholder="搜索姓名 / 工号 / 组别" autocomplete="off" value="'+esc(_filter.kw)+'" oninput="rosterSearch(this.value)">'
       +   sel('rstr-group-sel','组别', groups, _filter.group, 'rosterFilter(\'group\',this.value)')
       +   sel('rstr-site-sel','职场', sites, _filter.site, 'rosterFilter(\'site\',this.value)')
       +   sel('rstr-status-sel','状态', statuses, _filter.status, 'rosterFilter(\'status\',this.value)')
