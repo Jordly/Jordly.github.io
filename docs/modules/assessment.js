@@ -788,10 +788,7 @@ function hasPermission(module, action) {
   return mp[action] === true;
 }
 
-// 检查当前用户是否可见某个模块
-function canViewModule(module) {
-  return hasPermission(module, "visible");
-}
+// canViewModule 统一使用 app.js 的全局定义（可见+查看双权限，严格判定），此处不重复定义，避免同名覆盖导致依赖加载顺序生效。
 
 // 根据当前用户角色过滤导航菜单（隐藏无权限的模块）
 function filterNavByPermissions() {

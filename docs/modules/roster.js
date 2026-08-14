@@ -204,12 +204,12 @@
       + headerHTML()
       + '<div class="rstr-bar">'
       +   '<input type="search" class="rstr-search" placeholder="搜索姓名 / 工号 / 组别" autocomplete="off" value="'+esc(_filter.kw)+'" oninput="rosterSearch(this.value)">'
-      +   sel('rstr-group-sel','组别', groups, _filter.group, 'rosterFilter(\'group\',this.value)')
-      +   sel('rstr-site-sel','职场', sites, _filter.site, 'rosterFilter(\'site\',this.value)')
-      +   sel('rstr-status-sel','状态', statuses, _filter.status, 'rosterFilter(\'status\',this.value)')
-      +   sel('rstr-tag-sel','人才标签', tags, _filter.tag, 'rosterFilter(\'tag\',this.value)')
-      +   sel('rstr-jobtitle-sel','职级', uniqueVal('jobTitle'), _filter.jobTitle, 'rosterFilter(\'jobTitle\',this.value)')
-      +   sel('rstr-jobgrade-sel','职位等级', uniqueVal('jobGrade').sort(function(a,b){ return Number(a)-Number(b); }), _filter.jobGrade, 'rosterFilter(\'jobGrade\',this.value)')
+      +   rstrSel('rstr-group-sel','组别', groups, _filter.group, 'rosterFilter(\'group\',this.value)')
+      +   rstrSel('rstr-site-sel','职场', sites, _filter.site, 'rosterFilter(\'site\',this.value)')
+      +   rstrSel('rstr-status-sel','状态', statuses, _filter.status, 'rosterFilter(\'status\',this.value)')
+      +   rstrSel('rstr-tag-sel','人才标签', tags, _filter.tag, 'rosterFilter(\'tag\',this.value)')
+      +   rstrSel('rstr-jobtitle-sel','职级', uniqueVal('jobTitle'), _filter.jobTitle, 'rosterFilter(\'jobTitle\',this.value)')
+      +   rstrSel('rstr-jobgrade-sel','职位等级', uniqueVal('jobGrade').sort(function(a,b){ return Number(a)-Number(b); }), _filter.jobGrade, 'rosterFilter(\'jobGrade\',this.value)')
       +   '<button class="rstr-btn" onclick="rosterAddPerson()">＋ 添加人员</button>'
       +   '<button class="rstr-btn" onclick="rosterImportClick()">⬆ 导入钉钉名单</button>'
       +   '<button class="rstr-btn rstr-btn-ghost" onclick="rosterExport()">⬇ 导出</button>'
@@ -264,12 +264,12 @@
     var groups = uniqueVal('group'), sites = uniqueVal('site'), statuses = ['在职','试用','离职','二次入职'], tags = ['高潜','骨干','后备干部','待提升'];
     var jobTitles = uniqueVal('jobTitle'), jobGrades = uniqueVal('jobGrade').sort(function(a,b){ return Number(a)-Number(b); });
     var bar = '<div class="rstr-bar">'
-      +   sel('rstr-group-sel','组别', groups, _filter.group, 'rosterFilter(\'group\',this.value)')
-      +   sel('rstr-site-sel','职场', sites, _filter.site, 'rosterFilter(\'site\',this.value)')
-      +   sel('rstr-status-sel','状态', statuses, _filter.status, 'rosterFilter(\'status\',this.value)')
-      +   sel('rstr-tag-sel','人才标签', tags, _filter.tag, 'rosterFilter(\'tag\',this.value)')
-      +   sel('rstr-jobtitle-sel','职级', jobTitles, _filter.jobTitle, 'rosterFilter(\'jobTitle\',this.value)')
-      +   sel('rstr-jobgrade-sel','职位等级', jobGrades, _filter.jobGrade, 'rosterFilter(\'jobGrade\',this.value)')
+      +   rstrSel('rstr-group-sel','组别', groups, _filter.group, 'rosterFilter(\'group\',this.value)')
+      +   rstrSel('rstr-site-sel','职场', sites, _filter.site, 'rosterFilter(\'site\',this.value)')
+      +   rstrSel('rstr-status-sel','状态', statuses, _filter.status, 'rosterFilter(\'status\',this.value)')
+      +   rstrSel('rstr-tag-sel','人才标签', tags, _filter.tag, 'rosterFilter(\'tag\',this.value)')
+      +   rstrSel('rstr-jobtitle-sel','职级', jobTitles, _filter.jobTitle, 'rosterFilter(\'jobTitle\',this.value)')
+      +   rstrSel('rstr-jobgrade-sel','职位等级', jobGrades, _filter.jobGrade, 'rosterFilter(\'jobGrade\',this.value)')
       +   '<button class="rstr-btn rstr-btn-ghost" onclick="rosterExportOutput()">⬇ 导出管理输出表</button>'
       + '</div>';
 
@@ -302,7 +302,7 @@
   }
   function statCard(lbl, val, cls){ return '<div class="rstr-stat '+cls+'"><div class="rstr-stat-val">'+val+'</div><div class="rstr-stat-lbl">'+lbl+'</div></div>'; }
   function uniqueVal(field){ var p = loadPersonnel(), s = {}; p.forEach(function(it){ s[it[field]] = 1; }); return Object.keys(s); }
-  function sel(id, label, opts, val, onch){
+  function rstrSel(id, label, opts, val, onch){
     var o = '<option value="all">全部'+label+'</option>' + opts.map(function(v){ return '<option value="'+esc(v)+'"'+(v===val?' selected':'')+'>'+esc(v)+'</option>'; }).join('');
     return '<select class="rstr-sel" onchange="'+onch+'">'+o+'</select>';
   }
