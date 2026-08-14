@@ -778,16 +778,6 @@ function updateAffectedUsers(role) {
 
 // ===== 权限检查辅助函数 =====
 
-// 检查当前用户是否有某个模块的某个操作权限
-function hasPermission(module, action) {
-  if (!currentRole || !rolePermissions[currentRole]) {
-    return false;
-  }
-  var mp = rolePermissions[currentRole][module];
-  if (!mp) return false;
-  return mp[action] === true;
-}
-
 // canViewModule 统一使用 app.js 的全局定义（可见+查看双权限，严格判定），此处不重复定义，避免同名覆盖导致依赖加载顺序生效。
 
 // 根据当前用户角色过滤导航菜单（隐藏无权限的模块）
@@ -825,24 +815,6 @@ function filterNavByPermissions() {
   }
 }
 
-function exportSystemData() {
-  var backup = {};
-  try {
-    for (var i = 0; i < localStorage.length; i++) {
-      var key = localStorage.key(i);
-      if (key && key.indexOf('chansee_') === 0) {
-        try { backup[key] = JSON.parse(localStorage.getItem(key)); } catch(e) { backup[key] = localStorage.getItem(key); }
-      }
-    }
-  } catch(e) {}
-  var json = JSON.stringify(backup, null, 2);
-  var blob = new Blob([json], {type:"application/json"});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement("a");
-  a.href = url; a.download = "chansee_backup_" + new Date().toISOString().slice(0,10) + ".json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
 // ===== 客服绩效看板 =====
 // ===== 绩效计算辅助函数 =====
 

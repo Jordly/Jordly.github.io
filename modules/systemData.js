@@ -638,7 +638,7 @@ var _renderSystemData = function(){
       +(isLog?'':'<button class="btn btn-sm btn-danger" onclick="batchDeleteSystemData()">批量删除</button>')
       +(colDefs.goEnergyPool?'<button class="btn btn-sm" onclick="renderModule(\'knowledge\')">📖 在能量池查看</button>':'')
       +(isReadOnly?'<button class="btn btn-sm" onclick="renderModule(\'risk\')">⚠️ 去风险池处置</button>':'')
-      +'<button class="btn btn-sm" onclick="exportSystemData()">导出</button>'
+      +'<button class="btn btn-sm" onclick="exportBizTables()">导出</button>'
       +(isReadOnly?'':'<button class="btn btn-sm" onclick="importSystemData()">导入</button>')
     +'</div>'
   +'</div>'
@@ -778,7 +778,7 @@ window.sdConfirmImport = function() {
   renderModule('systemData');
 };
 
-function exportSystemData(){
+function exportBizTables(){
   // 导出文件名映射配置（方案2）
   if (typeof window._exportFileNameMap === 'undefined') {
     window._exportFileNameMap = {

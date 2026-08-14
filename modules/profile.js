@@ -802,8 +802,6 @@ function resetPassword() {
   });
 }
 
-
-
 // 离开团队
 function leaveTeam() {
   if (!confirm("⚠️ 确定要离开团队吗？离开后您将无法查看此团队的任何记录！")) return;
@@ -1150,108 +1148,7 @@ function showChangeLog() {
   overlay.classList.remove('hidden');
 }
 
-
-
 // ===== Recovered Functions (June 26) =====
-function goToModule(module){
-  document.querySelectorAll('.nav-item').forEach(function(i){i.classList.remove('active');});
-  var nav = document.querySelector('.nav-item[data-module="'+module+'"]');
-  if(nav){
-    nav.classList.add('active');
-    var sec = nav.closest('.nav-section');
-    if(sec && sec.classList.contains('collapsed')) sec.classList.remove('collapsed');
-  }
-  renderModule(module);
-}
-
-function toggleAdvancedFilter() {
-  var el = document.getElementById('filter-row-advanced');
-  if (!el) { setTimeout(function(){ toggleAdvancedFilter(); }, 200); return; }
-  var btn = document.querySelector('.fb-adv-btn');
-  var computedStyle = window.getComputedStyle(el);
-  var isVisible = (el.style.display !== 'none' && el.style.display !== '') ? (el.style.display !== 'none') : (computedStyle.display !== 'none');
-  if (isVisible) {
-    el.style.setProperty('display', 'none', 'important');
-    window._advFilterVisible = false;
-    if(btn){btn.textContent='高级筛选 ▼';btn.className='fb-adv-btn';}
-  } else {
-    el.style.setProperty('display', 'flex', 'important');
-    window._advFilterVisible = true;
-    if(btn){btn.textContent='收起筛选 ▲';btn.className='fb-adv-btn fb-adv-btn-active';}
-  }
-}
-
-function sortArchiveTable(field) {
-  if (archiveSortField === field) {
-  } else {
-    archiveSortDirection = 'asc';
-  }
-  renderModule('archive');
-}
-
-function clearArchiveSelection(){
-  var cb=document.querySelectorAll('.archive-row-check');
-  for(var i=0;i<cb.length;i++)cb[i].checked=false;
-  updateBatchDeleteBtn();
-}
-
-function batchEditProjects(){
-  alert('批量编辑功能开发中');
-}
-
-function toggleCompareCheckbox(projectId) {
-  if (!window._selectedCompareIds) window._selectedCompareIds = [];
-  var idx = window._selectedCompareIds.indexOf(projectId);
-  if (idx >= 0) {
-    window._selectedCompareIds.splice(idx, 1);
-  } else {
-    if (window._selectedCompareIds.length >= 2) {
-      window._selectedCompareIds.shift();
-    }
-    window._selectedCompareIds.push(projectId);
-  }
-  _moduleCache['operation'] = null; // 缓存失效：对比勾选变化后强制重渲染
-  renderModule('operation');
-}
-
-function closeComparePanel() {
-  var overlay = document.getElementById('compare-overlay');
-  if(overlay){ overlay.classList.add('hidden'); overlay.style.opacity = '0'; }
-}
-
-function switchIssueTab(tab){
-  issueActiveTab = tab;
-  if(tab==='issue'){ issueFilterState = { status:'all', priority:'all', type:'all', assignee:'all', keyword:'' }; }
-  else { topicFilterState = { status:'all', type:'all', assignee:'all', keyword:'' }; }
-  _moduleCache['issue'] = null;
-  renderModule('issue');
-}
-
-function filterIssues(){
-  var sel = document.getElementById('issue-filter-priority');
-  var sel2 = document.getElementById('issue-filter-type');
-  var sel3 = document.getElementById('issue-filter-assignee');
-  var kw = document.getElementById('issue-search');
-  if(issueActiveTab==='issue'){
-    issueFilterState.priority = sel ? sel.value : 'all';
-    issueFilterState.type = sel2 ? sel2.value : 'all';
-    issueFilterState.assignee = sel3 ? sel3.value : 'all';
-    issueFilterState.keyword = kw ? kw.value : '';
-  } else {
-    topicFilterState.type = sel2 ? sel2.value : 'all';
-    topicFilterState.assignee = sel3 ? sel3.value : 'all';
-    topicFilterState.keyword = kw ? kw.value : '';
-  }
-  _moduleCache['issue'] = null;
-  renderModule('issue');
-}
-
-function filterIssueByStatus(status, el){
-  if(issueActiveTab==='issue') issueFilterState.status = status;
-  else topicFilterState.status = status;
-  _moduleCache['issue'] = null;
-  renderModule('issue');
-}
 
 function generateSparklinePath(fieldName){
     if(!KPI_HISTORY || KPI_HISTORY.length < 2){
@@ -1282,97 +1179,7 @@ function generateSparklinePath(fieldName){
     return {areaPath:areaPath, strokePath:strokePath};
   }
 
-function openComparePanel() {
-  var ids = window._selectedCompareIds || [];
-  if (ids.length < 2) return;
-  var p1 = PROJECTS.find(function(p){return p.id===ids[0];});
-  var p2 = PROJECTS.find(function(p){return p.id===ids[1];});
-  if(!p1||!p2) return;
-  var h1 = HEALTH_DATA.find(function(h){return h.projectId===p1.id&&h.period==='2026-05';});
-  var h2 = HEALTH_DATA.find(function(h){return h.projectId===p2.id&&h.period==='2026-05';});
-  var s1 = h1 ? h1.overallScore : 0;
-  var s2 = h2 ? h2.overallScore : 0;
-  var dims1 = h1 ? h1.dimensions : [];
-  var dims2 = h2 ? h2.dimensions : [];
-  var dimLabels = {manpower:'人力', service:'服务', sales:'销售', returns:'退货', risk:'风险', cost:'成本'};
-
-  var rowsHtml = '';
-  for(var i=0; i<dims1.length; i++){
-    var v1 = dims1[i].score;
-    var v2 = dims2[i] ? dims2[i].score : 0;
-    var diff = v1 - v2;
-    var diffStr = diff>0 ? '▲ +'+diff : (diff<0 ? '▼ '+diff : '持平');
-    var diffColor = diff>0 ? '#10b981' : (diff<0 ? '#ef4444' : '#6b7280');
-    var label = dimLabels[dims1[i].key] || dims1[i].name;
-    var c1 = v1>=90?'#10b981':v1>=75?'#eab308':v1>=60?'#f97316':'#ef4444';
-    var c2 = v2>=90?'#10b981':v2>=75?'#eab308':v2>=60?'#f97316':'#ef4444';
-    rowsHtml += '<tr>'
-      +'<td style="padding:10px 14px;font-size:13px;color:#1e40af;font-weight:500;">'+label+'</td>'
-      +'<td style="padding:10px 14px;text-align:center;font-size:22px;font-weight:700;color:'+c1+';">'+v1+'</td>'
-      +'<td style="padding:10px 14px;text-align:center;font-size:22px;font-weight:700;color:'+c2+';">'+v2+'</td>'
-      +'<td style="padding:10px 14px;text-align:center;font-size:14px;font-weight:600;color:'+diffColor+';">'+diffStr+'</td>'
-    +'</tr>';
-  }
-  // Compare score bars
-  var maxW = 200;
-  var bar1W = Math.round(s1/100*maxW);
-  var bar2W = Math.round(s2/100*maxW);
-
-  var overlay = document.getElementById('compare-overlay');
-  if(!overlay){
-    overlay = document.createElement('div');
-    overlay.id = 'compare-overlay';
-    overlay.className = 'modal-overlay';
-    overlay.style.background = 'rgba(0,0,0,0.5)';
-    overlay.style.opacity = '1';
-    document.body.appendChild(overlay);
-  }
-  overlay.innerHTML = ''
-    +'<div class="modal-dialog" style="max-width:700px;padding:0;border-radius:16px;overflow:hidden;background:#fff;">'
-      +'<div style="background:linear-gradient(135deg,#0B9B96,#3b82f6);color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;">'
-        +'<div style="font-size:15px;font-weight:600;">📊 项目对比</div>'
-        +'<button onclick="closeComparePanel()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;">&#10005;</button>'
-      +'</div>'
-      +'<div style="padding:20px;">'
-        // Project headers
-        +'<div style="display:flex;gap:16px;margin-bottom:16px;">'
-          +'<div style="flex:1;text-align:center;padding:12px;background:#f0fdf4;border-radius:10px;">'
-            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+escHtml(p1.name)+'</div>'
-            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+escHtml(p1.workplace)+' 路 '+escHtml(p1.serviceMode)+' 路 PM: '+escHtml(p1.pm||'')+'</div>'
-            +'<div style="font-size:32px;font-weight:800;color:#0B9B96;margin-top:4px;">'+s1+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 分</span></div>'
-            +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar1W+'px;background:linear-gradient(90deg,#0B9B96,#00C9A7);border-radius:3px;"></div></div>'
-          +'</div>'
-          +'<div style="display:flex;align-items:center;font-size:20px;font-weight:800;color:#94a3b8;flex-shrink:0;">VS</div>'
-          +'<div style="flex:1;text-align:center;padding:12px;background:#eff6ff;border-radius:10px;">'
-            +'<div style="font-size:16px;font-weight:700;color:#1e40af;">'+escHtml(p2.name)+'</div>'
-            +'<div style="font-size:11px;color:#6b7280;margin-top:2px;">'+escHtml(p2.workplace)+' 路 '+escHtml(p2.serviceMode)+' 路 PM: '+escHtml(p2.pm||'')+'</div>'
-            +'<div style="font-size:32px;font-weight:800;color:#3b82f6;margin-top:4px;">'+s2+'<span style="font-size:14px;font-weight:400;color:#6b7280;"> 分</span></div>'
-            +'<div style="margin-top:4px;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;"><div style="height:100%;width:'+bar2W+'px;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:3px;"></div></div>'
-          +'</div>'
-        +'</div>'
-        // Dimension table
-        +'<table style="width:100%;border-collapse:collapse;">'
-          +'<thead><tr style="background:#f8fafc;">'
-            +'<th style="padding:8px 14px;text-align:left;font-size:12px;color:#64748b;font-weight:500;">维度</th>'
-            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+escHtml(p1.name).substring(0,4)+'</th>'
-            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">'+escHtml(p2.name).substring(0,4)+'</th>'
-            +'<th style="padding:8px 14px;text-align:center;font-size:12px;color:#64748b;font-weight:500;">差距</th>'
-          +'</tr></thead>'
-          +'<tbody>'+rowsHtml+'</tbody>'
-        +'</table>'
-        +'<div style="margin-top:12px;text-align:center;font-size:11px;color:#94a3b8;">'
-          +(s1>s2 ? escHtml(p1.name)+' 综合领先 '+ (s1-s2)+' 分' : (s2>s1 ? escHtml(p2.name)+' 综合领先 '+ (s2-s1)+' 分' : '双方综合得分持平'))
-        +'</div>'
-      +'</div>'
-    +'</div>';
-  overlay.classList.remove('hidden');
-  overlay.style.opacity = '1';
-}
-
 // ===== End Recovered Functions =====
-
-
-
 
 // ===== Recovered Functions (June 26) =====
 function goToModule(module){
@@ -1563,7 +1370,6 @@ function openComparePanel() {
 }
 
 // ===== End Recovered Functions =====
-
 
 function closeChangeLog() {
   var overlay = document.getElementById('modal-overlay');

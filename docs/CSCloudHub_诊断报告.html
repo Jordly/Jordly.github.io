@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS CloudHub 系统诊断评估报告</title>
+<style>
+  :root{
+    --teal:#0b9b96; --teal-d:#087b77; --teal-l:#e6f6f5;
+    --ink:#1e293b; --sub:#64748b; --line:#e2e8f0; --bg:#f7fafc;
+    --p0:#ef4444; --p1:#f59e0b; --p2:#3b82f6; --p3:#94a3b8;
+    --ok:#10b981;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.7;padding:32px 16px}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{background:linear-gradient(135deg,var(--teal),var(--teal-d));color:#fff;
+    border-radius:18px;padding:34px 38px;box-shadow:0 12px 36px rgba(11,155,150,.25)}
+  header h1{font-size:26px;font-weight:700;letter-spacing:.5px}
+  header .meta{margin-top:10px;opacity:.92;font-size:13px}
+  header .score{display:flex;align-items:baseline;gap:10px;margin-top:18px}
+  header .score b{font-size:54px;font-weight:800;line-height:1}
+  header .score span{font-size:15px;opacity:.9}
+  .tag{display:inline-block;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+    padding:3px 11px;border-radius:99px;font-size:12px;margin-right:8px;margin-top:6px}
+  section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 30px;
+    margin-top:22px;box-shadow:0 2px 10px rgba(15,23,42,.04)}
+  section h2{font-size:19px;color:var(--teal-d);margin-bottom:6px;display:flex;align-items:center;gap:9px}
+  section h2::before{content:"";width:5px;height:20px;background:var(--teal);border-radius:3px;display:inline-block}
+  section .lead{color:var(--sub);font-size:13.5px;margin-bottom:18px}
+  .grid6{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .dim{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .dim .k{font-size:13px;color:var(--sub)}
+  .dim .v{font-size:30px;font-weight:800;color:var(--teal);margin:4px 0 2px}
+  .dim .bar{height:7px;background:#e5edf0;border-radius:99px;overflow:hidden}
+  .dim .bar i{display:block;height:100%;background:var(--teal);border-radius:99px}
+  .dim .note{font-size:11.5px;color:var(--sub);margin-top:6px}
+  .grp{margin:20px 0 4px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+  .badge{font-size:11px;color:#fff;padding:2px 9px;border-radius:99px;font-weight:700}
+  .b0{background:var(--p0)} .b1{background:var(--p1)} .b2{background:var(--p2)} .b3{background:var(--p3)}
+  .card{border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:12px;
+    padding:16px 18px;margin:12px 0;background:#fff}
+  .card.p0{border-left-color:var(--p0)} .card.p1{border-left-color:var(--p1)}
+  .card.p2{border-left-color:var(--p2)} .card.p3{border-left-color:var(--p3)}
+  .card h3{font-size:15.5px;margin-bottom:8px;color:var(--ink)}
+  .card .row{display:flex;gap:10px;font-size:13.5px;margin:6px 0}
+  .card .row .lab{flex:0 0 64px;font-weight:700;color:var(--sub)}
+  .card .row .txt{flex:1;color:#334155}
+  .card code{background:var(--teal-l);color:var(--teal-d);padding:1px 6px;border-radius:5px;
+    font-size:12.5px;font-family:ui-monospace,Consolas,monospace}
+  .card .ev{font-size:12.5px;color:var(--sub);background:var(--bg);border-radius:8px;padding:8px 10px;margin-top:8px}
+  .ok{border-left-color:var(--ok)} .ok h3{color:var(--ok)}
+  .road{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+  .road .ph{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .road .ph b{color:var(--teal-d);font-size:14px}
+  .road .ph ul{margin:8px 0 0 18px;font-size:13px;color:#334155}
+  .gloss{font-size:13px;color:var(--sub)}
+  .gloss b{color:var(--ink)}
+  footer{text-align:center;color:var(--sub);font-size:12px;margin-top:26px}
+  @media(max-width:760px){.grid6,.road{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>CS CloudHub 系统诊断评估报告</h1>
+  <div class="meta">评估对象：CS CloudHub 电商客服管理系统（chanseen.pages.dev）　|　评估视角：软件工程 / 安全 / 数据治理 / UX　|　评估日期：2026-08-14</div>
+  <div class="score"><b>6.0</b><span>/ 10　综合健康度：业务价值高、功能完整，但工程化成熟度偏低，存在已暴露的功能 Bug 与权限脆弱点</span></div>
+  <div>
+    <span class="tag">纯原生 JS 单页应用</span>
+    <span class="tag">18 个业务模块</span>
+    <span class="tag">localStorage 数据层</span>
+    <span class="tag">Cloudflare Pages 部署</span>
+    <span class="tag">无框架 / 无构建</span>
+  </div>
+</header>
+
+<!-- 维度评分 -->
+<section>
+  <h2>一、六维度健康评分</h2>
+  <div class="lead">每个维度满分 10 分。红色为扣分项集中区，需优先治理。</div>
+  <div class="grid6">
+    <div class="dim"><div class="k">架构可维护性</div><div class="v">4.0</div><div class="bar"><i style="width:40%"></i></div><div class="note">全局污染、函数双定义、地图过时</div></div>
+    <div class="dim"><div class="k">安全（XSS/权限）</div><div class="v">7.0</div><div class="bar"><i style="width:70%"></i></div><div class="note">有防护底线，但权限逻辑分散</div></div>
+    <div class="dim"><div class="k">数据治理</div><div class="v">6.0</div><div class="bar"><i style="width:60%"></i></div><div class="note">隐私守住了，但 localStorage 单点</div></div>
+    <div class="dim"><div class="k">性能 / 加载</div><div class="v">6.0</div><div class="bar"><i style="width:60%"></i></div><div class="note">27 脚本同步阻塞，无按需加载</div></div>
+    <div class="dim"><div class="k">UI / UX 一致性</div><div class="v">7.0</div><div class="bar"><i style="width:70%"></i></div><div class="note">主色已统一，两套筛选组件并存</div></div>
+    <div class="dim"><div class="k">部署流程</div><div class="v">3.0</div><div class="bar"><i style="width:30%"></i></div><div class="note">手动双份同步，已漏 2 次</div></div>
+  </div>
+</section>
+
+<!-- P0 -->
+<section>
+  <h2>二、问题清单（按优先级）</h2>
+  <div class="lead">P0=严重影响功能/安全，建议立即修；P1=重要，近期优化；P2=工程化优化；P3=长期。</div>
+
+  <div class="grp"><span class="badge b0">P0</span> 严重 · 立即修复</div>
+
+  <div class="card p0">
+    <h3>① 全局函数 <code>sel</code> 被覆盖 → “问题管理”筛选栏 JS 崩溃</h3>
+    <div class="row"><span class="lab">现象</span><span class="txt"><code>modules/issue.js:34</code> 定义 <code>sel(name,options,allLabel)</code>（旧签名 3 参数）；<code>modules/roster.js:305</code> 后加载，定义 <code>sel(id,label,opts,val,onch)</code>（新签名 5 参数）并覆盖前者。</span></div>
+    <div class="row"><span class="lab">风险</span><span class="txt">页面所有函数裸挂在全局（无任何 IIFE 包裹）。运行时 <code>issue.js</code> 调用 <code>sel('status', arr, '状态')</code> 实际走到 roster 版 → 对字符串 <code>opts</code> 调用 <code>.map()</code> 抛 <code>opts.map is not a function</code>，“问题管理”模块的筛选下拉框直接报错/空白。</span></div>
+    <div class="row"><span class="lab">建议</span><span class="txt">两个 <code>sel</code> 改名区分（如 <code>issueSel</code> / <code>rosterSel</code>），或抽成单一带命名空间的工具 <code>window.UI.select(...)</code>，从根本上消灭全局覆盖。</span></div>
+    <div class="ev">证据：index.html 加载顺序中 roster.js(19) 晚于 issue.js(10)；全 19 个 JS 文件均无 IIFE 包裹，函数 100% 暴露全局。</div>
+  </div>
+
+  <div class="card p0">
+    <h3>② <code>canViewModule</code> 双定义，权限判断“靠加载顺序巧合”生效</h3>
+    <div class="row"><span class="lab">现象</span><span class="txt"><code>app.js:2615</code> 版：<code>visible===true && view===true</code>（严格）；<code>modules/assessment.js:792</code> 版：<code>hasPermission(module,'visible')</code>（只看 visible，宽松）。当前 app.js 排第 22 位覆盖了 assessment.js，线上走的是严格版。</span></div>
+    <div class="row"><span class="lab">风险</span><span class="txt">一旦未来调整 index.html 脚本顺序、或合并/拆分文件，严格版就会被宽松版覆盖 → 没有“查看”权限的用户也能看到模块，**演变成权限漏洞**。这是个“定时炸弹”，不是已发生的事故。</span></div>
+    <div class="row"><span class="lab">建议</span><span class="txt">删除 assessment.js 的重复定义，全系统只保留 app.js 的 <code>canViewModule</code>；并把 <code>getPermission</code>(app.js) 与 <code>hasPermission</code>(assessment.js) 收敛为单一权限接口。</span></div>
+    <div class="ev">证据：app.js 用 <code>getPermission</code>，assessment.js 用 <code>hasPermission</code>，两套“取权限”接口分散两处，<code>canViewModule</code> 调用方混用。</div>
+  </div>
+
+  <div class="grp"><span class="badge b1">P1</span> 重要 · 近期优化</div>
+
+  <div class="card p1">
+    <h3>③ 部署流程脆弱：双份文件 + 手动版本号，已漏同步 2 次</h3>
+    <div class="row"><span class="lab">现象</span><span class="txt">每次改文件需手动 <code>cp</code> 到 <code>docs/</code> + 改两处 <code>index.html</code> 的 <code>?v=</code>。当前存在 11 种不同版本号字符串（如 <code>20260807-fix2</code>、<code>20260814-roster-v9</code>…）。历史上 v6、v7 两次都漏复制 docs 副本，导致线上“改了不生效”。</span></div>
+    <div class="row"><span class="lab">风险</span><span class="txt">强刷后仍看不到改动，反复返工排查，消耗大量时间。根因是“人肉双份维护”，必错。</span></div>
+    <div class="row"><span class="lab">建议</span><span class="txt">① 用单一构建号（如 <code>?v=20260814</code>）替代各文件独立版本号；② 写一个小脚本自动同步 docs + 自动 bump；③ 长期上 CI（git push 即部署）。</span></div>
+  </div>
+
+  <div class="card p1">
+    <h3>④ <code>exportSystemData</code> 双定义且语义完全不同</h3>
+    <div class="row"><span class="lab">现象</span><span class="txt"><code>assessment.js:831</code> = 导出全部 <code>chansee_</code> 前缀 localStorage（全量备份）；<code>systemData.js:781</code> = 导出具体业务表（中文文件名）。systemData.js(23) 后加载覆盖 assessment.js(17)。</span></div>
+    <div class="row"><span class="lab">风险</span><span class="txt">若“导出全部备份”按钮调用 <code>exportSystemData</code>，会误走到“导出业务表”逻辑，备份可能不完整/错位。</span></div>
+    <div class="row"><span class="lab">建议</span><span class="txt">按用途改名（<code>exportAllBackup</code> / <code>exportBizTables</code>），彻底避免同名冲突。</span></div>
+  </div>
+
+  <div class="card p1">
+    <h3>⑤ 权限逻辑分散 + localStorage 数据单点风险</h3>
+    <div class="row"><span class="lab">现象</span><span class="txt">取权限接口分两处（<code>getPermission</code> / <code>hasPermission</code>）；所有业务数据仅存浏览器 localStorage，清除 Cookie/换设备即丢失，云端同步靠手动触发。</span></div>
+    <div class="row"><span class="lab">风险</span><span class="txt">① 权限逻辑易漂移、改一处漏一处；② 误操作清缓存 = 数据全丢，无本地兜底。</span></div>
+    <div class="row"><span class="lab">建议</span><span class="txt">① 收敛权限为 <code>permissions.js</code> 单一服务；② 关键操作前引导“先云同步”，确保 <code>backupAllData</code>（core-security 已具备）入口显眼，登录/退出页加自动云同步。</span></div>
+  </div>
+
+  <div class="grp"><span class="badge b2">P2</span> 工程化优化</div>
+
+  <div class="card p2">
+    <h3>⑥ 代码地图过时 + 模块边界模糊</h3>
+    <div class="row"><span class="lab">现象</span><span class="txt">app.js 头部标注“共 4012 行”，实际 4183 行；行号导航全部失效。<code>profile.js</code> 内 <code>goToModule</code>/<code>sortArchiveTable</code>/<code>batchEditProjects</code>/<code>openComparePanel</code> 等各定义 2 次（文件内重复），疑似个人中心聚合页复制了归档/对比逻辑。</span></div>
+    <div class="row"><span class="lab">建议</span><span class="txt">代码地图改为“模块清单+职责”（不标行号）；profile.js 抽离共享组件、删除文件内重复定义。</span></div>
+  </div>
+
+  <div class="card p2">
+    <h3>⑦ 两套筛选栏组件并存 + XSS 需专项审计 + 首屏性能</h3>
+    <div class="row"><span class="lab">现象</span><span class="txt">app.js“筛选栏 v4” + <code>filterBarNew.js</code> + <code>roster.js</code> 自带筛选，三套渲染逻辑；全项目 60 处 <code>innerHTML</code> 拼接（已普遍用 <code>esc/escHtml</code>，无 <code>eval</code>/<code>new Function</code>，但偶有 style/url 场景转义不彻底）；27 个脚本同步阻塞加载（含 xlsx 1MB+ CDN）。</span></div>
+    <div class="row"><span class="lab">建议</span><span class="txt">统一全局筛选组件 <code>window.FilterBar</code>；脚本扫描所有 innerHTML 确认用户输入均经 esc；非首屏模块改按需加载、xlsx 懒加载；对纯函数加轻量单测。</span></div>
+  </div>
+</section>
+
+<!-- 优点 -->
+<section class="ok">
+  <h2>三、值得肯定的优点（平衡视角）</h2>
+  <div class="lead">诊断既要找问题，也要确认做对了什么——以下是当前系统的健康资产：</div>
+  <div class="card ok" style="border-left-color:var(--ok)">
+    <div class="row"><span class="lab">✅ 业务</span><span class="txt">功能覆盖完整（团队/绩效/知识/人才盘点/承接/风险），贴合客服总监真实工作流。</span></div>
+    <div class="row"><span class="lab">✅ 数据</span><span class="txt">数据安全铁律执行到位：全代码扫描未发现真实手机号/身份证硬编码，隐私数据仅存 localStorage。</span></div>
+    <div class="row"><span class="lab">✅ 安全</span><span class="txt">无 <code>eval</code>/<code>new Function</code>；用户输入普遍经 <code>escHtml/esc</code> 转义；密码用 PBKDF2 哈希；core-security 有全局错误捕获与一键备份。</span></div>
+    <div class="row"><span class="lab">✅ 权限</span><span class="txt">已建成动态角色 + 7 维操作权限体系，权限数据可配置。</span></div>
+    <div class="row"><span class="lab">✅ UI</span><span class="txt">刚统一为青绿主色系，筛选栏/卡片/头像/标签视觉一致，不花哨。</span></div>
+  </div>
+</section>
+
+<!-- 路线图 -->
+<section>
+  <h2>四、行动路线图</h2>
+  <div class="road">
+    <div class="ph"><b>本周（P0）</b><ul>
+      <li>修 <code>sel</code> 覆盖 → 问题管理筛选恢复</li>
+      <li>修 <code>canViewModule</code> 双定义 → 消除权限漏洞</li>
+      <li>验证两处修复后全模块冒烟</li>
+    </ul></div>
+    <div class="ph"><b>本月（P1）</b><ul>
+      <li>部署自动化：单一版本号 + 同步脚本</li>
+      <li>收敛权限接口到 permissions.js</li>
+      <li><code>exportSystemData</code> 改名拆分</li>
+      <li>强化数据备份引导与自动云同步</li>
+    </ul></div>
+    <div class="ph"><b>本季（P2）</b><ul>
+      <li>刷新代码地图 / 清理模块边界</li>
+      <li>统一筛选组件</li>
+      <li>XSS 专项审计 + 按需加载</li>
+      <li>引入轻量单测（Vitest）</li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- 术语 -->
+<section>
+  <h2>五、术语大白话解释</h2>
+  <div class="gloss">
+    <p><b>全局函数覆盖</b>：所有 .js 文件的函数都直接挂在“窗口”上，没有 namespace（命名空间）。两个文件写了同名函数，后加载的会把先加载的“冲掉”——后写的赢。这是本次 P0 两个 Bug 的根因。</p>
+    <p><b>IIFE</b>：一种“把代码包起来不让外面看到”的写法 <code>(function(){ ... })()</code>。用了它，内部函数就不会污染全局。当前 19 个文件都没用。</p>
+    <p><b>XSS</b>：黑客往页面塞恶意脚本。本项目用 <code>esc/escHtml</code> 把用户输入“转义”成纯文本来防。已普遍使用，但建议做一次全面审计确认无遗漏。</p>
+    <p><b>localStorage</b>：浏览器自带的“小数据库”，关网页数据还在，但清缓存/Cookie 会清空。当前系统所有业务数据存这里，所以清缓存 = 数据丢（除非已云同步）。</p>
+    <p><b>版本号（?v=）</b>：浏览器会缓存 js/css。改了代码必须改版本号，用户强刷才能看到新内容。当前每个文件版本号独立手动维护，易漏。</p>
+  </div>
+</section>
+
+<footer>本报告由 AI 基于 CS CloudHub 源码静态扫描生成（含 19 个 JS 文件、2 个 HTML、1 个 CSS 的自动化检查）。所列行号与文件均经实际代码核对，可作为修复工单直接派发。</footer>
+
+</div>
+</body>
+</html>
