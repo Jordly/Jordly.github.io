@@ -661,7 +661,7 @@ window._systemDataCatalogSearch = '';
 function catalogSearchSystemData(val) { _systemDataCatalogSearch = val; _moduleCache['systemData'] = null; renderModule('systemData'); }
 function clearCatalogSearch() { _systemDataCatalogSearch = ''; _moduleCache['systemData'] = null; renderModule('systemData'); }
 function toggleSelectAll(cb) { var cbs=document.querySelectorAll('.sd-row-cb'); for(var i=0;i<cbs.length;i++) cbs[i].checked=cb.checked; }
-function _saveSystemData(tableKey) { var lsKey = _SD_LS_MAP[tableKey]; var td = SYSTEM_DATA_TABLES[tableKey]; if(lsKey && td && td.data) try { localStorage.setItem(lsKey, JSON.stringify(td.data)); } catch(e){} if(window.CloudBaseSync) try{window.CloudBaseSync.saveAll();}catch(e){} }
+function _saveSystemData(tableKey) { var lsKey = _SD_LS_MAP[tableKey]; var td = SYSTEM_DATA_TABLES[tableKey]; if(lsKey && td && td.data) try { safeSetItem(lsKey, JSON.stringify(td.data)); } catch(e){} if(window.CloudBaseSync) try{window.CloudBaseSync.saveAll();}catch(e){} }
 
 function showSystemDataForm(tableKey, record, fields, editIdx){
   var m = document.getElementById('sd-form-modal'); if(m) m.remove();
