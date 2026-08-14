@@ -187,6 +187,12 @@
         +   (cell ? '<div class="rstr-card-cell">九宫格：'+esc(cell.label)+' '+esc(cell.sym)+'</div>' : '<div class="rstr-card-cell rstr-card-cell-empty">未盘点</div>')
         + '</div>';
     }).join('');
+    cards += '<div class="rstr-card rstr-card-add" onclick="rosterAddPerson()">'
+      +   '<div class="rstr-card-add-inner">'
+      +     '<div class="rstr-card-add-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>'
+      +     '<div class="rstr-card-add-text">添加人员</div>'
+      +   '</div>'
+      + '</div>';
     if(!list.length) cards = '<div class="rstr-empty">无匹配人员，请调整筛选条件。</div>';
     return cards;
   }
@@ -204,6 +210,7 @@
       +   sel('rstr-tag-sel','人才标签', tags, _filter.tag, 'rosterFilter(\'tag\',this.value)')
       +   sel('rstr-jobtitle-sel','职级', uniqueVal('jobTitle'), _filter.jobTitle, 'rosterFilter(\'jobTitle\',this.value)')
       +   sel('rstr-jobgrade-sel','职位等级', uniqueVal('jobGrade').sort(function(a,b){ return Number(a)-Number(b); }), _filter.jobGrade, 'rosterFilter(\'jobGrade\',this.value)')
+      +   '<button class="rstr-btn" onclick="rosterAddPerson()">＋ 添加人员</button>'
       +   '<button class="rstr-btn" onclick="rosterImportClick()">⬆ 导入钉钉名单</button>'
       +   '<button class="rstr-btn rstr-btn-ghost" onclick="rosterExport()">⬇ 导出</button>'
       +   '<input type="file" id="rstr-file" accept=".csv" style="display:none" onchange="rosterImportFile(this)">'
@@ -469,6 +476,75 @@
     saveReview(r);
     rosterCloseModal(); _moduleCache['roster']=null; renderModule('roster');
     if(_openId === empId) rosterOpenDetail(empId);
+  };
+
+  // ——— 手动添加人员 ———
+  window.rosterAddPerson = function(){
+    var statusOpts = ['在职','试用','离职','二次入职'].map(function(s){ return '<option value="'+esc(s)+'">'+esc(s)+'</option>'; }).join('');
+    var genderOpts = ['','男','女'].map(function(s){ return '<option value="'+esc(s)+'"'+(s==='男'?' selected':'')+'>'+(s?esc(s):'—')+'</option>'; }).join('');
+    var today = new Date().toISOString().slice(0,10);
+    var html = ''
+      + '<div class="rstr-modal-mask" onclick="rosterCloseModal()"></div>'
+      + '<div class="rstr-modal rstr-modal-lg"><div class="rstr-modal-t">添加人员</div>'
+      +   '<div class="rstr-form-row">'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">工号 <b>*</b></span><input id="rstr-new-empid" class="rstr-input" placeholder="如 E1009" value=""></label>'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">姓名 <b>*</b></span><input id="rstr-new-name" class="rstr-input" placeholder="请输入姓名" value=""></label>'
+      +   '</div>'
+      +   '<div class="rstr-form-row">'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">组别</span><input id="rstr-new-group" class="rstr-input" placeholder="如 A组" value=""></label>'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">职场</span><input id="rstr-new-site" class="rstr-input" placeholder="如 济南" value=""></label>'
+      +   '</div>'
+      +   '<div class="rstr-form-row">'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">岗位</span><input id="rstr-new-position" class="rstr-input" placeholder="如 一线客服" value=""></label>'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">状态</span><select id="rstr-new-status" class="rstr-input">'+statusOpts+'</select></label>'
+      +   '</div>'
+      +   '<div class="rstr-form-row">'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">职级</span><input id="rstr-new-jobtitle" class="rstr-input" placeholder="如 一线员工" value=""></label>'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">职位等级(1-6)</span><input id="rstr-new-jobgrade" class="rstr-input" type="number" min="1" max="6" placeholder="1" value="1"></label>'
+      +   '</div>'
+      +   '<div class="rstr-form-row">'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">性别</span><select id="rstr-new-gender" class="rstr-input">'+genderOpts+'</select></label>'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">出生年月</span><input id="rstr-new-birth" class="rstr-input" placeholder="如 1998-05" value=""></label>'
+      +   '</div>'
+      +   '<div class="rstr-form-row">'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">学历</span><input id="rstr-new-edu" class="rstr-input" placeholder="如 本科" value=""></label>'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">毕业院校</span><input id="rstr-new-school" class="rstr-input" placeholder="如 山东大学" value=""></label>'
+      +   '</div>'
+      +   '<div class="rstr-form-row">'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">毕业时间</span><input id="rstr-new-gradtime" class="rstr-input" placeholder="如 2020-06" value=""></label>'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">入职日期</span><input id="rstr-new-hiredate" class="rstr-input" type="date" value="'+today+'"></label>'
+      +   '</div>'
+      +   '<div class="rstr-form-row">'
+      +     '<label class="rstr-form-col"><span class="rstr-form-label">直属上级</span><input id="rstr-new-manager" class="rstr-input" placeholder="如 李组长" value=""></label>'
+      +     '<div class="rstr-form-col"></div>'
+      +   '</div>'
+      +   '<div class="rstr-modal-actions"><button class="rstr-btn" onclick="rosterSaveNewPerson()">保存</button>'
+      +   '<button class="rstr-btn rstr-btn-ghost" onclick="rosterCloseModal()">取消</button></div>'
+      + '</div>';
+    rosterMount(html, 'rstr-modal-root');
+  };
+  window.rosterSaveNewPerson = function(){
+    var empId = val('rstr-new-empid').trim();
+    var name = val('rstr-new-name').trim();
+    if(!empId){ alert('工号不能为空'); return; }
+    if(!name){ alert('姓名不能为空'); return; }
+    var p = loadPersonnel();
+    if(p.filter(function(x){ return x.empId === empId; }).length){ alert('工号 '+empId+' 已存在，请使用其他工号'); return; }
+    var rec = {
+      empId: empId, name: name,
+      group: val('rstr-new-group').trim(), site: val('rstr-new-site').trim(),
+      position: val('rstr-new-position').trim(), status: val('rstr-new-status').trim() || '在职',
+      jobTitle: val('rstr-new-jobtitle').trim(),
+      jobGrade: Number(val('rstr-new-jobgrade') || 1),
+      gender: val('rstr-new-gender').trim(), birth: val('rstr-new-birth').trim(),
+      edu: val('rstr-new-edu').trim(), school: val('rstr-new-school').trim(),
+      gradTime: val('rstr-new-gradtime').trim(), hireDate: val('rstr-new-hiredate').trim(),
+      manager: val('rstr-new-manager').trim()
+    };
+    p.push(rec);
+    var r = loadReview(); if(!r[empId]) r[empId] = {tags:[],deptScores:{},hrScores:{},events:[]};
+    savePersonnel(p); saveReview(r);
+    rosterCloseModal(); _moduleCache['roster']=null; renderModule('roster');
   };
   function scoreInput(id, label, v, max){
     return '<label class="rstr-score"><span>'+esc(label)+'</span><input id="'+id+'" class="rstr-input rstr-input-num" type="number" min="0" max="'+max+'" value="'+Number(v||0)+'" oninput="rosterScoreLive()"></label>';
