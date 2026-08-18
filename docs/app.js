@@ -2418,20 +2418,21 @@ function isBuiltInRole(roleName) {
   return BUILT_IN_ROLES.indexOf(roleName) >= 0;
 }
 
-const MODULE_KEYS = ["dashboard","archive","target","cost","operation","issue","knowledge","handover","satisfaction","performance","risk","systemData","permissions","notifications","profile"];
+const MODULE_KEYS = ["dashboard","archive","target","operation","cost","issue","risk","assessment","satisfaction","performance","handover","roster","knowledge","systemData","permissions","notifications","profile"];
 
 const MODULE_GROUPS = {
-  project: { label:"项目运营中心", keys:["dashboard","archive","target","cost","operation"] },
-  collab: { label:"团队赋能中心", keys:["issue","knowledge","risk"] },
-  tools: { label:"支撑工具箱", keys:["handover","satisfaction","performance"] },
-  system: { label:"系统管理与配置", keys:["systemData","permissions","notifications","profile"] }
+  project: { label:"项目运营", keys:["dashboard","archive","target","operation","cost"] },
+  quality: { label:"质量与风控", keys:["issue","risk","assessment","satisfaction"] },
+  team:    { label:"团队与绩效", keys:["performance","handover","roster","knowledge"] },
+  system:  { label:"系统设置", keys:["systemData","permissions","notifications","profile"] }
 };
 
 const MODULE_NAMES = {
   dashboard:"项目总览看板", archive:"项目基础档案", target:"目标与权责管理", cost:"成本与利润管理",
-  operation:"服务与进度追踪", issue:"问题与课题协作", knowledge:"核心知识能量池", risk:"风险监控与预警",
-  handover:"项目承接规范", satisfaction:"项目运维调研", performance:"客服绩效看板",
-  systemData:"系统数据管理", permissions:"系统权限管理", notifications:"系统用户管理", profile:"个人设置与帮助"
+  operation:"服务与进度追踪", issue:"问题与课题协作", risk:"项目风险预警池", assessment:"项目难度评估",
+  satisfaction:"项目运维调研", performance:"客服绩效看板", handover:"项目承接规范",
+  roster:"人才盘点花名册", knowledge:"核心知识能量池",
+  systemData:"系统数据管理", permissions:"系统权限管理", notifications:"系统用户管理", profile:"个人基础设置"
 };
 
 const MODULE_ACTIONS = {
@@ -2441,11 +2442,13 @@ const MODULE_ACTIONS = {
   cost:         { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
   operation:    { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:1 },
   issue:        { visible:1, view:1, edit:1, import:0, export:0, manage:0, scope:1 },
-  knowledge:    { visible:1, view:1, edit:1, import:1, export:1, manage:0, scope:0 },
   risk:         { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
-  handover:     { visible:1, view:1, edit:1, import:0, export:0, manage:0, scope:0 },
+  assessment:   { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
   satisfaction: { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
   performance:  { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
+  handover:     { visible:1, view:1, edit:1, import:0, export:0, manage:0, scope:0 },
+  roster:       { visible:1, view:1, edit:1, import:1, export:1, manage:0, scope:1 },
+  knowledge:    { visible:1, view:1, edit:1, import:1, export:1, manage:0, scope:0 },
   systemData:   { visible:1, view:1, edit:1, import:1, export:1, manage:0, scope:0 },
   permissions:  { visible:1, view:0, edit:1, import:0, export:0, manage:1, scope:0 },
   notifications:{ visible:1, view:1, edit:1, import:0, export:0, manage:0, scope:0 },
@@ -2469,34 +2472,38 @@ var MGR  = permObj(true,true,false,false,true,'all');
 const DEFAULT_PERMISSIONS = {
   "超级管理员": {
     dashboard:ALL, archive:ALL, target:ALL, cost:ALL, operation:ALL,
-    issue:ALL, knowledge:ALL, risk:ALL, handover:ALL, satisfaction:ALL,
-    performance:ALL, systemData:ALL, permissions:MGR, notifications:EDIT, profile:EDIT
+    issue:ALL, knowledge:ALL, risk:ALL, assessment:ALL, satisfaction:ALL,
+    performance:ALL, handover:ALL, roster:ALL,
+    systemData:ALL, permissions:MGR, notifications:EDIT, profile:EDIT
   },
   "管理员": {
     dashboard:EDIT, archive:EDIT, target:EDIT, cost:EDIT, operation:EDIT,
-    issue:EDIT, knowledge:EDIT, risk:EDIT, handover:EDIT, satisfaction:EDIT,
-    performance:EDIT, systemData:EDIT, permissions:HIDE, notifications:EDIT, profile:EDIT
+    issue:EDIT, knowledge:EDIT, risk:EDIT, assessment:EDIT, satisfaction:EDIT,
+    performance:EDIT, handover:EDIT, roster:EDIT,
+    systemData:EDIT, permissions:HIDE, notifications:EDIT, profile:EDIT
   },
   "客服总监": {
     dashboard:VIEW, archive:VIEW, target:VIEW, cost:VIEW, operation:VIEW,
-    issue:VIEW, knowledge:VIEW, risk:VIEW, handover:VIEW, satisfaction:VIEW,
-    performance:VIEW, systemData:VIEW, permissions:HIDE, notifications:VIEW, profile:EDIT
+    issue:VIEW, knowledge:VIEW, risk:VIEW, assessment:VIEW, satisfaction:VIEW,
+    performance:VIEW, handover:VIEW, roster:VIEW,
+    systemData:VIEW, permissions:HIDE, notifications:VIEW, profile:EDIT
   },
   "客服经理": {
     dashboard:EDIT, archive:EDIT, target:EDIT, cost:EDIT, operation:EDIT,
-    issue:EDIT, knowledge:EDIT, risk:EDIT, handover:EDIT, satisfaction:EDIT,
-    performance:EDIT, systemData:VIEW, permissions:HIDE, notifications:VIEW, profile:EDIT
+    issue:EDIT, knowledge:EDIT, risk:EDIT, assessment:EDIT, satisfaction:EDIT,
+    performance:EDIT, handover:EDIT, roster:EDIT,
+    systemData:VIEW, permissions:HIDE, notifications:VIEW, profile:EDIT
   },
   "客服主管": {
     dashboard:VOWN, archive:VOWN, target:VOWN, cost:VOWN, operation:permObj(true,true,false,true,false,'own'),
-    issue:permObj(true,true,false,false,false,'own'), knowledge:EDIT, risk:VOWN,
-    handover:VOWN, satisfaction:VOWN, performance:VOWN,
+    issue:permObj(true,true,false,false,false,'own'), knowledge:EDIT, risk:VOWN, assessment:VOWN,
+    handover:VOWN, satisfaction:VOWN, performance:VOWN, roster:EDIT,
     systemData:HIDE, permissions:HIDE, notifications:VIEW, profile:EDIT
   },
   "项目伙伴": {
     dashboard:RO, archive:RO, target:HIDE, cost:HIDE, operation:RO,
-    issue:permObj(true,true,false,false,false,'own'), knowledge:VIEW, risk:HIDE,
-    handover:HIDE, satisfaction:HIDE, performance:HIDE,
+    issue:permObj(true,true,false,false,false,'own'), knowledge:VIEW, risk:HIDE, assessment:HIDE,
+    handover:HIDE, satisfaction:HIDE, performance:HIDE, roster:HIDE,
     systemData:HIDE, permissions:HIDE, notifications:HIDE, profile:EDIT
   }
 };
@@ -2526,6 +2533,17 @@ let rolePermissions = {};
     if(!needsMigration){
       for(var ri=0; ri<ROLES.length; ri++){
         if(!rolePermissions[ROLES[ri]]){ needsMigration=true; break; }
+      }
+    }
+    // 检测是否缺少任何模块键（框架新增模块后自动补充默认权限）
+    if(!needsMigration){
+      outer:
+      for(var rj=0; rj<ROLES.length; rj++){
+        var rp = rolePermissions[ROLES[rj]];
+        if(!rp){ needsMigration=true; break; }
+        for(var mi=0; mi<MODULE_KEYS.length; mi++){
+          if(rp[MODULE_KEYS[mi]] === undefined){ needsMigration=true; break outer; }
+        }
       }
     }
     if(Object.keys(rolePermissions).length === 0 || needsMigration){
