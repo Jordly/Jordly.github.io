@@ -605,16 +605,26 @@ var _renderSystemData = function(){
     }
     tableHtml += '</tbody></table>';
   } else if(_systemDataTab==='personnel'){
-    tableHtml = '<div style="padding:24px;text-align:center;"><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:var(--c-text-2,#475569);">👥 人员数据为聚合视图</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">'
-      +'<button class="btn btn-sm" onclick="renderModule(\'performance\')" style="padding:8px 16px;">📊 客服绩效看板</button>'
-      +'<button class="btn btn-sm" onclick="renderModule(\'operation\')" style="padding:8px 16px;">📈 运营数据</button>'
-      +'<button class="btn btn-sm" onclick="renderModule(\'dashboard\')" style="padding:8px 16px;">🏠 首页看板</button>'
-      +'</div><div style="margin-top:12px;font-size:12px;color:var(--c-text-3,#94a3b8);">人员配置、工作量、绩效数据由各功能页面维护，此处统一展示聚合概览。</div></div>';
+    var _agentData = (typeof AGENT_PERFORMANCE !== 'undefined' && Array.isArray(AGENT_PERFORMANCE)) ? AGENT_PERFORMANCE : [];
+    var _groupData = (typeof GROUP_LOAD_RATIO !== 'undefined' && Array.isArray(GROUP_LOAD_RATIO)) ? GROUP_LOAD_RATIO : [];
+    var _workloadData = (typeof WORKLOAD_DATA !== 'undefined' && Array.isArray(WORKLOAD_DATA)) ? WORKLOAD_DATA : [];
+    var _staffData = (typeof STAFF_CONFIG !== 'undefined' && Array.isArray(STAFF_CONFIG)) ? STAFF_CONFIG : [];
+    tableHtml = '<div style="display:flex;flex-direction:column;gap:12px;">'
+      + _systemDataAggTable('📊 坐席绩效', _agentData, [{k:'agentName',h:'坐席'},{k:'projectId',h:'所属项目'},{k:'period',h:'周期'},{k:'salesAmount',h:'销售额'},{k:'conversionRate',h:'转化率(%)'},{k:'csat',h:'CSAT'}], 'performance', '去绩效看板维护')
+      + _systemDataAggTable('⚖️ 团队负荷比', _groupData, [{k:'groupName',h:'组别'},{k:'loadRatio',h:'负荷比'},{k:'period',h:'统计周期'}], 'performance', '去绩效看板维护')
+      + _systemDataAggTable('📋 工作量统计', _workloadData, [{k:'name',h:'工单类型'},{k:'count',h:'数量'},{k:'ratio',h:'占比(%)'},{k:'workplace',h:'工作地点'}], 'operation', '去运营数据维护')
+      + _systemDataAggTable('👥 人员配置', _staffData, [{k:'role',h:'客服角色'},{k:'count',h:'人数'},{k:'pct',h:'占比(%)'},{k:'workplace',h:'工作地点'}], 'operation', '去运营数据维护')
+      + '</div>';
   } else if(_systemDataTab==='sysconfig'){
-    tableHtml = '<div style="padding:24px;text-align:center;"><div style="font-size:15px;font-weight:600;margin-bottom:12px;color:var(--c-text-2,#475569);">🔒 系统配置为聚合视图</div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">'
-      +'<button class="btn btn-sm" onclick="renderModule(\'notifications\')" style="padding:8px 16px;">👥 系统用户管理</button>'
-      +'<button class="btn btn-sm" onclick="renderModule(\'permissions\')" style="padding:8px 16px;">🔐 系统权限管理</button>'
-      +'</div><div style="margin-top:12px;font-size:12px;color:var(--c-text-3,#94a3b8);">用户账号与权限配置由「系统用户管理」和「系统权限管理」页面维护。</div></div>';
+    var _usersData = (typeof USERS !== 'undefined' && Array.isArray(USERS)) ? USERS : [];
+    var _rolesData = (typeof ROLES !== 'undefined' && Array.isArray(ROLES)) ? ROLES.map(function(r){ return {name:r}; }) : [];
+    var _loginData = [];
+    try { _loginData = JSON.parse(localStorage.getItem('chansee_login_logs') || '[]'); if (!Array.isArray(_loginData)) _loginData = []; } catch(e) {}
+    tableHtml = '<div style="display:flex;flex-direction:column;gap:12px;">'
+      + _systemDataAggTable('👤 用户账号', _usersData, [{k:'name',h:'姓名'},{k:'username',h:'登录账号'},{k:'role',h:'角色'},{k:'status',h:'状态'}], 'notifications', '去用户管理维护')
+      + _systemDataAggTable('🔐 角色列表', _rolesData, [{k:'name',h:'角色名称'}], 'permissions', '去权限管理维护')
+      + _systemDataAggTable('🕐 登录记录', _loginData, [{k:'loginTime',h:'登录时间',fn:function(v){ return v ? String(v).replace('T',' ').slice(0,16) : ''; }},{k:'username',h:'账号'},{k:'device',h:'设备'},{k:'os',h:'操作系统'},{k:'status',h:'状态'}], 'profile', '去个人设置查看')
+      + '</div>';
   } else {
     tableHtml = '<div style="padding:40px;text-align:center;color:var(--c-text-3);">暂无数据</div>';
   }
@@ -664,6 +674,36 @@ window._systemDataCatalogSearch = '';
 function catalogSearchSystemData(val) { _systemDataCatalogSearch = val; _moduleCache['systemData'] = null; renderModule('systemData'); }
 function clearCatalogSearch() { _systemDataCatalogSearch = ''; _moduleCache['systemData'] = null; renderModule('systemData'); }
 function toggleSelectAll(cb) { var cbs=document.querySelectorAll('.sd-row-cb'); for(var i=0;i<cbs.length;i++) cbs[i].checked=cb.checked; }
+// ===== 聚合视图渲染（personnel / sysconfig 真表展示）=====
+function _systemDataAggTable(title, data, cols, mod, modLabel) {
+  var head = '', body = '';
+  for (var ci = 0; ci < cols.length; ci++) head += '<th>' + cols[ci].h + '</th>';
+  if (!data || !data.length) {
+    body = '<tr><td colspan="' + cols.length + '" style="text-align:center;color:var(--c-text-3);padding:16px;">暂无数据</td></tr>';
+  } else {
+    var showN = Math.min(data.length, 10);
+    for (var ri = 0; ri < showN; ri++) {
+      var r = data[ri];
+      body += '<tr>';
+      for (var cj = 0; cj < cols.length; cj++) {
+        var v = r[cols[cj].k];
+        if (cols[cj].fn) v = cols[cj].fn(v, r);
+        body += '<td>' + (v != null ? escHtml(v) : '') + '</td>';
+      }
+      body += '</tr>';
+    }
+  }
+  var more = (data && data.length > 10) ? '<div style="font-size:11px;color:var(--c-text-3);margin-top:4px;">仅显示前 10 条，共 ' + data.length + ' 条</div>' : '';
+  return '<div style="background:var(--c-card,#fff);border:1px solid var(--c-border,#e2e8f0);border-radius:8px;overflow:hidden;">'
+    + '<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--c-border,#e2e8f0);">'
+    + '<span style="font-size:13px;font-weight:600;color:var(--c-text-1);">' + title + '</span>'
+    + '<span style="font-size:11px;color:var(--c-text-3);">' + ((data && data.length) || 0) + ' 条</span>'
+    + (mod ? '<button class="btn btn-xs" onclick="renderModule(\'' + mod + '\')" style="margin-left:auto;">' + (modLabel || '去维护') + ' →</button>' : '')
+    + '</div>'
+    + '<table class="sysdata-table" style="width:100%;border-collapse:collapse;"><thead><tr>' + head + '</tr></thead><tbody>' + body + '</tbody></table>'
+    + more
+    + '</div>';
+}
 function _appendChangeLog(tableKey) {
   try {
     var td = SYSTEM_DATA_TABLES[tableKey];

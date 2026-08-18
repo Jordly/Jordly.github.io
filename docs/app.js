@@ -587,6 +587,24 @@ var USERS = [];
   safeSetItem('chansee_users', JSON.stringify(USERS));
 })();
 
+// 默认目标与权责数据（首次初始化时使用，均为虚构演示数据，不涉及真实客户与金额）
+var DEFAULT_GOALS = [
+  {id:"G001", projectId:"P001", type:"业务指标类", target:"月度销售额达到目标值", metric:"销售额达标", owner:"张伟", deadline:"2026-12-31", status:"进行中", createTime:"2026-01-05"},
+  {id:"G002", projectId:"P001", type:"分摊成本类", target:"人力成本占比控制在预算内", metric:"人力成本/营收达标", owner:"张伟", deadline:"2026-12-31", status:"进行中", createTime:"2026-01-05"},
+  {id:"G003", projectId:"P002", type:"问题改善类", target:"客诉率环比下降", metric:"客诉率环比改善", owner:"刘洋", deadline:"2026-09-30", status:"进行中", createTime:"2026-02-10"},
+  {id:"G004", projectId:"P003", type:"课题推进类", target:"客服话术萃取SOP落地", metric:"话术库条数达标", owner:"陈静", deadline:"2026-10-31", status:"已完成", createTime:"2026-03-01"},
+  {id:"G005", projectId:"P004", type:"业务指标类", target:"CSAT稳定在目标值以上", metric:"CSAT达标", owner:"张伟", deadline:"2026-12-31", status:"进行中", createTime:"2026-02-20"}
+];
+var GOALS = [];
+(function initGoals() {
+  var raw = safeGetItem('chansee_goals');
+  if (raw && raw !== 'null' && raw !== '[]') {
+    try { GOALS = JSON.parse(raw); return; } catch(e) { console.error('[initGoals] 目标数据损坏:', e); }
+  }
+  GOALS = JSON.parse(JSON.stringify(DEFAULT_GOALS));
+  safeSetItem('chansee_goals', JSON.stringify(GOALS));
+})();
+
 // 初始化 PROJECTS
 var PROJECTS = [];
 
