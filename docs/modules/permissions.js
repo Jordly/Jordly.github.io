@@ -19,7 +19,7 @@ function renderPermissions(){
       savePermissions();
     }
   }
-  var groupOrder = ["project","collab","tools","system"];
+  var groupOrder = ["project","quality","team","system"];
   var actKeys = ["visible","view","edit","import","export","manage"];
   var actLabels = {visible:"可见", view:"查看", edit:"编辑", import:"导入", export:"导出", manage:"管理"};
   var actColors = {visible:"#10b981", view:"#3b82f6", edit:"#f59e0b", import:"#8b5cf6", export:"#ec4899", manage:"#ef4444"};
@@ -99,9 +99,9 @@ function renderPermissions(){
 '        <span class="perm-save-hint" id="perm-save-hint">✅ 已保存</span>\n'+
 '      </div>\n'+
 '      <div class="perm-affected-users" id="perm-affected-users"></div>\n'+
-''+groupOrder.map(function(gid){var grp=MODULE_GROUPS[gid];return'      <div class="perm-group">\n'+
+''+groupOrder.map(function(gid){var grp=MODULE_GROUPS[gid];if(!grp)return'';return'      <div class="perm-group">\n'+
 '        <div class="perm-group-label">'+grp.label+'</div>\n'+
-''+grp.keys.map(function(mk){var mn=MODULE_NAMES[mk];var ma=MODULE_ACTIONS[mk];var mp=selPerms[mk];if(typeof mp==='string'){if(mp==='write')mp={visible:true,view:true,edit:true,import:false,export:true,manage:false,scope:'all'};else if(mp==='read')mp={visible:true,view:true,edit:false,import:false,export:true,manage:false,scope:'all'};else mp={visible:false,view:false,edit:false,import:false,export:false,manage:false,scope:'all'};}
+''+grp.keys.map(function(mk){var mn=MODULE_NAMES[mk];var ma=MODULE_ACTIONS[mk];if(!mn||!ma)return'';var mp=selPerms[mk];if(typeof mp==='string'){if(mp==='write')mp={visible:true,view:true,edit:true,import:false,export:true,manage:false,scope:'all'};else if(mp==='read')mp={visible:true,view:true,edit:false,import:false,export:true,manage:false,scope:'all'};else mp={visible:false,view:false,edit:false,import:false,export:false,manage:false,scope:'all'};}
 // 只显示支持的操作选项（隐藏不支持的）
 var applicableActions=actKeys.filter(function(ak){return ma[ak]===1;});
 return'        <div class="perm-mod-row">\n'+
