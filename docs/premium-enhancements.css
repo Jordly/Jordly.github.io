@@ -5568,3 +5568,26 @@ textarea.rstr-input{height:auto;padding:8px 10px;resize:vertical;}
 .rstr-form-label b{color:#dc2626;}
 .rstr-nine-axis{font-size:11px;color:#94a3b8;margin-top:10px;text-align:center;}
 .rstr-info .rstr-input-num{width:100%;}
+
+/* ═══ 成本与利润管理 - 项目利润明细表头优化 ═══ */
+.profit-table-v2 thead,
+.profit-table-v2 thead tr {
+  background: #f8fafc !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+.profit-table-v2 th {
+  background: transparent !important;
+  color: #475569 !important;
+  font-weight: 500 !important;
+  border-bottom: none !important;
+}
+.profit-table-v2 th::after {
+  content: none !important;
+  display: none !important;
+}
+.profit-table-v2 th:hover {
+  background: rgba(11, 155, 150, 0.06) !important;
+  color: #0b9b96 !important;
+}
+
