@@ -48,6 +48,9 @@ var SYSTEM_DATA_TABLES = {
       {key:'health', label:'健康度', type:'text'},
       {key:'revenue', label:'营收(万)', type:'number'},
       {key:'costBudget', label:'成本预算(万)', type:'number'},
+      {key:'fteTarget', label:'人力目标(人)', type:'number'},
+      {key:'slaResponse', label:'SLA响应(秒)', type:'number'},
+      {key:'slaResolve', label:'SLA解决(秒)', type:'number'},
       {key:'profitRate', label:'利润率(%)', type:'number'},
       {key:'customerPlatforms', label:'平台', type:'text'}
     ]
@@ -148,7 +151,7 @@ var SYSTEM_DATA_TABLES = {
   },
   kpi: {
     label: '\u{1F4CA} KPI数据表',
-    desc: '项目月度KPI数据，包含销售额、成本、费效比、目标达成率等。目标与权责、成本管理页面依赖此表。',
+    desc: '项目月度KPI数据，包含销售额、成本、费效比、目标达成率等。首页看板、项目承接规范、个人设置等页面依赖此表。',
     data: typeof KPI_HISTORY !== 'undefined' ? KPI_HISTORY : [],
     fields: [
       {key:'date', label:'日期', type:'text', required:true},
@@ -300,7 +303,7 @@ var SYSTEM_DATA_TABLES = {
   },
   staff_config: {
     label: '\u{1F465} 客服配置表',
-    desc: '客服人员岗位配置数据，包含角色、人数、占比、工作地点等。首页看板与系统数据管理依赖此表，数据双向实时同步。',
+    desc: '客服人员岗位配置数据，包含角色、人数、占比、工作地点等。项目承接规范、个人设置等页面依赖此表。',
     data: typeof STAFF_CONFIG !== 'undefined' ? STAFF_CONFIG : [],
     fields: [
       {key:'id', label:'配置ID', type:'text', required:true},
@@ -314,7 +317,7 @@ var SYSTEM_DATA_TABLES = {
   },
   workload_data: {
     label: '\u{1F4CA} 工作量数据表',
-    desc: '客服工作量统计数据，包含工单类型、数量、占比等。运营数据与看板页面依赖此表，数据双向实时同步。',
+    desc: '客服工作量统计数据，包含工单类型、数量、占比等。项目承接规范、个人设置等页面依赖此表。',
     data: typeof WORKLOAD_DATA !== 'undefined' ? WORKLOAD_DATA : [],
     fields: [
       {key:'id', label:'数据ID', type:'text', required:true},
@@ -558,7 +561,7 @@ var _renderSystemData = function(){
   var pageData = filteredData.slice(startIdx, startIdx + _systemDataPageSize);
 
   var colDefs = {};
-  if(_systemDataTab==='projects') colDefs={headers:['编号','名称','品牌','品类','类型','职场','负责人','状态','营收(万)','成本预算(万)','利润率(%)'],keys:['id','name','brand','category','serviceMode','workplace','pm','status','revenue','costBudget','profitRate'],showCb:true};
+  if(_systemDataTab==='projects') colDefs={headers:['编号','名称','品牌','品类','类型','职场','负责人','状态','营收(万)','成本预算(万)','人力目标(人)','SLA响应(秒)','SLA解决(秒)','利润率(%)'],keys:['id','name','brand','category','serviceMode','workplace','pm','status','revenue','costBudget','fteTarget','slaResponse','slaResolve','profitRate'],showCb:true};
   else if(_systemDataTab==='operations') colDefs={headers:['项目ID','工单量','满意度','响应时间','NPS'],keys:['projectId','ticketVol','csat','responseTime','nps'],showCb:true};
   else if(_systemDataTab==='issues') colDefs={headers:['编号','类别','项目','类型','优先级','责任人','状态'],keys:['id','category','projectName','type','priority','assignee','status'],showCb:true};
   else if(_systemDataTab==='knowledge') colDefs={headers:['ID','标题','分类','管理方向','权限','浏览','下载'],keys:['id','title','type','category','permission','views','downloads'],showCb:true,goEnergyPool:true};
@@ -661,7 +664,29 @@ window._systemDataCatalogSearch = '';
 function catalogSearchSystemData(val) { _systemDataCatalogSearch = val; _moduleCache['systemData'] = null; renderModule('systemData'); }
 function clearCatalogSearch() { _systemDataCatalogSearch = ''; _moduleCache['systemData'] = null; renderModule('systemData'); }
 function toggleSelectAll(cb) { var cbs=document.querySelectorAll('.sd-row-cb'); for(var i=0;i<cbs.length;i++) cbs[i].checked=cb.checked; }
-function _saveSystemData(tableKey) { var lsKey = _SD_LS_MAP[tableKey]; var td = SYSTEM_DATA_TABLES[tableKey]; if(lsKey && td && td.data) try { safeSetItem(lsKey, JSON.stringify(td.data)); } catch(e){} if(window.CloudBaseSync) try{window.CloudBaseSync.saveAll();}catch(e){} }
+function _appendChangeLog(tableKey) {
+  try {
+    var td = SYSTEM_DATA_TABLES[tableKey];
+    var log = JSON.parse(localStorage.getItem('chansee_data_change_log') || '[]');
+    if (!Array.isArray(log)) log = [];
+    var who = '系统';
+    if (typeof currentUser !== 'undefined' && currentUser && currentUser.name) who = currentUser.name;
+    else if (typeof currentRole !== 'undefined' && currentRole) who = currentRole;
+    log.unshift({
+      changedAt: new Date().toLocaleString('zh-CN'),
+      changedBy: who,
+      tableName: td && td.label ? td.label : tableKey,
+      recordId: '',
+      fieldName: '全表保存',
+      oldValue: '',
+      newValue: '已保存 ' + (td && td.data ? td.data.length : 0) + ' 条'
+    });
+    if (log.length > 200) log = log.slice(0, 200);
+    safeSetItem('chansee_data_change_log', JSON.stringify(log));
+    if (SYSTEM_DATA_TABLES.changelog) SYSTEM_DATA_TABLES.changelog.data = log;
+  } catch(e) {}
+}
+function _saveSystemData(tableKey) { var lsKey = _SD_LS_MAP[tableKey]; var td = SYSTEM_DATA_TABLES[tableKey]; if(lsKey && td && td.data) try { safeSetItem(lsKey, JSON.stringify(td.data)); } catch(e){} if(window.CloudBaseSync) try{window.CloudBaseSync.saveAll();}catch(e){} _appendChangeLog(tableKey); }
 
 function showSystemDataForm(tableKey, record, fields, editIdx){
   var m = document.getElementById('sd-form-modal'); if(m) m.remove();
