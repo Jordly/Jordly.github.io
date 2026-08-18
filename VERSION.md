@@ -7,7 +7,7 @@
 | 项 | 值 |
 |---|---|
 | 统一版本号 | `?v=20260818`（全站 35 个 JS/CSS 资源一致） |
-| 提交哈希（HEAD） | `00b8194` |
+| 提交哈希（HEAD） | 见 `git log -1`（文档文件自身无法写入自身哈希） |
 | 分支 | `main` |
 | 仓库 | `Jordly/Jordly.github.io`（GitHub） |
 | 部署地址 | https://chanseen.pages.dev |
