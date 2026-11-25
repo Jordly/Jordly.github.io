@@ -166,6 +166,16 @@ var EVENT_PREP_GROUPS = [
   {key:'support', label:'🔧 保障与支持', desc:'培训、AI分流、营销、硬件、食品保障', color:'#8b5cf6'}
 ];
 
+var SEP_PHASES = [
+  {time:'T-90天', label:'启动准备', desc:'人力预估、目标拆解', color:'#1D9E75', points:['根据销售额目标预估所需客服人数，精确到小时','拆解核心KPI：销售额、转化率、响应时长、退货率','确定项目负责人及运营对接人，建立沟通群']},
+  {time:'T-60天', label:'招聘培训', desc:'人员招聘、产品培训', color:'#378ADD', points:['启动招聘，预留10-20%弹性储备人力','完成主推产品与高频问题集中培训','准备激励方案初稿，明确考核口径']},
+  {time:'T-30天', label:'方案落地', desc:'排班确定、激励公布', color:'#7F77DD', points:['确认预售期与爆发期班表，覆盖高峰时段','公布激励方案，确保全员理解规则','完成智能营销排期与话术配置']},
+  {time:'T-14天', label:'精准备战', desc:'硬件检查、话术演练', color:'#D85A30', points:['电脑、网络、备用设备全面检查','活动规则与优惠计算话术演练','收集高频问题，更新店小蜜知识库']},
+  {time:'T-7天', label:'预演冲刺', desc:'模拟演练、物资到位', color:'#D4537E', points:['全流程模拟演练，验证排班与响应流程','食品饮品、夜宵、应急物资到位','应急预案复盘，明确异常上报路径']},
+  {time:'T-1天', label:'就绪确认', desc:'最终检查、全员动员', color:'#BA7517', points:['逐项核对检查清单，确认无遗漏','全员动员，同步值班表与紧急联系方式','确认工位注意事项贴已就位']},
+  {time:'D-Day', label:'爆发日', desc:'全时值守、实时监控', color:'#A32D2D', points:['全时段值守，重点覆盖0-2点、10-12点高峰','实时盯盘：销售额、转化率、响应时间','异常订单与客诉第一时间上报处置']}
+];
+
 var SEP_STORAGE_KEY = 'chansee_special_event_plans';
 var SEP_STATUS = {
   draft:    {label:'草稿',   color:'#64748b', bg:'#f1f5f9'},
@@ -174,7 +184,7 @@ var SEP_STATUS = {
   rejected: {label:'已驳回', color:'#A32D2D', bg:'#FCEBEB'},
   progress: {label:'推进中', color:'#185FA5', bg:'#E6F1FB'}
 };
-var SEP_STATE = { view:'list', filter:'all', currentId:null, rejectingId:null };
+var SEP_STATE = { view:'list', filter:'all', currentId:null, rejectingId:null, phase:-1, guideGroup:null };
 var _eventPrepExpanded = {};
 
 /* ═══ 工具函数 ═══ */
@@ -282,20 +292,12 @@ function sepRenderHeader(){
   html += '<button class="btn btn-sm btn-primary" onclick="viewCampaignImage()" style="background:#0b9b96;border-color:#0b9b96;flex-shrink:0;">📷 查看大图</button>';
   html += '</div>';
 
-  html += '<div style="display:flex;gap:4px;margin-bottom:16px;overflow-x:auto;padding-bottom:4px;">';
-  var phases = [
-    {time:'T-90天', label:'启动准备', desc:'人力预估、目标拆解', color:'#1D9E75'},
-    {time:'T-60天', label:'招聘培训', desc:'人员招聘、产品培训', color:'#378ADD'},
-    {time:'T-30天', label:'方案落地', desc:'排班确定、激励公布', color:'#7F77DD'},
-    {time:'T-14天', label:'精准备战', desc:'硬件检查、话术演练', color:'#D85A30'},
-    {time:'T-7天', label:'预演冲刺', desc:'模拟演练、物资到位', color:'#D4537E'},
-    {time:'T-1天', label:'就绪确认', desc:'最终检查、全员动员', color:'#BA7517'},
-    {time:'D-Day', label:'爆发日', desc:'全时值守、实时监控', color:'#A32D2D'}
-  ];
-  for (var i=0;i<phases.length;i++){
-    var ph = phases[i];
-    var isLast = i === phases.length - 1;
-    html += '<div style="flex:1;min-width:92px;text-align:center;padding:8px 6px;background:'+(isLast?'#FCEBEB':'#f8fafc')+';border-radius:6px;border:1px solid '+(isLast?'#F7C1C1':'#e2e8f0')+';position:relative;">';
+  html += '<div style="display:flex;gap:4px;margin-bottom:8px;overflow-x:auto;padding-bottom:4px;">';
+  for (var i=0;i<SEP_PHASES.length;i++){
+    var ph = SEP_PHASES[i];
+    var isLast = i === SEP_PHASES.length - 1;
+    var sel = SEP_STATE.phase === i;
+    html += '<div id="sep_phase_'+i+'" onclick="sepTogglePhase('+i+')" title="点击查看该阶段要点" style="cursor:pointer;flex:1;min-width:92px;text-align:center;padding:8px 6px;background:'+(sel?ph.color+'14':(isLast?'#FCEBEB':'#f8fafc'))+';border-radius:6px;border:1px solid '+(sel?ph.color:(isLast?'#F7C1C1':'#e2e8f0'))+';position:relative;">';
     html += '<div style="width:8px;height:8px;border-radius:50%;background:'+ph.color+';margin:0 auto 4px;"></div>';
     html += '<div style="font-size:10px;color:#64748b;">'+ph.time+'</div>';
     html += '<div style="font-size:13px;font-weight:'+(isLast?'700':'500')+';color:'+(isLast?'#A32D2D':'#1e293b')+';margin-top:2px;">'+ph.label+'</div>';
@@ -303,7 +305,35 @@ function sepRenderHeader(){
     html += '</div>';
   }
   html += '</div>';
+  html += '<div id="sep_phase_detail" style="margin-bottom:16px;">' + sepPhaseDetailHtml() + '</div>';
   return html;
+}
+function sepPhaseDetailHtml(){
+  var i = SEP_STATE.phase;
+  if (i < 0 || i >= SEP_PHASES.length){
+    return '<div style="font-size:10px;color:#94a3b8;text-align:center;padding:2px 0 6px;">↑ 点击上方任一阶段，查看该阶段要做什么</div>';
+  }
+  var ph = SEP_PHASES[i];
+  var h = '<div style="padding:10px 14px;background:#fff;border:1px solid '+ph.color+'44;border-left:3px solid '+ph.color+';border-radius:8px;">';
+  h += '<div style="font-size:12px;font-weight:600;color:'+ph.color+';margin-bottom:5px;">'+ph.time+' · '+ph.label+' — 阶段要点</div>';
+  h += '<ul style="margin:0;padding-left:17px;font-size:11px;color:#475569;line-height:1.8;">';
+  for (var j=0;j<ph.points.length;j++) h += '<li>'+sepEsc(ph.points[j])+'</li>';
+  h += '</ul></div>';
+  return h;
+}
+function sepTogglePhase(i){
+  SEP_STATE.phase = (SEP_STATE.phase === i) ? -1 : i;
+  for (var k=0;k<SEP_PHASES.length;k++){
+    var el = document.getElementById('sep_phase_'+k);
+    if (!el) continue;
+    var ph = SEP_PHASES[k];
+    var isLast = k === SEP_PHASES.length - 1;
+    var sel = SEP_STATE.phase === k;
+    el.style.background = sel ? ph.color+'14' : (isLast?'#FCEBEB':'#f8fafc');
+    el.style.borderColor = sel ? ph.color : (isLast?'#F7C1C1':'#e2e8f0');
+  }
+  var box = document.getElementById('sep_phase_detail');
+  if (box) box.innerHTML = sepPhaseDetailHtml();
 }
 
 /* ═══ 预案清单页 ═══ */
@@ -412,26 +442,35 @@ function sepRenderForm(){
   html += '</div></div>';
 
   html += '<div style="background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:14px;">';
-  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #f1f5f9;gap:8px;flex-wrap:wrap;">';
-  html += '<div style="font-size:13px;font-weight:600;color:#334155;">② 各项安排 <span style="font-size:11px;color:#94a3b8;font-weight:400;">可部分填写，完成度会自动计算</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f1f5f9;gap:8px;flex-wrap:wrap;">';
+  html += '<div style="font-size:13px;font-weight:600;color:#334155;">② 各项安排 <span style="font-size:11px;color:#94a3b8;font-weight:400;">点分组展开填写，可只填部分</span></div>';
   html += '<div id="sep_completion_tip" style="font-size:11px;color:#0b9b96;font-weight:500;">已完成 0 / 19 项</div>';
   html += '</div>';
+  html += '<div style="height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;margin-bottom:12px;"><div id="sep_form_progress" style="width:0%;height:100%;background:linear-gradient(90deg,#0b9b96,#3b82f6);border-radius:3px;transition:width .2s;"></div></div>';
   for (var g=0;g<EVENT_PREP_GROUPS.length;g++){
     var grp = EVENT_PREP_GROUPS[g];
     var dims = EVENT_PREP_DIMENSIONS.filter(function(d){ return d.group === grp.key; });
-    html += '<div style="margin-bottom:14px;">';
-    html += '<div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;"><span style="width:7px;height:14px;border-radius:3px;background:'+grp.color+';"></span><span style="font-size:12px;font-weight:600;color:#334155;">'+grp.label+'</span><span style="font-size:10px;color:#94a3b8;">'+dims.length+' 项</span></div>';
-    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;">';
+    var filled0 = 0;
+    for (var z=0;z<dims.length;z++){ if (a[dims[z].key] && String(a[dims[z].key]).trim()) filled0++; }
+    var open0 = filled0 > 0;
+    html += '<div style="border:1px solid #e2e8f0;border-radius:8px;margin-bottom:8px;overflow:hidden;">';
+    html += '<div onclick="sepToggleFormGroup(\''+grp.key+'\')" style="cursor:pointer;display:flex;align-items:center;gap:8px;padding:11px 13px;background:'+(open0?'#f8fafc':'#fff')+';">';
+    html += '<span style="width:7px;height:18px;border-radius:3px;background:'+grp.color+';flex-shrink:0;"></span>';
+    html += '<span style="font-size:13px;font-weight:600;color:#334155;">'+grp.label+'</span>';
+    html += '<span id="sep_grp_count_'+grp.key+'" style="font-size:10px;color:'+(filled0?grp.color:'#94a3b8')+';background:'+(filled0?'#f1f5f9':'transparent')+';padding:2px 7px;border-radius:9px;">已填 '+filled0+' / '+dims.length+'</span>';
+    html += '<span id="sep_grp_arrow_'+grp.key+'" style="margin-left:auto;font-size:11px;color:#94a3b8;">'+(open0?'▲ 收起':'▼ 展开')+'</span>';
+    html += '</div>';
+    html += '<div id="sep_grp_body_'+grp.key+'" style="display:'+(open0?'block':'none')+';padding:0 13px 12px;">';
+    html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:9px;">';
     for (var d=0;d<dims.length;d++){
       var dim = dims[d];
       var val = a[dim.key] || '';
-      html += '<div style="border:1px solid #e2e8f0;border-left:3px solid '+grp.color+';border-radius:7px;padding:10px;">';
-      html += '<label style="display:block;font-size:12px;font-weight:500;color:#1e293b;margin-bottom:5px;">'+dim.icon+' '+dim.title+'</label>';
-      html += '<textarea id="sep_in_'+dim.key+'" oninput="sepUpdateCompletion()" placeholder="填写本次活动的具体安排…" style="width:100%;min-height:54px;font-size:11px;line-height:1.5;padding:7px 9px;border:1px solid #e2e8f0;border-radius:6px;resize:vertical;">'+sepEsc(val)+'</textarea>';
-      html += '<div style="font-size:10px;color:#94a3b8;margin-top:5px;line-height:1.5;">'+sepEsc((dim.desc||'').substring(0,52))+'…</div>';
+      html += '<div style="border:1px solid #e2e8f0;border-left:3px solid '+grp.color+';border-radius:7px;padding:9px;">';
+      html += '<label title="'+sepEsc(dim.desc||'')+'" style="display:block;font-size:12px;font-weight:500;color:#1e293b;margin-bottom:5px;cursor:help;">'+dim.icon+' '+dim.title+'</label>';
+      html += '<textarea id="sep_in_'+dim.key+'" oninput="sepUpdateCompletion()" placeholder="填写本次活动的具体安排…" style="width:100%;min-height:52px;font-size:11px;line-height:1.5;padding:7px 9px;border:1px solid #e2e8f0;border-radius:6px;resize:vertical;">'+sepEsc(val)+'</textarea>';
       html += '</div>';
     }
-    html += '</div></div>';
+    html += '</div></div></div>';
   }
   html += '</div>';
 
@@ -466,6 +505,30 @@ function sepUpdateCompletion(){
   }
   var tip = document.getElementById('sep_completion_tip');
   if (tip) tip.textContent = '已完成 ' + n + ' / 19 项';
+  var bar = document.getElementById('sep_form_progress');
+  if (bar) bar.style.width = Math.round(n / EVENT_PREP_DIMENSIONS.length * 100) + '%';
+  for (var g=0;g<EVENT_PREP_GROUPS.length;g++){
+    var grp = EVENT_PREP_GROUPS[g];
+    var ds = EVENT_PREP_DIMENSIONS.filter(function(d){ return d.group === grp.key; });
+    var c = 0;
+    for (var j=0;j<ds.length;j++){
+      var e2 = document.getElementById('sep_in_'+ds[j].key);
+      if (e2 && e2.value.trim()) c++;
+    }
+    var badge = document.getElementById('sep_grp_count_'+grp.key);
+    if (badge){
+      badge.textContent = '已填 ' + c + ' / ' + ds.length;
+      badge.style.color = c ? grp.color : '#94a3b8';
+    }
+  }
+}
+function sepToggleFormGroup(key){
+  var body = document.getElementById('sep_grp_body_'+key);
+  var arrow = document.getElementById('sep_grp_arrow_'+key);
+  if (!body) return;
+  var open = body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  if (arrow) arrow.textContent = open ? '▲ 收起' : '▼ 展开';
 }
 
 /* ═══ 详情 + 审批 ═══ */
@@ -555,30 +618,51 @@ function sepRenderGuide(){
   var html = '';
   html += '<details style="margin-top:18px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">';
   html += '<summary style="cursor:pointer;padding:12px 16px;font-size:13px;font-weight:600;color:#334155;background:#f8fafc;list-style:none;display:flex;align-items:center;gap:8px;">';
-  html += '<span>📖 预案填写指引（19 项说明 · 点击展开）</span>';
+  html += '<span>📖 预案填写指引（点击展开，按分组查看）</span>';
   html += '<span style="margin-left:auto;font-size:11px;color:#94a3b8;font-weight:400;">基于大促筹备指导手册整理</span>';
   html += '</summary>';
   html += '<div style="padding:16px;">';
+  html += '<div style="font-size:11px;color:#94a3b8;margin-bottom:10px;">先选一个分组，查看该组各项该填什么</div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;">';
   for (var g=0;g<EVENT_PREP_GROUPS.length;g++){
     var grp = EVENT_PREP_GROUPS[g];
     var dims = EVENT_PREP_DIMENSIONS.filter(function(d){ return d.group === grp.key; });
-    html += '<div style="margin-bottom:16px;">';
-    html += '<div style="display:flex;align-items:center;gap:7px;margin-bottom:8px;"><span style="width:7px;height:14px;border-radius:3px;background:'+grp.color+';"></span><span style="font-size:12px;font-weight:600;color:#334155;">'+grp.label+'</span></div>';
+    var on = SEP_STATE.guideGroup === grp.key;
+    html += '<div id="sep_guide_card_'+grp.key+'" style="border:1px solid '+(on?grp.color:'#e2e8f0')+';border-radius:9px;overflow:hidden;background:#fff;">';
+    html += '<div onclick="sepToggleGuideGroup(\''+grp.key+'\')" style="cursor:pointer;padding:12px 13px;background:'+(on?grp.color+'12':'#f8fafc')+';">';
+    html += '<div style="display:flex;align-items:center;gap:7px;"><span style="width:6px;height:16px;border-radius:3px;background:'+grp.color+';"></span><span style="font-size:12px;font-weight:600;color:#334155;">'+grp.label+'</span></div>';
+    html += '<div style="font-size:10px;color:#64748b;margin-top:6px;line-height:1.5;">'+sepEsc(grp.desc)+'</div>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;"><span style="font-size:10px;color:#94a3b8;">'+dims.length+' 项说明</span><span id="sep_guide_arrow_'+grp.key+'" style="font-size:10px;color:'+grp.color+';">'+(on?'▲ 收起':'▼ 查看要点')+'</span></div>';
+    html += '</div>';
+    html += '<div id="sep_guide_body_'+grp.key+'" style="display:'+(on?'block':'none')+';padding:11px 13px;max-height:420px;overflow-y:auto;">';
     for (var i=0;i<dims.length;i++){
       var dim = dims[i];
-      html += '<div style="margin-bottom:10px;padding:10px 12px;background:#f8fafc;border-radius:7px;">';
-      html += '<div style="font-size:12px;font-weight:500;color:#1e293b;">'+dim.icon+' '+dim.title+'</div>';
-      html += '<div style="font-size:11px;color:#475569;line-height:1.6;margin-top:4px;">'+sepEsc(dim.desc)+'</div>';
-      html += '<div style="font-size:10px;color:#64748b;margin-top:6px;">参考要点：</div>';
-      html += '<ul style="margin:3px 0 0;padding-left:16px;font-size:10px;color:#64748b;line-height:1.7;">';
+      html += '<div style="margin-bottom:9px;padding:9px 10px;background:#f8fafc;border-left:2px solid '+grp.color+';border-radius:5px;">';
+      html += '<div style="font-size:11px;font-weight:600;color:#1e293b;">'+dim.icon+' '+dim.title+'</div>';
+      html += '<div style="font-size:10px;color:#475569;line-height:1.6;margin-top:3px;">'+sepEsc(dim.desc)+'</div>';
+      html += '<ul style="margin:4px 0 0;padding-left:15px;font-size:10px;color:#64748b;line-height:1.6;">';
       for (var j=0;j<dim.items.length;j++) html += '<li>'+sepEsc(dim.items[j])+'</li>';
       html += '</ul></div>';
     }
-    html += '</div>';
+    html += '</div></div>';
   }
-  html += '<div style="text-align:center;font-size:11px;color:#94a3b8;padding-top:10px;border-top:1px solid #f1f5f9;">💡 指引内容基于「大促准备指导手册」整理，具体方案请根据项目实际情况填写</div>';
+  html += '</div>';
+  html += '<div style="text-align:center;font-size:11px;color:#94a3b8;padding-top:10px;border-top:1px solid #f1f5f9;margin-top:12px;">💡 指引内容基于「大促准备指导手册」整理，具体方案请根据项目实际情况填写</div>';
   html += '</div></details>';
   return html;
+}
+function sepToggleGuideGroup(key){
+  SEP_STATE.guideGroup = (SEP_STATE.guideGroup === key) ? null : key;
+  for (var g=0;g<EVENT_PREP_GROUPS.length;g++){
+    var grp = EVENT_PREP_GROUPS[g];
+    var on = SEP_STATE.guideGroup === grp.key;
+    var body = document.getElementById('sep_guide_body_'+grp.key);
+    var arrow = document.getElementById('sep_guide_arrow_'+grp.key);
+    var card = document.getElementById('sep_guide_card_'+grp.key);
+    if (body) body.style.display = on ? 'block' : 'none';
+    if (arrow) arrow.textContent = on ? '▲ 收起' : '▼ 查看要点';
+    if (card) card.style.borderColor = on ? grp.color : '#e2e8f0';
+  }
 }
 
 /* ═══ 交互动作 ═══ */
