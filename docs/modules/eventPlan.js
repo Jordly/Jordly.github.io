@@ -630,7 +630,7 @@ function sepRenderGuide(){
     var on = SEP_STATE.guideGroup === grp.key;
     html += '<div id="sep_guide_card_'+grp.key+'" style="border:1px solid '+(on?grp.color:'#e2e8f0')+';border-radius:9px;overflow:hidden;background:#fff;">';
     html += '<div onclick="sepToggleGuideGroup(\''+grp.key+'\')" style="cursor:pointer;padding:12px 13px;background:'+(on?grp.color+'12':'#f8fafc')+';">';
-    html += '<div style="display:flex;align-items:center;gap:7px;"><span style="width:6px;height:16px;border-radius:3px;background:'+grp.color+';"></span><span style="font-size:12px;font-weight:600;color:#334155;">'+grp.label+'</span></div>';
+    html += '<div style="display:flex;align-items:center;gap:7px;"><span style="width:6px;height:16px;border-radius:3px;background:'+grp.color+';"></span><span style="font-size:12px;font-weight:600;color:#334155;">'+grp.label.replace(/^[^\u4e00-\u9fff]+/, '')+'</span></div>';
     html += '<div style="font-size:10px;color:#64748b;margin-top:6px;line-height:1.5;">'+sepEsc(grp.desc)+'</div>';
     html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;"><span style="font-size:10px;color:#94a3b8;">'+dims.length+' 项说明</span><span id="sep_guide_arrow_'+grp.key+'" style="font-size:10px;color:'+grp.color+';">'+(on?'▲ 收起':'▼ 查看要点')+'</span></div>';
     html += '</div>';
