@@ -184,7 +184,8 @@
         loadOne('workload_data', true),
         loadOne('kpi_history', true),
         loadOne('data_change_log', true),
-        loadOne('data_permissions', true)
+        loadOne('data_permissions', true),
+        loadOne('special_event_plans', true)
       ]).then(function(results) {
         var projects = results[0];
         var users = results[1];
@@ -198,6 +199,7 @@
         var kpiHistory = results[9];
         var dataChangeLog = results[10];
         var dataPermissions = results[11];
+        var specialEventPlans = results[12];
         var loaded = false;
 
         if (projects && projects.length > 0) {
@@ -234,6 +236,11 @@
           localStorage.setItem('chansee_login_logs', JSON.stringify(loginLogs));
           loaded = true;
           log('已写入 localStorage: login_logs (' + loginLogs.length + ' 条)');
+        }
+        if (specialEventPlans && specialEventPlans.length > 0) {
+          localStorage.setItem('chansee_special_event_plans', JSON.stringify(specialEventPlans));
+          loaded = true;
+          log('已写入 localStorage: special_event_plans (' + specialEventPlans.length + ' 条)');
         }
 
         _cb_syncing = false;  // 恢复拦截器
@@ -306,6 +313,7 @@
     var kpiHistory = [];
     var dataChangeLog = [];
     var dataPermissions = [];
+    var specialEventPlans = [];
 
     try { projects = JSON.parse(localStorage.getItem('chansee_projects') || '[]'); } catch(e) {}
     try { users = JSON.parse(localStorage.getItem('chansee_users') || '[]'); } catch(e) {}
@@ -319,6 +327,7 @@
     try { kpiHistory = JSON.parse(localStorage.getItem('chansee_kpi_history') || '[]'); } catch(e) {}
     try { dataChangeLog = JSON.parse(localStorage.getItem('chansee_data_change_log') || '[]'); } catch(e) {}
     try { dataPermissions = JSON.parse(localStorage.getItem('chansee_data_permissions') || '[]'); } catch(e) {}
+    try { specialEventPlans = JSON.parse(localStorage.getItem('chansee_special_event_plans') || '[]'); } catch(e) {}
 
     // assessments、knowledge、risk_alerts、login_logs、staff_config、workload_data、kpi_history、data_change_log、data_permissions 为可选集合：
     // 如果云数据库里还没有创建这些集合，保存失败也不影响整体结果
@@ -334,7 +343,8 @@
       saveOne('workload_data', workloadData, true),
       saveOne('kpi_history', kpiHistory, true),
       saveOne('data_change_log', dataChangeLog, true),
-      saveOne('data_permissions', dataPermissions, true)
+      saveOne('data_permissions', dataPermissions, true),
+      saveOne('special_event_plans', specialEventPlans, true)
     ]).then(function(results) {
       var coreOk = results[0].ok && results[1].ok && results[2].ok;
       var optionalErrors = [];
@@ -347,12 +357,18 @@
       if (!results[9].ok) optionalErrors.push('kpi_history:' + results[9].error);
       if (!results[10].ok) optionalErrors.push('data_change_log:' + results[10].error);
       if (!results[11].ok) optionalErrors.push('data_permissions:' + results[11].error);
+      if (!results[12].ok) optionalErrors.push('special_event_plans:' + results[12].error);
 
       if (coreOk) {
         if (optionalErrors.length > 0) {
           log('可选集合保存失败（已忽略）: ' + optionalErrors.join('; '));
         }
-        showStatus('云端同步成功 ✅', 'success');
+        // 预案数据有实际内容却没同步上去时，必须明确提示，不能让用户误以为已备份
+        if (!results[12].ok && specialEventPlans.length > 0) {
+          showStatus('⚠️ ' + specialEventPlans.length + ' 条预案未同步到云端，仅存本机（' + (results[12].error || '未知原因') + '）', 'error');
+        } else {
+          showStatus('云端同步成功 ✅', 'success');
+        }
         log('云端保存完成');
         verifyCloudData(projects, users, goals);
         callback(true);
@@ -430,7 +446,8 @@
       key === 'chansee_workload_data' ||
       key === 'chansee_kpi_history' ||
       key === 'chansee_data_change_log' ||
-      key === 'chansee_data_permissions'
+      key === 'chansee_data_permissions' ||
+      key === 'chansee_special_event_plans'
     )) {
       markDirty(key);
     }

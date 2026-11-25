@@ -712,6 +712,51 @@ function sepCollectForm(){
     arrangements: arrangements
   };
 }
+/* ═══ 提交前必填校验 ═══ */
+function sepValidateRequired(d){
+  var miss = [];
+  if (!d || !String(d.name || '').trim()) miss.push({ k:'sep_name', label:'活动名称' });
+  if (!d || !String(d.startTime || '').trim()) miss.push({ k:'sep_start', label:'开始时间' });
+  if (!d || !String(d.endTime || '').trim()) miss.push({ k:'sep_end', label:'结束时间' });
+  if (!d || !String(d.manager || '').trim()) miss.push({ k:'sep_manager', label:'负责客服管理' });
+  return miss;
+}
+function sepTimeError(d){
+  if (!d || !d.startTime || !d.endTime) return '';
+  if (String(d.endTime) < String(d.startTime)) return '结束时间不能早于开始时间';
+  return '';
+}
+function sepMissLabels(miss){
+  var out = [];
+  for (var i=0;i<miss.length;i++) out.push(miss[i].label);
+  return out.join('、');
+}
+function sepMarkInvalid(miss){
+  sepClearInvalid();
+  window._sepInvalidIds = [];
+  for (var i=0;i<miss.length;i++){
+    var el = document.getElementById(miss[i].k);
+    if (el){
+      el.style.borderColor = '#ef4444';
+      el.style.background = '#fef2f2';
+      window._sepInvalidIds.push(miss[i].k);
+    }
+  }
+  if (miss.length){
+    var first = document.getElementById(miss[0].k);
+    if (first && first.scrollIntoView) {
+      try { first.scrollIntoView({ behavior:'smooth', block:'center' }); } catch(e) { first.scrollIntoView(); }
+    }
+  }
+}
+function sepClearInvalid(){
+  var ids = window._sepInvalidIds || [];
+  for (var i=0;i<ids.length;i++){
+    var el = document.getElementById(ids[i]);
+    if (el){ el.style.borderColor = ''; el.style.background = ''; }
+  }
+  window._sepInvalidIds = [];
+}
 function sepSaveDraft(){
   var data = sepCollectForm();
   if (!data.name){ sepToast('请先填写活动名称', 'warning'); return; }
@@ -747,6 +792,24 @@ function sepSubmit(id){
     var target = null;
     for (var i=0;i<arr0.length;i++){ if (arr0[i].id === id) target = arr0[i]; }
     if (!target){ sepToast('未找到该预案', 'error'); return; }
+    var miss0 = sepValidateRequired(target);
+    if (miss0.length){
+      sepToast('提交前请先补全：' + sepMissLabels(miss0), 'warning');
+      SEP_STATE.view = 'edit';
+      SEP_STATE.currentId = target.id;
+      sepRefresh();
+      setTimeout(function(){ sepMarkInvalid(miss0); }, 60);
+      return;
+    }
+    var tErr0 = sepTimeError(target);
+    if (tErr0){
+      sepToast(tErr0, 'warning');
+      SEP_STATE.view = 'edit';
+      SEP_STATE.currentId = target.id;
+      sepRefresh();
+      setTimeout(function(){ sepMarkInvalid([{ k:'sep_end', label:'结束时间' }]); }, 60);
+      return;
+    }
     target.status = 'pending';
     target.updatedAt = sepNow();
     target.approveNote = '';
@@ -758,7 +821,19 @@ function sepSubmit(id){
     return;
   }
   var data = sepCollectForm();
-  if (!data.name){ sepToast('请先填写活动名称', 'warning'); return; }
+  var miss = sepValidateRequired(data);
+  if (miss.length){
+    sepMarkInvalid(miss);
+    sepToast('提交前请先补全：' + sepMissLabels(miss), 'warning');
+    return;
+  }
+  var tErr = sepTimeError(data);
+  if (tErr){
+    sepMarkInvalid([{ k:'sep_end', label:'结束时间' }]);
+    sepToast(tErr, 'warning');
+    return;
+  }
+  sepClearInvalid();
   var who = (typeof currentUser !== 'undefined' && currentUser) ? (currentUser.name || currentUser.username || '') : '';
   var arr = sepLoad();
   arr.push({
