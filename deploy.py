@@ -22,22 +22,45 @@ VERSION = TODAY  # 如 20260814（?v= 已含 v 前缀，避免双 v）
 
 EXCLUDE = {"deploy.py"}  # 脚本自身不进生产目录
 
+# 不应进入生产目录的本地文档（内部报告、诊断输出等）
+EXCLUDE_KEYWORDS = ("体检报告", "诊断报告")
+
+# 无扩展名、但必须随部署一起同步到 docs/ 的特殊文件
+# _headers：Cloudflare Pages 安全响应头配置（2026-11-25 安全整改新增）
+SPECIAL_FILES = {"_headers", "_redirects", "robots.txt", "sitemap.xml"}
+
 def collect():
     files = []
     # 顶层 html / css / js
     for f in os.listdir(ROOT):
         if f.startswith("."):
             continue
-        if f.endswith((".html", ".css")):
+        if any(k in f for k in EXCLUDE_KEYWORDS):
+            continue
+        if f in SPECIAL_FILES:
+            files.append(f)
+        elif f.endswith((".html", ".css")):
             files.append(f)
         elif f.endswith(".js") and f not in EXCLUDE:
             files.append(f)
+        elif f.endswith((".png", ".ico", ".svg", ".webp")):
+            # 站点图标与社交分享图（favicon.png / og-image.png 等，2026-11-25 新增）
+            files.append(f)
+    # assets/ 下的大图（如大促作战大图）体量大，且目前仅存于 docs/，此处仅在根存在时才同步，
+    # 绝不反向删除 docs/assets 已有文件。
     # modules/*.js
     mod_dir = os.path.join(ROOT, "modules")
     if os.path.isdir(mod_dir):
         for f in os.listdir(mod_dir):
             if f.endswith(".js"):
                 files.append(os.path.join("modules", f))
+    # vendor/*.js（第三方库自托管目录，2026-11-25 安全整改新增）
+    # 注意：vendor 下是固定版本第三方库，文件名不带 ?v= 版本号（其内容本身即版本锚点）
+    ven_dir = os.path.join(ROOT, "vendor")
+    if os.path.isdir(ven_dir):
+        for f in os.listdir(ven_dir):
+            if f.endswith((".js", ".css")):
+                files.append(os.path.join("vendor", f))
     return files
 
 def main():

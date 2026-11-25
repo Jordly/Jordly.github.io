@@ -1,19 +1,12 @@
 // ===== 目标与权责管理（独立模块）=====
-// 目标数据数组
-var GOALS = [];
-(function initGoals() {
-  var raw = localStorage.getItem('chansee_goals');
-  if (raw && raw !== 'null' && raw !== '[]') {
-    try {
-      GOALS = JSON.parse(raw);
-      console.log('[initGoals] 从 localStorage 恢复 ' + GOALS.length + ' 个目标');
-      return;
-    } catch(e) {
-      console.error('[initGoals] 目标数据损坏，重置:', e);
-    }
-  }
-  GOALS = [];
-})();
+// 【单一数据源整改 2026-11-25 · 体检 P0-5】
+// 原此处有 `var GOALS = []` + 独立 initGoals IIFE，会在本文件加载时
+// （index.html 中本文件晚于 app.js 与 systemData.js）重新声明并覆盖全局 GOALS，
+// 导致 modules/systemData.js 的 goals 表仍绑定 app.js 那份旧数组，
+// 两个页面各改各的、互相覆盖。
+// 现统一复用 app.js:598 定义的全局 GOALS（已含 localStorage 恢复与默认值初始化），
+// 本文件不再重复声明，也不再对其重新赋值（只做原地修改）。
+// 依赖顺序：app.js → systemData.js → 本文件，GOALS 已就绪。
 
 function saveGoals() {
   var ok = safeSetItem('chansee_goals', JSON.stringify(GOALS));
@@ -155,7 +148,11 @@ function editGoal(goalId) {
 
 function deleteGoal(goalId) {
   if (!confirm('确认删除此目标？')) return;
-  GOALS = GOALS.filter(function(g) { return g.id !== goalId; });
+  // 单一数据源整改（2026-11-25）：改用原地删除，保持 GOALS 数组引用不变。
+  // 原 `GOALS = GOALS.filter(...)` 会创建新数组，使 systemData 仍指向旧数组 → 数据分叉。
+  for (var _gi = GOALS.length - 1; _gi >= 0; _gi--) {
+    if (GOALS[_gi].id === goalId) GOALS.splice(_gi, 1);
+  }
   saveGoals();
   renderModule('target');
 }

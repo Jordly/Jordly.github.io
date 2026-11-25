@@ -267,7 +267,7 @@ function renderManagementDetail(assessments) {
 // 管理人能力详情弹窗
 function showManagerDetail(mgrName){
   const list = ASSESSMENTS.filter(a => (a.manager||'') === mgrName);
-  if(list.length===0){ alert('未找到该管理人的评估记录'); return; }
+  if(list.length===0){ showToast('未找到该管理人的评估记录', 'warning'); return; }
   const bench = getManagementBenchmark(list[0].level);
   const avgScore = list.reduce((s,a)=>s+(a.totalScore||0),0)/list.length;
   const compat = calcCompatibility(avgScore, bench);
@@ -381,7 +381,7 @@ window.filterCompareCheckboxes = function(keyword) {
 // 执行对比
 function runAssessmentCompare() {
   const cbs = document.querySelectorAll('.compare-cb:checked');
-  if (cbs.length < 2) { alert('请至少选择2个组别进行对比'); return; }
+  if (cbs.length < 2) { showToast('请至少选择2个组别进行对比', 'warning'); return; }
   const groups = Array.from(cbs).map(cb => cb.value);
   let html = `<div>`;
   html += `<div style="font-size:14px;font-weight:600;margin-bottom:12px;">对比结果（共${groups.length}个组别）</div>`;
@@ -417,7 +417,7 @@ function runAssessmentCompare() {
 function showGroupDetail(groupName){
   const idx = ASSESSMENTS.findIndex(x => x.group === groupName);
   const a = idx >= 0 ? ASSESSMENTS[idx] : null;
-  if(!a) { alert('未找到该评估记录'); return; }
+  if(!a) { showToast('未找到该评估记录', 'warning'); return; }
   const bench = getManagementBenchmark(a.level);
   const compat = calcCompatibility(a.totalScore||0, bench);
   const band = getCompatibilityBand(compat);

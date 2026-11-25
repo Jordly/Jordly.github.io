@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS CloudHub 系统体检报告 · 2026-11-25</title>
+<style>
+  :root{
+    --teal:#0b9b96; --blue:#3b82f6; --purple:#8b5cf6;
+    --grad:linear-gradient(135deg,#0b9b96 0%,#3b82f6 55%,#8b5cf6 100%);
+    --ink:#1e293b; --ink2:#475569; --ink3:#94a3b8;
+    --line:#e2e8f0; --bg:#f4f7fa; --card:#ffffff;
+    --p0:#dc2626; --p0bg:#fef2f2; --p1:#ea580c; --p1bg:#fff7ed; --p2:#ca8a04; --p2bg:#fefce8;
+    --ok:#059669; --okbg:#ecfdf5;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;font-size:15px;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px 80px;}
+
+  /* 封面 */
+  .hero{background:var(--grad);color:#fff;border-radius:0 0 28px 28px;padding:48px 44px 40px;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(11,155,150,.18);}
+  .hero::after{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.10);}
+  .hero::before{content:"";position:absolute;right:120px;bottom:-90px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.07);}
+  .hero .tag{display:inline-block;background:rgba(255,255,255,.2);padding:5px 14px;border-radius:20px;font-size:12px;letter-spacing:1px;margin-bottom:16px;}
+  .hero h1{font-size:32px;font-weight:800;letter-spacing:.5px;}
+  .hero .sub{font-size:15px;opacity:.92;margin-top:8px;}
+  .hero .meta{margin-top:22px;display:flex;flex-wrap:wrap;gap:22px;font-size:13px;opacity:.9;position:relative;z-index:2;}
+  .hero .meta b{font-weight:700;}
+  .score-box{position:absolute;right:44px;top:44px;text-align:center;z-index:2;}
+  .score-box .num{font-size:56px;font-weight:800;line-height:1;}
+  .score-box .den{font-size:14px;opacity:.85;margin-top:2px;}
+  .score-box .lbl{font-size:12px;opacity:.85;margin-top:6px;}
+
+  /* 通用区块 */
+  section{margin-top:34px;}
+  .sec-h{display:flex;align-items:center;gap:11px;margin-bottom:16px;}
+  .sec-h .bar{width:5px;height:24px;border-radius:3px;background:var(--grad);}
+  .sec-h h2{font-size:21px;font-weight:800;}
+  .sec-h .note{font-size:12px;color:var(--ink3);margin-left:auto;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;box-shadow:0 2px 10px rgba(15,23,42,.04);}
+  .card + .card{margin-top:14px;}
+
+  /* 一句话结论 */
+  .verdict{background:linear-gradient(135deg,#fff 0%,#f8fafc 100%);border-left:5px solid var(--p0);}
+  .verdict .big{font-size:17px;font-weight:700;color:var(--ink);}
+  .verdict p{margin-top:8px;color:var(--ink2);}
+
+  /* 评分条 */
+  .scores{display:grid;grid-template-columns:1fr 1fr;gap:14px 28px;}
+  .score-row{display:grid;grid-template-columns:150px 1fr 46px;align-items:center;gap:12px;}
+  .score-row .name{font-size:14px;font-weight:600;color:var(--ink2);}
+  .score-row .track{height:10px;background:#eef2f6;border-radius:6px;overflow:hidden;}
+  .score-row .fill{height:100%;border-radius:6px;background:var(--grad);}
+  .score-row .val{font-size:14px;font-weight:800;text-align:right;}
+
+  /* 速览数字 */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px;text-align:center;}
+  .stat .n{font-size:28px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .stat .t{font-size:12px;color:var(--ink2);margin-top:4px;}
+
+  /* 问题条目 */
+  .issue{border-radius:12px;padding:16px 18px;margin-bottom:12px;border:1px solid var(--line);}
+  .issue.p0{background:var(--p0bg);border-color:#fecaca;border-left:4px solid var(--p0);}
+  .issue.p1{background:var(--p1bg);border-color:#fed7aa;border-left:4px solid var(--p1);}
+  .issue.p2{background:var(--p2bg);border-color:#fef08a;border-left:4px solid var(--p2);}
+  .issue.ok{background:var(--okbg);border-color:#a7f3d0;border-left:4px solid var(--ok);}
+  .issue .hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .pill{font-size:11px;font-weight:800;color:#fff;padding:2px 9px;border-radius:6px;letter-spacing:.5px;}
+  .pill.p0{background:var(--p0);} .pill.p1{background:var(--p1);} .pill.p2{background:var(--p2);} .pill.ok{background:var(--ok);}
+  .issue .hd h3{font-size:16px;font-weight:700;}
+  .issue .row{margin-top:9px;font-size:14px;color:var(--ink2);}
+  .issue .row b{color:var(--ink);}
+  .issue code{font-family:"SFMono-Regular",Consolas,monospace;background:rgba(15,23,42,.06);padding:1px 6px;border-radius:5px;font-size:12.5px;color:#0f766e;}
+  .issue .fix{margin-top:10px;padding-top:9px;border-top:1px dashed rgba(15,23,42,.12);font-size:13.5px;color:var(--ink2);}
+  .issue .fix b{color:var(--teal);}
+
+  /* 维度卡片 */
+  .dim{display:grid;grid-template-columns:120px 1fr;gap:18px;padding:18px 0;border-bottom:1px solid var(--line);}
+  .dim:last-child{border-bottom:none;}
+  .dim .dh{text-align:center;}
+  .dim .dh .g{font-size:30px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+  .dim .dh .n{font-size:13px;color:var(--ink2);font-weight:600;margin-top:2px;}
+  .dim .db ul{margin-left:18px;}
+  .dim .db li{margin:5px 0;color:var(--ink2);font-size:14px;}
+  .dim .db li b{color:var(--ink);}
+
+  /* 路线图 */
+  .road{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .phase{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;}
+  .phase .ph{font-size:13px;font-weight:800;color:#fff;padding:4px 12px;border-radius:20px;display:inline-block;}
+  .phase.p1 .ph{background:var(--p0);} .phase.p2 .ph{background:var(--p1);} .phase.p3 .ph{background:var(--teal);}
+  .phase h4{margin:12px 0 8px;font-size:15px;}
+  .phase ul{margin-left:16px;font-size:13.5px;color:var(--ink2);}
+  .phase li{margin:5px 0;}
+
+  .notice{background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;padding:16px 20px;font-size:13px;color:var(--ink2);}
+  .notice b{color:var(--ink);}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;}
+  th{background:#f8fafc;font-weight:700;color:var(--ink2);}
+  .foot{text-align:center;color:var(--ink3);font-size:12px;margin-top:34px;}
+
+  @media(max-width:760px){
+    .hero{padding:36px 22px;} .hero h1{font-size:25px;} .score-box{position:static;margin-top:20px;text-align:left;}
+    .scores,.stats,.road{grid-template-columns:1fr;} .score-row{grid-template-columns:110px 1fr 40px;}
+    .dim{grid-template-columns:1fr;} .dim .dh{text-align:left;display:flex;align-items:baseline;gap:10px;}
+  }
+  @media print{ .hero{border-radius:0;} body{background:#fff;} section{break-inside:avoid;} }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="tag">SYSTEM HEALTH CHECK · 全站深度体检</span>
+  <h1>CS CloudHub 系统体检报告</h1>
+  <div class="sub">性能 · 功能 · 安全 · 架构 · 体验 — 专业维护视角全维度评估</div>
+  <div class="meta">
+    <span>体检日期：<b>2026-11-25</b></span>
+    <span>距上次改动：<b>约 3 个月</b>（2026-08-18）</span>
+    <span>线上地址：<b>chanseen.pages.dev</b></span>
+    <span>体检方式：<b>静态代码审计 + 线上探测</b></span>
+  </div>
+  <div class="score-box">
+    <div class="num">5.9</div>
+    <div class="den">/ 10 综合健康度</div>
+    <div class="lbl">可用但安全欠账明显</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- 结论 -->
+  <section>
+    <div class="card verdict">
+      <div class="big">一句话结论：系统"能用、好用"，但"不安全、不好维护"。</div>
+      <p>17 个功能模块齐全、19 张数据表能打开、语法零错误、线上访问正常——作为一套内部工具，<b>日常功能是可信赖的</b>。但存在 <b>4 个 P0 级安全隐患</b>（其中"查看演示"按钮可让任何人免密进入超级管理员、默认口令哈希硬编码且改不掉、权限纯前端可绕过），以及 <b>1 个会导致数据互相覆盖的功能缺陷</b>（目标数据两份数据源打架）。这些是本该在上线前处理、现在必须补上的欠账。</p>
+    </div>
+  </section>
+
+  <!-- 评分 -->
+  <section>
+    <div class="sec-h"><div class="bar"></div><h2>七大维度健康评分</h2><span class="note">满分 10 · 分数越低越需关注</span></div>
+    <div class="card">
+      <div class="scores">
+        <div class="score-row"><div class="name">线上健康与部署</div><div class="track"><div class="fill" style="width:80%"></div></div><div class="val">8.0</div></div>
+        <div class="score-row"><div class="name">功能正确性</div><div class="track"><div class="fill" style="width:70%"></div></div><div class="val">7.0</div></div>
+        <div class="score-row"><div class="name">数据备份与回退</div><div class="track"><div class="fill" style="width:60%"></div></div><div class="val">6.0</div></div>
+        <div class="score-row"><div class="name">设计合理性与体验</div><div class="track"><div class="fill" style="width:60%"></div></div><div class="val">6.0</div></div>
+        <div class="score-row"><div class="name">性能表现</div><div class="track"><div class="fill" style="width:65%"></div></div><div class="val">6.5</div></div>
+        <div class="score-row"><div class="name">代码可维护性</div><div class="track"><div class="fill" style="width:50%"></div></div><div class="val">5.0</div></div>
+        <div class="score-row"><div class="name">安全性 <span style="color:#dc2626;font-weight:800">最短板</span></div><div class="track"><div class="fill" style="width:30%;background:#dc2626"></div></div><div class="val" style="color:#dc2626">3.0</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 速览 -->
+  <section>
+    <div class="sec-h"><div class="bar"></div><h2>关键数字速览</h2></div>
+    <div class="stats">
+      <div class="stat"><div class="n">17</div><div class="t">功能模块 · 全部可渲染</div></div>
+      <div class="stat"><div class="n">19</div><div class="t">数据表 · 无点击崩溃</div></div>
+      <div class="stat"><div class="n">23</div><div class="t">JS 文件 · 全量同步加载</div></div>
+      <div class="stat"><div class="n">≈1.1M</div><div class="t">首屏代码总量（未压缩）</div></div>
+      <div class="stat"><div class="n" style="background:linear-gradient(135deg,#dc2626,#f97316);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">4</div><div class="t">P0 安全隐患</div></div>
+      <div class="stat"><div class="n">76</div><div class="t">处 alert 弹窗（体验不统一）</div></div>
+      <div class="stat"><div class="n">1767</div><div class="t">处 !important（样式债）</div></div>
+      <div class="stat"><div class="n">4</div><div class="t">处全局函数重复定义</div></div>
+    </div>
+  </section>
+
+  <!-- P0 -->
+  <section>
+    <div class="sec-h"><div class="bar" style="background:var(--p0)"></div><h2>P0 · 严重问题（建议优先处理）</h2><span class="note">共 4 项安全 + 1 项功能</span></div>
+
+    <div class="issue p0">
+      <div class="hd"><span class="pill p0">P0-1</span><h3>"查看演示"按钮 = 免密超级管理员后门</h3></div>
+      <div class="row"><b>现象：</b>任何人打开网站首页，点一下"🎬 查看演示"，无需密码直接进入系统。</div>
+      <div class="row"><b>证据：</b><code>index.html:347</code> 的按钮调用 <code>demoLogin()</code>（<code>app.js:1660</code>）：它不校验任何密码，直接写入 <code>chanseen_auth</code>。而 <code>checkLogin()</code>（<code>app.js:1146-1164</code>）拿到 token 后，用 <code>USERS.find(...) || USERS[0]</code> 兜底——<code>USERS[0]</code> 正是超级管理员账号，于是 <code>currentRole</code> 被设为"超级管理员"。</div>
+      <div class="row"><b>影响：</b>外部访客可查看/导出全员花名册、绩效、成本数据，甚至修改权限、删除记录。这是全站最危险的入口。</div>
+      <div class="fix"><b>建议：</b>若演示仅用于对内讲解，直接删除该按钮或改为只展示静态截图；若必须保留，需服务端签发"只读、限时、数据脱敏"的演示会话，并禁止访问 systemData / permissions / 导出功能。</div>
+    </div>
+
+    <div class="issue p0">
+      <div class="hd"><span class="pill p0">P0-2</span><h3>默认账号口令哈希硬编码，且用户改不掉密码</h3></div>
+      <div class="row"><b>现象：</b>两个内置账号的密码哈希写死在前端 <code>login.html</code> 里，且用的是单轮无盐 SHA-256（可被现成彩虹表秒级还原）。</div>
+      <div class="row"><b>证据：</b><code>login.html:1102-1105</code> 的 <code>defaultUsers</code> 数组含 <code>$SHA$</code> 前缀哈希；<code>login.html:1118</code> 存在"每次登录都把用户改过的密码重置回默认值"的逻辑（<code>savedUsers[foundIdx].password = defaultUsers[di].password</code>）；<code>login.html:1192-1208</code> 还保留明文比较分支。</div>
+      <div class="row"><b>影响：</b>默认口令永久有效、无法通过界面真正修改；哈希公开在源码里，懂行的人可直接还原。<span style="color:#dc2626">（本报告刻意不写出任何明文口令。）</span></div>
+      <div class="fix"><b>建议：</b>上线前从前端移除 <code>defaultUsers</code>；删除第 1118 行的强制复位；把旧 <code>$SHA$</code> 一次性迁移为加盐 PBKDF2（项目已有 <code>core-security.js</code> 的 PBKDF2 实现，可直接复用）。</div>
+    </div>
+
+    <div class="issue p0">
+      <div class="hd"><span class="pill p0">P0-3</span><h3>登录凭证与权限纯前端校验，可一行代码绕过</h3></div>
+      <div class="row"><b>现象：</b>token 是 <code>'demo_'+Date.now()</code> 这种无签名字符串，权限判断只在浏览器内存里做。</div>
+      <div class="row"><b>证据：</b><code>login.html:1212-1227</code> 生成 token；<code>app.js:1146-1172</code> 只要 token 在 1 小时内就直接以管理员身份登录；<code>app.js:2605-2624</code> 的 <code>getPermission</code>、<code>modules/assessment.js:784-816</code> 的 <code>filterNavByPermissions</code> 仅做 <code>style.display='none'</code>。</div>
+      <div class="row"><b>影响：</b>在浏览器控制台执行一段 JS 就能伪造超级管理员身份；把隐藏的菜单改回可见即可访问受限功能。数据本身也都在 localStorage，可被直接读取。</div>
+      <div class="fix"><b>建议：</b>纯静态站点无法真正做安全鉴权。最低成本方案：在 Cloudflare 侧启用 <b>Cloudflare Access</b> 做整站身份认证（邮箱/OTP），把整个应用挡在网关后；前端权限隐藏只保留为"体验优化"，不再当作安全边界。彻底方案是认证与数据接口下沉服务端。</div>
+    </div>
+
+    <div class="issue p0">
+      <div class="hd"><span class="pill p0">P0-4</span><h3>云同步密钥前端明文 + 云函数通配符跨域（当前休眠，开启即高危）</h3></div>
+      <div class="row"><b>现象：</b>云函数共享密钥写死在前端代码里，云函数允许任意域名调用。</div>
+      <div class="row"><b>证据：</b><code>cloudbase-sync.js:18</code> 的 <code>AUTH_TOKEN = 'cscloudhub-2026-secret-key'</code>；<code>cloudbase-api/index.js:110-112</code> 等处 <code>Access-Control-Allow-Origin: '*'</code>；<code>cloudbase-api/index.js:327</code> 连含密码哈希的用户表一起同步。</div>
+      <div class="row"><b>影响：</b>目前 <code>OFFLINE_MODE = true</code>，链路休眠所以暂未暴露。但代码注释里就写着"如何开启"——一旦开启，任何网站拿这个公开密钥就能读写你的全部云端数据。</div>
+      <div class="fix"><b>建议：</b>开启云同步前必须先做：密钥移入云函数环境变量、CORS 收紧为 <code>https://chanseen.pages.dev</code>、禁止同步 users 集合、改用 CloudBase 自定义登录按用户身份授权。</div>
+    </div>
+
+    <div class="issue p0">
+      <div class="hd"><span class="pill p0">P0-5</span><h3>目标数据"两份数据源"互相覆盖（功能性数据缺陷）</h3></div>
+      <div class="row"><b>现象：</b>在"目标与权责管理"页新增的目标，到"系统数据管理→目标与权责表"看不到；反过来在系统数据管理里改，又会把前者覆盖。</div>
+      <div class="row"><b>证据：</b><code>app.js:598</code> 定义 <code>var GOALS</code>；<code>goal-management.js:3</code> 又定义一次 <code>var GOALS</code>（后加载，覆盖前者）。<code>modules/systemData.js:275</code> 的 goals 表绑定的是 app.js 那份数组对象；<code>goal-management.js:18-23</code> 的 <code>saveGoals()</code> 只写 localStorage、不回写 systemData 的数组。<code>_saveSystemData('goals')</code> 用旧数组写回 localStorage，直接覆盖新数据。</div>
+      <div class="row"><b>影响：</b>两个页面各存各的、互相覆盖，刷新也不会自愈。这是上次 8-18"补 GOALS 数据源"时引入的重复定义，属于本轮体检新发现。</div>
+      <div class="fix"><b>建议：</b>收敛为单一数据源：删除 <code>goal-management.js</code> 的 <code>var GOALS</code>，让它引用 app.js 的全局 GOALS；两处保存都走同一个 <code>saveGoals()</code>，并让 systemData 的 goals 表直接读同一对象。改前需你确认保留哪套页面结构。</div>
+    </div>
+  </section>
+
+  <!-- P1 -->
+  <section>
+    <div class="sec-h"><div class="bar" style="background:var(--p1)"></div><h2>P1 · 高危问题</h2><span class="note">可被利用或明显影响使用</span></div>
+
+    <div class="issue p1">
+      <div class="hd"><span class="pill p1">P1-1</span><h3>多处 XSS 注入点（导入文件 / 花名册 / 满意度详情）</h3></div>
+      <div class="row"><b>证据：</b>① <code>project-import-export.js:245/248/259</code> 把 CSV/Excel 里的人员名称直接拼进 <code>innerHTML</code>；② <code>modules/roster.js:384</code> 的 <code>infoItem()</code> 中 <code>+v+</code> 未转义（同文件其他地方都用了 <code>esc()</code>，此处明显遗漏）；③ <code>modules/satisfaction.js:363-451</code> 详情模板里 <code>${s.xxx}</code> 大片未转义；④ <code>modules/notifications.js:171</code> 把注册姓名 <code>${user.name}</code> 直接拼进管理员弹窗。</div>
+      <div class="row"><b>影响：</b>若有人通过导入功能写入带脚本的"姓名/项目名"，管理员打开预览或详情时脚本就会执行，可能外带 localStorage 里的全员数据。</div>
+      <div class="fix"><b>建议：</b>统一给这些插值包上项目已有的 <code>escHtml()</code>（<code>core-security.js:5</code>）；导入落库前对字段做清洗。好消息：<code>escHtml</code> 全项目只有一处定义、且加载顺序正确，不存在被覆盖的问题，转义基础设施是可靠的。</div>
+    </div>
+
+    <div class="issue p1">
+      <div class="hd"><span class="pill p1">P1-2</span><h3>第三方库浮点版本 + 全站无 CSP</h3></div>
+      <div class="row"><b>证据：</b><code>index.html:220</code> 引用 <code>cdn.sheetjs.com/.../xlsx-latest/....js</code>——"latest"是浮动版本，且无 SRI 校验、无 crossorigin；全站无 Content-Security-Policy。该库正好用于解析用户上传的 Excel。</div>
+      <div class="fix"><b>建议：</b>锁定具体版本号并加 <code>integrity</code> 哈希，优先把文件下载到站点自托管；用 Cloudflare 的 <code>_headers</code> 文件加一道 CSP。另：<code>index.html:60-66</code> 注入了 Microsoft Clarity 外部统计，内部系统建议确认是否符合公司数据合规要求。</div>
+    </div>
+
+    <div class="issue p1">
+      <div class="hd"><span class="pill p1">P1-3</span><h3>管理员新增/重置密码的输入框是明文</h3></div>
+      <div class="row"><b>证据：</b><code>modules/notifications.js:283</code> 的密码输入框写的是 <code>type="text"</code>，密码直接显示在屏幕上。</div>
+      <div class="fix"><b>建议：</b>改为 <code>type="password"</code>，一行改动、零风险。项目里 <code>app.js:1655</code> 已有 <code>togglePwd()</code> 显示/隐藏密码的实现，可复用加个"小眼睛"。</div>
+    </div>
+
+    <div class="issue p1">
+      <div class="hd"><span class="pill p1">P1-4</span><h3>"大促预案"模块是孤儿——代码写了但用户点不到</h3></div>
+      <div class="row"><b>证据：</b><code>modules/eventPlan.js</code>（22KB，基于大促指导手册）在 <code>index.html:231</code> 被加载，但侧边栏无菜单、<code>app.js:2439</code> 的模块清单无它、<code>app.js:2958</code> 的渲染分发表也无它；文件内 <code>renderModule('eventPlan')</code> 调用会掉进"模块开发中"兜底。</div>
+      <div class="row"><b>影响：</b>对电商客服总监，大促预案是高频刚需，却被"藏"起来了；同时这段代码属于死代码，增加维护负担。</div>
+      <div class="fix"><b>建议：</b>二选一——要么在"项目运营"分组加一个菜单入口并接入渲染分发；要么确认已弃用后彻底删除该文件及其脚本引用。</div>
+    </div>
+
+    <div class="issue p1">
+      <div class="hd"><span class="pill p1">P1-5</span><h3>提示方式不统一：76 处 alert + 三态组件调用率低</h3></div>
+      <div class="row"><b>证据：</b>全项目 <code>alert(</code> 共 <b>76 处</b>，而项目其实已提供体验更好的 <code>showToast()</code>（<code>app.js:234</code>）和空/加载/错误三态组件（<code>app.js:196-231</code>，带骨架屏和刷新按钮）。三者在各模块中混用，例如 handover 用 alert、assessment 用 Toast、knowledge 用无类型 Toast。</div>
+      <div class="fix"><b>建议：</b>不必一次全改。先统一"新增/编辑"这类高频表单的必填校验（改 alert 为 <code>showToast(msg,'error')'</code> + 字段红框），其余逐步收敛。</div>
+    </div>
+  </section>
+
+  <!-- P2 -->
+  <section>
+    <div class="sec-h"><div class="bar" style="background:var(--p2)"></div><h2>P2 · 中低危 / 技术债</h2></div>
+    <div class="card">
+      <table>
+        <tr><th style="width:110px">编号</th><th>问题</th><th style="width:300px">证据与影响</th><th style="width:230px">建议</th></tr>
+        <tr><td>P2-1</td><td>移动端侧边栏覆盖导致背景可滚动</td><td><code>premium-enhancements.js:322</code> 覆盖了 <code>app.js:2707</code>，丢失 <code>body.overflow='hidden'</code>；抽屉打开时背景仍能滑动，桌面宽度下遮罩关闭无效</td><td>合并为一个函数定义，保留滚动锁定</td></tr>
+        <tr><td>P2-2</td><td>"目标与权责"页面语义被替换</td><td><code>goal-management.js:37</code> 覆盖 <code>target.js:3</code> 的 renderTarget，原 SLA/CSat/成本预算/责任边界表格（<code>target.js:38-60</code>）永不显示</td><td>需产品确认：是否应展示原权责矩阵</td></tr>
+        <tr><td>P2-3</td><td>批量删除按钮缺危险样式</td><td><code>modules/archive.js:35</code> 一个标签写了两个 <code>class</code> 属性，第二个 <code>btn-archive-danger</code> 被浏览器忽略，危险操作反而没有红色警示</td><td>合并为一个 class 属性（一行改动）</td></tr>
+        <tr><td>P2-4</td><td>会话过期标准四处不一致</td><td>login.html 不检查时间、app.js 有 1 小时和 7 天两套判断（<code>app.js:1146/2651</code>、<code>index.html:22</code>）</td><td>统一为单一会话策略</td></tr>
+        <tr><td>P2-5</td><td>弹窗登录逻辑实际失效</td><td><code>app.js:1561-1566</code> 用随机盐哈希结果去比对已存哈希，永远不匹配</td><td>与 login.html 的校验逻辑合并</td></tr>
+        <tr><td>P2-6</td><td>命名错配 notifications</td><td>菜单显示"系统用户管理"，但模块名/变量名都是 <code>notifications</code>（通知），易改错地方（<code>index.html:178</code>）</td><td>统一命名（改代码需评估范围）</td></tr>
+        <tr><td>P2-7</td><td>SEO 资产缺失/失效</td><td>无 favicon；<code>index.html:52/58</code> 的 og:image 指向不存在的 <code>og-image.png</code>；<code>robots.txt</code> 为 <code>Allow: /</code>（内部系统可被收录）</td><td>补图标、og 图，内部系统建议改 Disallow</td></tr>
+        <tr><td>P2-8</td><td>首屏加载偏慢</td><td>23 个 JS + 2 个 CSS 全量同步加载、无 <code>defer/async</code>；实测首字节 1.75s；代码总量约 1.1MB（未压缩、无 gzip 声明）</td><td>非关键脚本加 defer；依赖 Cloudflare 自动压缩即可</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 做得好的 -->
+  <section>
+    <div class="sec-h"><div class="bar" style="background:var(--ok)"></div><h2>做得好的地方（值得保留）</h2></div>
+    <div class="issue ok">
+      <div class="hd"><span class="pill ok">✔</span><h3>这套系统的底子是扎实的</h3></div>
+      <div class="row"><b>① 功能完整、语法零错误：</b>19 个 JS 文件（app.js + 18 个模块）<code>node --check</code> 全部通过；17 个菜单项都有对应渲染函数，无"点了没反应"的空入口；19 张数据表无"一点就崩"的风险。</div>
+      <div class="row"><b>② 遵守了数据安全的假数据铁律：</b>抽样核查 <code>DEFAULT_PROJECTS / DEFAULT_USERS / DEFAULT_GOALS</code> 及全模块，姓名（张伟/刘洋/陈静等）均为常见虚构演示名，<b>未发现真实客户姓名、手机号、真实金额硬编码在代码里</b>。这点做得非常对，务必保持。</div>
+      <div class="row"><b>③ 已做业务模块化拆分：</b>一个菜单一个 JS 文件，不是真正意义的"单文件巨兽"；<code>app.js:3-21</code> 有堪称范本的中文代码地图。.</div>
+      <div class="row"><b>④ 安全基础设施齐备：</b><code>core-security.js</code> 提供 XSS 转义、PBKDF2 加盐哈希、全局错误捕获、运行日志、一键备份；转义函数全项目唯一定义、加载顺序正确，不存在覆盖隐患。</div>
+      <div class="row"><b>⑤ 交互组件质量高：</b>空状态/骨架屏/错误态三态组件、Toast 轻提示、批量操作、Lucide 图标替换、6 处响应式断点——对非技术用户友好。</div>
+      <div class="row"><b>⑥ 主色调与结构清晰：</b>青绿 #0B9B96 主色统一，17 个菜单分 4 组、仅 2 层深度，符合"看运营→管质量→带团队→配系统"的管理者动线。</div>
+      <div class="row"><b>⑦ 有回退保障：</b>已有 <code>rollback-anchor</code> 锚点与 <code>VERSION.md</code>，任何改动都可一键回退。</div>
+    </div>
+  </section>
+
+  <!-- 维度明细 -->
+  <section>
+    <div class="sec-h"><div class="bar"></div><h2>七维度详细结论</h2></div>
+    <div class="card">
+      <div class="dim"><div class="dh"><div class="g">8.0</div><div class="n">线上健康<br>与部署</div></div><div class="db"><ul>
+        <li><b>线上可访问：</b>HTTP 200，首字节 1.75s、总耗时 1.76s（正常范围，略偏慢）。</li>
+        <li><b>部署一致性良好：</b>根目录与 <code>docs/</code> 的 index.html、app.js、两套 CSS、systemData.js、permissions.js 字节数完全一致，无"改了没生效"风险。</li>
+        <li><b>小瑕疵：</b><code>docs/cloudbase.full.js</code> 861KB 未被引用；根目录堆积 <code>app_recovered_v2.js</code>（518KB 乱码损坏文件）和 3 个 5MB 级 zip，属历史包袱，建议清理但无功能影响。</li>
+      </ul></div></div>
+
+      <div class="dim"><div class="dh"><div class="g">6.5</div><div class="n">性能表现</div></div><div class="db"><ul>
+        <li><b>可接受：</b>总代码约 1.1MB（未压缩），对内部工具、现代浏览器和 Cloudflare CDN 而言不算重。</li>
+        <li><b>可优化：</b>23 个 JS + 2 个 CSS 全部同步加载、无 <code>defer/async</code>；xlsx 库走浮动 CDN；bundle 未做代码分割。真实使用中不卡，但首屏有优化空间。</li>
+      </ul></div></div>
+
+      <div class="dim"><div class="dh"><div class="g" style="background:linear-gradient(135deg,#dc2626,#f97316);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">3.0</div><div class="n">安全性<br>最短板</div></div><div class="db"><ul>
+        <li><b>核心问题：</b>认证/权限/数据全在浏览器端，本质是"没有安全边界"；叠加演示后门、硬编码口令哈希、明文云密钥，构成真实泄露风险（详见 P0-1~4、P1-1~2）。</li>
+        <li><b>缓解因素：</b>系统是内部工具、域名不公开宣传、数据多为演示数据；但这不能替代真正的访问控制。</li>
+        <li><b>一句话：</b>不要把它暴露给不受信任的人；建议在 Cloudflare 加一道访问网关。</li>
+      </ul></div></div>
+
+      <div class="dim"><div class="dh"><div class="g">7.0</div><div class="n">功能正确性</div></div><div class="db"><ul>
+        <li><b>整体健康：</b>模块分发完整、数据表可打开、语法零错误。</li>
+        <li><b>唯一实质缺陷：</b>GOALS 双数据源互相覆盖（P0-5）；其余函数覆盖（toggleAdvancedFilter 无害、renderTarget 语义替换、移动端覆盖）需按需确认。</li>
+      </ul></div></div>
+
+      <div class="dim"><div class="dh"><div class="g">5.0</div><div class="n">代码可维护性</div></div><div class="db"><ul>
+        <li><b>主要技术债：</b><code>premium-enhancements.css</code> 144KB / 5593 行 / <b>1767 个 !important</b>，与 <code>style.css</code> 双轨覆盖，改样式常需再加 !important；<code>app.js</code> 244KB / 4192 行且塞入超长单行 JSON。</li>
+        <li><b>架构隐患：</b>全项目 <code>use strict</code> 为 0 次、模块无 IIFE 隔离、靠命名约定防冲突——已出现 4 处全局函数重复定义，正是这种模式的直接后果。</li>
+        <li><b>建议：</b>新功能一律写进独立命名空间；等"改一处坏三处"成为真实痛点时再启动 CSS 迁移，不必现在大动。</li>
+      </ul></div></div>
+
+      <div class="dim"><div class="dh"><div class="g">6.0</div><div class="n">数据备份<br>与回退</div></div><div class="db"><ul>
+        <li><b>有保障：</b><code>safeSetItem</code> 带备份、云同步链路已写好（虽休眠）、有 <code>rollback-anchor</code> 一键回退锚点和 <code>VERSION.md</code>。</li>
+        <li><b>风险点：</b>业务数据主要在 localStorage —— 清除浏览器数据即丢失；每日自动 git 推送保护的是"代码"而非"各人浏览器里的数据"。建议明确告知团队：重要数据以云端/导出为准。</li>
+      </ul></div></div>
+
+      <div class="dim"><div class="dh"><div class="g">6.0</div><div class="n">设计合理性<br>与便利性</div></div><div class="db"><ul>
+        <li><b>好的：</b>导航分组符合管理者动线、三态组件和 Toast 齐备、批量操作到位、移动端有适配。</li>
+        <li><b>最大不便：</b><b>没有全局搜索</b>——找项目/客服/问题只能逐菜单点进去，对管理 200 人团队的总监是最高频痛点。</li>
+        <li><b>其他：</b>大促预案无入口（P1-4）、76 处 alert 不统一、默认只展开一个分组、两套 CSS 残留蓝色/金色旧配色。</li>
+      </ul></div></div>
+    </div>
+  </section>
+
+  <!-- 路线图 -->
+  <section>
+    <div class="sec-h"><div class="bar"></div><h2>修复路线图（按性价比排序）</h2><span class="note">每一阶段都可独立验证、独立回退</span></div>
+    <div class="road">
+      <div class="phase p1">
+        <span class="ph">第一阶段 · 立刻</span>
+        <h4>堵住后门（低成本高收益）</h4>
+        <ul>
+          <li>删除/改造"查看演示"按钮</li>
+          <li>密码框改 type=password</li>
+          <li>修批量删除按钮重复 class</li>
+          <li>Cloudflare Access 加整站访问网关</li>
+        </ul>
+      </div>
+      <div class="phase p2">
+        <span class="ph">第二阶段 · 近期</span>
+        <h4>数据与转义（防错防泄）</h4>
+        <ul>
+          <li>收敛 GOALS 单一数据源</li>
+          <li>补齐 4 处 XSS 转义</li>
+          <li>xlsx 锁版本 + SRI + 自托管</li>
+          <li>移除前端默认口令哈希、解除强制复位</li>
+        </ul>
+      </div>
+      <div class="phase p3">
+        <span class="ph">第三阶段 · 有余力</span>
+        <h4>体验与债（提升效率）</h4>
+        <ul>
+          <li>加全局搜索（最高频痛点）</li>
+          <li>大促预案：接入入口或删除</li>
+          <li>alert 逐步收敛为 Toast</li>
+          <li>清理冗余文件、补 favicon/og 图</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 声明 -->
+  <section>
+    <div class="notice">
+      <b>本次体检声明：</b>这是一次<b>纯只读审计</b>——没有修改任何网站代码、没有改动 CSS、没有部署、没有 git 提交或推送。所有结论均基于对 <code>app.js</code>、<code>login.html</code>、<code>index.html</code>、<code>modules/*.js</code>、<code>core-security.js</code>、<code>cloudbase-sync.js</code> 等源码的静态审阅，以及对 <code>chanseen.pages.dev</code> 的线上探测；关键 P0 结论均已回到原始代码逐行交叉验证。<br>
+      <b>回退保障：</b>当前稳定锚点为 <code>rollback-anchor</code>（指向 2026-08-18 版本），VERSION.md 有完整版本记录，任何后续改动都可一键回退。<br>
+      <b>核查方法可复用：</b>全局函数重复定义检测、<code>node --check</code> 全量语法校验、19 张表数据源 grep 追踪、密码哈希离线比对（本报告不包含任何明文口令）。
+    </div>
+  </section>
+
+  <div class="foot">CS CloudHub 系统体检报告 · 生成于 2026-11-25 · 栈师（资深全栈工程师视角）</div>
+
+</div>
+</body>
+</html>

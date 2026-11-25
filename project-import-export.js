@@ -240,15 +240,18 @@ function handleImportFile(input){
 
 
 function renderImportPreview(results){
+  // 安全整改（2026-11-25 · 体检 P1-1）：本文件中 results.add / results.update / results.errors
+  // 的数据全部来自用户上传的 CSV/XLSX 文件，原先直接拼进 innerHTML，存在存储型 XSS。
+  // 现对所有文件来源字段统一 escHtml 转义后再渲染。
   var html = '';
   if(results.add.length>0){
-    html += '<div style="padding:8px 12px;background:#f0fdf4;border-radius:8px;margin-bottom:8px;font-size:13px;color:#166534;"><span style="font-weight:600;">＋ 新增：</span>'+results.add.length+' 条（'+results.add.slice(0,3).join('、')+(results.add.length>3?' 等':'')+'）</div>';
+    html += '<div style="padding:8px 12px;background:#f0fdf4;border-radius:8px;margin-bottom:8px;font-size:13px;color:#166534;"><span style="font-weight:600;">＋ 新增：</span>'+results.add.length+' 条（'+results.add.slice(0,3).map(function(n){return escHtml(n);}).join('、')+(results.add.length>3?' 等':'')+'）</div>';
   }
   if(results.update.length>0){
-    html += '<div style="padding:8px 12px;background:#eff6ff;border-radius:8px;margin-bottom:8px;font-size:13px;color:#1d4ed8;"><span style="font-weight:600;">🔄 更新：</span>'+results.update.length+' 条（'+results.update.map(function(u){return u.name;}).slice(0,3).join('、')+(results.update.length>3?' 等':'')+'）</div>';
+    html += '<div style="padding:8px 12px;background:#eff6ff;border-radius:8px;margin-bottom:8px;font-size:13px;color:#1d4ed8;"><span style="font-weight:600;">🔄 更新：</span>'+results.update.length+' 条（'+results.update.map(function(u){return escHtml(u.name);}).slice(0,3).join('、')+(results.update.length>3?' 等':'')+'）</div>';
   }
   if(results.errors.length>0){
-    html += '<div style="padding:8px 12px;background:#fef2f2;border-radius:8px;margin-bottom:8px;font-size:13px;color:#dc2626;"><span style="font-weight:600;">✕ 错误：</span>'+results.errors.length+' 处<ul style="margin:4px 0 0 16px;font-size:12px;">'+results.errors.slice(0,5).map(function(e){return '<li>'+e+'</li>';}).join('')+(results.errors.length>5?'<li>...还有'+(results.errors.length-5)+'处错误</li>':'')+'</ul></div>';
+    html += '<div style="padding:8px 12px;background:#fef2f2;border-radius:8px;margin-bottom:8px;font-size:13px;color:#dc2626;"><span style="font-weight:600;">✕ 错误：</span>'+results.errors.length+' 处<ul style="margin:4px 0 0 16px;font-size:12px;">'+results.errors.slice(0,5).map(function(e){return '<li>'+escHtml(e)+'</li>';}).join('')+(results.errors.length>5?'<li>...还有'+(results.errors.length-5)+'处错误</li>':'')+'</ul></div>';
   }
   if((results.add.length+results.update.length)>0){
     html += '<div style="font-size:12px;color:var(--c-text-3);margin-top:8px;">确认无误后点击"确认导入"，将新增 '+results.add.length+' 条、更新 '+results.update.length+' 条。</div>';

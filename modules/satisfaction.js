@@ -286,7 +286,7 @@ function renderSatisfaction(){
 
             <td>${s.period}</td>
 
-            <td><span class="badge ${s.overall==='非常满意'?'badge-green':s.overall==='满意'?'badge-green':'badge-yellow'}">${s.overall}</span></td>
+            <td><span class="badge ${s.overall==='非常满意'?'badge-green':s.overall==='满意'?'badge-green':'badge-yellow'}">${escHtml(s.overall)}</span></td>
 
             <td>${s.busiPerf.length > 10 ? s.busiPerf.slice(0,10) + '…' : s.busiPerf}</td>
 
@@ -366,13 +366,13 @@ function showSatisfactionDetail(id){
 
     <div class="detail-grid" style="margin-bottom:16px;">
 
-      <div class="detail-item"><div class="detail-label">关联项目</div><div class="detail-value">${p ? p.name : '未知'}</div></div>
+      <div class="detail-item"><div class="detail-label">关联项目</div><div class="detail-value">${p ? escHtml(p.name) : '未知'}</div></div>
 
-      <div class="detail-item"><div class="detail-label">评估周期</div><div class="detail-value">${s.period}</div></div>
+      <div class="detail-item"><div class="detail-label">评估周期</div><div class="detail-value">${escHtml(s.period)}</div></div>
 
-      <div class="detail-item"><div class="detail-label">评定人</div><div class="detail-value">${s.evaluatedBy}</div></div>
+      <div class="detail-item"><div class="detail-label">评定人</div><div class="detail-value">${escHtml(s.evaluatedBy)}</div></div>
 
-      <div class="detail-item"><div class="detail-label">评定日期</div><div class="detail-value">${s.evaluatedAt}</div></div>
+      <div class="detail-item"><div class="detail-label">评定日期</div><div class="detail-value">${escHtml(s.evaluatedAt)}</div></div>
 
     </div>
 
@@ -390,7 +390,7 @@ function showSatisfactionDetail(id){
 
         <div style="font-size:12px;color:var(--c-text-3);">综合感受</div>
 
-        <div style="font-size:14px;font-weight:500;margin-top:2px;"><span class="badge ${s.overall==='非常满意'?'badge-green':s.overall==='满意'?'badge-green':'badge-yellow'}">${s.overall}</span></div>
+        <div style="font-size:14px;font-weight:500;margin-top:2px;"><span class="badge ${s.overall==='非常满意'?'badge-green':s.overall==='满意'?'badge-green':'badge-yellow'}">${escHtml(s.overall)}</span></div>
 
       </div>
 
@@ -402,7 +402,7 @@ function showSatisfactionDetail(id){
 
           <div style="font-size:11px;color:var(--c-text-3);">团队业务表现</div>
 
-          <div style="font-size:12px;margin-top:2px;">${s.busiPerf}</div>
+          <div style="font-size:12px;margin-top:2px;">${escHtml(s.busiPerf)}</div>
 
         </div>
 
@@ -410,7 +410,7 @@ function showSatisfactionDetail(id){
 
           <div style="font-size:11px;color:var(--c-text-3);">团队专业度</div>
 
-          <div style="font-size:12px;margin-top:2px;">${s.professionalism}</div>
+          <div style="font-size:12px;margin-top:2px;">${escHtml(s.professionalism)}</div>
 
         </div>
 
@@ -418,7 +418,7 @@ function showSatisfactionDetail(id){
 
           <div style="font-size:11px;color:var(--c-text-3);">团队执行力</div>
 
-          <div style="font-size:12px;margin-top:2px;">${s.execution}</div>
+          <div style="font-size:12px;margin-top:2px;">${escHtml(s.execution)}</div>
 
         </div>
 
@@ -426,7 +426,7 @@ function showSatisfactionDetail(id){
 
           <div style="font-size:11px;color:var(--c-text-3);">风险管控</div>
 
-          <div style="font-size:12px;margin-top:2px;">${s.riskControl}</div>
+          <div style="font-size:12px;margin-top:2px;">${escHtml(s.riskControl)}</div>
 
         </div>
 
@@ -438,7 +438,7 @@ function showSatisfactionDetail(id){
 
         <div style="font-size:11px;color:var(--c-text-3);">汇报能力</div>
 
-        <div style="font-size:12px;margin-top:2px;">时效性：${s.repTime} ｜ 准确性：${s.repAcc} ｜ 全面性：${s.repFull}</div>
+        <div style="font-size:12px;margin-top:2px;">时效性：${escHtml(s.repTime)} ｜ 准确性：${escHtml(s.repAcc)} ｜ 全面性：${escHtml(s.repFull)}</div>
 
       </div>
 
@@ -448,7 +448,7 @@ function showSatisfactionDetail(id){
 
         <div style="font-size:11px;color:var(--c-text-3);">沟通配合</div>
 
-        <div style="font-size:12px;margin-top:2px;">沟通频率：${s.commFreq} ｜ 理解能力：${s.commUnd} ｜ 信息同步：${s.commSync}</div>
+        <div style="font-size:12px;margin-top:2px;">沟通频率：${escHtml(s.commFreq)} ｜ 理解能力：${escHtml(s.commUnd)} ｜ 信息同步：${escHtml(s.commSync)}</div>
 
       </div>
 
@@ -470,7 +470,7 @@ function showSatisfactionDetail(id){
 
           <div style="font-size:14px;font-weight:500;color:${scoreColor};">${scoreLabel}</div>
 
-          <div style="font-size:12px;color:var(--c-text-2);margin-top:2px;">评分人：${s.evaluatedBy} ｜ ${s.evaluatedAt}</div>
+          <div style="font-size:12px;color:var(--c-text-2);margin-top:2px;">评分人：${escHtml(s.evaluatedBy)} ｜ ${escHtml(s.evaluatedAt)}</div>
 
         </div>
 
@@ -480,7 +480,7 @@ function showSatisfactionDetail(id){
 
         <div style="font-size:12px;color:var(--c-text-3);">评定意见（帮助提能提效）</div>
 
-        <div style="font-size:13px;margin-top:4px;line-height:1.6;">${s.leaderComment}</div>
+        <div style="font-size:13px;margin-top:4px;line-height:1.6;">${escHtml(s.leaderComment)}</div>
 
       </div>
 
@@ -514,7 +514,7 @@ function showSatisfactionDetail(id){
 
       <label class="form-label">评定意见（帮助提能提效，非惩罚）</label>
 
-      <textarea class="form-textarea" id="s-comment" placeholder="记录具体改进建议、提能方向">${s.leaderComment}</textarea>
+      <textarea class="form-textarea" id="s-comment" placeholder="记录具体改进建议、提能方向">${escHtml(s.leaderComment)}</textarea>
 
     </div>
 
@@ -756,7 +756,7 @@ function doAddSatisfaction(){
 
   const period = document.getElementById("sf-period").value;
 
-  if(!pid || !period) { alert("请填写必填项"); return; }
+  if(!pid || !period) { showToast("请填写必填项", 'error'); return; }
 
   const p = PROJECTS.find(pp => pp.id === pid);
 
@@ -907,7 +907,7 @@ function doImportSatisfaction(){
 
   const fileInput = document.getElementById("sat-import-file");
 
-  if(!fileInput || !fileInput.files.length){ alert("请先选择文件"); return; }
+  if(!fileInput || !fileInput.files.length){ showToast("请先选择文件", 'error'); return; }
 
   const file = fileInput.files[0];
   const ext = (file.name || '').split('.').pop().toLowerCase();
@@ -920,7 +920,7 @@ function doImportSatisfaction(){
         const wb = XLSX.read(e.target.result, { type: 'array' });
         const ws = wb.Sheets[wb.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
-        if (!rows || rows.length < 2) { alert("文件内容为空或仅有表头"); return; }
+        if (!rows || rows.length < 2) { showToast("文件内容为空或仅有表头", 'error'); return; }
         processSatisfactionRows(rows);
       } catch(err) { alert("解析Excel失败：" + err.message); }
     };
@@ -932,7 +932,7 @@ function doImportSatisfaction(){
       try {
         const text = e.target.result;
         const lines = text.replace(/^\uFEFF/,'').split('\n').map(l => l.trim()).filter(Boolean);
-        if(lines.length < 2){ alert("文件内容为空或仅有表头"); return; }
+        if(lines.length < 2){ showToast("文件内容为空或仅有表头", 'error'); return; }
         // CSV 转成二维数组格式，跟 Excel 统一
         const rows = lines.map(function(line) {
           return line.split(',').map(v => v.replace(/^"|"$/g,'').trim());

@@ -1,0 +1,6 @@
+User-agent: *
+# 安全整改（2026-11-25）：本系统为内部管理平台，承载员工花名册、绩效、成本等数据，
+# 禁止搜索引擎抓取与收录，避免敏感页面被索引。
+Disallow: /
+
+Sitemap: https://chanseen.pages.dev/sitemap.xml

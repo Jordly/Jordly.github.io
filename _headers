@@ -1,0 +1,11 @@
+# Cloudflare Pages 安全响应头配置
+# 生成日期：2026-11-25（安全整改，体检报告 P1-2）
+# 说明：仅添加不会影响页面功能的基础安全头。
+# 刻意未启用 Content-Security-Policy —— 本系统大量使用内联 onclick 与内联 style，
+# 严格 CSP 会导致全站按钮与样式失效，需先完成事件委托改造后才能启用。
+
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()

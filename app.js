@@ -458,8 +458,8 @@ function showAddKpiDialog(type, onConfirm) {
     var name = document.getElementById('new-kpi-name').value.trim();
     var key = document.getElementById('new-kpi-key').value.trim();
     var weight = parseFloat(document.getElementById('new-kpi-weight').value) || 10;
-    if(!name){ alert('请输入指标名称'); return; }
-    if(!key){ alert('请输入数据字段名'); return; }
+    if(!name){ showToast('请输入指标名称', 'error'); return; }
+    if(!key){ showToast('请输入数据字段名', 'error'); return; }
     if(onConfirm) onConfirm(name, key, weight);
     close();
   };
@@ -966,13 +966,13 @@ var DATA_PERMISSIONS = [];
 
 function saveUsers() {
   var ok = safeSetItem('chansee_users', JSON.stringify(USERS));
-  if (!ok) { alert('⚠️ 用户数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); return; }
+  if (!ok) { showToast('⚠️ 用户数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。', 'error'); return; }
   // 云端同步用防抖：300ms内多次调用只执行最后一次
   _syncDebounced();
 }
 function saveProjects() {
   var ok = safeSetItem('chansee_projects', JSON.stringify(PROJECTS));
-  if (!ok) { alert('⚠️ 项目数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。'); return; }
+  if (!ok) { showToast('⚠️ 项目数据保存失败！\n可能是浏览器存储空间不足，请清理浏览器数据后重试。', 'error'); return; }
   _syncDebounced();
 }
 
@@ -1145,13 +1145,27 @@ async function checkLogin() {
       var _fa = JSON.parse(_faStr);
       var _ma = 3600000;
       if (_fa.token && (Date.now() - _fa.loginAt) < _ma) {
-        var _user = USERS.find(function(u){ return u.id === (_fa.user && _fa.user.id) || u.username === (_fa.user && _fa.user.username); }) || USERS[0];
-        if (_user) {
+        // 安全整改（2026-11-25）：移除 `|| USERS[0]` 兜底
+        // 原逻辑在 token 中的用户匹配不到时直接落到 USERS[0]（超级管理员），
+        // 造成任意伪造 token 即可提权（体检报告 P0-1 的同源问题）。
+        // 现在：必须精确匹配到真实账号，否则视为无效凭证并清除登录态。
+        var _user = USERS.find(function(u){
+          return (_fa.user && ((u.id && u.id === _fa.user.id) || (u.username && u.username === _fa.user.username)));
+        });
+        if (!_user) {
+          try {
+            localStorage.removeItem('chanseen_auth');
+            sessionStorage.removeItem('chanseen_auth');
+          } catch(_ce) {}
+          console.warn('checkLogin：登录凭证无法对应到有效账号，已清除并要求重新登录');
+        } else if (_user) {
+          // 安全整改（2026-11-25）：role 为空时不再默认「超级管理员」（最小权限原则）
+          // 仅在角色字段缺失这一异常情况下才生效，正常账号不受影响。
           currentUser = {
             id: _user.id || 'U001',
             username: _user.username || 'admin',
             name: _user.name || _user.nickname || '系统创建者',
-            role: _user.role || '超级管理员',
+            role: _user.role || '项目伙伴',
             avatar: _user.avatar || '',
             position: _user.position || '客服总监',
             brand: _user.brand || 'Chanseen',
@@ -1160,7 +1174,7 @@ async function checkLogin() {
             phone: _user.phone || '',
             email: _user.email || ''
           };
-          currentRole = currentUser.role || '超级管理员';
+          currentRole = currentUser.role || '项目伙伴';
           hideLoginModal();
           updateUserDisplay();
           setAppContentVisible(true);
@@ -1285,16 +1299,21 @@ async function checkLogin() {
           if (!cloudUser && auth.user && auth.user.id) {
             cloudUser = USERS.find(u => u.id === auth.user.id);
           }
-          // 如果都没找到，用 U001（admin）作为默认
+          // 安全整改（2026-11-25）：原逻辑在匹配不到时默认落到 U001(admin)，
+          // 等于凭一个伪造 token 即可提权为超级管理员（体检报告 P0-1 同源）。
+          // 现在：匹配不到就不构造登录态，交由下方 else 分支清除凭证并要求重新登录。
           if (!cloudUser) {
-            cloudUser = USERS.find(u => u.id === 'U001') || USERS[0];
+            console.warn('checkLogin：token 中的用户无法对应到有效账号，拒绝建立登录态');
+            throw new Error('invalid session user');
           }
 
           currentUser = {
             id: (cloudUser && cloudUser.id) || 'U001',
             username: (cloudUser && cloudUser.username) || auth.user?.username || 'admin',
             name: (cloudUser && cloudUser.name) || (cloudUser && cloudUser.nickname) || '系统创建者',
-            role: (cloudUser && cloudUser.role) || auth.user?.role || '超级管理员',
+            // 安全整改（2026-11-25）：角色只认数据库(USERS)中的值，不再回退到 token 内的角色，
+            // 更不默认「超级管理员」。token 可被伪造，不能作为权限依据。
+            role: (cloudUser && cloudUser.role) || '项目伙伴',
             avatar: (cloudUser && cloudUser.avatar) || '',
             position: (cloudUser && cloudUser.position) || '客服总监',
             brand: (cloudUser && cloudUser.brand) || 'Chanseen',
@@ -1327,7 +1346,7 @@ async function checkLogin() {
           delete sess.password;
           safeSetItem('chansee_current_user', JSON.stringify(sess));
 
-          currentRole = currentUser.role || '超级管理员';
+          currentRole = currentUser.role || '项目伙伴';
           hideLoginModal();
           updateUserDisplay();
           setAppContentVisible(true);
@@ -1412,12 +1431,21 @@ async function checkLogin() {
         var _auth = JSON.parse(_authStr);
         var _maxAge = 60 * 60 * 1000;
         if (_auth.token && (Date.now() - _auth.loginAt) < _maxAge) {
-          var _u = USERS.find(function(u){ return u.username === (_auth.user && _auth.user.username); }) || USERS[0] || {};
+          // 安全整改（2026-11-25）：移除 `|| USERS[0]` 兜底与 token 内角色回退，
+          // 必须精确匹配到真实账号才建立登录态（防止伪造 token 提权）。
+          var _u = USERS.find(function(u){
+            return (_auth.user && ((u.id && u.id === _auth.user.id) || (u.username && u.username === _auth.user.username)));
+          });
+          if (!_u) {
+            console.warn('checkLogin 兜底：凭证无法对应到有效账号，拒绝建立登录态');
+            try { localStorage.removeItem('chanseen_auth'); sessionStorage.removeItem('chanseen_auth'); } catch(_ce2) {}
+            return false;
+          }
           currentUser = {
             id: _u.id || (_auth.user && _auth.user.id) || 'U001',
             username: _u.username || (_auth.user && _auth.user.username) || 'admin',
             name: _u.name || _u.nickname || '系统创建者',
-            role: _u.role || (_auth.user && _auth.user.role) || '超级管理员',
+            role: _u.role || '项目伙伴',
             avatar: _u.avatar || '',
             position: _u.position || '客服总监',
             brand: _u.brand || 'Chanseen',
@@ -1426,7 +1454,7 @@ async function checkLogin() {
             phone: _u.phone || '',
             email: _u.email || ''
           };
-          currentRole = currentUser.role || '超级管理员';
+          currentRole = currentUser.role || '项目伙伴';
           hideLoginModal();
           updateUserDisplay();
           setAppContentVisible(true);
@@ -1552,7 +1580,7 @@ function doLogin() {
   const username = document.getElementById("login-username").value.trim();
   const password = document.getElementById("login-password").value;
   const remember = document.getElementById("login-remember")?.checked;
-  if (!username || !password) { alert("请填写账号和密码"); return; }
+  if (!username || !password) { showToast("请填写账号和密码", 'error'); return; }
 
   const btn = document.querySelector("#login-form .btn-primary");
   if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "登录中"; }
@@ -1566,7 +1594,7 @@ function doLogin() {
       var plainUser = USERS.find(function(u) { return u.username === username && u.password.indexOf('$SHA$') !== 0 && u.password === password; });
       if (!plainUser) {
         if (btn) { btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "登  录"; }
-        alert("账号或密码错误");
+        showToast("账号或密码错误", 'error');
         return;
       }
       // 迁移：把明文密码升级为哈希
@@ -1576,7 +1604,7 @@ function doLogin() {
         saveUsers();
       });
     }
-    if (user.status !== "已激活") { alert("账号状态：" + user.status + "，请联系管理员审批"); return; }
+    if (user.status !== "已激活") { showToast("账号状态：" + user.status + "，请联系管理员审批", 'error'); return; }
 
     // 浅拷贝完整用户对象（保留 avatar/position/brand 等所有字段）
     currentUser = {};
@@ -1621,13 +1649,13 @@ function doRegister() {
   const phone = document.getElementById("reg-phone").value.trim();
   const email = document.getElementById("reg-email").value.trim();
 
-  if (!name || !username || !password || !confirm) { alert("请填写完整信息"); return; }
+  if (!name || !username || !password || !confirm) { showToast("请填写完整信息", 'error'); return; }
 
   const btn = document.querySelector("#register-form .btn-primary");
   if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "注册中"; }
-  if (password !== confirm) { alert("两次密码不一致"); return; }
+  if (password !== confirm) { showToast("两次密码不一致", 'error'); return; }
   if (password.length < 6) { alert("密码至少6位"); btn.classList.remove("btn-loading"); btn.disabled = false; btn.textContent = "注册"; return; }
-  if (USERS.some(u => u.username === username)) { alert("该账号已被注册"); return; }
+  if (USERS.some(u => u.username === username)) { showToast("该账号已被注册", 'error'); return; }
 
   // 密码哈希后保存
   var that = btn;
@@ -1656,17 +1684,9 @@ function togglePwd(inpId, eyeId) {
 }
 window.togglePwd = togglePwd;
 
-// 演示登录（快速进入系统）
-function demoLogin() {
-  const auth = {
-    token: 'demo_' + Date.now(),
-    user: { username: 'demo', name: '演示用户', role: '管理员' },
-    loginAt: Date.now(),
-    remember: true
-  };
-  localStorage.setItem('chanseen_auth', JSON.stringify(auth));
-  window.location.href = 'index.html';
-}
+// 演示登录入口已下线（安全整改 2026-11-25）
+// 原 demoLogin() 无需密码即可写入登录态并以 USERS[0] 兜底取得超级管理员权限，
+// 属免密后门（体检报告 P0-1）。已删除函数本体与首页入口按钮，如需演示请使用真实账号登录。
 
 // 退出登录
 function logout() {
@@ -2436,10 +2456,10 @@ function isBuiltInRole(roleName) {
   return BUILT_IN_ROLES.indexOf(roleName) >= 0;
 }
 
-const MODULE_KEYS = ["dashboard","archive","target","operation","cost","issue","risk","assessment","satisfaction","performance","handover","roster","knowledge","systemData","permissions","notifications","profile"];
+const MODULE_KEYS = ["dashboard","archive","target","operation","cost","eventPlan","issue","risk","assessment","satisfaction","performance","handover","roster","knowledge","systemData","permissions","notifications","profile"];
 
 const MODULE_GROUPS = {
-  project: { label:"项目运营", keys:["dashboard","archive","target","operation","cost"] },
+  project: { label:"项目运营", keys:["dashboard","archive","target","operation","cost","eventPlan"] },
   quality: { label:"质量与风控", keys:["issue","risk","assessment","satisfaction"] },
   team:    { label:"团队与绩效", keys:["performance","handover","roster","knowledge"] },
   system:  { label:"系统设置", keys:["systemData","permissions","notifications","profile"] }
@@ -2447,7 +2467,8 @@ const MODULE_GROUPS = {
 
 const MODULE_NAMES = {
   dashboard:"项目总览看板", archive:"项目基础档案", target:"目标与权责管理", cost:"成本与利润管理",
-  operation:"服务与进度追踪", issue:"问题与课题协作", risk:"项目风险预警池", assessment:"项目难度评估",
+  operation:"服务与进度追踪", eventPlan:"大促预案管理",
+  issue:"问题与课题协作", risk:"项目风险预警池", assessment:"项目难度评估",
   satisfaction:"项目运维调研", performance:"客服绩效看板", handover:"项目承接规范",
   roster:"人才盘点花名册", knowledge:"核心知识能量池",
   systemData:"系统数据管理", permissions:"系统权限管理", notifications:"系统用户管理", profile:"个人基础设置"
@@ -2459,6 +2480,7 @@ const MODULE_ACTIONS = {
   target:       { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
   cost:         { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
   operation:    { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:1 },
+  eventPlan:    { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
   issue:        { visible:1, view:1, edit:1, import:0, export:0, manage:0, scope:1 },
   risk:         { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
   assessment:   { visible:1, view:1, edit:1, import:0, export:1, manage:0, scope:0 },
@@ -2489,37 +2511,38 @@ var MGR  = permObj(true,true,false,false,true,'all');
 
 const DEFAULT_PERMISSIONS = {
   "超级管理员": {
-    dashboard:ALL, archive:ALL, target:ALL, cost:ALL, operation:ALL,
+    dashboard:ALL, archive:ALL, target:ALL, cost:ALL, operation:ALL, eventPlan:ALL,
     issue:ALL, knowledge:ALL, risk:ALL, assessment:ALL, satisfaction:ALL,
     performance:ALL, handover:ALL, roster:ALL,
     systemData:ALL, permissions:MGR, notifications:EDIT, profile:EDIT
   },
   "管理员": {
-    dashboard:EDIT, archive:EDIT, target:EDIT, cost:EDIT, operation:EDIT,
+    dashboard:EDIT, archive:EDIT, target:EDIT, cost:EDIT, operation:EDIT, eventPlan:EDIT,
     issue:EDIT, knowledge:EDIT, risk:EDIT, assessment:EDIT, satisfaction:EDIT,
     performance:EDIT, handover:EDIT, roster:EDIT,
     systemData:EDIT, permissions:HIDE, notifications:EDIT, profile:EDIT
   },
   "客服总监": {
-    dashboard:VIEW, archive:VIEW, target:VIEW, cost:VIEW, operation:VIEW,
+    dashboard:VIEW, archive:VIEW, target:VIEW, cost:VIEW, operation:VIEW, eventPlan:VIEW,
     issue:VIEW, knowledge:VIEW, risk:VIEW, assessment:VIEW, satisfaction:VIEW,
     performance:VIEW, handover:VIEW, roster:VIEW,
     systemData:VIEW, permissions:HIDE, notifications:VIEW, profile:EDIT
   },
   "客服经理": {
-    dashboard:EDIT, archive:EDIT, target:EDIT, cost:EDIT, operation:EDIT,
+    dashboard:EDIT, archive:EDIT, target:EDIT, cost:EDIT, operation:EDIT, eventPlan:EDIT,
     issue:EDIT, knowledge:EDIT, risk:EDIT, assessment:EDIT, satisfaction:EDIT,
     performance:EDIT, handover:EDIT, roster:EDIT,
     systemData:VIEW, permissions:HIDE, notifications:VIEW, profile:EDIT
   },
   "客服主管": {
     dashboard:VOWN, archive:VOWN, target:VOWN, cost:VOWN, operation:permObj(true,true,false,true,false,'own'),
+    eventPlan:VOWN,
     issue:permObj(true,true,false,false,false,'own'), knowledge:EDIT, risk:VOWN, assessment:VOWN,
     handover:VOWN, satisfaction:VOWN, performance:VOWN, roster:EDIT,
     systemData:HIDE, permissions:HIDE, notifications:VIEW, profile:EDIT
   },
   "项目伙伴": {
-    dashboard:RO, archive:RO, target:HIDE, cost:HIDE, operation:RO,
+    dashboard:RO, archive:RO, target:HIDE, cost:HIDE, operation:RO, eventPlan:RO,
     issue:permObj(true,true,false,false,false,'own'), knowledge:VIEW, risk:HIDE, assessment:HIDE,
     handover:HIDE, satisfaction:HIDE, performance:HIDE, roster:HIDE,
     systemData:HIDE, permissions:HIDE, notifications:HIDE, profile:EDIT
@@ -2650,15 +2673,20 @@ document.addEventListener("DOMContentLoaded", async () => {
           var _auth = JSON.parse(_authStr);
           var _maxAge = _auth.remember ? 604800000 : 3600000;
           if (_auth.token && (Date.now() - _auth.loginAt) < _maxAge) {
-            var _u = USERS.find(function(u){ return u.id === (_auth.user && _auth.user.id) || u.username === (_auth.user && _auth.user.username); }) || USERS[0] || {};
+            // 安全整改（2026-11-25）：移除 `|| USERS[0]` 兜底与 token 内角色回退。
+            // 匹配不到真实账号时不建立登录态，交由下方 checkLogin() 正常流程处理。
+            var _u = USERS.find(function(u){
+              return (_auth.user && ((u.id && u.id === _auth.user.id) || (u.username && u.username === _auth.user.username)));
+            });
+            if (!_u) { throw new Error('fast-path invalid user'); }
             currentUser = {
               id: _u.id || 'U001', username: _u.username || 'admin',
-              name: _u.name || _u.nickname || '系统创建者', role: _u.role || '超级管理员',
+              name: _u.name || _u.nickname || '系统创建者', role: _u.role || '项目伙伴',
               avatar: _u.avatar || '', position: _u.position || '客服总监',
               brand: _u.brand || 'Chanseen', nickname: _u.nickname || _u.name || '系统创建者',
               birthday: _u.birthday || '', phone: _u.phone || '', email: _u.email || ''
             };
-            currentRole = currentUser.role || '超级管理员';
+            currentRole = currentUser.role || '项目伙伴';
             hideLoginModal();
             updateUserDisplay();
             setAppContentVisible(true);
@@ -2955,7 +2983,7 @@ function renderModule(module){
     if(nav){ nav.classList.add('active'); }
     const area = document.getElementById("module-content");
     if (!area) { console.error('renderModule: module-content 元素不存在'); return; }
-    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, systemData:renderSystemData, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile, roster:renderRoster};
+    const fns = {dashboard:renderDashboard, archive:renderArchive, target:renderTarget, cost:renderCost, operation:renderOperation, eventPlan:renderEventPlan, issue:renderIssue, knowledge:renderKnowledge, handover:renderHandover, satisfaction:renderSatisfaction, systemData:renderSystemData, permissions:renderPermissions, notifications:renderNotifications, assessment:renderAssessment, performance:renderPerformance, risk:renderRisk, profile:renderProfile, roster:renderRoster};
     // 性能埋点：记录模块渲染耗时
     var perfStart = performance.now();
     // 模块渲染缓存：数据未变时跳过 HTML 生成

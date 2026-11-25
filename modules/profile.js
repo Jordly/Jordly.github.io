@@ -453,7 +453,7 @@ function forceLogoutSession(sessionId) {
 function handleAvatarUpload(input) {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 5 * 1024 * 1024) { alert("图片大小超过 5M，请选择更小的图片"); return; }
+  if (file.size > 5 * 1024 * 1024) { showToast("图片大小超过 5M，请选择更小的图片", 'error'); return; }
   const reader = new FileReader();
   reader.onload = function(e) {
     const img = new Image();
@@ -503,7 +503,7 @@ function saveProfileNickname() {
   const input = document.getElementById("profile-nickname-input");
   if (!input) return;
   const val = input.value.trim();
-  if (!val) { alert("昵称不能为空"); return; }
+  if (!val) { showToast("昵称不能为空", 'error'); return; }
   const btn = input.parentElement.querySelector("button");
   if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   if (currentUser) {
@@ -564,7 +564,7 @@ function saveProfilePhone() {
   const input = document.getElementById("profile-phone-input");
   if (!input) return;
   const val = input.value.trim();
-  if (val && !/^1[3-9]\d{9}$/.test(val)) { alert("请输入正确的手机号"); return; }
+  if (val && !/^1[3-9]\d{9}$/.test(val)) { showToast("请输入正确的手机号", 'error'); return; }
   if (currentUser) currentUser.phone = val || "";
   persistCurrentUser();
   renderModule("profile");
@@ -582,7 +582,7 @@ function saveProfileEmail() {
   const input = document.getElementById("profile-email-input");
   if (!input) return;
   const val = input.value.trim();
-  if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { alert("请输入正确的邮箱地址"); return; }
+  if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { showToast("请输入正确的邮箱地址", 'error'); return; }
   if (currentUser) currentUser.email = val || "";
   persistCurrentUser();
   renderModule("profile");
@@ -680,13 +680,13 @@ function doChangePassword() {
   const oldPwd = document.getElementById("cp-old").value;
   const newPwd = document.getElementById("cp-new").value;
   const confirm = document.getElementById("cp-confirm").value;
-  if (!oldPwd || !newPwd || !confirm) { alert("请填写完整"); return; }
-  if (newPwd.length < 6) { alert("新密码至少6位"); return; }
-  if (newPwd !== confirm) { alert("两次输入的新密码不一致"); return; }
+  if (!oldPwd || !newPwd || !confirm) { showToast("请填写完整", 'error'); return; }
+  if (newPwd.length < 6) { showToast("新密码至少6位", 'error'); return; }
+  if (newPwd !== confirm) { showToast("两次输入的新密码不一致", 'error'); return; }
   const btn = document.querySelector("#change-password-modal .btn-primary");
   if (btn) { btn.classList.add("btn-loading"); btn.disabled = true; btn.textContent = "保存中"; }
   const userInDb = USERS.find(u => currentUser && u.id === currentUser.id);
-  if (!userInDb) { alert("用户不存在"); return; }
+  if (!userInDb) { showToast("用户不存在", 'error'); return; }
   // 验证原密码（支持哈希和旧版明文迁移）
   var stored = userInDb.password || '';
   function doHashAndSave() {
@@ -737,7 +737,7 @@ function hideForgotPassword() {
 
 function sendVerifyCode() {
   const contact = document.getElementById('forgot-contact').value.trim();
-  if (!contact) { alert('请输入手机号或邮箱'); return; }
+  if (!contact) { showToast('请输入手机号或邮箱', 'error'); return; }
   
   // Find user by phone or email
   const user = USERS.find(u => 
@@ -746,7 +746,7 @@ function sendVerifyCode() {
     u.username === contact
   );
   
-  if (!user) { alert('未找到该账号，请确认手机号/邮箱是否正确'); return; }
+  if (!user) { showToast('未找到该账号，请确认手机号/邮箱是否正确', 'warning'); return; }
   
   forgotTargetUser = user;
   // Generate 6-digit verification code
@@ -786,10 +786,10 @@ function resetPassword() {
   const newPwd = document.getElementById('forgot-new-pwd').value;
   const confirmPwd = document.getElementById('forgot-confirm-pwd').value;
   
-  if (!code) { alert('请输入验证码'); return; }
-  if (code !== forgotVerifyCode) { alert('验证码错误'); return; }
-  if (!newPwd || newPwd.length < 6) { alert('新密码至少6位'); return; }
-  if (newPwd !== confirmPwd) { alert('两次输入的新密码不一致'); return; }
+  if (!code) { showToast('请输入验证码', 'error'); return; }
+  if (code !== forgotVerifyCode) { showToast('验证码错误', 'error'); return; }
+  if (!newPwd || newPwd.length < 6) { showToast('新密码至少6位', 'error'); return; }
+  if (newPwd !== confirmPwd) { showToast('两次输入的新密码不一致', 'error'); return; }
   if (!forgotTargetUser) { alert('操作超时，请重新操作'); hideForgotPassword(); return; }
   
   // Update password (hash before saving)
@@ -847,7 +847,7 @@ function renderComparison(){
 
 function runComparison(){
   const ids = Array.from(document.querySelectorAll('.compare-cb:checked')).map(cb=>cb.value);
-  if(ids.length<2){ alert('请至少选择2个项目进行对比'); return; }
+  if(ids.length<2){ showToast('请至少选择2个项目进行对比', 'warning'); return; }
   const projects = ids.map(id=>PROJECTS.find(p=>p.id===id)).filter(Boolean);
 
   let html = `<div class="card"><div class="card-title">📊 对比结果（共${projects.length}个项目）</div>

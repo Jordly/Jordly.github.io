@@ -10,6 +10,9 @@
 <meta name="description" content="CS CloudHub 是专为电商客服团队设计的项目服务管理系统，支持多职场、多项目类型（TP项目/DP项目/BPO项目）的统一管理，助力客服总监高效管理200人团队。">
 <meta name="keywords" content="客服管理,项目管理,电商客服,CS CloudHub,Chanseen,客服总监,项目服务管理">
 <link rel="canonical" href="https://chanseen.pages.dev/">
+<!-- 站点图标（2026-11-25 补：此前缺失，标签页显示空白默认图标） -->
+<link rel="icon" type="image/png" sizes="256x256" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
 
 <!-- 登录状态检查：未登录跳转到登录页 -->
 <script>
@@ -64,8 +67,8 @@
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "x1kmwrv9fw");
 </script>
-  <link rel="stylesheet" href="style.css?v=20260818">
-  <link rel="stylesheet" href="premium-enhancements.css?v=20260818">
+  <link rel="stylesheet" href="style.css?v=20261125">
+  <link rel="stylesheet" href="premium-enhancements.css?v=20261125">
 </head>
 <body>
 <!-- 顶部导航 -->
@@ -110,6 +113,11 @@
       <a href="#" class="nav-item" data-module="cost">
         <span class="nav-icon">💰</span>
         <span class="nav-text">成本与利润管理</span>
+      </a>
+      <!-- 2026-11-25：大促预案模块入口（此前代码已存在但无任何入口，属孤儿模块） -->
+      <a href="#" class="nav-item" data-module="eventPlan">
+        <span class="nav-icon">🎪</span>
+        <span class="nav-text">大促预案管理</span>
       </a>
     </div>
     <!-- 分组二：质量与风控 -->
@@ -217,33 +225,37 @@
 <!-- 移动端侧边栏遮罩 -->
 <div id="sidebar-overlay" class="sidebar-overlay hidden" onclick="closeMobileSidebar()"></div>
 
-  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-  <script src="lucide-icons.js?v=20260818"></script>
-  <script src="cloudbase-sync.js?v=20260818"></script>
-  <script src="core-security.js?v=20260818"></script>
-  <script src="modules/archive.js?v=20260818"></script>
-  <script src="modules/dashboard.js?v=20260818"></script>
-  <script src="modules/target.js?v=20260818"></script>
-  <script src="modules/cost.js?v=20260818"></script>
-  <script src="modules/operation.js?v=20260818"></script>
-  <script src="modules/issue.js?v=20260818"></script>
-  <script src="modules/knowledge.js?v=20260818"></script>
-  <script src="modules/eventPlan.js?v=20260818"></script>
-  <script src="modules/handover.js?v=20260818"></script>
-  <script src="modules/satisfaction.js?v=20260818"></script>
-  <script src="modules/notifications.js?v=20260818"></script>
-  <script src="modules/permissions.js?v=20260818"></script>
-  <script src="modules/assessment.js?v=20260818"></script>
-  <script src="modules/performance.js?v=20260818"></script>
-  <script src="modules/roster.js?v=20260818"></script>
-  <script src="modules/risk.js?v=20260818"></script>
-  <script src="modules/profile.js?v=20260818"></script>
-  <script src="app.js?v=20260818"></script>
-  <script src="modules/systemData.js?v=20260818"></script>
-  <script src="project-import-export.js?v=20260818"></script>
-  <script src="premium-enhancements.js?v=20260818"></script>
-  <script src="goal-management.js?v=20260818"></script>
-  <script src="backup-restore.js?v=20260818"></script>
+  <!-- 安全整改（2026-11-25 · 体检 P1-2）：xlsx 由浮动 CDN（xlsx-latest）改为本地自托管固定版本 0.20.3
+       原先引用 cdn.sheetjs.com/xlsx-latest/... 无 SRI 校验、版本可随上游变动，
+       且该库直接用于解析用户上传的 Excel，供应链风险可直达本地存储数据。
+       现锁定版本 + 同源自托管 + integrity 校验，上游被投毒或升级破坏均不受影响。 -->
+  <script src="vendor/xlsx.full.min.js?v=20261125" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <script src="lucide-icons.js?v=20261125"></script>
+  <script src="cloudbase-sync.js?v=20261125"></script>
+  <script src="core-security.js?v=20261125"></script>
+  <script src="modules/archive.js?v=20261125"></script>
+  <script src="modules/dashboard.js?v=20261125"></script>
+  <script src="modules/target.js?v=20261125"></script>
+  <script src="modules/cost.js?v=20261125"></script>
+  <script src="modules/operation.js?v=20261125"></script>
+  <script src="modules/issue.js?v=20261125"></script>
+  <script src="modules/knowledge.js?v=20261125"></script>
+  <script src="modules/eventPlan.js?v=20261125"></script>
+  <script src="modules/handover.js?v=20261125"></script>
+  <script src="modules/satisfaction.js?v=20261125"></script>
+  <script src="modules/notifications.js?v=20261125"></script>
+  <script src="modules/permissions.js?v=20261125"></script>
+  <script src="modules/assessment.js?v=20261125"></script>
+  <script src="modules/performance.js?v=20261125"></script>
+  <script src="modules/roster.js?v=20261125"></script>
+  <script src="modules/risk.js?v=20261125"></script>
+  <script src="modules/profile.js?v=20261125"></script>
+  <script src="app.js?v=20261125"></script>
+  <script src="modules/systemData.js?v=20261125"></script>
+  <script src="project-import-export.js?v=20261125"></script>
+  <script src="premium-enhancements.js?v=20261125"></script>
+  <script src="goal-management.js?v=20261125"></script>
+  <script src="backup-restore.js?v=20261125"></script>
 
 <!-- Lucide 图标替换：将 emoji 替换为 SVG 图标 -->
 <script>
@@ -344,7 +356,6 @@
         </div>
       </div>
       <div class="brand-cta">
-        <button class="btn btn-outline-light btn-premium" onclick="demoLogin()">🎬 查看演示</button>
         <button class="btn btn-text-light btn-premium" onclick="scrollToFeatures()">📖 了解更多</button>
       </div>
     </div>

@@ -32,7 +32,7 @@ function renderArchive(){
       <button class="btn btn-sm" onclick="exportProjects()" style="margin-right:8px;">📥 导出</button>
       ${can?'<button class="btn btn-primary btn-sm" onclick="showAddProject()">＋ 新增项目</button>':''}
 
-      ${can?'<button class="btn btn-sm" class="btn btn-sm btn-archive-danger" onclick="batchDeleteProjects()">🗑 批量删除</button>':''}
+      ${can?'<button class="btn btn-sm btn-archive-danger" onclick="batchDeleteProjects()">🗑 批量删除</button>':''}
 
       ${currentRole==='leader'?'<span class="badge badge-gray">只读权限</span>':''}
 

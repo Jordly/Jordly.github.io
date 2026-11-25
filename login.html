@@ -1108,18 +1108,22 @@
         try { savedUsers = JSON.parse(localStorage.getItem('chansee_users') || '[]'); } catch(e) {}
 
         // 合并默认用户：确保默认账号始终可用
+        // 安全整改（2026-11-25 · 体检 P0-2）：
+        // 原逻辑对已存在的同名用户会强制覆盖 password，导致用户修改的密码
+        // 在每次登录时被悄悄改回默认值（密码永远改不掉）。
+        // 现在：仅在账号不存在时补充创建；已存在的账号不再覆盖密码，
+        // 仅补齐缺失的 id / nickname 等空字段，保证能正常改密且不影响既有数据。
         for (var di = 0; di < defaultUsers.length; di++) {
           var foundIdx = -1;
           for (var si = 0; si < savedUsers.length; si++) {
             if (savedUsers[si].username === defaultUsers[di].username) { foundIdx = si; break; }
           }
           if (foundIdx >= 0) {
-            // 同名用户存在，更新密码和角色（确保与默认一致）
-            savedUsers[foundIdx].password = defaultUsers[di].password;
-            savedUsers[foundIdx].role = defaultUsers[di].role;
-            savedUsers[foundIdx].name = defaultUsers[di].name;
-            savedUsers[foundIdx].id = defaultUsers[di].id;
-            savedUsers[foundIdx].nickname = defaultUsers[di].nickname;
+            // 已存在：不再覆盖密码与角色，只补全缺失的标识字段
+            if (!savedUsers[foundIdx].id) { savedUsers[foundIdx].id = defaultUsers[di].id; }
+            if (!savedUsers[foundIdx].nickname) { savedUsers[foundIdx].nickname = defaultUsers[di].nickname; }
+            if (!savedUsers[foundIdx].role) { savedUsers[foundIdx].role = defaultUsers[di].role; }
+            if (!savedUsers[foundIdx].name) { savedUsers[foundIdx].name = defaultUsers[di].name; }
           } else {
             savedUsers.push(defaultUsers[di]);
           }

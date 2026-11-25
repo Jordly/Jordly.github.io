@@ -755,15 +755,15 @@ window.submitSystemDataForm = function(tableKey, editIdx) {
   _saveSystemData(tableKey);
   var mod=document.getElementById('sd-form-modal'); if(mod) mod.remove(); renderModule('systemData');
 };
-function addSystemDataRow() { var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td||!td.fields||td.fields.length===0){ alert('该表不支持新增'); return; } showSystemDataForm(_systemDataTab, null, td.fields); }
-function editSystemDataRow(idx) { var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td||!td.fields||td.fields.length===0){ alert('该表不支持编辑'); return; } if(td.isKvTable){ var keys=Object.keys(td.data||{}); if(idx<0||idx>=keys.length) return; showSystemDataForm(_systemDataTab, {key:keys[idx],value:td.data[keys[idx]]}, td.fields, idx); } else { var rec=td.data[idx]; if(!rec) return; showSystemDataForm(_systemDataTab, rec, td.fields, idx); } }
+function addSystemDataRow() { var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td||!td.fields||td.fields.length===0){ showToast('该表不支持新增', 'error'); return; } showSystemDataForm(_systemDataTab, null, td.fields); }
+function editSystemDataRow(idx) { var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td||!td.fields||td.fields.length===0){ showToast('该表不支持编辑', 'error'); return; } if(td.isKvTable){ var keys=Object.keys(td.data||{}); if(idx<0||idx>=keys.length) return; showSystemDataForm(_systemDataTab, {key:keys[idx],value:td.data[keys[idx]]}, td.fields, idx); } else { var rec=td.data[idx]; if(!rec) return; showSystemDataForm(_systemDataTab, rec, td.fields, idx); } }
 function deleteSystemDataRow(idx) { if(!confirm('确定删除该条记录吗？')) return; var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td) return; if(td.isKvTable){ var keys=Object.keys(td.data||{}); if(idx>=0&&idx<keys.length){ delete td.data[keys[idx]]; } } else { td.data.splice(idx,1); } _saveSystemData(_systemDataTab); renderModule('systemData'); }
-function batchDeleteSystemData() { var cbs=document.querySelectorAll('.sd-row-cb:checked'); if(cbs.length===0){ alert('请先勾选要删除的记录'); return; } if(!confirm('确定删除选中的 '+cbs.length+' 条记录吗？')) return; var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td) return; var idxs=[]; for(var i=0;i<cbs.length;i++) idxs.push(parseInt(cbs[i].dataset.idx)); idxs.sort(function(a,b){return b-a;}); for(var j=0;j<idxs.length;j++) td.data.splice(idxs[j],1); _saveSystemData(_systemDataTab); renderModule('systemData'); }
+function batchDeleteSystemData() { var cbs=document.querySelectorAll('.sd-row-cb:checked'); if(cbs.length===0){ showToast('请先勾选要删除的记录', 'error'); return; } if(!confirm('确定删除选中的 '+cbs.length+' 条记录吗？')) return; var td=SYSTEM_DATA_TABLES[_systemDataTab]; if(!td) return; var idxs=[]; for(var i=0;i<cbs.length;i++) idxs.push(parseInt(cbs[i].dataset.idx)); idxs.sort(function(a,b){return b-a;}); for(var j=0;j<idxs.length;j++) td.data.splice(idxs[j],1); _saveSystemData(_systemDataTab); renderModule('systemData'); }
 
 // ===== 导入数据（通用：针对当前打开的表）=====
 function importSystemData() {
   var td = SYSTEM_DATA_TABLES[_systemDataTab];
-  if(!td || !td.fields || td.fields.length===0){ alert('该表暂不支持导入'); return; }
+  if(!td || !td.fields || td.fields.length===0){ showToast('该表暂不支持导入', 'error'); return; }
   var fieldKeys = td.fields.map(function(f){return f.key;});
   var modal = document.createElement('div');
   modal.id = 'sd-import-modal';

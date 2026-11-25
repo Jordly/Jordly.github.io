@@ -158,7 +158,9 @@ function editUserRole(userId){
   const user = USERS.find(u => u.id === userId);
   if (!user) return;
   const roles = ROLES; // 统一使用系统权限管理中的角色列表
-  const roleOptions = roles.map(r => `<option value="${r}" ${r===user.role?'selected':''}>${r}</option>`).join('');
+  // 安全整改（2026-11-25 · 体检 P1-1）：角色名可在「系统权限管理」中由用户自定义，
+  // 属用户可控输入，原样拼入 option 会造成注入，此处统一转义。
+  const roleOptions = roles.map(r => `<option value="${escHtml(r)}" ${r===user.role?'selected':''}>${escHtml(r)}</option>`).join('');
 
   const modalHtml = `
     <div class="modal-overlay" id="role-modal-overlay" onclick="if(event.target===this)closeRoleModal()">
@@ -168,7 +170,7 @@ function editUserRole(userId){
           <button class="modal-close" onclick="closeRoleModal()" style="font-size:18px;color:#94a3b8;">&times;</button>
         </div>
         <div class="modal-body" style="padding:16px;">
-          <div style="margin-bottom:10px;font-size:12px;color:#94a3b8;">为 <strong style="color:var(--c-primary);">${user.name}</strong> 选择新角色</div>
+          <div style="margin-bottom:10px;font-size:12px;color:#94a3b8;">为 <strong style="color:var(--c-primary);">${escHtml(user.name)}</strong> 选择新角色</div>
           <div style="position:relative;">
             <select id="role-select-input" style="width:100%;padding:8px 28px 8px 10px;font-size:12px;color:var(--c-text);border:1px solid #e2e8f0;border-radius:6px;background:#fff;appearance:none;cursor:pointer;outline:none;transition:border-color 0.2s;">
               ${roleOptions}
@@ -178,7 +180,7 @@ function editUserRole(userId){
         </div>
         <div class="modal-footer" style="padding:10px 16px 14px;gap:8px;">
           <button class="btn" onclick="closeRoleModal()" style="padding:6px 14px;font-size:12px;border-radius:6px;background:#f8fafc;color:#64748b;border:1px solid #e2e8f0;">取消</button>
-          <button class="btn btn-primary" onclick="confirmEditRole('${userId}')" style="padding:6px 14px;font-size:12px;border-radius:6px;">确定</button>
+          <button class="btn btn-primary" onclick="confirmEditRole('${String(userId).replace(/[^A-Za-z0-9_-]/g,'')}')" style="padding:6px 14px;font-size:12px;border-radius:6px;">确定</button>
         </div>
       </div>
     </div>`;
@@ -280,7 +282,7 @@ function showAddUser(){
         +'</div>'
         +'<div style="margin-bottom:12px;">'
           +'<label style="display:block;font-size:12px;color:#64748b;margin-bottom:4px;">初始密码 *</label>'
-          +'<input id="adduser-password" type="text" placeholder="请输入密码" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;outline:none;box-sizing:border-box;">'
+          +'<input id="adduser-password" type="password" autocomplete="new-password" placeholder="请输入密码" style="width:100%;padding:8px 10px;font-size:13px;border:1px solid #e2e8f0;border-radius:8px;outline:none;box-sizing:border-box;">'
         +'</div>'
         +'<div style="margin-bottom:4px;">'
           +'<label style="display:block;font-size:12px;color:#64748b;margin-bottom:4px;">角色</label>'

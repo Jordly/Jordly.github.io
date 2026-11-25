@@ -666,7 +666,7 @@ function doAddProject(){
 
   const name = document.getElementById("f-name").value.trim();
 
-  if(!name) { alert("请填写项目名称"); return; }
+  if(!name) { showToast("请填写项目名称", 'error'); return; }
 
   const p = {
 
@@ -837,7 +837,7 @@ function doAddIssue(){
 
   const desc = document.getElementById("i-desc").value.trim();
 
-  if(!pid||!desc) { alert("请填写必填项"); return; }
+  if(!pid||!desc) { showToast("请填写必填项", 'error'); return; }
 
   const p = PROJECTS.find(pp=>pp.id===pid);
 
@@ -1038,9 +1038,9 @@ function doNewHandover(){
 
   const keyItems = document.getElementById("h-keyitems") ? document.getElementById("h-keyitems").value.trim() : "";
 
-  if(!pid||!to) { alert("请填写必填项"); return; }
+  if(!pid||!to) { showToast("请填写必填项", 'error'); return; }
 
-  if(!keyItems) { alert("请填写「重点交接事项」（必填）"); return; }
+  if(!keyItems) { showToast("请填写「重点交接事项」（必填）", 'error'); return; }
 
   const p = PROJECTS.find(pp=>pp.id===pid);
 
@@ -1158,7 +1158,7 @@ function renderHandoverList(){
   if(tbody) tbody.innerHTML = _renderHandoverRows();
 }
 function exportHandovers(){
-  if(HANDOVERS.length===0){ alert('暂无交接记录可导出'); return; }
+  if(HANDOVERS.length===0){ showToast('暂无交接记录可导出', 'warning'); return; }
   var headers = ['交接编号','项目','交接类型','原负责人','接收人','交接日期','计划日期','状态','重点交接事项','遗留问题','交接范围清单','补充说明'];
   var rows = HANDOVERS.map(function(h){
     return [ 'H'+String(h.id).padStart(3,'0'), h.projectName||'', h.type||'', h.from||'', h.to||'', h.date||'', h.planDate||'', h.status||'', h.keyItems||'', h.pending||'', (h.checklist||[]).join('、'), h.summary||'' ];
@@ -1175,7 +1175,7 @@ function exportHandovers(){
 }
 function showHandoverDetail(id){
   const h = HANDOVERS.find(x=>x.id===id);
-  if(!h){ alert('未找到该交接记录'); return; }
+  if(!h){ showToast('未找到该交接记录', 'warning'); return; }
   const body = document.getElementById('modal-body');
   document.getElementById('modal-title').textContent = '🔄 交接详情 · H'+String(h.id).padStart(3,'0');
   const checklistHtml = (h.checklist&&h.checklist.length) ? h.checklist.map(c=>'<li>✅ '+c+'</li>').join('') : '<li style="color:var(--c-text-3);">（未登记交接范围）</li>';

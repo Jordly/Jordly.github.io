@@ -381,7 +381,9 @@
     rosterMount(html, 'rstr-drawer-root');
   };
   window.rosterCloseDetail = function(){ var m = document.getElementById('rstr-drawer-root'); if(m) m.remove(); _openId = null; };
-  function infoItem(k, v){ return '<div class="rstr-info"><span class="rstr-info-k">'+esc(k)+'</span><span class="rstr-info-v">'+v+'</span></div>'; }
+  // 安全整改（2026-11-25 · 体检 P1-1）：v 来自 CSV 导入的人员字段（组别/职场/职级/院校/主管/荣誉等），
+  // 原先未转义直接拼入 innerHTML，恶意 CSV 可注入脚本。现统一转义。
+  function infoItem(k, v){ return '<div class="rstr-info"><span class="rstr-info-k">'+esc(k)+'</span><span class="rstr-info-v">'+esc(v)+'</span></div>'; }
   function tenure(hire){
     if(!hire) return '—';
     var d = new Date(hire), now = new Date();
@@ -406,7 +408,7 @@
   };
   window.rosterSaveEvent = function(empId){
     var type = val('rstr-ev-type'), date = val('rstr-ev-date'), title = val('rstr-ev-title').trim(), detail = val('rstr-ev-detail').trim();
-    if(!title){ alert('请填写事件标题'); return; }
+    if(!title){ showToast('请填写事件标题', 'error'); return; }
     var r = loadReview(); if(!r[empId]) r[empId] = {tags:[],deptScores:{},hrScores:{},events:[]};
     var evs = r[empId].events || [];
     evs.push({ id:'EV'+Date.now(), type:type, date:date, title:title, detail:detail, by: (typeof CURRENT_USER!=='undefined'&&CURRENT_USER&&CURRENT_USER.name)?CURRENT_USER.name:'管理员' });
@@ -526,10 +528,10 @@
   window.rosterSaveNewPerson = function(){
     var empId = val('rstr-new-empid').trim();
     var name = val('rstr-new-name').trim();
-    if(!empId){ alert('工号不能为空'); return; }
-    if(!name){ alert('姓名不能为空'); return; }
+    if(!empId){ showToast('工号不能为空', 'error'); return; }
+    if(!name){ showToast('姓名不能为空', 'error'); return; }
     var p = loadPersonnel();
-    if(p.filter(function(x){ return x.empId === empId; }).length){ alert('工号 '+empId+' 已存在，请使用其他工号'); return; }
+    if(p.filter(function(x){ return x.empId === empId; }).length){ showToast('工号 '+empId+' 已存在，请使用其他工号', 'error'); return; }
     var rec = {
       empId: empId, name: name,
       group: val('rstr-new-group').trim(), site: val('rstr-new-site').trim(),
@@ -566,7 +568,7 @@
     reader.onload = function(e){
       try {
         var text = e.target.result; var lines = text.split(/\r?\n/).filter(function(l){ return l.trim(); });
-        if(!lines.length){ alert('文件为空'); return; }
+        if(!lines.length){ showToast('文件为空', 'error'); return; }
         var header = lines[0].split(',').map(function(s){ return s.trim(); });
         var idx = function(name){ return header.indexOf(name); };
         var p = loadPersonnel(); var r = loadReview();

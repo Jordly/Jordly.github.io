@@ -217,7 +217,7 @@ function toggleLoadRatioConfig() {
 // 更新组别负荷比
 function updateGroupLoadRatio(group, month, value) {
   var ratio = parseFloat(value);
-  if (isNaN(ratio) || ratio < 0) { alert('负荷比必须是正数'); return; }
+  if (isNaN(ratio) || ratio < 0) { showToast('负荷比必须是正数', 'error'); return; }
   var idx = GROUP_LOAD_RATIO.findIndex(g => g.group === group && g.month === month);
   if (idx >= 0) {
     GROUP_LOAD_RATIO[idx].loadRatio = ratio;
@@ -650,7 +650,7 @@ function importPerformance() {
 }
 
 function processPerformanceRows(rows) {
-  if (!rows || rows.length < 2) { alert("文件内容为空或仅有表头"); return; }
+  if (!rows || rows.length < 2) { showToast("文件内容为空或仅有表头", 'error'); return; }
   for (var i = 1; i < rows.length; i++) {
     if (!rows[i] || rows[i].length < 2) continue;
     var vals = rows[i];
