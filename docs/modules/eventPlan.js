@@ -840,7 +840,7 @@ function viewCampaignImage() {
   overlay.innerHTML = '<div style="max-width:95%;max-height:95%;position:relative;">'
     + '<button style="position:absolute;top:-36px;right:0;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;line-height:1;" onclick="this.closest(\'div[style]\').parentElement.remove()">&times;</button>'
     + '<img id="sep_campaign_img" src="docs/assets/campaign-map-preview.jpg" style="max-width:100%;max-height:90vh;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.5);" alt="大促作战大图" onerror="this.onerror=null;this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22400%22%3E%3Crect fill=%22%23f1f5f9%22 width=%22600%22 height=%22400%22/%3E%3Ctext fill=%22%2394a3b8%22 font-size=%2216%22 font-family=%22sans-serif%22 text-anchor=%22middle%22 x=%22300%22 y=%22190%22%3E图片加载失败%3C/text%3E%3Ctext fill=%22%2394a3b8%22 font-size=%2212%22 font-family=%22sans-serif%22 text-anchor=%22middle%22 x=%22300%22 y=%22210%22%3E请检查网络后重试%3C/text%3E%3C/svg%3E\'">'
-    + '<div id="sep_campaign_tip" style="text-align:center;margin-top:8px;font-size:11px;color:#94a3b8;">当前为快速预览版 · <a href="javascript:;" onclick="sepShowFullCampaignImage()" style="color:#93c5fd;text-decoration:underline;">查看高清原图（24MB，加载较慢）</a></div>'
+    + '<div id="sep_campaign_tip" style="text-align:center;margin-top:8px;font-size:11px;color:#94a3b8;">当前为快速预览版 · <a href="javascript:;" onclick="sepShowFullCampaignImage()" style="color:#93c5fd;text-decoration:underline;">查看高清原图（6.6MB，速度已优化）</a></div>'
     + '</div>';
   overlay.onclick = function(e) { if (e.target === this) this.remove(); };
   document.body.appendChild(overlay);
@@ -848,8 +848,8 @@ function viewCampaignImage() {
 function sepShowFullCampaignImage(){
   var img = document.getElementById('sep_campaign_img');
   var tip = document.getElementById('sep_campaign_tip');
-  if (img) img.src = 'docs/assets/campaign-map.jpg';
-  if (tip) tip.textContent = '正在加载高清原图（24MB），请耐心等待…';
+  if (img) img.src = 'docs/assets/campaign-map-hd.jpg';
+  if (tip) tip.textContent = '正在加载高清原图（6.6MB），请稍候…';
 }
 
 /* ═══ 保留：知识能量池内嵌视图（精简版，只读展示19项） ═══ */
