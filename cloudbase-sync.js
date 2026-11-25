@@ -4,16 +4,25 @@
 
 (function() {
   // ============================================================
-  // 离线模式开关：true = 只使用本地浏览器存储，不连接云端
-  // 改为 false 即可重新开启云端同步（需要先配置 API_BASE 和跨域白名单）
+  // 云端同步：自动探测 + 自动降级（2026-11-25 改造）
+  //
+  // 不再写死"离线/在线"。每次打开系统先探测云端是否可达（最多等 3 秒）：
+  //   · 可达   → 走云同步，数据自动上云
+  //   · 不可达 → 自动降级为本地模式，系统照常使用，不重复请求、不报错
+  //
+  // 效果：云环境到期停用 → 自动转本地，不影响使用；
+  //       续费或环境恢复后 → 刷新页面自动重连，无需修改代码、无需重新部署。
   // ============================================================
-  var OFFLINE_MODE = true;
+  var OFFLINE_MODE = false;   // 初始先假设在线，真实状态由 probeCloud() 探测决定
 
-  // ============================================================
-  // ⚠️ 重要：创建云函数后，请把 HTTP 触发器地址填入这里
-  // 格式类似：https://xxx.ap-shanghai.tcb.qcloud.com/csCloudHubAPI
-  // ============================================================
-  var API_BASE = '';  // 离线模式下设为空，开启云端同步时再填写
+  // 云端环境地址（环境 ID: cscloudhub-d0g983jba5ad192ca）
+  // 正确格式由 HTTP 访问服务路由决定：域名含 <环境ID>-<APPID>.ap-shanghai.app.tcloudbase.com，路径 /api 映射到云函数 csCloudHubAPI
+  // ⚠️ 2026-11-25 实测：路由配置正常，但云函数（Type=HTTP / Nodejs16.13）在网关转发时报 FUNCTIONS_PARAM_INVALID，
+  //    需将该函数重建为标准事件函数（建议 Nodejs18）后才可连通。地址保持不变，函数修好后此处无需再改。
+  var API_BASE = 'https://cscloudhub-d0g983jba5ad192ca-1440977102.ap-shanghai.app.tcloudbase.com/api';
+
+  var PROBE_TIMEOUT = 3000;   // 探测超时（毫秒），超时即判定不可达
+  var _cloudOnline = null;    // null=尚未探测 / true=云端可达 / false=云端不可达
 
   var AUTH_TOKEN = 'cscloudhub-2026-secret-key';
   var statusEl = null;
@@ -67,6 +76,54 @@
         }, 300);
       }, 4000);
     }
+  }
+
+  // ===== 云端可达性探测（决定走云同步还是本地模式） =====
+
+  function probeCloud() {
+    // 已探测过就直接用结果，避免重复请求
+    if (_cloudOnline !== null) return Promise.resolve(_cloudOnline);
+    if (!API_BASE) { _cloudOnline = false; return Promise.resolve(false); }
+
+    return new Promise(function(resolve) {
+      var settled = false;
+      function finish(ok) {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        _cloudOnline = ok;
+        resolve(ok);
+      }
+
+      // 超时保护：最多等 PROBE_TIMEOUT 毫秒，绝不卡住页面
+      var timer = setTimeout(function() {
+        log('云端探测超时（' + PROBE_TIMEOUT + 'ms），判定为不可达');
+        finish(false);
+      }, PROBE_TIMEOUT);
+
+      try {
+        fetch(API_BASE, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'load', collection: 'goals', data: null, token: AUTH_TOKEN })
+        }).then(function(res) {
+          return res.json();
+        }).then(function(r) {
+          // 云函数正常响应形如 { code: 0, data: [...] }，code 是数字
+          // 网关报错（如 INVALID_PATH / FUNCTIONS_PARAM_INVALID）时 code 是字符串，
+          // 据此区分"函数真的活着"和"路由没配好"
+          var ok = !!(r && typeof r.code === 'number');
+          log('云端探测' + (ok ? '成功，启用云同步' : '失败（返回非云函数响应），转本地模式'));
+          finish(ok);
+        }).catch(function(e) {
+          log('云端探测请求失败，转本地模式:', e && e.message);
+          finish(false);
+        });
+      } catch (e) {
+        log('云端探测异常，转本地模式:', e && e.message);
+        finish(false);
+      }
+    });
   }
 
   // ===== HTTP 请求 =====
@@ -160,8 +217,8 @@
 
   function loadAll() {
     return new Promise(function(resolve) {
-      if (!API_BASE) {
-        log('API_BASE 未配置，跳过云端加载');
+      if (OFFLINE_MODE || !API_BASE) {
+        log('本地模式，跳过云端加载');
         resolve('empty');
         return;
       }
@@ -293,8 +350,8 @@
   function saveAll(callback) {
     callback = callback || function() {};
 
-    if (!API_BASE) {
-      showStatus('云端未配置，数据仅保存在本地', 'error');
+    if (OFFLINE_MODE || !API_BASE) {
+      // 本地模式：静默跳过，不弹提示、不发请求（数据已存本地，属正常状态）
       callback(false);
       return;
     }
@@ -456,11 +513,15 @@
   // ===== 公开 API =====
 
   window.CloudBaseSync = {
-    init: function() { return Promise.resolve(!!API_BASE); },
+    init: function() { return probeCloud(); },
     loadAll: loadAll,
     saveAll: saveAll,
     markDirty: markDirty,
-    isReady: function() { return !!API_BASE; },
+    // 云端是否可用（探测结果）。未探测时为 false，请先 init() 或等页面自动探测
+    isReady: function() { return _cloudOnline === true; },
+    isOffline: function() { return _cloudOnline === false; },
+    // 手动重新探测（如环境刚续费，不想刷新页面时可用）
+    reprobe: function() { _cloudOnline = null; return probeCloud(); },
     saveToCloud: function(name, data, cb) {
       log('saveToCloud() 已弃用，改用 saveAll()');
       return saveAll(cb);
@@ -475,18 +536,21 @@
   // ===== 页面加载时自动同步 =====
 
   function onPageLoad() {
-    // 离线模式：不执行任何云端操作，不显示提示
-    if (OFFLINE_MODE) {
-      log('离线模式已开启，所有数据保存在本地浏览器');
-      return;
-    }
+    // 先探测云端可达性，再决定走云同步还是本地模式
+    probeCloud().then(function(online) {
+      if (!online) {
+        OFFLINE_MODE = true;
+        log('云端不可达，已自动降级为本地模式。环境恢复后刷新页面即自动重连');
+        showStatus('云端暂不可用，数据保存在本机', 'offline');
+        return;
+      }
+      OFFLINE_MODE = false;
+      continueCloudSync();
+    });
+  }
 
-    if (!API_BASE) {
-      showStatus('云端未配置（等待云函数地址）', 'offline');
-      log('API_BASE 为空，跳过云端同步。请创建云函数后填入 HTTP 触发器地址');
-      return;
-    }
-
+  // 云端可达时的正常同步流程
+  function continueCloudSync() {
     // 防止无限刷新：用 sessionStorage
     // 但只有上次成功加载过才跳过，失败时必须重试
     if (sessionStorage.getItem('cb_loaded') === '1') {
