@@ -2467,7 +2467,7 @@ const MODULE_GROUPS = {
 
 const MODULE_NAMES = {
   dashboard:"项目总览看板", archive:"项目基础档案", target:"目标与权责管理", cost:"成本与利润管理",
-  operation:"服务与进度追踪", eventPlan:"大促预案管理",
+  operation:"服务与进度追踪", eventPlan:"特殊活动预案管理",
   issue:"问题与课题协作", risk:"项目风险预警池", assessment:"项目难度评估",
   satisfaction:"项目运维调研", performance:"客服绩效看板", handover:"项目承接规范",
   roster:"人才盘点花名册", knowledge:"核心知识能量池",

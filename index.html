@@ -67,8 +67,8 @@
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "x1kmwrv9fw");
 </script>
-  <link rel="stylesheet" href="style.css?v=20261125">
-  <link rel="stylesheet" href="premium-enhancements.css?v=20261125">
+  <link rel="stylesheet" href="style.css?v=20261125b">
+  <link rel="stylesheet" href="premium-enhancements.css?v=20261125b">
 </head>
 <body>
 <!-- 顶部导航 -->
@@ -114,10 +114,10 @@
         <span class="nav-icon">💰</span>
         <span class="nav-text">成本与利润管理</span>
       </a>
-      <!-- 2026-11-25：大促预案模块入口（此前代码已存在但无任何入口，属孤儿模块） -->
+      <!-- 2026-11-25：特殊活动预案模块入口；2026-11-25 重构为登记+审批流程并改名 -->
       <a href="#" class="nav-item" data-module="eventPlan">
         <span class="nav-icon">🎪</span>
-        <span class="nav-text">大促预案管理</span>
+        <span class="nav-text">特殊活动预案管理</span>
       </a>
     </div>
     <!-- 分组二：质量与风控 -->
@@ -229,33 +229,33 @@
        原先引用 cdn.sheetjs.com/xlsx-latest/... 无 SRI 校验、版本可随上游变动，
        且该库直接用于解析用户上传的 Excel，供应链风险可直达本地存储数据。
        现锁定版本 + 同源自托管 + integrity 校验，上游被投毒或升级破坏均不受影响。 -->
-  <script src="vendor/xlsx.full.min.js?v=20261125" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
-  <script src="lucide-icons.js?v=20261125"></script>
-  <script src="cloudbase-sync.js?v=20261125"></script>
-  <script src="core-security.js?v=20261125"></script>
-  <script src="modules/archive.js?v=20261125"></script>
-  <script src="modules/dashboard.js?v=20261125"></script>
-  <script src="modules/target.js?v=20261125"></script>
-  <script src="modules/cost.js?v=20261125"></script>
-  <script src="modules/operation.js?v=20261125"></script>
-  <script src="modules/issue.js?v=20261125"></script>
-  <script src="modules/knowledge.js?v=20261125"></script>
-  <script src="modules/eventPlan.js?v=20261125"></script>
-  <script src="modules/handover.js?v=20261125"></script>
-  <script src="modules/satisfaction.js?v=20261125"></script>
-  <script src="modules/notifications.js?v=20261125"></script>
-  <script src="modules/permissions.js?v=20261125"></script>
-  <script src="modules/assessment.js?v=20261125"></script>
-  <script src="modules/performance.js?v=20261125"></script>
-  <script src="modules/roster.js?v=20261125"></script>
-  <script src="modules/risk.js?v=20261125"></script>
-  <script src="modules/profile.js?v=20261125"></script>
-  <script src="app.js?v=20261125"></script>
-  <script src="modules/systemData.js?v=20261125"></script>
-  <script src="project-import-export.js?v=20261125"></script>
-  <script src="premium-enhancements.js?v=20261125"></script>
-  <script src="goal-management.js?v=20261125"></script>
-  <script src="backup-restore.js?v=20261125"></script>
+  <script src="vendor/xlsx.full.min.js?v=20261125b" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <script src="lucide-icons.js?v=20261125b"></script>
+  <script src="cloudbase-sync.js?v=20261125b"></script>
+  <script src="core-security.js?v=20261125b"></script>
+  <script src="modules/archive.js?v=20261125b"></script>
+  <script src="modules/dashboard.js?v=20261125b"></script>
+  <script src="modules/target.js?v=20261125b"></script>
+  <script src="modules/cost.js?v=20261125b"></script>
+  <script src="modules/operation.js?v=20261125b"></script>
+  <script src="modules/issue.js?v=20261125b"></script>
+  <script src="modules/knowledge.js?v=20261125b"></script>
+  <script src="modules/eventPlan.js?v=20261125b"></script>
+  <script src="modules/handover.js?v=20261125b"></script>
+  <script src="modules/satisfaction.js?v=20261125b"></script>
+  <script src="modules/notifications.js?v=20261125b"></script>
+  <script src="modules/permissions.js?v=20261125b"></script>
+  <script src="modules/assessment.js?v=20261125b"></script>
+  <script src="modules/performance.js?v=20261125b"></script>
+  <script src="modules/roster.js?v=20261125b"></script>
+  <script src="modules/risk.js?v=20261125b"></script>
+  <script src="modules/profile.js?v=20261125b"></script>
+  <script src="app.js?v=20261125b"></script>
+  <script src="modules/systemData.js?v=20261125b"></script>
+  <script src="project-import-export.js?v=20261125b"></script>
+  <script src="premium-enhancements.js?v=20261125b"></script>
+  <script src="goal-management.js?v=20261125b"></script>
+  <script src="backup-restore.js?v=20261125b"></script>
 
 <!-- Lucide 图标替换：将 emoji 替换为 SVG 图标 -->
 <script>
